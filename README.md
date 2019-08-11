@@ -21,22 +21,22 @@ TODO
 ![inspector](https://github.com/arimger/HighPolis/blob/develop/Documentation/doc4.png)
 ### Reorderable List
 
-Assets/Scripts/Project/Editor/Internal/ReorderableList.cs
+Editor Toolbox/Editor/Internal/ReorderableList.cs
 
 Custom implementation of standard ReorderableList(UnityEditorInternal). Useable as attribute in inspector fields or single object in custom editors.
 
 ```
-[Project.ReorderableList(Project.ListStyle.Lined)]
+[ReorderableList(ListStyle.Lined, "Item")]
 public List<int> linedStyleList;
 ```
 ![inspector](https://github.com/arimger/HighPolis/blob/develop/Documentation/doc6.png)
 ```
-[Project.ReorderableList(Project.ListStyle.Round)]
+[ReorderableList(ListStyle.Round)]
 public List<string> standardStyleList;
 ```
 ![inspector](https://github.com/arimger/HighPolis/blob/develop/Documentation/doc7.png)
 ```
-[Project.ReorderableList(Project.ListStyle.Boxed, fixedSize: true)]
+[ReorderableList(ListStyle.Boxed, fixedSize: true)]
 public GameObject[] boxedStyleList = new GameObject[4];
 ```
 ![inspector](https://github.com/arimger/HighPolis/blob/develop/Documentation/doc8.png)
@@ -119,12 +119,12 @@ Editor Toolbox/Editor/Drawers/OrderedDrawers
 
 ##### GroupAttribute
 ```
-[Project.Group("Group1")]
+[Group("Group1")]
 public int var1;
-[Project.Group("Group1")]
+[Group("Group1")]
 public int var2;
 public int var3;
-[Project.Group("Group1")]
+[Group("Group1")]
 public int var4;
 ```
 ![inspector](https://github.com/arimger/HighPolis/blob/develop/Documentation/Attributes/doc18.png)
@@ -132,7 +132,7 @@ public int var4;
 ##### ReorderableListAttribute
 
 ```
-[Project.ReorderableList(Project.ListStyle.Round)]
+[ReorderableList(ListStyle.Round)]
 public List<string> standardStyleList;
 ```
 
@@ -147,7 +147,7 @@ Same like standard PropertyDrawer for **ConditionalFieldAttribute** but works wi
 Same like standard PropertyDrawer for **ReadOnlyFieldAttribute** but works with arrays and lists.
 
 ```
-[Project.ReadOnly]
+[ReadOnly]
 public int[] vars1 = new [] { 1, 2, 3, 4 };
 ```
 
