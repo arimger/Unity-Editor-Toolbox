@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 public class AttributesExample : MonoBehaviour
 {
-    /*
+    /*****************************************
      * Sample use of every custom attribute:
      *
      *      Standard property drawers(property drawer-based):
@@ -28,13 +28,13 @@ public class AttributesExample : MonoBehaviour
      *          - TypeConstraint(ClassExtends or ClassImplements attribute)
      *          - ReadOnlyField
      *
-     *      Component property drawers(custom editor-based):
+     *      Ordered property drawers(custom editor-based):
      *          - Group
      *          - ReorderableList
      *          - DrawIf
      *          - ReadOnly
      *          - Button
-     */
+     ******************************************/
 
     [NewLabel("Item", "Element")]
     [Group("Custom group"), ReorderableList(ListStyle.Lined)]
@@ -92,11 +92,19 @@ public class AttributesExample : MonoBehaviour
     public SerializedTypeReference interfaceReference;
 
     [ReadOnlyField]
-    public string imReadOnly;
+    public string imReadOnly = "Read only text";
 
     [Button("Button")]
     public void ButtonExample()
     {
         Debug.Log("Pressed!");
     }
+
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        asset = asset1;
+    }
+#endif
 }

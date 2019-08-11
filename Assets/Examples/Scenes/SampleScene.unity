@@ -212,29 +212,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   linedStyleList: 010000000200000003000000
   standardStyleList:
-  - Text
+  - Text1
+  - Text2
   boxedStyleList:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   textInGroup: 
-  asset: {fileID: 0}
+  asset: {fileID: 894540630}
   asset1: {fileID: 894540630}
   intInGroup: 0
   isTrue: 1
   x: 43
-  tagHere: 
+  tagHere: MainCamera
   iNeedNewName: {x: 0, y: 0, z: 0}
   imImportantBool: 0
-  minMaxValues: {x: 19, y: 38.7}
-  suffixNeededHere: 0
+  minMaxValues: {x: 19.6, y: 53}
+  suffixNeededHere: 10
   prefab: {fileID: 0}
   baseClassReference:
-    classReference: UnityEditor.EditorWindow, UnityEditor
+    classReference: UnityEditor.Editor, UnityEditor
   interfaceReference:
     classReference: System.Collections.ArrayList, mscorlib
-  imReadOnly: 
+  imReadOnly: Read only text
 --- !u!4 &245793973
 Transform:
   m_ObjectHideFlags: 0
@@ -285,7 +286,7 @@ Camera:
   m_GameObject: {fileID: 534669902}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
