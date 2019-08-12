@@ -781,7 +781,7 @@ namespace Toolbox.Editor.Internal
             {
                 displayName = element.displayName.Replace("Element", ElementLabel);
             }
-            var displayContent = ElementLabel == null ? GUIContent.none : new GUIContent(displayName);
+            var displayContent = new GUIContent(displayName);
             EditorGUIUtility.labelWidth -= Style.handleArea;
             EditorGUI.PropertyField(rect, element, displayContent, element.isExpanded);
             EditorGUIUtility.labelWidth += Style.handleArea;

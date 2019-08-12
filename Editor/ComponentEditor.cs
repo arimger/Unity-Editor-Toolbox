@@ -88,6 +88,12 @@ namespace Toolbox.Editor
         /// <param name="property">Property to display.</param>
         protected virtual void HandleProperty(SerializedProperty property)
         {
+            if (!settings || !settings.UseOrderedDrawers)
+            {
+                EditorGUILayout.PropertyField(property, property.isExpanded);
+                return;
+            }
+
             try
             {
                 drawers.First().HandleProperty(property);

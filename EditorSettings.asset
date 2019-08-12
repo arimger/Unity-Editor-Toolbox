@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: EditorSettings
   m_EditorClassIdentifier: 
   useOrderedDrawers: 1
-  useHierarchyEditor: 1
   drawHandlers:
   - classReference: Toolbox.Editor.GroupPropertyDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.DrawIfPropertyDrawer, Toolbox-Editor

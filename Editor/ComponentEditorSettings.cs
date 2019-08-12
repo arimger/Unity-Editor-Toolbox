@@ -12,8 +12,6 @@ namespace Toolbox.Editor
     {
         [SerializeField]
         private bool useOrderedDrawers = true;
-        [SerializeField]
-        private bool useHierarchyEditor = true;
 
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedPropertyDrawerRoot))]
         private List<SerializedTypeReference> drawHandlers;
@@ -40,12 +38,6 @@ namespace Toolbox.Editor
         {
             get => useOrderedDrawers;
             set => useOrderedDrawers = value;
-        }
-
-        public bool UseHierarchyEditor
-        {
-            get => useHierarchyEditor;
-            set => useHierarchyEditor = value;
         }
 
         public int HandlersCount => drawHandlers != null ? drawHandlers.Count : 0;

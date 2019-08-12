@@ -31,6 +31,7 @@ namespace Toolbox.Editor
                 case SerializedPropertyType.Boolean:
                     return propertyToCheck.boolValue.Equals(attribute.ComparedValue);
                 case SerializedPropertyType.Enum:
+                    //TODO: handling flags
                     var index = Array.IndexOf(Enum.GetValues(attribute.ComparedValue.GetType()), attribute.ComparedValue);
                     return propertyToCheck.enumValueIndex.Equals(index);
                 case SerializedPropertyType.String:

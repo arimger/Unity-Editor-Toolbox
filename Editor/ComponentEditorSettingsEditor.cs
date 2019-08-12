@@ -9,7 +9,6 @@ namespace Toolbox.Editor
     public class ComponentEditorSettingsEditor : ComponentEditor
     {
         private SerializedProperty useOrderedDrawersProperty;
-        private SerializedProperty useHierarchyEditorProperty;
 
         private ReorderableList drawHandlersList;
 
@@ -17,7 +16,6 @@ namespace Toolbox.Editor
         protected override void OnEnable()
         {
             useOrderedDrawersProperty = serializedObject.FindProperty("useOrderedDrawers");
-            useHierarchyEditorProperty = serializedObject.FindProperty("useHierarchyEditor");
 
             drawHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("drawHandlers"));
         }
@@ -30,7 +28,6 @@ namespace Toolbox.Editor
         {
             serializedObject.Update();
             EditorGUILayout.PropertyField(useOrderedDrawersProperty);
-            EditorGUILayout.PropertyField(useHierarchyEditorProperty);
             if (useOrderedDrawersProperty.boolValue)
             {
                 EditorGUILayout.HelpBox("Select all wanted property drawers in specific order. " +
