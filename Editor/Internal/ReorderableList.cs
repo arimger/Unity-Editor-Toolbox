@@ -776,12 +776,15 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public void DrawStandardElement(Rect rect, SerializedProperty element, bool selected, bool focused, bool draggable)
         {
-            var displayName = element.displayName;
+            var displayName = element.displayName;          
             if (ElementLabel != null)
             {
                 displayName = element.displayName.Replace("Element", ElementLabel);
             }
-            EditorGUI.PropertyField(rect, element, new GUIContent(displayName), element.isExpanded);
+            var displayContent = ElementLabel == null ? GUIContent.none : new GUIContent(displayName);
+            EditorGUIUtility.labelWidth -= Style.handleArea;
+            EditorGUI.PropertyField(rect, element, displayContent, element.isExpanded);
+            EditorGUIUtility.labelWidth += Style.handleArea;
         }
 
         /// <summary>
@@ -957,7 +960,7 @@ namespace Toolbox.Editor.Internal
             internal static readonly float spacing = 2;
 #endif
             internal static readonly float padding = 6;
-            internal static readonly float sizeArea = 20;
+            internal static readonly float sizeArea = 19;
 
             internal static readonly float buttonArea = 60;
             internal static readonly float buttonWidth = 25;
