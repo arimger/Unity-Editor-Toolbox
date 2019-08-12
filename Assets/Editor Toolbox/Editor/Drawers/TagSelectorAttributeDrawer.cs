@@ -35,9 +35,9 @@ namespace Toolbox.Editor
             else
             {
                 var tags = new List<string>
-            {
-                "<None>"
-            };
+                {
+                    "<None>"
+                };
                 tags.AddRange(InternalEditorUtility.tags);
                 var propertyString = property.stringValue;
                 var index = -1;

@@ -7,10 +7,10 @@ public class AssetPreviewAttribute : PropertyAttribute
 {
     public AssetPreviewAttribute(float width = 64, float height = 64, bool justPreview = false)
     {
-        Width = width;
-        Height = height;
-     
         JustPreview = justPreview;
+
+        Height = height;
+        Width = width;
     }
 
     public bool JustPreview { get; private set; }

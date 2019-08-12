@@ -27,6 +27,7 @@ public class AttributesExample : MonoBehaviour
      *          - Suffix
      *          - TypeConstraint(ClassExtends or ClassImplements attribute)
      *          - ReadOnlyField
+     *          - EnumFlag
      *
      *      Ordered property drawers(custom editor-based):
      *          - Group
@@ -93,6 +94,19 @@ public class AttributesExample : MonoBehaviour
 
     [ReadOnlyField]
     public string imReadOnly = "Read only text";
+
+    [Flags]
+    public enum FlagExample
+    {
+        Nothing = 0,
+        Flag1 = 1,
+        Flag2 = 2,
+        Flag3 = 4,
+        Everything = ~0
+    }
+
+    [EnumFlag]
+    public FlagExample flagExample = FlagExample.Flag1 | FlagExample.Flag2;
 
     [Button("Button")]
     public void ButtonExample()
