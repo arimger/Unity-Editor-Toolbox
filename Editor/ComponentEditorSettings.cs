@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor
 {
-    [CreateAssetMenu(menuName = "EditorComponents/Settings", order = 1)]
+    [CreateAssetMenu(menuName = "Editor Toolbox/Settings", order = 1)]
     public class ComponentEditorSettings : ScriptableObject
     {
         [SerializeField]

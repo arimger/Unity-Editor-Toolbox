@@ -117,14 +117,12 @@ namespace Toolbox.Editor.Internal
         /// <param name="footerRect"></param>
         private void DoList(Rect headerRect, Rect midderRect, Rect footerRect)
         {
-            //ignoring indentation
-            var indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
-            //displaying all sections
-            DoListHeader(headerRect);
-            DoListMidder(midderRect);
-            DoListFooter(footerRect);
-            EditorGUI.indentLevel = indent;
+            using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
+            {
+                DoListHeader(headerRect);
+                DoListMidder(midderRect);
+                DoListFooter(footerRect);
+            }
         }
 
 
@@ -875,6 +873,7 @@ namespace Toolbox.Editor.Internal
                 return smallerArraySize;
             }
         }
+
 
         public bool Draggable
         {

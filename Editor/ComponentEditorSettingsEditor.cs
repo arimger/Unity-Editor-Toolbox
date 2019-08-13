@@ -32,7 +32,7 @@ namespace Toolbox.Editor
             {
                 EditorGUILayout.HelpBox("Select all wanted property drawers in specific order. " +
                         "Remember that they will be drawn in provided way, " +
-                        "if any component drawer interrupts this cycle, " +
+                        "if any ordered drawer interrupts this cycle, " +
                         "then each next one will be ignored.", MessageType.Info);
     
                 drawHandlersList.DoLayoutList();
