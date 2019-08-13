@@ -9,10 +9,8 @@ Unity 2018.x or newer
 ## Table Of Contents
 
 - [Attributes](#attributes)
-  - [Standard Property Drawers] (#standard-property-drawers)
-  - [Ordered Property Drawers] (#ordered-property-drawers)
 - [ReorderableList](#reorderable-list)
-- [Tools&Editors](#tools&editors)
+- [Tools and Editors](#tools-and-editors)
 
 ## Attributes
 
@@ -151,7 +149,7 @@ public GameObject[] boxedStyleList = new GameObject[4];
 ```
 ![inspector](https://github.com/arimger/HighPolis/blob/develop/Documentation/doc8.png)
 
-## Tools&Editors
+## Tools and Editors
 
 ### Terrain Editor
 ![inspector](https://github.com/arimger/HighPolis/blob/develop/Documentation/doc1.png)
