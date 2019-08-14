@@ -30,13 +30,17 @@ namespace Toolbox.Editor
         {
             if (targetProperties.Any(target => target.name == property.name))
             {
+                Attribute = property.GetAttribute<T>();
                 DrawCustomProperty(property);
                 return;
             }
 
+            Attribute = null;
             DrawDefaultProperty(property);
         }
 
+
+        public T Attribute { get; private set; }
 
         public Type AttributeType => typeof(T);
     }

@@ -25,6 +25,7 @@ namespace Toolbox.Editor
         /// </summary>
         private void InitializeDrawers()
         {
+            //find settings asset in whole asset database
             if (settings == null)
             {
                 var guids = AssetDatabase.FindAssets("t:ComponentEditorSettings");

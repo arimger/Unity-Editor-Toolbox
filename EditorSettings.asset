@@ -15,6 +15,8 @@ MonoBehaviour:
   useOrderedDrawers: 1
   drawHandlers:
   - classReference: Toolbox.Editor.GroupPropertyDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.OrderedSpacePropertyDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.OrderedLinePropertyDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.DrawIfPropertyDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.ReadOnlyPropertyDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.CollectionPropertyDrawer, Toolbox-Editor
