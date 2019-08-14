@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.5748171, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -227,7 +227,7 @@ MonoBehaviour:
   x: 43
   tagHere: MainCamera
   iNeedNewName: {x: 0, y: 0, z: 0}
-  imImportantBool: 0
+  imImportantBool: 1
   minMaxValues: {x: 19.6, y: 53}
   suffixNeededHere: 10
   prefab: {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
@@ -237,6 +237,7 @@ MonoBehaviour:
     classReference: System.Collections.ArrayList, mscorlib
   imReadOnly: Read only text
   flagExample: 3
+  transformRequired: {fileID: 0}
 --- !u!4 &245793973
 Transform:
   m_ObjectHideFlags: 0

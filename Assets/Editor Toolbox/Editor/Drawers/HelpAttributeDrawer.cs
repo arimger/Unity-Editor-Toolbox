@@ -6,11 +6,19 @@ namespace Toolbox.Editor
     [CustomPropertyDrawer(typeof(HelpAttribute))]
     public class HelpDrawer : DecoratorDrawer
     {
+        /// <summary>
+        /// Returns current HelpBox height with additional spacing.
+        /// </summary>
+        /// <returns></returns>
         public override float GetHeight()
         {
             return Style.height + Style.spacing * 2;
         }
 
+        /// <summary>
+        /// Draws HelpBox using native method <see cref="EditorGUI.HelpBox(Rect, string, MessageType)"/>.
+        /// </summary>
+        /// <param name="position"></param>
         public override void OnGUI(Rect position)
         {
             position.height = Style.height;

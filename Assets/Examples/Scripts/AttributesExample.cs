@@ -28,15 +28,20 @@ public class AttributesExample : MonoBehaviour
      *          - TypeConstraint(ClassExtends or ClassImplements attribute)
      *          - ReadOnlyField
      *          - EnumFlag
-     *
+     *          - NotNull
+     *          
      *      Ordered property drawers(custom editor-based):
      *          - Group
      *          - ReorderableList
      *          - DrawIf
      *          - ReadOnly
      *          - Button
+     *          - OrderedSpace
+     *          - OrderedLine
      ******************************************/
 
+    [OrderedSpace(40, 20)]
+    [OrderedLine]
     [NewLabel("Item", "Element")]
     [Group("Custom group"), ReorderableList(ListStyle.Lined)]
     public List<int> linedStyleList;
@@ -59,6 +64,7 @@ public class AttributesExample : MonoBehaviour
     [Group("Custom group"), ReadOnly]
     public int intInGroup;
 
+    [Help("Use this toggle to enable/disable property.", UnityMessageType.Warning)]
     [Help("Use this toggle to enable/disable property.", UnityMessageType.Error), HideLabel]
     public bool isTrue;
 
@@ -107,6 +113,9 @@ public class AttributesExample : MonoBehaviour
 
     [EnumFlag]
     public FlagExample flagExample = FlagExample.Flag1 | FlagExample.Flag2;
+
+    [NotNull]
+    public Transform transformRequired;
 
     [Button("Button")]
     public void ButtonExample()
