@@ -114,16 +114,16 @@ namespace Toolbox.Editor
                         Style.boxStyle.Draw(rect, false, false, false, false);
                     }
                 },
-                drawFooterBackgroundCallback = (Rect rect) =>
+                drawMiddleBackgroundCallback = (Rect rect) =>
                 {
-                    rect.y -= EditorGUIUtility.standardVerticalSpacing / 2;
                     if (Event.current.type == EventType.Repaint)
                     {
                         Style.boxStyle.Draw(rect, false, false, false, false);
                     }
                 },
-                drawMidderBackgroundCallback = (Rect rect) =>
+                drawFooterBackgroundCallback = (Rect rect) =>
                 {
+                    rect.y -= EditorGUIUtility.standardVerticalSpacing / 2;
                     if (Event.current.type == EventType.Repaint)
                     {
                         Style.boxStyle.Draw(rect, false, false, false, false);
@@ -147,14 +147,14 @@ namespace Toolbox.Editor
                     rect.y -= Style.spacing;
                     DrawLine(rect);
                 },
+                drawMiddleBackgroundCallback = (Rect rect) =>
+                {
+                    rect.y -= Style.spacing * 2;
+                    DrawLine(rect);
+                },
                 drawFooterBackgroundCallback = (Rect rect) =>
                 {
                     rect.y -= Style.spacing * 2 - rect.height;
-                    DrawLine(rect);
-                },
-                drawMidderBackgroundCallback = (Rect rect) =>
-                {
-                    rect.y -= Style.spacing;
                     DrawLine(rect);
                 },
                 FooterHeight = 14

@@ -103,8 +103,13 @@ public sealed class ClassExtendsAttribute : ClassTypeConstraintAttribute
     /// <inheritdoc/>
     public override bool IsConstraintSatisfied(Type type)
     {
-        return base.IsConstraintSatisfied(type) && AssemblyType.IsAssignableFrom(type) && type != AssemblyType;
+        if (type == AssemblyType || !base.IsConstraintSatisfied(type)) return false;
+
+        return AssemblyType.IsGenericType
+            ? AssemblyType.IsSubclassOfRawGeneric(type)
+            : AssemblyType.IsAssignableFrom(type);
     }
+
 }
 
 /// <summary>
