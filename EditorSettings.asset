@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: EditorSettings
   m_EditorClassIdentifier: 
   useOrderedDrawers: 1
-  drawHandlers:
+  groupHandlers:
   - classReference: Toolbox.Editor.GroupPropertyDrawer, Toolbox-Editor
+  decoratorHandlers:
   - classReference: Toolbox.Editor.OrderedSpacePropertyDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.OrderedLinePropertyDrawer, Toolbox-Editor
+  propertyHandlers:
   - classReference: Toolbox.Editor.DrawIfPropertyDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.ReadOnlyPropertyDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.CollectionPropertyDrawer, Toolbox-Editor

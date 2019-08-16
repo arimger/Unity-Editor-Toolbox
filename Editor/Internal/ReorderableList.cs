@@ -38,7 +38,7 @@ namespace Toolbox.Editor.Internal
 
         public DrawRectCallbackDelegate drawHeaderBackgroundCallback = null;
         public DrawRectCallbackDelegate drawFooterBackgroundCallback = null;
-        public DrawRectCallbackDelegate drawMidderBackgroundCallback = null;
+        public DrawRectCallbackDelegate drawMiddleBackgroundCallback = null;
 
         public DrawRectCallbackDelegate drawHeaderCallback;
         public DrawRectCallbackDelegate drawVoidedCallback = null;
@@ -120,13 +120,13 @@ namespace Toolbox.Editor.Internal
             using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
             {
                 DoListHeader(headerRect);
-                DoListMidder(midderRect);
+                DoListMiddle(midderRect);
                 DoListFooter(footerRect);
             }
         }
 
 
-        private void DoListMidder(Rect listRect)
+        private void DoListMiddle(Rect middleRect)
         {
             //how many elements? If none, make space for showing default line that shows no elements are present
             var arraySize = Count;
@@ -134,24 +134,24 @@ namespace Toolbox.Editor.Internal
             //draw the background in repaint
             if (Event.current.type == EventType.Repaint)
             {
-                if (drawMidderBackgroundCallback != null)
+                if (drawMiddleBackgroundCallback != null)
                 {
-                    drawMidderBackgroundCallback?.Invoke(listRect);
+                    drawMiddleBackgroundCallback?.Invoke(middleRect);
                 }
                 else
                 {
-                    Style.midderBackground.Draw(listRect, false, false, false, false);
+                    Style.middleBackground.Draw(middleRect, false, false, false, false);
                 }
             }
 
             //resize to the area that we want to draw our elements into
-            listRect.yMin += Style.padding;
-            listRect.yMax -= Style.padding;
+            middleRect.yMin += Style.padding;
+            middleRect.yMax -= Style.padding;
 
             var elementY = 0.0f;
             //create the rect for individual elements in the list
-            var elementRect = listRect;
-            var dragElementRect = listRect;
+            var elementRect = middleRect;
+            var dragElementRect = middleRect;
             //the content rect is what we will actually draw into -- it doesn't include the drag handle or padding
             var elementContentRect = elementRect;
 
@@ -159,7 +159,7 @@ namespace Toolbox.Editor.Internal
             if (List == null || List.isArray == false || arraySize == 0)
             {
                 //there was no content, so we will draw an empty element
-                elementRect.y = listRect.y;
+                elementRect.y = middleRect.y;
                 //draw the background
                 if (drawElementBackgroundCallback == null)
                 {
@@ -206,7 +206,7 @@ namespace Toolbox.Editor.Internal
                         elementRect.height = GetElementHeight(i);
                         dragElementRect.height = GetElementHeight(i, false);
 
-                        elementY = listRect.y + GetElementYOffset(nonDragTargetIndices[i], Index);
+                        elementY = middleRect.y + GetElementYOffset(nonDragTargetIndices[i], Index);
                         if (targetSeen)
                         {
                             elementY += GetElementHeight(Index, true);
@@ -252,7 +252,7 @@ namespace Toolbox.Editor.Internal
                 }
 
                 //finally get the position of the active element
-                elementY = draggedY - dragOffset + listRect.y;
+                elementY = draggedY - dragOffset + middleRect.y;
                 elementRect.y = elementY;
                 dragElementRect.y = elementY;
 
@@ -299,7 +299,7 @@ namespace Toolbox.Editor.Internal
                     elementRect.height = GetElementHeight(i);
                     dragElementRect.height = GetElementHeight(i, false);
 
-                    elementY = listRect.y + GetElementYOffset(i);
+                    elementY = middleRect.y + GetElementYOffset(i);
                     elementRect.y = elementY;
                     dragElementRect.y = elementY;
 
@@ -336,7 +336,7 @@ namespace Toolbox.Editor.Internal
             }
 
             //handle the interaction
-            DoDraggingAndSelection(listRect);
+            DoDraggingAndSelection(middleRect);
         }
 
         private void DoListHeader(Rect headerRect)
@@ -640,17 +640,17 @@ namespace Toolbox.Editor.Internal
         public void DoLayoutList()
         {
             var headerRect = GUILayoutUtility.GetRect(0, HeaderHeight, GUILayout.ExpandWidth(true));
-            var midderRect = GUILayoutUtility.GetRect(0, MidderHeight, GUILayout.ExpandWidth(true));
+            var middleRect = GUILayoutUtility.GetRect(0, MiddleHeight, GUILayout.ExpandWidth(true));
             var footerRect = GUILayoutUtility.GetRect(0, FooterHeight, GUILayout.ExpandWidth(true));
-            DoList(headerRect, midderRect, footerRect);
+            DoList(headerRect, middleRect, footerRect);
         }
 
         public void DoNonLayoutList(Rect rect)
         {
             var headerRect = new Rect(rect.x, rect.y, rect.width, HeaderHeight);
-            var midderRect = new Rect(rect.x, headerRect.y + headerRect.height, rect.width, MidderHeight);
-            var footerRect = new Rect(rect.x, midderRect.y + midderRect.height, rect.width, FooterHeight);
-            DoList(headerRect, midderRect, footerRect);
+            var middleRect = new Rect(rect.x, headerRect.y + headerRect.height, rect.width, MiddleHeight);
+            var footerRect = new Rect(rect.x, middleRect.y + middleRect.height, rect.width, FooterHeight);
+            DoList(headerRect, middleRect, footerRect);
         }
 
 
@@ -911,7 +911,7 @@ namespace Toolbox.Editor.Internal
             get; set;
         } = 18;
 
-        public float MidderHeight
+        public float MiddleHeight
         {
             get => GetListElementHeight();
         }
@@ -986,7 +986,7 @@ namespace Toolbox.Editor.Internal
             internal static readonly GUIStyle footerButton;
             internal static readonly GUIStyle draggingHandle;
             internal static readonly GUIStyle headerBackground;
-            internal static readonly GUIStyle midderBackground;
+            internal static readonly GUIStyle middleBackground;
             internal static readonly GUIStyle footerBackground;
             internal static readonly GUIStyle elementBackground;
 
@@ -1005,7 +1005,7 @@ namespace Toolbox.Editor.Internal
                 footerButton = new GUIStyle("RL FooterButton");
                 draggingHandle = new GUIStyle("RL DragHandle");
                 headerBackground = new GUIStyle("RL Header");
-                midderBackground = new GUIStyle("RL Background");
+                middleBackground = new GUIStyle("RL Background");
                 footerBackground = new GUIStyle("RL Footer");
                 elementBackground = new GUIStyle("RL Element");
             }

@@ -21,10 +21,11 @@ namespace Toolbox.Editor
         /// Drawer method handled by ancestor class.
         /// </summary>
         /// <param name="property">Property to draw.</param>
-        protected override void DrawCustomProperty(SerializedProperty property)
+        /// <param name="attribute"></param>
+        public override void HandleTargetProperty(SerializedProperty property, ReadOnlyAttribute attribute)
         {
-            EditorGUI.BeginDisabledGroup(targetProperties.Any(targetProperty => targetProperty.name == property.name));
-            base.DrawCustomProperty(property);
+            EditorGUI.BeginDisabledGroup(true);
+            base.HandleTargetProperty(property, attribute);
             EditorGUI.EndDisabledGroup();
         }
     }

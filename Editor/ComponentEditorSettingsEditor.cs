@@ -10,14 +10,17 @@ namespace Toolbox.Editor
     {
         private SerializedProperty useOrderedDrawersProperty;
 
-        private ReorderableList drawHandlersList;
-
+        private ReorderableList groupHandlersList;
+        private ReorderableList propertyHandlersList;
+        private ReorderableList decoratorHandlersList;
 
         protected override void OnEnable()
         {
             useOrderedDrawersProperty = serializedObject.FindProperty("useOrderedDrawers");
 
-            drawHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("drawHandlers"));
+            groupHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("groupHandlers"));
+            propertyHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("propertyHandlers"));
+            decoratorHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("decoratorHandlers"));
         }
 
         protected override void OnDisable()
@@ -34,8 +37,11 @@ namespace Toolbox.Editor
                         "Remember that they will be drawn in provided way, " +
                         "if any ordered drawer interrupts this cycle, " +
                         "then each next one will be ignored.", MessageType.Info);
-    
-                drawHandlersList.DoLayoutList();
+                groupHandlersList.DoLayoutList();
+                EditorGUILayout.Space();
+                decoratorHandlersList.DoLayoutList();
+                EditorGUILayout.Space();
+                propertyHandlersList.DoLayoutList();
             }
             serializedObject.ApplyModifiedProperties();
         }

@@ -21,7 +21,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Initializes <see cref="OrderedPropertyDrawerRoot"/>s using EditorSettings asset.
+        /// Initializes <see cref="OrderedDrawerBase"/>s using EditorSettings asset.
         /// </summary>
         private void InitializeDrawers()
         {
@@ -35,14 +35,28 @@ namespace Toolbox.Editor
                 settings = AssetDatabase.LoadAssetAtPath(path, typeof(ComponentEditorSettings)) as ComponentEditorSettings;
             }
 
-            if (!settings || settings.HandlersCount == 0) return;
+            if (!settings) return;
 
-            //create all needed drawer instances and store them in list
-            for (var i = 0; i < settings.HandlersCount; i++)
+            //create all needed group drawer instances and store them in list
+            for (var i = 0; i < settings.GroupHandlersCount; i++)
             {
-                var type = settings.GetHandlerAt(i).Type;
+                var type = settings.GetGroupHandlerAt(i).Type;
                 if (type == null) continue;
-                drawers.Add(Activator.CreateInstance(type, properties) as OrderedPropertyDrawerRoot);
+                drawers.Add(Activator.CreateInstance(type, properties) as OrderedDrawerBase);
+            }
+            //create all needed decorator drawer instances and store them in list
+            for (var i = 0; i < settings.DecoratorHandlersCount; i++)
+            {
+                var type = settings.GetDecoratorHandlerAt(i).Type;
+                if (type == null) continue;
+                drawers.Add(Activator.CreateInstance(type, properties) as OrderedDrawerBase);
+            }
+            //create all needed property drawer instances and store them in list
+            for (var i = 0; i < settings.PropertyHandlersCount; i++)
+            {
+                var type = settings.GetPropertyHandlerAt(i).Type;
+                if (type == null) continue;
+                drawers.Add(Activator.CreateInstance(type, properties) as OrderedDrawerBase);
             }
             //inject nested drawers in provided order
             for (var i = 0; i < drawers.Count - 1; i++)
@@ -55,7 +69,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// All available drawers setted from <see cref="ComponentEditorSettings"/>.
         /// </summary>
-        protected List<OrderedPropertyDrawerRoot> drawers = new List<OrderedPropertyDrawerRoot>();
+        protected List<OrderedDrawerBase> drawers = new List<OrderedDrawerBase>();
 
         /// <summary>
         /// All available and serialized fields(excluding children).

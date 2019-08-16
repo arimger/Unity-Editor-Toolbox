@@ -13,24 +13,63 @@ namespace Toolbox.Editor
         [SerializeField]
         private bool useOrderedDrawers = true;
 
-        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedPropertyDrawerRoot))]
-        private List<SerializedTypeReference> drawHandlers;
+        [DrawIf("useOrderedDrawers", true)]
+        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedGroupDrawer<>))]
+        private List<SerializedTypeReference> groupHandlers;
+        [DrawIf("useOrderedDrawers", true)]
+        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedDecoratorDrawer<>))]
+        private List<SerializedTypeReference> decoratorHandlers;
+        [DrawIf("useOrderedDrawers", true)]
+        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedPropertyDrawer<>))]
+        private List<SerializedTypeReference> propertyHandlers;
 
 
-        public void AddAttributeHandler(SerializedTypeReference attributeHandler)
+        public void AddGroupHandler(SerializedTypeReference attributeHandler)
         {
-            if (drawHandlers == null) drawHandlers = new List<SerializedTypeReference>();
-            drawHandlers.Add(attributeHandler);
+            if (groupHandlers == null) groupHandlers = new List<SerializedTypeReference>();
+            groupHandlers.Add(attributeHandler);
         }
 
-        public void RemoveAttributeHandler(SerializedTypeReference attributeHandler)
+        public void RemoveGroupHandler(SerializedTypeReference attributeHandler)
         {
-            drawHandlers?.Remove(attributeHandler);
+            groupHandlers?.Remove(attributeHandler);
         }
 
-        public SerializedTypeReference GetHandlerAt(int index)
+        public void AddDecoratorHandler(SerializedTypeReference attributeHandler)
         {
-            return drawHandlers[index];
+            if (decoratorHandlers == null) decoratorHandlers = new List<SerializedTypeReference>();
+            decoratorHandlers.Add(attributeHandler);
+        }
+
+        public void RemoveDecoratorHandler(SerializedTypeReference attributeHandler)
+        {
+            decoratorHandlers?.Remove(attributeHandler);
+        }
+
+        public void AddPropertyHandler(SerializedTypeReference attributeHandler)
+        {
+            if (propertyHandlers == null) propertyHandlers = new List<SerializedTypeReference>();
+            propertyHandlers.Add(attributeHandler);
+        }
+
+        public void RemovePropertyHandler(SerializedTypeReference attributeHandler)
+        {
+            propertyHandlers?.Remove(attributeHandler);
+        }
+
+        public SerializedTypeReference GetGroupHandlerAt(int index)
+        {
+            return groupHandlers[index];
+        }
+
+        public SerializedTypeReference GetDecoratorHandlerAt(int index)
+        {
+            return decoratorHandlers[index];
+        }
+
+        public SerializedTypeReference GetPropertyHandlerAt(int index)
+        {
+            return propertyHandlers[index];
         }
 
 
@@ -40,6 +79,10 @@ namespace Toolbox.Editor
             set => useOrderedDrawers = value;
         }
 
-        public int HandlersCount => drawHandlers != null ? drawHandlers.Count : 0;
+        public int GroupHandlersCount => groupHandlers != null ? groupHandlers.Count : 0;
+
+        public int DecoratorHandlersCount => decoratorHandlers != null ? decoratorHandlers.Count : 0;
+
+        public int PropertyHandlersCount => propertyHandlers != null ? propertyHandlers.Count : 0;
     }
 }

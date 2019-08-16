@@ -13,7 +13,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Stored <see cref="ReorderableList"/> collection by serialized property name.
         /// </summary>
-        private Dictionary<string, ReorderableList> reorderableLists = new Dictionary<string, ReorderableList>();
+        private readonly Dictionary<string, ReorderableList> reorderableLists = new Dictionary<string, ReorderableList>();
 
 
         public CollectionPropertyDrawer() : base(null)
@@ -35,10 +35,11 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Drawer method handled by ancestor class.
+        /// Draws <see cref="ReorderableList"/> if provided property is previously cached array/list.
         /// </summary>
         /// <param name="property">Property to draw.</param>
-        protected override void DrawCustomProperty(SerializedProperty property)
+        /// <param name="attribute"></param>
+        public override void HandleTargetProperty(SerializedProperty property, ReorderableListAttribute attribute)
         {
             if (reorderableLists.ContainsKey(property.name))
             {
@@ -46,7 +47,7 @@ namespace Toolbox.Editor
                 return;
             }
 
-            base.DrawCustomProperty(property);
+            base.HandleTargetProperty(property, attribute);
         }
     }
 }

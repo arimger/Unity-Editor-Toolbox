@@ -1,12 +1,8 @@
 ﻿using System;
 
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class GroupAttribute : OrderedAttribute
+public class GroupAttribute : OrderedGroupAttribute
 {
-    public GroupAttribute(string groupName)
-    {
-        GroupName = groupName;
-    }
-
-    public string GroupName { get; private set; }
+    public GroupAttribute(string groupName) : base(groupName)
+    { }
 }

@@ -15,9 +15,8 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        private static bool IsDrawable(SerializedProperty property)
+        private static bool IsDrawable(SerializedProperty property, DrawIfAttribute attribute)
         {
-            var attribute = property.GetAttribute<DrawIfAttribute>();
             if (attribute == null) return true;
             var propertyToCheck = property.serializedObject.FindProperty(attribute.ComparedPropertyName);
             if (propertyToCheck == null)
@@ -58,11 +57,12 @@ namespace Toolbox.Editor
         /// Drawer method handled by ancestor class.
         /// </summary>
         /// <param name="property">Property to draw.</param>
-        protected override void DrawCustomProperty(SerializedProperty property)
+        /// <param name="attribute"></param>
+        public override void HandleTargetProperty(SerializedProperty property, DrawIfAttribute attribute)
         {
-            if (IsDrawable(property))
+            if (IsDrawable(property, attribute))
             {
-                base.DrawCustomProperty(property);
+                base.HandleTargetProperty(property, attribute);
             } 
         }
     }
