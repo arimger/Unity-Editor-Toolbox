@@ -15,10 +15,9 @@ MonoBehaviour:
   useOrderedDrawers: 1
   groupHandlers:
   - classReference: Toolbox.Editor.GroupPropertyDrawer, Toolbox-Editor
-  decoratorHandlers:
-  - classReference: Toolbox.Editor.OrderedSpacePropertyDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.OrderedLinePropertyDrawer, Toolbox-Editor
   propertyHandlers:
-  - classReference: Toolbox.Editor.DrawIfPropertyDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.ReadOnlyPropertyDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.LineDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.SpaceDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.ConditionalPropertyDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.DisabledOnlyPropertyDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.CollectionPropertyDrawer, Toolbox-Editor

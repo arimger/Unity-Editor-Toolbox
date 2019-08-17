@@ -186,7 +186,7 @@ namespace Toolbox.Editor.Internal
             }
 
             //if there are elements, we need to draw them -- we will do this differently depending on if we are dragging or not
-            if (IsDragging && Event.current.type == EventType.Repaint)
+            if (Event.current.type == EventType.Repaint && IsDragging)
             {
                 //we are dragging, so we need to build the new list of target indices
                 var targetIndex = CalculateRowIndex();
@@ -617,7 +617,6 @@ namespace Toolbox.Editor.Internal
             {
                 listHeight += GetElementYOffset(arraySize - 1) + GetElementHeight(arraySize - 1);
             }
-
             return listHeight;
         }
 
@@ -815,6 +814,11 @@ namespace Toolbox.Editor.Internal
         {
             if (Event.current.type == EventType.Repaint)
             {
+                //additional height for selection rect + shadow
+                if (selected)
+                {
+                    rect.height += Style.spacing / 2;
+                }
                 Style.elementBackground.Draw(rect, false, selected, selected, focused);
             }
         }
@@ -848,7 +852,7 @@ namespace Toolbox.Editor.Internal
         public float GetHeight()
         {
             var totalheight = 0.0f;
-            totalheight += GetListElementHeight();
+            totalheight += MiddleHeight;
             totalheight += HeaderHeight;
             totalheight += FooterHeight;
             return totalheight;
@@ -865,10 +869,11 @@ namespace Toolbox.Editor.Internal
             get
             {
                 if (!List.hasMultipleDifferentValues)
-                {
+                { 
                     return List.arraySize;
                 }
 
+                //if we are handling multi-selection
                 var smallerArraySize = List.arraySize;
                 foreach (var targetObject in List.serializedObject.targetObjects)
                 {
@@ -876,6 +881,7 @@ namespace Toolbox.Editor.Internal
                     var property = serializedObject.FindProperty(List.propertyPath);
                     smallerArraySize = Math.Min(property.arraySize, smallerArraySize);
                 }
+                //return smalest array size
                 return smallerArraySize;
             }
         }

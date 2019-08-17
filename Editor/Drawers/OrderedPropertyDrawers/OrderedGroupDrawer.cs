@@ -15,34 +15,47 @@ namespace Toolbox.Editor
         protected readonly Dictionary<string, List<SerializedProperty>> groupedProperties = new Dictionary<string, List<SerializedProperty>>();
 
 
-        protected OrderedGroupDrawer(List<SerializedProperty> componentProperties) : base(componentProperties)
+        protected OrderedGroupDrawer(List<SerializedProperty> componentProperties)
         {
-            targetProperties.ForEach(property =>
+            componentProperties.ForEach(property =>
             {
-                var groupName = property.GetAttribute<T>().GroupName;
+                var attribute = property.GetAttribute<T>();
+                if (attribute == null) return;
+                var groupName = attribute.GroupName;
                 if (groupedProperties.ContainsKey(groupName))
                 {
                     groupedProperties[groupName].Add(property);
+                    return;
                 }
-                else
+
+                groupedProperties[groupName] = new List<SerializedProperty>()
                 {
-                    groupedProperties[groupName] = new List<SerializedProperty>()
-                    {
-                        property
-                    };
-                }
+                    property
+                };
             });
         }
 
-
+        /// <summary>
+        /// Begins group of serialized properties.
+        /// </summary>
+        /// <param name="attribute"></param>
         protected virtual void OnBeginGroup(T attribute)
         { }
 
+        /// <summary>
+        /// Draws all grouped properties.
+        /// </summary>
+        /// <param name="groupedProperties"></param>
+        /// <param name="attribute"></param>
         protected virtual void OnDrawGroup(List<SerializedProperty> groupedProperties, T attribute)
         {
             groupedProperties.ForEach(groupedProperty => base.HandleTargetProperty(groupedProperty, attribute));
         }
 
+        /// <summary>
+        /// Ends group of serialized properties.
+        /// </summary>
+        /// <param name="attribute"></param>
         protected virtual void OnEndGroup(T attribute)
         { }
 
@@ -57,11 +70,18 @@ namespace Toolbox.Editor
         {
             var groupName = attribute.GroupName;
 
-            if (groupedProperties[groupName].FirstOrDefault().name != property.name) return;
+            if (groupedProperties.ContainsKey(groupName))
+            {
+                if (groupedProperties[groupName].First().name != property.name) return;
 
-            OnBeginGroup(attribute);
-            OnDrawGroup(groupedProperties[groupName], attribute);
-            OnEndGroup(attribute);
+                OnBeginGroup(attribute);
+                OnDrawGroup(groupedProperties[groupName], attribute);
+                OnEndGroup(attribute);
+                return;
+            }
+
+            Debug.LogWarning("Non-cached property or " + typeof(T) + " in " + GetType() + ". Property will be drawn in standard way.");
+            DrawOrderedProperty(property);
         }
     }
 }

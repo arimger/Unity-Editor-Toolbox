@@ -44,19 +44,12 @@ namespace Toolbox.Editor
                 if (type == null) continue;
                 drawers.Add(Activator.CreateInstance(type, properties) as OrderedDrawerBase);
             }
-            //create all needed decorator drawer instances and store them in list
-            for (var i = 0; i < settings.DecoratorHandlersCount; i++)
-            {
-                var type = settings.GetDecoratorHandlerAt(i).Type;
-                if (type == null) continue;
-                drawers.Add(Activator.CreateInstance(type, properties) as OrderedDrawerBase);
-            }
             //create all needed property drawer instances and store them in list
             for (var i = 0; i < settings.PropertyHandlersCount; i++)
             {
                 var type = settings.GetPropertyHandlerAt(i).Type;
                 if (type == null) continue;
-                drawers.Add(Activator.CreateInstance(type, properties) as OrderedDrawerBase);
+                drawers.Add(Activator.CreateInstance(type) as OrderedDrawerBase);
             }
             //inject nested drawers in provided order
             for (var i = 0; i < drawers.Count - 1; i++)
@@ -97,7 +90,7 @@ namespace Toolbox.Editor
 
         /// <summary>
         /// Handles desired property display process. Starts drawing using first known
-        /// <see cref="OrderedPropertyDrawer{T}"/>(if exists) or standard
+        /// <see cref="OrderedDrawer{T}"/>(if exists) or standard
         /// <see cref="EditorGUI.PropertyField(Rect, SerializedProperty)"/> method.
         /// </summary>
         /// <param name="property">Property to display.</param>
@@ -113,8 +106,9 @@ namespace Toolbox.Editor
             {
                 drawers.First().HandleProperty(property);
             }
-            catch
+            catch (NullReferenceException e)
             {
+                Debug.LogError(e);
                 EditorGUILayout.PropertyField(property, property.isExpanded);
             }
         }
@@ -137,7 +131,7 @@ namespace Toolbox.Editor
 
                 while (property.NextVisible(false))
                 {
-                    HandleProperty(property);
+                    HandleProperty(property.Copy());
                 }
             }
             serializedObject.ApplyModifiedProperties();

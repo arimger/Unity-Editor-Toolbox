@@ -1,12 +1,12 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEditor;
 
 namespace Toolbox.Editor
 {
     [InitializeOnLoad]
-    public class HierarchyEditor
+    public class HierarchyWindowEditor
     {
-        static HierarchyEditor()
+        static HierarchyWindowEditor()
         {
             EditorApplication.hierarchyWindowItemOnGUI += HierarchyItemCB;
         }

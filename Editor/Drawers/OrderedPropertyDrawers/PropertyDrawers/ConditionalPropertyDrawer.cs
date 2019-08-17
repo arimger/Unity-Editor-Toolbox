@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 
 using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor
 {
-    public sealed class DrawIfPropertyDrawer : OrderedPropertyDrawer<DrawIfAttribute>
+    public sealed class ConditionalPropertyDrawer : OrderedPropertyDrawer<DrawIfAttribute>
     {
         /// <summary>
         /// Checks if provided property is valid to display.
@@ -46,13 +43,6 @@ namespace Toolbox.Editor
         }
 
 
-        public DrawIfPropertyDrawer() : base(null)
-        { }
-
-        public DrawIfPropertyDrawer(List<SerializedProperty> componentProperties) : base(componentProperties)
-        { }
-
-
         /// <summary>
         /// Drawer method handled by ancestor class.
         /// </summary>
@@ -60,10 +50,8 @@ namespace Toolbox.Editor
         /// <param name="attribute"></param>
         public override void HandleTargetProperty(SerializedProperty property, DrawIfAttribute attribute)
         {
-            if (IsDrawable(property, attribute))
-            {
-                base.HandleTargetProperty(property, attribute);
-            } 
+            if (!IsDrawable(property, attribute)) return;
+            base.HandleTargetProperty(property, attribute);
         }
     }
 }
