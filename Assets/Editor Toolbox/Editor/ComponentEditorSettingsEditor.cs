@@ -12,7 +12,7 @@ namespace Toolbox.Editor
 
         private ReorderableList groupHandlersList;
         private ReorderableList propertyHandlersList;
-        private ReorderableList decoratorHandlersList;
+
 
         protected override void OnEnable()
         {
@@ -20,7 +20,6 @@ namespace Toolbox.Editor
 
             groupHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("groupHandlers"));
             propertyHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("propertyHandlers"));
-            decoratorHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("decoratorHandlers"));
         }
 
         protected override void OnDisable()
@@ -38,8 +37,6 @@ namespace Toolbox.Editor
                         "if any ordered drawer interrupts this cycle, " +
                         "then each next one will be ignored.", MessageType.Info);
                 groupHandlersList.DoLayoutList();
-                EditorGUILayout.Space();
-                decoratorHandlersList.DoLayoutList();
                 EditorGUILayout.Space();
                 propertyHandlersList.DoLayoutList();
             }

@@ -40,7 +40,7 @@ public class AttributesExample : MonoBehaviour
      *          - OrderedLine
      ******************************************/
 
-    [OrderedSpace(40, 20)]
+    [OrderedSpace(25, 20)]
     [OrderedLine]
     [NewLabel("Item", "Element")]
     [Group("Custom group"), ReorderableList(ListStyle.Lined)]

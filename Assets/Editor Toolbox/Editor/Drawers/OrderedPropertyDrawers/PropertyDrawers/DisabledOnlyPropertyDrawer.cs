@@ -1,22 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 
 namespace Toolbox.Editor
 {
-    public class ReadOnlyPropertyDrawer : OrderedPropertyDrawer<ReadOnlyAttribute>
+    public class DisabledOnlyPropertyDrawer : OrderedPropertyDrawer<ReadOnlyAttribute>
     {
-        public ReadOnlyPropertyDrawer() : base(null)
-        { }
-
-        public ReadOnlyPropertyDrawer(List<SerializedProperty> componentProperties) : base(componentProperties)
-        { }
-
-
         /// <summary>
         /// Drawer method handled by ancestor class.
         /// </summary>

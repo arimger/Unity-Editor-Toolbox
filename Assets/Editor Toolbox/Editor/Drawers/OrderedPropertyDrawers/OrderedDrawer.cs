@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEditor;
+
+//TODO: hashset to cache all target properties;
 
 namespace Toolbox.Editor
 {
@@ -15,26 +14,11 @@ namespace Toolbox.Editor
     public abstract class OrderedDrawer<T> : OrderedDrawerBase where T : OrderedAttribute
     {
         /// <summary>
-        /// All <see cref="SerializedProperty"/> objects which implements the needed <see cref="OrderedAttribute"/>.
-        /// </summary>
-        protected readonly List<SerializedProperty> targetProperties;
-
-
-        protected OrderedDrawer(List<SerializedProperty> componentProperties)
-        {
-            targetProperties = componentProperties.FindAll(property => property.GetAttribute<T>() != null);
-        }
-
-
-        /// <summary>
         /// Tries to display provided property using associated attribute.
         /// </summary>
         /// <param name="property"></param>
         /// <param name="attribute"></param>
-        public virtual void HandleTargetProperty(SerializedProperty property, T attribute)
-        {
-            DrawOrderedProperty(property);
-        }
+        public abstract void HandleTargetProperty(SerializedProperty property, T attribute);
 
         /// <summary>
         /// Tries to display property excluding all non-target properties.
@@ -42,9 +26,10 @@ namespace Toolbox.Editor
         /// <param name="property"></param>
         public override void HandleProperty(SerializedProperty property)
         {
-            if (targetProperties.Any(target => target.name == property.name))
+            var attribute = property.GetAttribute<T>();
+            if (attribute != null)
             {
-                HandleTargetProperty(property, property.GetAttribute<T>());
+                HandleTargetProperty(property, attribute);
                 return;
             }
 
@@ -52,6 +37,9 @@ namespace Toolbox.Editor
         }
 
 
+        /// <summary>
+        /// Attribute type associated with this drawer.
+        /// </summary>
         public Type AttributeType => typeof(T);
     }
 }

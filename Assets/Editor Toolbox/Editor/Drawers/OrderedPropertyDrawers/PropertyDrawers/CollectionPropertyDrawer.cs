@@ -16,24 +16,6 @@ namespace Toolbox.Editor
         private readonly Dictionary<string, ReorderableList> reorderableLists = new Dictionary<string, ReorderableList>();
 
 
-        public CollectionPropertyDrawer() : base(null)
-        { }
-
-        public CollectionPropertyDrawer(List<SerializedProperty> componentProperties) : base(componentProperties)
-        {
-            targetProperties.ForEach(reorderableProperty =>
-            {
-                var attribute = reorderableProperty.GetAttribute<ReorderableListAttribute>();
-                var list = ToolboxEditorUtility.CreateList(reorderableProperty,
-                    attribute.ListStyle,
-                    attribute.ElementLabel,
-                    attribute.FixedSize,
-                    attribute.Draggable);
-                reorderableLists.Add(reorderableProperty.name, list);
-            });
-        }
-
-
         /// <summary>
         /// Draws <see cref="ReorderableList"/> if provided property is previously cached array/list.
         /// </summary>
@@ -41,13 +23,16 @@ namespace Toolbox.Editor
         /// <param name="attribute"></param>
         public override void HandleTargetProperty(SerializedProperty property, ReorderableListAttribute attribute)
         {
-            if (reorderableLists.ContainsKey(property.name))
-            {
-                reorderableLists[property.name].DoLayoutList();
-                return;
+            if (!reorderableLists.ContainsKey(property.name))
+            {        
+                reorderableLists[property.name] = ToolboxEditorUtility.CreateList(property,
+                                                    attribute.ListStyle,
+                                                    attribute.ElementLabel,
+                                                    attribute.FixedSize,
+                                                    attribute.Draggable);
             }
 
-            base.HandleTargetProperty(property, attribute);
+            reorderableLists[property.name].DoLayoutList();
         }
     }
 }

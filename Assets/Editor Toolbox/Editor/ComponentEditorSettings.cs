@@ -17,9 +17,6 @@ namespace Toolbox.Editor
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedGroupDrawer<>))]
         private List<SerializedTypeReference> groupHandlers;
         [DrawIf("useOrderedDrawers", true)]
-        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedDecoratorDrawer<>))]
-        private List<SerializedTypeReference> decoratorHandlers;
-        [DrawIf("useOrderedDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedPropertyDrawer<>))]
         private List<SerializedTypeReference> propertyHandlers;
 
@@ -33,17 +30,6 @@ namespace Toolbox.Editor
         public void RemoveGroupHandler(SerializedTypeReference attributeHandler)
         {
             groupHandlers?.Remove(attributeHandler);
-        }
-
-        public void AddDecoratorHandler(SerializedTypeReference attributeHandler)
-        {
-            if (decoratorHandlers == null) decoratorHandlers = new List<SerializedTypeReference>();
-            decoratorHandlers.Add(attributeHandler);
-        }
-
-        public void RemoveDecoratorHandler(SerializedTypeReference attributeHandler)
-        {
-            decoratorHandlers?.Remove(attributeHandler);
         }
 
         public void AddPropertyHandler(SerializedTypeReference attributeHandler)
@@ -62,11 +48,6 @@ namespace Toolbox.Editor
             return groupHandlers[index];
         }
 
-        public SerializedTypeReference GetDecoratorHandlerAt(int index)
-        {
-            return decoratorHandlers[index];
-        }
-
         public SerializedTypeReference GetPropertyHandlerAt(int index)
         {
             return propertyHandlers[index];
@@ -80,8 +61,6 @@ namespace Toolbox.Editor
         }
 
         public int GroupHandlersCount => groupHandlers != null ? groupHandlers.Count : 0;
-
-        public int DecoratorHandlersCount => decoratorHandlers != null ? decoratorHandlers.Count : 0;
 
         public int PropertyHandlersCount => propertyHandlers != null ? propertyHandlers.Count : 0;
     }
