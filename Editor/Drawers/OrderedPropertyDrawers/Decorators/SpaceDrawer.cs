@@ -5,10 +5,10 @@ namespace Toolbox.Editor
 {
     public class SpaceDrawer : OrderedPropertyDrawer<OrderedSpaceAttribute>
     {
-        public override void HandleTargetProperty(SerializedProperty property, OrderedSpaceAttribute attribute)
+        public override void HandleProperty(SerializedProperty property, OrderedSpaceAttribute attribute)
         {
             GUILayout.Space(attribute.SpaceBefore);
-            base.HandleTargetProperty(property, attribute);
+            base.HandleProperty(property, attribute);
             GUILayout.Space(attribute.SpaceAfter);
         }
     }

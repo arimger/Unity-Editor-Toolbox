@@ -3,8 +3,6 @@
 using UnityEngine;
 using UnityEditor;
 
-//TODO: hashset to cache all target properties;
-
 namespace Toolbox.Editor
 {
     /// <summary>
@@ -14,13 +12,6 @@ namespace Toolbox.Editor
     public abstract class OrderedDrawer<T> : OrderedDrawerBase where T : OrderedAttribute
     {
         /// <summary>
-        /// Tries to display provided property using associated attribute.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <param name="attribute"></param>
-        public abstract void HandleTargetProperty(SerializedProperty property, T attribute);
-
-        /// <summary>
         /// Tries to display property excluding all non-target properties.
         /// </summary>
         /// <param name="property"></param>
@@ -29,10 +20,20 @@ namespace Toolbox.Editor
             var attribute = property.GetAttribute<T>();
             if (attribute != null)
             {
-                HandleTargetProperty(property, attribute);
+                HandleProperty(property, attribute);
                 return;
             }
 
+            DrawOrderedProperty(property);
+        }
+
+        /// <summary>
+        /// Draws target property in provided, custom way.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="attribute"></param>
+        public virtual void HandleProperty(SerializedProperty property, T attribute)
+        {
             DrawOrderedProperty(property);
         }
 

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EditorSettings
   m_EditorClassIdentifier: 
   useOrderedDrawers: 1
-  groupHandlers:
+  presetHandlers:
   - classReference: Toolbox.Editor.GroupPropertyDrawer, Toolbox-Editor
   propertyHandlers:
   - classReference: Toolbox.Editor.LineDrawer, Toolbox-Editor

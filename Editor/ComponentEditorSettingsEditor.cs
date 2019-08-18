@@ -10,7 +10,7 @@ namespace Toolbox.Editor
     {
         private SerializedProperty useOrderedDrawersProperty;
 
-        private ReorderableList groupHandlersList;
+        private ReorderableList presetHandlersList;
         private ReorderableList propertyHandlersList;
 
 
@@ -18,7 +18,7 @@ namespace Toolbox.Editor
         {
             useOrderedDrawersProperty = serializedObject.FindProperty("useOrderedDrawers");
 
-            groupHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("groupHandlers"));
+            presetHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("presetHandlers"));
             propertyHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("propertyHandlers"));
         }
 
@@ -36,7 +36,7 @@ namespace Toolbox.Editor
                         "Remember that they will be drawn in provided way, " +
                         "if any ordered drawer interrupts this cycle, " +
                         "then each next one will be ignored.", MessageType.Info);
-                groupHandlersList.DoLayoutList();
+                presetHandlersList.DoLayoutList();
                 EditorGUILayout.Space();
                 propertyHandlersList.DoLayoutList();
             }

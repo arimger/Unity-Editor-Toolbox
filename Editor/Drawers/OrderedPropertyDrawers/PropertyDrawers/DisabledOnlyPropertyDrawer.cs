@@ -10,10 +10,10 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property">Property to draw.</param>
         /// <param name="attribute"></param>
-        public override void HandleTargetProperty(SerializedProperty property, ReadOnlyAttribute attribute)
+        public override void HandleProperty(SerializedProperty property, ReadOnlyAttribute attribute)
         {
             EditorGUI.BeginDisabledGroup(true);
-            base.HandleTargetProperty(property, attribute);
+            base.HandleProperty(property, attribute);
             EditorGUI.EndDisabledGroup();
         }
     }
