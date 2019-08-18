@@ -7,17 +7,17 @@ using UnityEditor;
 
 namespace Toolbox.Editor
 {
-    public abstract class OrderedGroupDrawer<T> : OrderedDrawer<T> where T : OrderedGroupAttribute
+    public abstract class OrderedGroupDrawer<T> : OrderedPresetDrawer<T> where T : OrderedGroupAttribute
     {
         /// <summary>
-        /// Collection all grouped properties by single group name.
+        /// Collection of all grouped properties by stored group name.
         /// </summary>
         protected readonly Dictionary<string, List<SerializedProperty>> groupedProperties = new Dictionary<string, List<SerializedProperty>>();
 
 
-        protected OrderedGroupDrawer(List<SerializedProperty> componentProperties)
+        protected OrderedGroupDrawer(List<SerializedProperty> componentProperties) : base(componentProperties)
         {
-            componentProperties.ForEach(property =>
+            targetProperties.ForEach(property =>
             {
                 var attribute = property.GetAttribute<T>();
                 if (attribute == null) return;
@@ -35,6 +35,7 @@ namespace Toolbox.Editor
             });
         }
 
+
         /// <summary>
         /// Begins group of serialized properties.
         /// </summary>
@@ -49,7 +50,7 @@ namespace Toolbox.Editor
         /// <param name="attribute"></param>
         protected virtual void OnDrawGroup(List<SerializedProperty> groupedProperties, T attribute)
         {
-            groupedProperties.ForEach(groupedProperty => base.HandleTargetProperty(groupedProperty, attribute));
+            groupedProperties.ForEach(groupedProperty => base.HandleProperty(groupedProperty, attribute));
         }
 
         /// <summary>
@@ -66,13 +67,13 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <param name="attribute"></param>
-        public override void HandleTargetProperty(SerializedProperty property, T attribute)
+        public override sealed void HandleProperty(SerializedProperty property, T attribute)
         {
             var groupName = attribute.GroupName;
 
             if (groupedProperties.ContainsKey(groupName))
             {
-                if (groupedProperties[groupName].First().name != property.name) return;
+                if (!SerializedProperty.EqualContents(groupedProperties[groupName].First(), property)) return;
 
                 OnBeginGroup(attribute);
                 OnDrawGroup(groupedProperties[groupName], attribute);
@@ -81,7 +82,8 @@ namespace Toolbox.Editor
             }
 
             Debug.LogWarning("Non-cached property or " + typeof(T) + " in " + GetType() + ". Property will be drawn in standard way.");
-            DrawOrderedProperty(property);
+            //DrawOrderedProperty(property);
+            base.HandleProperty(property);
         }
     }
 }

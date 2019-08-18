@@ -14,22 +14,22 @@ namespace Toolbox.Editor
         private bool useOrderedDrawers = true;
 
         [DrawIf("useOrderedDrawers", true)]
-        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedGroupDrawer<>))]
-        private List<SerializedTypeReference> groupHandlers;
+        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedPresetDrawer<>))]
+        private List<SerializedTypeReference> presetHandlers;
         [DrawIf("useOrderedDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedPropertyDrawer<>))]
         private List<SerializedTypeReference> propertyHandlers;
 
 
-        public void AddGroupHandler(SerializedTypeReference attributeHandler)
+        public void AddPresetHandler(SerializedTypeReference attributeHandler)
         {
-            if (groupHandlers == null) groupHandlers = new List<SerializedTypeReference>();
-            groupHandlers.Add(attributeHandler);
+            if (presetHandlers == null) presetHandlers = new List<SerializedTypeReference>();
+            presetHandlers.Add(attributeHandler);
         }
 
-        public void RemoveGroupHandler(SerializedTypeReference attributeHandler)
+        public void RemovePresetHandler(SerializedTypeReference attributeHandler)
         {
-            groupHandlers?.Remove(attributeHandler);
+            presetHandlers?.Remove(attributeHandler);
         }
 
         public void AddPropertyHandler(SerializedTypeReference attributeHandler)
@@ -43,9 +43,9 @@ namespace Toolbox.Editor
             propertyHandlers?.Remove(attributeHandler);
         }
 
-        public SerializedTypeReference GetGroupHandlerAt(int index)
+        public SerializedTypeReference GetPresetHandlerAt(int index)
         {
-            return groupHandlers[index];
+            return presetHandlers[index];
         }
 
         public SerializedTypeReference GetPropertyHandlerAt(int index)
@@ -60,7 +60,7 @@ namespace Toolbox.Editor
             set => useOrderedDrawers = value;
         }
 
-        public int GroupHandlersCount => groupHandlers != null ? groupHandlers.Count : 0;
+        public int PresetHandlersCount => presetHandlers != null ? presetHandlers.Count : 0;
 
         public int PropertyHandlersCount => propertyHandlers != null ? propertyHandlers.Count : 0;
     }

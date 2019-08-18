@@ -21,7 +21,7 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property">Property to draw.</param>
         /// <param name="attribute"></param>
-        public override void HandleTargetProperty(SerializedProperty property, ReorderableListAttribute attribute)
+        public override void HandleProperty(SerializedProperty property, ReorderableListAttribute attribute)
         {
             if (!reorderableLists.ContainsKey(property.name))
             {        
