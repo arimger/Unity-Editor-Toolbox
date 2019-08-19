@@ -7,7 +7,11 @@ using UnityEditor;
 
 namespace Toolbox.Editor
 {
-    public abstract class OrderedPresetDrawer<T> : OrderedDrawerBase where T : OrderedAttribute
+    /// <summary>
+    /// Constructor-based drawer, needs list of <see cref="SerializedProperty"/> objects for data preset.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class OrderedPresetDrawer<T> : OrderedDrawer<T> where T : OrderedAttribute
     {
         /// <summary>
         /// Cached all target properties during preset.
@@ -26,12 +30,23 @@ namespace Toolbox.Editor
 
 
         /// <summary>
+        /// Checks if property was previously cached.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        protected virtual bool IsCached(SerializedProperty property)
+        {
+            return targetProperties.Any(targetProperty => SerializedProperty.EqualContents(targetProperty, property));
+        }
+
+
+        /// <summary>
         /// Tries to draw property only if is currently cached.
         /// </summary>
         /// <param name="property"></param>
         public override void HandleProperty(SerializedProperty property)
         {
-            if (targetProperties.Any(targetProperty => SerializedProperty.EqualContents(targetProperty, property)))
+            if (IsCached(property))
             {
                 HandleProperty(property, property.GetAttribute<T>());
                 return;
@@ -45,7 +60,7 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <param name="attribute"></param>
-        public virtual void HandleProperty(SerializedProperty property, T attribute)
+        public override void HandleProperty(SerializedProperty property, T attribute)
         {
             DrawOrderedProperty(property);
         }

@@ -73,11 +73,14 @@ namespace Toolbox.Editor
 
             if (groupedProperties.ContainsKey(groupName))
             {
-                if (!SerializedProperty.EqualContents(groupedProperties[groupName].First(), property)) return;
+                var firstProperty = groupedProperties[groupName].First();
+                if (SerializedProperty.EqualContents(firstProperty, property))
+                {
+                    OnBeginGroup(attribute);
+                    OnDrawGroup(groupedProperties[groupName], attribute);
+                    OnEndGroup(attribute);
+                }
 
-                OnBeginGroup(attribute);
-                OnDrawGroup(groupedProperties[groupName], attribute);
-                OnEndGroup(attribute);
                 return;
             }
 
