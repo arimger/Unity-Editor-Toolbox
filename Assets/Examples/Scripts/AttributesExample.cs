@@ -56,7 +56,7 @@ public class AttributesExample : MonoBehaviour
     [Group("Custom group"), Indent]
     public string textInGroup;
 
-    [Group("Another group"), AssetPreview(justPreview: true)]
+    [Group("Another group"), AssetPreview(useLabel: false)]
     public GameObject asset;
     [Group("Another group"), AssetPreview]
     public GameObject asset1;
@@ -122,7 +122,6 @@ public class AttributesExample : MonoBehaviour
     {
         Debug.Log("Pressed!");
     }
-
 
 #if UNITY_EDITOR
     private void OnValidate()

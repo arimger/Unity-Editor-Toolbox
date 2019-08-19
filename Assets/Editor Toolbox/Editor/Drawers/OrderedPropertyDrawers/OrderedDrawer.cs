@@ -32,10 +32,7 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <param name="attribute"></param>
-        public virtual void HandleProperty(SerializedProperty property, T attribute)
-        {
-            DrawOrderedProperty(property);
-        }
+        public abstract void HandleProperty(SerializedProperty property, T attribute);
 
 
         /// <summary>

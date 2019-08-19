@@ -41,7 +41,7 @@ namespace Toolbox.Editor
 
             additionalHeight = 0;
 
-            if (!AssetPreviewAttribute.JustPreview)
+            if (AssetPreviewAttribute.UseLabel)
             {
                 EditorGUI.PropertyField(position, property, label, true);
             }

@@ -8,12 +8,12 @@ using UnityEditor;
 
 namespace Toolbox.Editor
 {
-    public class GroupPropertyDrawer : OrderedGroupDrawer<GroupAttribute>
+    public class BoxedGroupDrawer : OrderedGroupDrawer<GroupAttribute>
     {
-        public GroupPropertyDrawer() : base(null)
+        public BoxedGroupDrawer() : base(null)
         { }
 
-        public GroupPropertyDrawer(List<SerializedProperty> componentProperties) : base(componentProperties)
+        public BoxedGroupDrawer(List<SerializedProperty> componentProperties) : base(componentProperties)
         { }
 
 
