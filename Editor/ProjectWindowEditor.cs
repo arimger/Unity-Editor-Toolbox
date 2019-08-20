@@ -6,17 +6,12 @@ namespace Toolbox.Editor
     /// <summary>
     /// Class responsible for folder custom icons drawing.
     /// </summary>
-    [CustomEditor(typeof(DefaultAsset), true, isFallback = false)]
-    public class ProjectWindowEditor : UnityEditor.Editor
+    [InitializeOnLoad]
+    public class ProjectWindowEditor
     {
-        protected virtual void OnEnable()
-        { 
-
-        }
-
-        protected virtual void OnDisable()
+        static ProjectWindowEditor()
         {
-
+            
         }
     }
 }
