@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 245793972}
   m_Layer: 0
   m_Name: Sample GameObject1
-  m_TagString: Untagged
+  m_TagString: Finish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -524,7 +524,7 @@ GameObject:
   - component: {fileID: 1108399858}
   m_Layer: 0
   m_Name: Tools GameObject
-  m_TagString: Untagged
+  m_TagString: EditorOnly
   m_Icon: {fileID: 2800000, guid: 3d0e0a2631bdc5b4a966fbc73129806f, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -575,8 +575,8 @@ GameObject:
   - component: {fileID: 1279230384}
   m_Layer: 0
   m_Name: Sample GameObject2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_TagString: Player
+  m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -599,6 +599,8 @@ MonoBehaviour:
   var4: 0
   toggle: 1
   progressBar: 43
+  serializable:
+    reorderableList: 
 --- !u!4 &1279230385
 Transform:
   m_ObjectHideFlags: 0

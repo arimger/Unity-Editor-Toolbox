@@ -183,7 +183,12 @@ namespace Toolbox.Editor
             return AssetDatabase.LoadAssetAtPath(resourcesPathRelative + "/" + assetName, typeof(T)) as T;
         }
 
-    
+
+        public const string defaultUnityTag = "Untagged";
+
+        public const string defaultIconName = "GameObject Icon";
+
+
         public readonly static string resourcesPath;
 
         public readonly static string resourcesPathRelative;
