@@ -3,7 +3,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox
+namespace Toolbox.Editor
 {
     public static class AssetUtility
     {

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+//TODO: adjust label widths/add additional options;
+
 namespace Toolbox.Editor
 {
     public class HorizontalGroupDrawer : OrderedGroupDrawer<HorizontalGroupAttribute>

@@ -15,6 +15,7 @@ MonoBehaviour:
   useOrderedDrawers: 1
   presetHandlers:
   - classReference: Toolbox.Editor.BoxedGroupDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.HorizontalGroupDrawer, Toolbox-Editor
   propertyHandlers:
   - classReference: Toolbox.Editor.LineDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.SpaceDrawer, Toolbox-Editor

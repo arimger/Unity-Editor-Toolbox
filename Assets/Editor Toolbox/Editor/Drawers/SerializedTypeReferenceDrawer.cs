@@ -217,6 +217,7 @@ namespace Toolbox.Editor
 
         private readonly static OrderedDictionary filteredTypes = new OrderedDictionary();
 
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return EditorStyles.popup.CalcHeight(GUIContent.none, 0);
@@ -274,11 +275,10 @@ namespace Toolbox.Editor
             //drawing reference property
             EditorGUI.BeginProperty(rect, label, refProperty);
             label = property.name != "data" ? label : GUIContent.none;
-            rect = EditorGUI.PrefixLabel(rect, label);
-            index = EditorGUI.Popup(rect, index + 1, refLabels.ToArray());
+            index = EditorGUI.Popup(rect, label.text, index + 1, refLabels.ToArray());
             //getting correct class reference, index = 0 is reserved to <None> type
             refProperty.stringValue = index >= 1 ? SerializedTypeReference.GetClassReference(refTypes[index - 1]) : "";
-            EditorGUI.EndProperty();
+            EditorGUI.EndProperty();        
         }
 
 
