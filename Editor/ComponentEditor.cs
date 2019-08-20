@@ -37,7 +37,7 @@ namespace Toolbox.Editor
 
             if (!settings) return;
 
-            //create all needed group drawer instances and store them in list
+            //create all needed preset drawer instances and store them in list
             for (var i = 0; i < settings.PresetHandlersCount; i++)
             {
                 var type = settings.GetPresetHandlerAt(i).Type;

@@ -25,7 +25,6 @@ namespace Toolbox.Editor.Tools
 
         [Space]
 
-        [SerializeField]
         public Color32 gridColor = new Color32(128, 128, 128, 100);
 
         #endregion
