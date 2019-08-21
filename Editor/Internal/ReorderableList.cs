@@ -203,10 +203,13 @@ namespace Toolbox.Editor.Internal
                 {
                     if (nonDragTargetIndices[i] != -1)
                     {
+                        //update the height of the element
                         elementRect.height = GetElementHeight(i);
                         dragElementRect.height = GetElementHeight(i, false);
 
+                        //update the position of the element
                         elementY = middleRect.y + GetElementYOffset(nonDragTargetIndices[i], Index);
+
                         if (targetSeen)
                         {
                             elementY += GetElementHeight(Index, true);
@@ -253,8 +256,10 @@ namespace Toolbox.Editor.Internal
 
                 //finally get the position of the active element
                 elementY = draggedY - dragOffset + middleRect.y;
-                elementRect.y = elementY;
+                elementRect.y = elementY;        
                 dragElementRect.y = elementY;
+                //adjust rect height to desired element
+                elementRect.height = GetElementHeight(Index);
 
                 //actually draw the element
                 if (drawElementBackgroundCallback != null)
@@ -295,10 +300,11 @@ namespace Toolbox.Editor.Internal
                     var activeElement = (i == Index);
                     var focusedElement = (i == Index && HasKeyboardControl());
 
-                    //update the position of the element
+                    //update the height of the element
                     elementRect.height = GetElementHeight(i);
                     dragElementRect.height = GetElementHeight(i, false);
 
+                    //update the position of the element
                     elementY = middleRect.y + GetElementYOffset(i);
                     elementRect.y = elementY;
                     dragElementRect.y = elementY;
