@@ -7,9 +7,9 @@ namespace Toolbox.Editor
     /// Class responsible for folder custom icons drawing.
     /// </summary>
     [InitializeOnLoad]
-    public class ProjectWindowEditor
+    public class ProjectEditorWindow
     {
-        static ProjectWindowEditor()
+        static ProjectEditorWindow()
         {
             
         }

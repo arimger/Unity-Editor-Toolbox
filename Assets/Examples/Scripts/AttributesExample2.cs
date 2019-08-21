@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-namespace Toolbox.Examples
+namespace Toolbox
 {
     public class AttributesExample2 : MonoBehaviour
     {
@@ -12,6 +12,7 @@ namespace Toolbox.Examples
 
         [Group("Sample Group")]
         public string var1;
+
         [Group("Sample Group"), ReadOnly]
         public string var2 = "Im read only";
 
