@@ -804,7 +804,7 @@ namespace Toolbox.Editor.Internal
             if (draggable)
             {
                 //make sure that dragging handle is in the middle of rect
-                rect.y += (rect.height - Style.handleHeight) / 2;
+                rect.y += (rect.height - Style.handleHeight + Style.spacing) / 2;
                 rect.height = Style.handleHeight;
                 rect.width = Style.handleWidth;
                 rect.x += Style.handleWidth / 2;
