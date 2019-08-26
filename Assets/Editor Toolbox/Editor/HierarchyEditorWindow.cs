@@ -58,16 +58,14 @@ namespace Toolbox.Editor
             contRect = DrawIcon(gameObject, contRect);
 
             //draw vertical separation line
-            EditorGUI.DrawRect(new Rect(contRect.xMin, contRect.y + Style.lineOffset / 2, Style.lineWidth,
-                contRect.height - Style.lineOffset), Style.lineColor);
+            EditorGUI.DrawRect(new Rect(contRect.xMin, contRect.y + Style.lineOffset / 2, Style.lineWidth, contRect.height - Style.lineOffset), Style.lineColor);
             //draw each needed element content stored in callbacks collection
             foreach (var drawCallback in DrawElementCallbacks)
             {
                 contRect =  new Rect(contRect.xMin - Style.maxWidth, rect.y, Style.maxWidth, contRect.height);
                 contRect = drawCallback(gameObject, contRect);
                 //draw vertical separation line
-                EditorGUI.DrawRect(new Rect(contRect.xMin, contRect.y + Style.lineOffset / 2, Style.lineWidth, 
-                    contRect.height - Style.lineOffset), Style.lineColor);
+                EditorGUI.DrawRect(new Rect(contRect.xMin, contRect.y + Style.lineOffset / 2, Style.lineWidth, contRect.height - Style.lineOffset), Style.lineColor);
             }
             //draw horizontal separation line
             EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height, rect.width, Style.lineWidth), Style.lineColor);
@@ -79,10 +77,14 @@ namespace Toolbox.Editor
             var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
             var contentIcon = content.image;
             var contentRect = rect;
-
-            contentRect.x = rect.xMax;
+   
             contentRect.width = Style.iconWidth;
             contentRect.height = Style.iconHeight;
+#if UNITY_2018_1_OR_NEWER
+            contentRect.x = rect.xMax - contentRect.width;
+#else
+            contentRect.x = rect.xMax;
+#endif
 
             if (contentIcon.name != ToolboxEditorUtility.defaultIconName)
             {
@@ -123,21 +125,21 @@ namespace Toolbox.Editor
             /// Custom rect handling fields
             /// 
 
-            internal static float maxWidth = 55.0f;
-            internal static float lineWidth = 1.0f;
-            internal static float lineOffset = 2.0f;
-            internal static float iconWidth = 18.0f;
-            internal static float iconHeight = 18.0f;
-            internal static float layerWidth = 17.5f;
+            internal static readonly float maxWidth = 55.0f;
+            internal static readonly float lineWidth = 1.0f;
+            internal static readonly float lineOffset = 2.0f;
+            internal static readonly float iconWidth = 18.0f;
+            internal static readonly float iconHeight = 18.0f;
+            internal static readonly float layerWidth = 17.5f;
 
-            internal static Color lineColor = Color.grey;
+            internal static readonly Color lineColor = Color.grey;
 
             /// 
             /// Custom label styles
             /// 
 
-            internal static GUIStyle tagLabelStyle;
-            internal static GUIStyle layerLabelStyle;
+            internal static readonly GUIStyle tagLabelStyle;
+            internal static readonly GUIStyle layerLabelStyle;
 
             static Style()
             {
