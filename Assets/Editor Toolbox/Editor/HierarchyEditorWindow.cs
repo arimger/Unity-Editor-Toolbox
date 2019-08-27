@@ -45,7 +45,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws label as whole. Creates separation line, standard icon and additional elements stored in collection.
+        /// Draws label as whole. Creates separation lines, standard icon and additional elements stored in collection.
         /// Iterates over all neeeded draw callbacks and creates elements in horizontal group.
         /// </summary>
         /// <param name="gameObject"></param>
@@ -53,24 +53,30 @@ namespace Toolbox.Editor
         private static void DrawItemLabel(GameObject gameObject, Rect rect)
         {
             var contRect = rect;
+            //draw vertical separation line
+            EditorGUI.DrawRect(new Rect(contRect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
             //draw game object's specific icon
             contRect = new Rect(contRect.xMax - Style.maxWidth, rect.y, Style.maxWidth, contRect.height);
             contRect = DrawIcon(gameObject, contRect);
-
+  
             //draw vertical separation line
-            EditorGUI.DrawRect(new Rect(contRect.xMin, contRect.y + Style.lineOffset / 2, Style.lineWidth, contRect.height - Style.lineOffset), Style.lineColor);
+            EditorGUI.DrawRect(new Rect(contRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
             //draw each needed element content stored in callbacks collection
             foreach (var drawCallback in DrawElementCallbacks)
             {
-                contRect =  new Rect(contRect.xMin - Style.maxWidth, rect.y, Style.maxWidth, contRect.height);
+                contRect =  new Rect(contRect.xMin - Style.maxWidth, rect.y, Style.maxWidth, rect.height);
                 contRect = drawCallback(gameObject, contRect);
                 //draw vertical separation line
-                EditorGUI.DrawRect(new Rect(contRect.xMin, contRect.y + Style.lineOffset / 2, Style.lineWidth, contRect.height - Style.lineOffset), Style.lineColor);
+                EditorGUI.DrawRect(new Rect(contRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
             }
             //draw horizontal separation line
-            EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height, rect.width, Style.lineWidth), Style.lineColor);
+            EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
         }
 
+
+        /// 
+        /// Item drawers implementations
+        /// 
 
         private static Rect DrawIcon(GameObject gameObject, Rect rect)
         {
@@ -79,12 +85,17 @@ namespace Toolbox.Editor
             var contentRect = rect;
    
             contentRect.width = Style.iconWidth;
-            contentRect.height = Style.iconHeight;
+            //contentRect.height = Style.iconHeight;
 #if UNITY_2018_1_OR_NEWER
             contentRect.x = rect.xMax - contentRect.width;
 #else
             contentRect.x = rect.xMax;
 #endif
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                Style.backgroundStyle.Draw(contentRect, false, false, false, false);
+            }
 
             if (contentIcon.name != ToolboxEditorUtility.defaultIconName)
             {
@@ -96,20 +107,30 @@ namespace Toolbox.Editor
 
         private static Rect DrawLayer(GameObject gameObject, Rect rect)
         {
-            rect = new Rect(rect.x + rect.width - Style.layerWidth, rect.y, Style.layerWidth, rect.height);
+            var contentRect = new Rect(rect.x + rect.width - Style.layerWidth, rect.y, Style.layerWidth, rect.height);
 
-            GUI.Label(rect, new GUIContent(gameObject.layer.ToString()), Style.layerLabelStyle);
+            if (Event.current.type == EventType.Repaint)
+            {
+                Style.backgroundStyle.Draw(contentRect, false, false, false, false);
+            }
 
-            return rect;
+            EditorGUI.LabelField(contentRect, new GUIContent(gameObject.layer.ToString()), Style.layerLabelStyle);
+
+            return contentRect;
         }
 
         private static Rect DrawTag(GameObject gameObject, Rect rect)
         {
             var content = new GUIContent(gameObject.tag);
 
+            if (Event.current.type == EventType.Repaint)
+            {
+                Style.backgroundStyle.Draw(rect, false, false, false, false);
+            }
+
             if (content.text != ToolboxEditorUtility.defaultUnityTag)
             {
-                GUI.Label(rect, content, Style.tagLabelStyle);
+                EditorGUI.LabelField(rect, content, Style.tagLabelStyle);
             }
 
             return rect;
@@ -125,14 +146,16 @@ namespace Toolbox.Editor
             /// Custom rect handling fields
             /// 
 
+            internal static readonly float maxHeight = 16.0f;
             internal static readonly float maxWidth = 55.0f;
             internal static readonly float lineWidth = 1.0f;
             internal static readonly float lineOffset = 2.0f;
-            internal static readonly float iconWidth = 18.0f;
-            internal static readonly float iconHeight = 18.0f;
-            internal static readonly float layerWidth = 17.5f;
+            internal static readonly float iconWidth = 17.0f;
+            internal static readonly float iconHeight = 17.0f;
+            internal static readonly float layerWidth = 17.0f;
 
-            internal static readonly Color lineColor = Color.grey;
+            internal static readonly Color lineColor;
+            internal static readonly Color labelColor;
 
             /// 
             /// Custom label styles
@@ -140,9 +163,16 @@ namespace Toolbox.Editor
 
             internal static readonly GUIStyle tagLabelStyle;
             internal static readonly GUIStyle layerLabelStyle;
+            internal static readonly GUIStyle backgroundStyle;
 
             static Style()
             {
+                lineColor = new Color(0.59f, 0.59f, 0.59f);
+                labelColor = EditorGUIUtility.isProSkin
+                    ? new Color(0.22f, 0.22f, 0.22f)        //standard dark skin color
+                    //: new Color(0.76f, 0.76f, 0.76f);     //standard light skin color
+                    : new Color(0.85f, 0.85f, 0.85f);       //hierarchy header background color
+
                 tagLabelStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
                     fontSize = 8                   
@@ -154,6 +184,12 @@ namespace Toolbox.Editor
                     fontSize = 8,
                     alignment = TextAnchor.UpperCenter
                 };
+
+                var backgroundTex = new Texture2D(1, 1);
+                backgroundTex.SetPixel(0, 0, labelColor);
+                backgroundTex.Apply();
+                backgroundStyle = new GUIStyle();
+                backgroundStyle.normal.background = backgroundTex;
             }
         }
     }
