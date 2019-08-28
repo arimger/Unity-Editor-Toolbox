@@ -94,6 +94,7 @@ namespace Toolbox.Editor
 
             if (Event.current.type == EventType.Repaint)
             {
+                //EditorGUI.DrawRect(contentRect, Style.labelColor);
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
 
@@ -111,6 +112,7 @@ namespace Toolbox.Editor
 
             if (Event.current.type == EventType.Repaint)
             {
+                //EditorGUI.DrawRect(contentRect, Style.labelColor);
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
 
@@ -125,6 +127,7 @@ namespace Toolbox.Editor
 
             if (Event.current.type == EventType.Repaint)
             {
+                //EditorGUI.DrawRect(rect, Style.labelColor);
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
 
@@ -170,24 +173,30 @@ namespace Toolbox.Editor
                 lineColor = new Color(0.59f, 0.59f, 0.59f);
                 labelColor = EditorGUIUtility.isProSkin
                     ? new Color(0.22f, 0.22f, 0.22f)        //standard dark skin color
-                    //: new Color(0.76f, 0.76f, 0.76f);     //standard light skin color
                     : new Color(0.85f, 0.85f, 0.85f);       //hierarchy header background color
+                  //: new Color(0.76f, 0.76f, 0.76f);       //standard light skin color
 
+                //set tag label style based on mini label
                 tagLabelStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
                     fontSize = 8                   
                 };
                 tagLabelStyle.normal.textColor = new Color(0.35f, 0.35f, 0.35f);
 
+                //set layer label style based on mini label
                 layerLabelStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
                     fontSize = 8,
                     alignment = TextAnchor.UpperCenter
                 };
 
+                //set proper background texture object
                 var backgroundTex = new Texture2D(1, 1);
                 backgroundTex.SetPixel(0, 0, labelColor);
                 backgroundTex.Apply();
+                backgroundTex.hideFlags = HideFlags.HideAndDontSave;
+
+                //set background style based on custom background texture
                 backgroundStyle = new GUIStyle();
                 backgroundStyle.normal.background = backgroundTex;
             }
