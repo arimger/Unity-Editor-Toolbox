@@ -84,6 +84,7 @@ namespace Toolbox.Examples
         [NotNull]
         public Transform transformRequired;
 
+
 #if UNITY_EDITOR
         private void OnValidate()
         {

@@ -210,7 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06f9e250ee6a1d64cb443b88372eb549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  linedStyleList: 0100000005000000030000000300000003000000
+  linedStyleList: 010000000200000003000000
   standardStyleList:
   - Text1
   - Text2

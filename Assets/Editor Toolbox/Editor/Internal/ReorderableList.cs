@@ -746,25 +746,28 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public void DrawStandardHeader(Rect rect)
         {
-            rect.x += Style.padding * 2;
             rect.y += Style.spacing / 2;
-            //displaying property name
+            //display property name
             EditorGUI.LabelField(rect, List.displayName);
             rect.y += Style.spacing / 2;
-            rect.x -= Style.padding * 2;
-            rect.x -= Style.sizeArea - rect.width;
-            rect.width = Style.sizeArea;
-            //displaying property array size
-            EditorGUI.BeginDisabledGroup(HasFixedSize);
-            EditorGUI.BeginProperty(rect, GUIContent.none, Size);
-            EditorGUI.BeginChangeCheck();
-            var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, Size.intValue, Style.sizeLabel), 0);
-            if (EditorGUI.EndChangeCheck())
-            {
-                Size.intValue = sizeValue;
+            //adjust width and OX position for size property
+            rect = new Rect(rect.xMax - Style.sizeArea, rect.y, Style.sizeArea, rect.height);
+
+            //display property array size without indentation
+            using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
+            {        
+                EditorGUI.BeginDisabledGroup(HasFixedSize);
+                EditorGUI.BeginProperty(rect, GUIContent.none, Size);
+                EditorGUI.BeginChangeCheck();
+                //cache delayed size value using delayed int field
+                var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, Size.intValue, Style.sizeLabel), 0);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Size.intValue = sizeValue;
+                }
+                EditorGUI.EndProperty();
+                EditorGUI.EndDisabledGroup();
             }
-            EditorGUI.EndProperty();
-            EditorGUI.EndDisabledGroup();
         }
 
         /// <summary>
