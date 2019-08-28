@@ -173,7 +173,7 @@ namespace Toolbox.Editor
                 lineColor = new Color(0.59f, 0.59f, 0.59f);
                 labelColor = EditorGUIUtility.isProSkin
                     ? new Color(0.22f, 0.22f, 0.22f)        //standard dark skin color
-                    : new Color(0.85f, 0.85f, 0.85f);       //hierarchy header background color
+                    : new Color(0.855f, 0.855f, 0.855f);    //hierarchy header background color
                   //: new Color(0.76f, 0.76f, 0.76f);       //standard light skin color
 
                 //set tag label style based on mini label
