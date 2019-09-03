@@ -16,7 +16,7 @@ namespace Toolbox.Editor.Tools
     /// Editor for <see cref="TerrainTool"/> component. Provides tools to manipulate game environment.
     /// </summary>
     [CustomEditor(typeof(TerrainTool), true, isFallback = false)]
-    public class TerrainEditorWindow : ComponentToolEditor
+    public class TerrainToolEditor : ToolEditor
     {
         private bool settingsToggle = true;
         private bool isPaintingTrees;
@@ -217,6 +217,7 @@ namespace Toolbox.Editor.Tools
             EditorGUILayout.EndVertical();
         }
 
+        #region Creation methods
 
         private void PlaceObjectsInBrush(Vector3 center, float gridSize, float radius, float density, params GameObject[] objects)
         {
@@ -271,6 +272,8 @@ namespace Toolbox.Editor.Tools
                 }
             }
         }
+
+        #endregion
 
 
         /// <summary>

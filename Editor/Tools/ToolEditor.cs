@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using UnityTools = UnityEditor.Tools;
 
 //TODO:
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Tools
 {
-    public abstract class ComponentToolEditor : ComponentEditor
+    public abstract class ToolEditor : ComponentEditor
     {
         protected override void OnEnable()
         {

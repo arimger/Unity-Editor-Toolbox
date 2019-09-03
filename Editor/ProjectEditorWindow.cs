@@ -7,11 +7,16 @@ namespace Toolbox.Editor
     /// Class responsible for folder custom icons drawing.
     /// </summary>
     [InitializeOnLoad]
-    public class ProjectEditorWindow
+    public static class ProjectEditorWindow
     {
         static ProjectEditorWindow()
         {
-            
+            EditorApplication.projectWindowItemOnGUI += OnItemCallback;
+        }
+
+        private static void OnItemCallback(string guid, Rect rect)
+        {
+            //EditorGUI.DrawRect(rect, Color.black);
         }
     }
 }

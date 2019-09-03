@@ -680,14 +680,14 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public void DrawStandardFooter(Rect rect)
         {
-            //setting button area rect
+            //set button area rect
             rect = new Rect(rect.xMax - Style.buttonArea, rect.y, Style.buttonArea, rect.height);
-            //setting rect properties from style
+            //set rect properties from style
             var width = Style.buttonWidth;
             var height = Style.buttonHeight;
             var margin = Style.buttonMargin;
             var padding = Style.buttonPadding;
-            //setting proper rect for each buttons
+            //set proper rect for each buttons
             var addRect = new Rect(rect.xMin + margin, rect.y - padding, width, height);
             var removeRect = new Rect(rect.xMax - width - margin, rect.y - padding, width, height);
 
@@ -734,10 +734,9 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public void DrawStandardFooterBackground(Rect rect)
         {
-            rect = new Rect(rect.xMax - Style.buttonArea, rect.y, Style.buttonArea, rect.height);
             if (Event.current.type == EventType.Repaint)
             {
-                Style.footerBackground.Draw(rect, false, false, false, false);
+                Style.footerBackground.Draw(new Rect(rect.xMax - Style.buttonArea, rect.y, Style.buttonArea, rect.height), false, false, false, false);
             }
         }
 
@@ -753,7 +752,7 @@ namespace Toolbox.Editor.Internal
             //adjust width and OX position for size property
             rect = new Rect(rect.xMax - Style.sizeArea, rect.y, Style.sizeArea, rect.height);
 
-            //display property array size without indentation
+            //display array size property without indentation
             using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
             {        
                 EditorGUI.BeginDisabledGroup(HasFixedSize);

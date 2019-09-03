@@ -46,7 +46,7 @@ namespace Toolbox.Editor
 
         /// <summary>
         /// Draws label as whole. Creates separation lines, standard icon and additional elements stored in collection.
-        /// Iterates over all neeeded draw callbacks and creates elements in horizontal group.
+        /// Iterates over all needed draw callbacks and creates elements in horizontal group.
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="rect"></param>
@@ -94,7 +94,6 @@ namespace Toolbox.Editor
 
             if (Event.current.type == EventType.Repaint)
             {
-                //EditorGUI.DrawRect(contentRect, Style.labelColor);
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
 
@@ -112,7 +111,6 @@ namespace Toolbox.Editor
 
             if (Event.current.type == EventType.Repaint)
             {
-                //EditorGUI.DrawRect(contentRect, Style.labelColor);
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
 
@@ -127,7 +125,6 @@ namespace Toolbox.Editor
 
             if (Event.current.type == EventType.Repaint)
             {
-                //EditorGUI.DrawRect(rect, Style.labelColor);
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
 

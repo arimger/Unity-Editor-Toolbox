@@ -198,6 +198,9 @@ namespace Toolbox.Editor
         public readonly static Color standardBackgroundColor = new Color(0.82f, 0.82f, 0.82f);
 
 
+        /// <summary>
+        /// Custom style representation.
+        /// </summary>
         internal static class Style
         {
             internal static readonly float height = EditorGUIUtility.singleLineHeight;
