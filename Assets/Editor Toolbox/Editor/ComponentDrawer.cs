@@ -4,6 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor
 {
     //[CustomPropertyDrawer(typeof(Toolbox.))]
+    [System.Obsolete]
     public class ComponentDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)

@@ -42,14 +42,5 @@ namespace Toolbox.Editor
             }
             serializedObject.ApplyModifiedProperties();
         }
-
-
-        internal static class Style
-        {
-            static Style()
-            {
-
-            }
-        }
     }
 }

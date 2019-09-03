@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor
 {
     [InitializeOnLoad]
-    public class GameObjectEditorWindow
+    public static class GameObjectEditorWindow
     {
 
     }
