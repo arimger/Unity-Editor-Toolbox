@@ -6,6 +6,9 @@ TODO
 ## System Requirements
 Unity 2018.x or newer
 
+## Instalation
+Copy and paste `Editor Toolbox` directory into your project (basically into `Asset` directory or somewhere deeper). 
+
 ## Table Of Contents
 
 - [Attributes](#attributes)
@@ -16,8 +19,14 @@ Unity 2018.x or newer
 
 ### Standard Property Drawers
 
-Editor Toolbox/Scripts/Attributes/\
-Editor Toolbox/Editor/Drawers/
+Drawers based on build-in classes **PropertyDrawer** and associated **PropertyAttribute**.
+
+&nbsp;
+
+> Editor Toolbox/Scripts/Attributes/\
+> Editor Toolbox/Editor/Drawers/
+
+&nbsp;
 
 #### HelpAttribute
 
@@ -106,8 +115,16 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2;
 
 ### Ordered Property Drawers
 
-Editor Toolbox/Scripts/Attributes/OrderedAttributes\
-Editor Toolbox/Editor/Drawers/OrderedDrawers
+Drawers based on classes **OrderedDrawer** and associated **OrderedAttribute**.  
+For proper work they need at least one settings file located in your project.  
+Predefined one - `Editor Toolbox/EditorSettings.asset`.
+
+&nbsp;
+
+> Editor Toolbox/Scripts/Attributes/OrderedAttributes\
+> Editor Toolbox/Editor/Drawers/OrderedDrawers
+
+&nbsp;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc5.png)
 
@@ -172,12 +189,12 @@ public GameObject[] boxedStyleList = new GameObject[4];
 ## Tools and Editors
 
 ### Terrain Editor
-Editor Toolbox/Editor/Tools/TerrainToolEditor.cs\
+Editor Toolbox/Editor/Tools/TerrainToolEditor.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc1.png)
 
 ### Hierarchy Editor
-Editor Toolbox/Editor/HierarchyEditorWindow.cs\
+Editor Toolbox/Editor/HierarchyEditorWindow.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc2.png)
 
@@ -188,11 +205,11 @@ TODO
 
 
 ### Field of View Generator
-Editor Toolbox/Editor/Tools/AssetGenerators/ViewGenerator.cs\
+Editor Toolbox/Editor/Tools/AssetGenerators/ViewGenerator.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc3.png)
 
 ### Grid Generator
-Editor Toolbox/Editor/Tools/AssetGenerators/GridGenerator.cs\
+Editor Toolbox/Editor/Tools/AssetGenerators/GridGenerator.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc4.png)
