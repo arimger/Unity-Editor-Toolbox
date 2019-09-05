@@ -192,6 +192,7 @@ public GameObject[] boxedStyleList = new GameObject[4];
 Editor Toolbox/Editor/Tools/TerrainToolEditor.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc9.png)
 
 ### Hierarchy Editor
 Editor Toolbox/Editor/HierarchyEditorWindow.cs
