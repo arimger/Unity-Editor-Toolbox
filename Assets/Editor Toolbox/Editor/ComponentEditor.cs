@@ -15,17 +15,21 @@ namespace Toolbox.Editor
     /// Base editor class.
     /// </summary>
     [CanEditMultipleObjects, CustomEditor(typeof(Object), true, isFallback = true)]
+    [InitializeOnLoad]
     public class ComponentEditor : UnityEditor.Editor
     {
         private static ComponentEditorSettings settings;
 
 
         /// <summary>
-        /// Initializes <see cref="OrderedDrawerBase"/>s using EditorSettings asset.
+        /// Initializes all needed <see cref="OrderedDrawer{T}"/>s using EditorSettings asset.
         /// </summary>
-        private void InitializeDrawers()
+        private void InitializeEditor()
         {
-            //find settings asset in whole asset database
+            //NOTE: cannot search for assets in static constructor since this is ScriptableObject class,
+            //in future releases ComponentEditorUtility will take care over settings initialization;
+
+            //find settings asset in whole asset database if needed
             if (settings == null)
             {
                 var guids = AssetDatabase.FindAssets("t:ComponentEditorSettings");
@@ -38,16 +42,16 @@ namespace Toolbox.Editor
             if (!settings) return;
 
             //create all needed preset drawer instances and store them in list
-            for (var i = 0; i < settings.PresetHandlersCount; i++)
+            for (var i = 0; i < settings.PresetDrawersCount; i++)
             {
-                var type = settings.GetPresetHandlerAt(i).Type;
+                var type = settings.GetPresetDrawerTypeAt(i);
                 if (type == null) continue;
                 drawers.Add(Activator.CreateInstance(type, properties) as OrderedDrawerBase);
             }
             //create all needed property drawer instances and store them in list
-            for (var i = 0; i < settings.PropertyHandlersCount; i++)
+            for (var i = 0; i < settings.PropertyDrawersCount; i++)
             {
-                var type = settings.GetPropertyHandlerAt(i).Type;
+                var type = settings.GetPropertyDrawerTypeAt(i);
                 if (type == null) continue;
                 drawers.Add(Activator.CreateInstance(type) as OrderedDrawerBase);
             }
@@ -79,7 +83,7 @@ namespace Toolbox.Editor
                 .ToList()
                 .ForEach(f => properties.Add(serializedObject.FindProperty(f.Name)));
 
-            InitializeDrawers();
+            InitializeEditor();
         }
 
         /// <summary>

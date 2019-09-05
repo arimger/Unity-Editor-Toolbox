@@ -43,14 +43,14 @@ namespace Toolbox.Editor
             propertyHandlers?.Remove(attributeHandler);
         }
 
-        public SerializedTypeReference GetPresetHandlerAt(int index)
+        public Type GetPresetDrawerTypeAt(int index)
         {
-            return presetHandlers[index];
+            return presetHandlers[index].Type;
         }
 
-        public SerializedTypeReference GetPropertyHandlerAt(int index)
+        public Type GetPropertyDrawerTypeAt(int index)
         {
-            return propertyHandlers[index];
+            return propertyHandlers[index].Type;
         }
 
 
@@ -60,8 +60,8 @@ namespace Toolbox.Editor
             set => useOrderedDrawers = value;
         }
 
-        public int PresetHandlersCount => presetHandlers != null ? presetHandlers.Count : 0;
+        public int PresetDrawersCount => presetHandlers != null ? presetHandlers.Count : 0;
 
-        public int PropertyHandlersCount => propertyHandlers != null ? propertyHandlers.Count : 0;
+        public int PropertyDrawersCount => propertyHandlers != null ? propertyHandlers.Count : 0;
     }
 }
