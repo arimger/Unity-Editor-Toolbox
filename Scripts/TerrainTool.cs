@@ -18,41 +18,23 @@ namespace Toolbox
         private GameObject terrain;
 
         [SerializeField, AssetPreview]
-        private List<GameObject> treePrefabs;
-        [SerializeField, AssetPreview]
-        private List<GameObject> bushPrefabs;
+        private List<GameObject> brushPrefabs;
 
 
-        public void AddTreePrefab(GameObject prefab)
+        public void AddBrushPrefab(GameObject prefab)
         {
-            if (treePrefabs == null) treePrefabs = new List<GameObject>();
-            treePrefabs.Add(prefab);
+            if (brushPrefabs == null) brushPrefabs = new List<GameObject>();
+            brushPrefabs.Add(prefab);
         }
 
-        public void RemoveTreePrefab(GameObject prefab)
+        public void RemoveBrushPrefab(GameObject prefab)
         {
-            treePrefabs?.Remove(prefab);
+            brushPrefabs?.Remove(prefab);
         }
 
-        public void AddBushPrefab(GameObject prefab)
+        public void MassPlacePrefabs(int count)
         {
-            if (bushPrefabs == null) bushPrefabs = new List<GameObject>();
-            bushPrefabs.Add(prefab);
-        }
-
-        public void RemoveBushPrefab(GameObject prefab)
-        {
-            bushPrefabs?.Remove(prefab);
-        }
-
-        public void MassPlaceTrees(int count)
-        {
-            MassPlace(count, treePrefabs.ToArray());
-        }
-
-        public void MassPlaceBushes(int count)
-        {
-            MassPlace(count, bushPrefabs.ToArray());
+            MassPlace(count, brushPrefabs.ToArray());
         }
 
         public void MassPlace(int count, params GameObject[] objects)
@@ -60,14 +42,9 @@ namespace Toolbox
             throw new NotImplementedException();
         }
 
-        public void PlaceTrees(Vector3 center, float gridSize, float radius, float density, LayerMask layer)
+        public void PlacePrefabs(Vector3 center, float gridSize, float radius, float density, LayerMask layer)
         {
-            PlaceObjects(center, gridSize, radius, density, layer, treePrefabs.ToArray());
-        }
-
-        public void PlaceBushes(Vector3 center, float gridSize, float radius, float density, LayerMask layer)
-        {
-            PlaceObjects(center, gridSize, radius, density, layer, bushPrefabs.ToArray());
+            PlaceObjects(center, gridSize, radius, density, layer, brushPrefabs.ToArray());
         }
 
         public void PlaceObjects(Vector3 center, float gridSize, float radius, float density, LayerMask layer, params GameObject[] objects)
@@ -127,12 +104,7 @@ namespace Toolbox
 
         public GameObject[] Trees
         {
-            get => treePrefabs.ToArray();
-        }
-
-        public GameObject[] Bushes
-        {
-            get => bushPrefabs.ToArray();
+            get => brushPrefabs.ToArray();
         }
     }
 }

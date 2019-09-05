@@ -8,6 +8,8 @@ using Random = UnityEngine.Random;
 using UnityEditor;
 using UnityTools = UnityEditor.Tools;
 
+//TODO: brush color in options; environment tool;
+
 namespace Toolbox.Editor.Tools
 {
     using Toolbox.Editor.Internal;
@@ -18,17 +20,9 @@ namespace Toolbox.Editor.Tools
     [CustomEditor(typeof(TerrainTool), true, isFallback = false)]
     public class TerrainToolEditor : ToolEditor
     {
-        private bool settingsToggle = true;
-        private bool isPaintingTrees;
-        private bool isPaintingBushes;
-
-        /// <summary>
-        /// If any provided tool is currently active returns true.
-        /// </summary>
-        private bool IsAnyToolSelected
-        {
-            get => isPaintingTrees || isPaintingBushes;
-        }
+        private static bool settingsSectionToggle = true;
+        private static bool paintingToolToggle;
+        private static bool paintingSectionToggle = true;
 
         private float gridSize = 1.0f;
         private float brushRadius = 8.0f;
@@ -36,16 +30,11 @@ namespace Toolbox.Editor.Tools
 
         private Color brushColor = new Color(0, 0, 0, 0.4f);
 
-        private EditorPaintToolSection treeSection;
-        private EditorPaintToolSection bushSection;
-
         private SerializedProperty layerProperty;
         private SerializedProperty terrainProperty;
-        private SerializedProperty treePrefabsProperty;
-        private SerializedProperty bushPrefabsProperty;
+        private SerializedProperty brushPrefabsProperty;
 
-        private ReorderableList treePrefabsList;
-        private ReorderableList bushPrefabsList;
+        private ReorderableList brushPrefabsList;
 
 
         /// <summary>
@@ -53,6 +42,9 @@ namespace Toolbox.Editor.Tools
         /// </summary>
         protected override void OnEnable()
         {
+            settingsSectionToggle = EditorPrefs.GetBool("TerrainEditor.settingsSectionToggle", true);
+            paintingSectionToggle = EditorPrefs.GetBool("TerrainEditor.paintingSectionToggle", true);
+
             gridSize = EditorPrefs.GetFloat("TerrainEditor.gridSize", 1.0f);
             brushRadius = EditorPrefs.GetFloat("TerrainEditor.brushRadius", 8.0f);
             brushDensity = EditorPrefs.GetFloat("TerrainEditor.brushDensity", 50.0f);
@@ -61,17 +53,12 @@ namespace Toolbox.Editor.Tools
 
             layerProperty = serializedObject.FindProperty("terrainLayer");
             terrainProperty = serializedObject.FindProperty("terrain");
-            treePrefabsProperty = serializedObject.FindProperty("treePrefabs");
-            bushPrefabsProperty = serializedObject.FindProperty("bushPrefabs");
+            brushPrefabsProperty = serializedObject.FindProperty("brushPrefabs");
 
-            treePrefabsList = ToolboxEditorUtility.CreateLinedList(treePrefabsProperty, "Item");
-            bushPrefabsList = ToolboxEditorUtility.CreateLinedList(bushPrefabsProperty, "Item");
+            brushPrefabsList = ToolboxEditorUtility.CreateLinedList(brushPrefabsProperty, "Item");
 
             var treeIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Tree Icon.png");
-            var bushIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Bush Icon.png"); 
-
-            treeSection = new EditorPaintToolSection("Tree", treeIcon, treePrefabsList);
-            bushSection = new EditorPaintToolSection("Bush", bushIcon, bushPrefabsList);
+            var bushIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Bush Icon.png");
         }
 
         /// <summary>
@@ -79,7 +66,12 @@ namespace Toolbox.Editor.Tools
         /// </summary>
         protected override void OnDisable()
         {
+            paintingToolToggle = false;
+
             base.OnDisable();
+
+            EditorPrefs.SetBool("TerrainEditor.settingsSectionToggle", settingsSectionToggle);
+            EditorPrefs.SetBool("TerrainEditor.paintingSectionToggle", paintingSectionToggle);
 
             EditorPrefs.SetFloat("TerrainEditor.gridSize", gridSize);
             EditorPrefs.SetFloat("TerrainEditor.brushRadius", brushRadius);
@@ -91,7 +83,7 @@ namespace Toolbox.Editor.Tools
         /// </summary>
         protected virtual void OnSceneGUI()
         {
-            if (!IsAnyToolSelected)
+            if (!paintingToolToggle)
             {
                 return;
             }
@@ -115,19 +107,13 @@ namespace Toolbox.Editor.Tools
                 {
                     if (Event.current.button == 0)
                     {
-                        if (isPaintingTrees)
+                        if (paintingToolToggle)
                         {
-                            PlaceObjectsInBrush(hit.point, gridSize, brushRadius, brushDensity, 
-                                Target.TerrainLayer, Target.Terrain.transform, Target.Trees);
-                        }
-                        if (isPaintingBushes)
-                        {
-                            PlaceObjectsInBrush(hit.point, gridSize, brushRadius, brushDensity, 
-                                Target.TerrainLayer, Target.Terrain.transform, Target.Bushes);
+                            PlaceObjectsInBrush(hit.point, gridSize, brushRadius, brushDensity, Target.TerrainLayer, Target.Terrain.transform, Target.Trees);
                         }
                         GUIUtility.hotControl = controlId;
                         Event.current.Use();
-                    } 
+                    }
                 }
             }
 
@@ -143,7 +129,7 @@ namespace Toolbox.Editor.Tools
 
             serializedObject.Update();
             DrawButtonsStrip();
-            DrawToolSections();
+            DrawToolSection();
             DrawSettingsSection();
             serializedObject.ApplyModifiedProperties();
         }
@@ -158,30 +144,65 @@ namespace Toolbox.Editor.Tools
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             //setting functional toggle group
-            isPaintingTrees = GUILayout.Toggle(isPaintingTrees, Style.treeToggleContent, GUI.skin.button, Style.toggleOptions);
-            isPaintingBushes = GUILayout.Toggle(isPaintingBushes, Style.bushToggleContent, GUI.skin.button, Style.toggleOptions);
+            paintingToolToggle = GUILayout.Toggle(paintingToolToggle, Style.brushToggleContent, Style.toolToggleStyle, Style.toggleOptions);
             //TODO: environment tool;
-            GUILayout.Toggle(false, "", GUI.skin.button, Style.toggleOptions);
+            GUILayout.Toggle(false, Style.terrainToggleContent, Style.toolToggleStyle, Style.toggleOptions);
+            GUILayout.Toggle(false, Style.noneToggleContent, Style.toolToggleStyle, Style.toggleOptions);
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.Space(10);
 
-            if (IsAnyToolSelected)
-            {
-                EditorGUILayout.HelpBox("Tool active \n\n" +
-                                        "Navigate mouse to desired terrain and press left button to create objects \n\n" +
-                                        "Ctrl+Z - Undo", MessageType.Info);
-            }
+            if (!paintingToolToggle) return;
+
+            EditorGUILayout.HelpBox("Tool active \n\n" +
+                                    "Navigate mouse to desired terrain and press left button to create objects \n\n" +
+                                    "Ctrl+Z - Undo", MessageType.Info);
         }
 
         /// <summary>
-        /// Draws all tool sections using previously creates <see cref="EditorPaintToolSection"/> objects.
+        /// Draws tool section(options) based on <see cref="ReorderableList"/> of prefabs.
         /// </summary>
-        private void DrawToolSections()
+        private void DrawToolSection()
         {
-            if (isPaintingTrees) treeSection.DoLayout();
-            if (isPaintingBushes) bushSection.DoLayout();
+            if (!paintingToolToggle) return;
+
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.BeginHorizontal();
+            if (Style.brushIcon)
+            {
+                GUILayout.Label(Style.brushIcon, Style.smallIconStyle, Style.smallIconOptions);
+                GUILayout.Space(10);
+            }
+            paintingSectionToggle = EditorGUILayout.Foldout(paintingSectionToggle, "Brush Options", Style.headerToggleStyle);
+            GUILayout.EndHorizontal();
+
+            if (paintingSectionToggle)
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.Space();
+                EditorGUILayout.Space();
+
+                brushPrefabsList.DoLayoutList();
+
+                EditorGUILayout.Space();
+                EditorGUILayout.Space();
+
+                GUILayout.BeginHorizontal(GUI.skin.box);
+                GUILayout.Button("Reset", EditorStyles.miniButtonLeft, GUILayout.MaxWidth(50));
+                if (GUILayout.Button("Mass Place", EditorStyles.miniButtonRight, GUILayout.MaxWidth(100)))
+                {
+                    if (MassPlace(0))
+                    {
+                        Debug.LogWarning("Not implemented yet.");
+                    }
+                }
+                EditorGUILayout.IntField(0, GUILayout.MaxWidth(30));
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+            }
+
+            GUILayout.EndVertical();
         }
 
         /// <summary>
@@ -200,10 +221,10 @@ namespace Toolbox.Editor.Tools
 
             GUILayout.Space(10);
 
-            settingsToggle = EditorGUILayout.Foldout(settingsToggle, "Settings", Style.headerToggleStyle);
+            settingsSectionToggle = EditorGUILayout.Foldout(settingsSectionToggle, "Settings", Style.headerToggleStyle);
             GUILayout.EndHorizontal();
             //all settings fields
-            if (settingsToggle)
+            if (settingsSectionToggle)
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.PropertyField(terrainProperty, terrainProperty.isExpanded);
@@ -214,6 +235,7 @@ namespace Toolbox.Editor.Tools
                 brushRadius = EditorGUILayout.Slider("Brush Size", brushRadius, 0, 100);
                 brushDensity = EditorGUILayout.Slider("Density", brushDensity, 0, 1);
             }
+
             EditorGUILayout.EndVertical();
         }
 
@@ -282,79 +304,6 @@ namespace Toolbox.Editor.Tools
         public new TerrainTool Target => target as TerrainTool;
 
 
-        /// <summary>
-        /// Wrapper class which allows to draw custom tool section.
-        /// </summary>
-        public class EditorPaintToolSection
-        {
-            private readonly ReorderableList prefabsList;
-
-
-            public EditorPaintToolSection(string toolName, Texture tooIcon, SerializedProperty prefabs)
-                : this(toolName, tooIcon, ToolboxEditorUtility.CreateRoundList(prefabs)) { }
-
-            public EditorPaintToolSection(string toolName, Texture toolIcon, ReorderableList prefabsList)
-            {
-                IsOn = true;
-
-                ToolName = toolName;
-                ToolIcon = toolIcon;
-
-                this.prefabsList = prefabsList;
-            }
-
-
-            /// <summary>
-            /// Draw tool section using <see cref="GUILayout"/> classes.
-            /// </summary>
-            public void DoLayout()
-            {
-                GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.BeginHorizontal();
-                if (ToolIcon)
-                {
-                    GUILayout.Label(ToolIcon, Style.smallIconStyle, Style.smallIconOptions);
-                    GUILayout.Space(10);
-                }
-                IsOn = EditorGUILayout.Foldout(IsOn, ToolName + " Options", Style.headerToggleStyle);
-                GUILayout.EndHorizontal();
-
-                if (IsOn)
-                {
-                    EditorGUILayout.Space();
-                    EditorGUILayout.Space();
-                    EditorGUILayout.Space(); 
-                    
-                    prefabsList.DoLayoutList();
-
-                    EditorGUILayout.Space();
-                    EditorGUILayout.Space();
-
-                    GUILayout.BeginHorizontal(GUI.skin.box);
-                    GUILayout.Button("Reset", EditorStyles.miniButtonLeft, GUILayout.MaxWidth(50));
-                    if (GUILayout.Button("Mass Place", EditorStyles.miniButtonRight, GUILayout.MaxWidth(100)))
-                    {
-                        if (MassPlace(0))
-                        {
-                            Debug.LogWarning("Not implemented yet.");
-                        }
-                    }
-                    EditorGUILayout.IntField(0, GUILayout.MaxWidth(30));
-                    GUILayout.FlexibleSpace();
-                    GUILayout.EndHorizontal();
-                }
-                GUILayout.EndVertical();
-            }
-
-
-            public bool IsOn { get; private set; }
-
-            public string ToolName { get; set; }
-
-            public Texture ToolIcon { get; set; }
-        }
-  
-
         #region Dialogs
 
         public static bool MassPlace(int count)
@@ -364,6 +313,7 @@ namespace Toolbox.Editor.Tools
 
         #endregion
 
+
         /// <summary>
         /// Internal styling class.
         /// </summary>
@@ -372,14 +322,19 @@ namespace Toolbox.Editor.Tools
             internal static Color brushColor;
 
             internal static Texture treeIcon;
-            internal static Texture bushIcon;
+            internal static Texture noneIcon;
+            internal static Texture brushIcon;
+            internal static Texture terrainIcon;
             internal static Texture settingsIcon;
 
             internal static GUIStyle smallIconStyle;
+            internal static GUIStyle toolToggleStyle;
             internal static GUIStyle headerToggleStyle;
 
             internal static GUIContent treeToggleContent;
-            internal static GUIContent bushToggleContent;
+            internal static GUIContent noneToggleContent;
+            internal static GUIContent brushToggleContent;
+            internal static GUIContent terrainToggleContent;
 
             internal static GUILayoutOption[] toggleOptions;
             internal static GUILayoutOption[] smallIconOptions;
@@ -389,20 +344,28 @@ namespace Toolbox.Editor.Tools
                 brushColor = new Color(0, 0, 0, 0.4f);
 
                 treeIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Tree Icon.png");
-                bushIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Bush Icon.png");
+                noneIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor None Icon.png");
+                brushIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Brush Icon.png");
+                terrainIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Terrain Icon.png");
                 settingsIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Settings Icon.png");
 
                 smallIconStyle = new GUIStyle()
                 {
                     alignment = TextAnchor.MiddleCenter
                 };
+                toolToggleStyle = new GUIStyle(GUI.skin.button);
+                {
+
+                };
                 headerToggleStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontStyle = FontStyle.Bold
                 };
 
-                treeToggleContent = new GUIContent(treeIcon, "Paint trees.");
-                bushToggleContent = new GUIContent(bushIcon, "Paint bushes.");
+                treeToggleContent = new GUIContent(treeIcon, "");
+                noneToggleContent = new GUIContent(noneIcon, "Not implemented");
+                brushToggleContent = new GUIContent(brushIcon, "Activate tool");
+                terrainToggleContent = new GUIContent(terrainIcon, "Not implemented");
 
                 toggleOptions = new GUILayoutOption[]
                 {
