@@ -41,6 +41,31 @@ namespace Toolbox.Editor
                 propertyHandlersList.DoLayoutList();
             }
             serializedObject.ApplyModifiedProperties();
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            if (GUILayout.Button(Style.buttonContent, Style.buttonOptions))
+            {
+                ComponentEditorUtility.ReimportEditor();
+            }
+        }
+
+
+        internal static class Style
+        {
+            internal static GUIContent buttonContent;
+
+            internal static GUILayoutOption[] buttonOptions;
+
+            static Style()
+            {
+                buttonContent = new GUIContent("Apply", "Apply all changes");
+
+                buttonOptions = new GUILayoutOption[]
+                {
+                    GUILayout.Width(80)
+                };
+            }
         }
     }
 }
