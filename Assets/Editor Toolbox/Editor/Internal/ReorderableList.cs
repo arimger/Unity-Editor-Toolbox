@@ -347,6 +347,8 @@ namespace Toolbox.Editor.Internal
 
         private void DoListHeader(Rect headerRect)
         {
+            if (!HasHeader) return;
+
             //draw the background on repaint
             if (Event.current.type == EventType.Repaint)
             {
@@ -371,7 +373,7 @@ namespace Toolbox.Editor.Internal
             {
                 drawHeaderCallback(headerRect);
             }
-            else if (HasHeader)
+            else
             {
                 DrawStandardHeader(headerRect);
             }

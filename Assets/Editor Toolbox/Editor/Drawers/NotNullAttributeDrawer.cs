@@ -45,9 +45,11 @@ namespace Toolbox.Editor
             {
                 var helpBoxRect = new Rect(position.x, position.y, position.width, Style.height);
                 EditorGUI.HelpBox(helpBoxRect, NotNullAttribute.Label, MessageType.Error);
-                additionalHeight = Style.height + Style.spacing;
+                //set additional height as help box height + 2x spacing between properties
+                additionalHeight = Style.height + Style.spacing * 2;
                 position.height -= additionalHeight;
-                position.y += additionalHeight + Style.spacing;          
+                //adjust OY position for target property
+                position.y += additionalHeight;          
             }
 
             EditorGUI.PropertyField(position, property, label, property.isExpanded);

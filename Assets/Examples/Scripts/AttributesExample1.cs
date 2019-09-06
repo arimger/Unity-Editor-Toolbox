@@ -23,6 +23,7 @@ namespace Toolbox.Examples
         [Group("Custom group"), Indent]
         public string textInGroup;
 
+        [Help("How needs label?")]
         [Group("Another group"), AssetPreview(useLabel: false)]
         public GameObject asset;
         [Group("Another group"), AssetPreview]
@@ -83,6 +84,9 @@ namespace Toolbox.Examples
 
         [NotNull]
         public Transform transformRequired;
+
+        [Random(-10, 10)]
+        public int var1;
 
 
 #if UNITY_EDITOR
