@@ -28,15 +28,5 @@ namespace Toolbox
 
         [DrawIf("toggle", true), ProgressBar]
         public float progressBar = 43;
-
-        public NestedClass serializable;
-
-
-        [System.Serializable]
-        public class NestedClass
-        {
-            [ReorderableList(ListStyle.Boxed)]
-            public List<int> reorderableList;
-        }
     }
 }

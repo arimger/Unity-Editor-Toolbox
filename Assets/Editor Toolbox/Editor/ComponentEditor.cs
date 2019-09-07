@@ -15,7 +15,6 @@ namespace Toolbox.Editor
     /// Base editor class.
     /// </summary>
     [CanEditMultipleObjects, CustomEditor(typeof(Object), true, isFallback = true)]
-    [InitializeOnLoad]
     public class ComponentEditor : UnityEditor.Editor
     {
         private static ComponentEditorSettings settings;

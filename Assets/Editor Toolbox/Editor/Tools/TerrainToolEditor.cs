@@ -241,17 +241,17 @@ namespace Toolbox.Editor.Tools
 
         #region Creation methods
 
-        private void PlaceObjectsInBrush(Vector3 center, float gridSize, float radius, float density, params GameObject[] objects)
+        private void PlaceObjectsInBrush(Vector3 center, float gridSize, float radius, float density, params BrushPrefab[] objects)
         {
             PlaceObjectsInBrush(center, gridSize, radius, density, ~0, null, objects);
         }
 
-        private void PlaceObjectsInBrush(Vector3 center, float gridSize, float radius, float density, LayerMask layer, params GameObject[] objects)
+        private void PlaceObjectsInBrush(Vector3 center, float gridSize, float radius, float density, LayerMask layer, params BrushPrefab[] objects)
         {
             PlaceObjectsInBrush(center, gridSize, radius, density, layer, null, objects);
         }
 
-        private void PlaceObjectsInBrush(Vector3 center, float gridSize, float radius, float density, LayerMask layer, Transform parent, params GameObject[] objects)
+        private void PlaceObjectsInBrush(Vector3 center, float gridSize, float radius, float density, LayerMask layer, Transform parent, params BrushPrefab[] objects)
         {
             if (objects == null || objects.Length == 0)
             {
@@ -270,7 +270,6 @@ namespace Toolbox.Editor.Tools
                 var prefab = objects[Random.Range(0, objects.Length)];
                 var radians = Random.Range(0, 359) * Mathf.Deg2Rad;
                 var distance = Random.Range(0.0f, radius);
-                var rotation = Quaternion.Euler(0, Random.Range(0, 359), 0);
                 //calculating position + grid cell position
                 var position = new Vector3(Mathf.Cos(radians), 0, Mathf.Sin(radians)) * distance + center;
                 var gridPosition = new Vector2(position.x - position.x % gridSize, position.z - position.z % gridSize);
@@ -285,10 +284,23 @@ namespace Toolbox.Editor.Tools
                 }
                 //position validation using layer
                 if (Physics.Raycast(position + Vector3.up, Vector3.down, out RaycastHit hitInfo, Mathf.Infinity, layer))
-                {
-                    var gameObject = PrefabUtility.InstantiatePrefab(prefab, null) as GameObject;
+                {                  
+                    var gameObject = PrefabUtility.InstantiatePrefab(prefab.target, null) as GameObject;
+                    //set random rotation if needed
+                    if (prefab.useRandomRotation)
+                    {
+                        gameObject.transform.eulerAngles = new Vector3(Random.Range(prefab.minRotation.x, prefab.maxRotation.x), 
+                            Random.Range(prefab.minRotation.y, prefab.maxRotation.y), Random.Range(prefab.minRotation.z, prefab.maxRotation.z));
+                    }
+                    //set random scale if needed
+                    if (prefab.useRandomScale)
+                    {
+                        gameObject.transform.localScale = new Vector3(Random.Range(prefab.minScale.x, prefab.maxScale.x),
+                            Random.Range(prefab.minScale.y, prefab.maxScale.y), Random.Range(prefab.minScale.z, prefab.maxScale.z));
+                    }
+
                     gameObject.transform.position = hitInfo.point;
-                    gameObject.transform.rotation = rotation;
+                    gameObject.transform.parent = parent;
 
                     Undo.RegisterCreatedObjectUndo(gameObject, "Created " + gameObject.name + " with brush");
                 }

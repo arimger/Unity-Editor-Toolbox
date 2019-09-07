@@ -6,16 +6,9 @@ namespace Toolbox.Editor
     [CustomPropertyDrawer(typeof(ConditionalFieldAttribute))]
     public class ConditionalFieldAttributeDrawer : PropertyDrawer
     {
-        private bool isVisible = true;
-
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        private bool IsVisible(SerializedProperty property)
         {
-            return isVisible ? EditorGUI.GetPropertyHeight(property) : 0;
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
+            //TODO: additional error and warnings;
             if (!string.IsNullOrEmpty(PropertyToCheck))
             {
                 var conditionProperty = property.GetSibiling(PropertyToCheck);
@@ -24,13 +17,23 @@ namespace Toolbox.Editor
                     if (conditionProperty.propertyType == SerializedPropertyType.Boolean)
                     {
                         var compareValue = CompareValue != null && CompareValue is bool ? (bool)CompareValue : true;
-                        isVisible = conditionProperty.boolValue == compareValue;
-                        if (!isVisible) return;
+                        return conditionProperty.boolValue == compareValue;
                     }
                 }
             }
 
-            EditorGUI.PropertyField(position, property, label, true);
+            return true;
+        }
+
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return IsVisible(property) ? EditorGUI.GetPropertyHeight(property) : -EditorGUIUtility.standardVerticalSpacing;
+        }
+
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            if (IsVisible(property)) EditorGUI.PropertyField(position, property, label, true);
         }
 
 

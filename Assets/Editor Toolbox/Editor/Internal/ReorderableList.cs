@@ -601,8 +601,7 @@ namespace Toolbox.Editor.Internal
             var offset = 0.0f;
             for (int i = 0; i < index; i++)
             {
-                if (i == skipIndex) continue;
-                offset += GetRowHeight(i);
+                if (i != skipIndex) offset += GetRowHeight(i);
             }
             return offset;
         }
@@ -620,10 +619,10 @@ namespace Toolbox.Editor.Internal
         private float GetListElementHeight()
         {
             var arraySize = Count;
-            var listHeight = Style.padding + Style.padding + Style.padding / 2;
+            var listHeight = Style.padding + Style.padding;
             if (arraySize != 0)
             {
-                listHeight += GetElementYOffset(arraySize - 1) + GetElementHeight(arraySize - 1);
+                listHeight += GetElementYOffset(arraySize - 1) + GetRowHeight(arraySize - 1);
             }
             return listHeight;
         }
@@ -806,13 +805,12 @@ namespace Toolbox.Editor.Internal
         {
             if (Event.current.type != EventType.Repaint) return;
             if (draggable)
-            {
-                //make sure that dragging handle is in the middle of rect
-                rect.y += (rect.height - Style.handleHeight + Style.spacing) / 2;
+            {       
                 rect.height = Style.handleHeight;
                 rect.width = Style.handleWidth;
+                rect.y += (Style.handleHeight + Style.spacing) / 2;
                 rect.x += Style.handleWidth / 2;
-                //draw handle using standard style
+
                 Style.draggingHandle.Draw(rect, false, false, false, false);
             }
         }
