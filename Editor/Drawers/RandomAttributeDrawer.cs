@@ -17,7 +17,7 @@ namespace Toolbox.Editor
             {
                 Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
                                  " - " + attribute.GetType() + " can be used only on float or int value properties.");
-                EditorGUI.PropertyField(position, property, label);
+                EditorGUI.PropertyField(position, property, label, property.isExpanded);
                 return;
             }
 

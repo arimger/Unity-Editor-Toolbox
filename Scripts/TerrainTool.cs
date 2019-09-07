@@ -7,6 +7,21 @@ using Random = UnityEngine.Random;
 
 namespace Toolbox
 {
+    [Serializable]
+    public class BrushPrefab
+    {
+        [AssetPreview]
+        public GameObject target;
+
+        public bool useRandomScale;
+        public Vector3 minScale = new Vector3(1.0f, 1.0f, 1.0f);
+        public Vector3 maxScale;
+
+        public bool useRandomRotation = true;
+        public Vector3 minRotation;
+        public Vector3 maxRotation = new Vector3(0.0f, 359.0f, 0.0f);
+    }
+
     [ExecuteInEditMode, DisallowMultipleComponent]
     [AddComponentMenu("Toolbox/Terrain Tool", 1)]
     public class TerrainTool : MonoBehaviour
@@ -17,17 +32,17 @@ namespace Toolbox
         [SerializeField]
         private GameObject terrain;
 
-        [SerializeField, AssetPreview]
-        private List<GameObject> brushPrefabs;
+        [SerializeField]
+        private List<BrushPrefab> brushPrefabs;
 
 
-        public void AddBrushPrefab(GameObject prefab)
+        public void AddBrushPrefab(BrushPrefab prefab)
         {
-            if (brushPrefabs == null) brushPrefabs = new List<GameObject>();
+            if (brushPrefabs == null) brushPrefabs = new List<BrushPrefab>();
             brushPrefabs.Add(prefab);
         }
 
-        public void RemoveBrushPrefab(GameObject prefab)
+        public void RemoveBrushPrefab(BrushPrefab prefab)
         {
             brushPrefabs?.Remove(prefab);
         }
@@ -37,7 +52,7 @@ namespace Toolbox
             MassPlace(count, brushPrefabs.ToArray());
         }
 
-        public void MassPlace(int count, params GameObject[] objects)
+        public void MassPlace(int count, params BrushPrefab[] prefabs)
         {
             throw new NotImplementedException();
         }
@@ -47,9 +62,9 @@ namespace Toolbox
             PlaceObjects(center, gridSize, radius, density, layer, brushPrefabs.ToArray());
         }
 
-        public void PlaceObjects(Vector3 center, float gridSize, float radius, float density, LayerMask layer, params GameObject[] objects)
+        public void PlaceObjects(Vector3 center, float gridSize, float radius, float density, LayerMask layer, params BrushPrefab[] prefabs)
         {
-            if (objects == null || objects.Length == 0)
+            if (prefabs == null || prefabs.Length == 0)
             {
 #if UNITY_EDITOR
                 Debug.LogWarning("No objects to instantiate.");
@@ -64,10 +79,9 @@ namespace Toolbox
 
             for (var i = 0; i < count; i++)
             {
-                var prefab = objects[Random.Range(0, objects.Length)];
+                var prefab = prefabs[Random.Range(0, prefabs.Length)];
                 var radians = Random.Range(0, 359) * Mathf.Deg2Rad;
                 var distance = Random.Range(0.0f, radius);
-                var rotation = Quaternion.Euler(0, Random.Range(0, 359), 0);
                 var position = new Vector3(Mathf.Cos(radians), 0, Mathf.Sin(radians)) * distance + center;
                 var gridPosition = new Vector2(position.x - position.x % gridSize, position.z - position.z % gridSize);
                 //position validation
@@ -80,11 +94,23 @@ namespace Toolbox
                     grid.Add(gridPosition);
                 }
 
-                if (Physics.Raycast(position + Vector3.up, Vector3.down, Mathf.Infinity, layer))
+                if (Physics.Raycast(position + Vector3.up, Vector3.down, out RaycastHit hitInfo, Mathf.Infinity, layer))
                 {
-                    var gameObject = Instantiate(prefab, terrain.transform);
-                    gameObject.transform.position = position;
-                    gameObject.transform.rotation = rotation;
+                    var gameObject = Instantiate(prefab.target);
+                    if (prefab.useRandomRotation)
+                    {
+                        gameObject.transform.eulerAngles = new Vector3(Random.Range(prefab.minRotation.x, prefab.maxRotation.x),
+                            Random.Range(prefab.minRotation.y, prefab.maxRotation.y), Random.Range(prefab.minRotation.z, prefab.maxRotation.z));
+                    }
+
+                    if (prefab.useRandomScale)
+                    {
+                        gameObject.transform.localScale = new Vector3(Random.Range(prefab.minScale.x, prefab.maxScale.x),
+                            Random.Range(prefab.minScale.y, prefab.maxScale.y), Random.Range(prefab.minScale.z, prefab.maxScale.z));
+                    }
+
+                    gameObject.transform.position = hitInfo.point;
+                    gameObject.transform.parent = terrain.transform;
                 }
             }
         }
@@ -102,7 +128,7 @@ namespace Toolbox
             set => terrain = value;
         }
 
-        public GameObject[] Trees
+        public BrushPrefab[] Trees
         {
             get => brushPrefabs.ToArray();
         }
