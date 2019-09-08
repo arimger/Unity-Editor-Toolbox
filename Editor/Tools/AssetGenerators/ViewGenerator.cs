@@ -33,9 +33,9 @@ namespace Toolbox.Editor.Tools
         public int spriteOffset = 10;
         public int pixelsPerUnit = 100;
 
-        [ConditionalField("isGridded", true)]
+        [ConditionalHide("isGridded", true)]
         public int gridOffset = 15;
-        [ConditionalField("isOutlined", true)]
+        [ConditionalHide("isOutlined", true)]
         public int outlineSize = 6;
 
         public float radius = 1.0f;
@@ -43,7 +43,7 @@ namespace Toolbox.Editor.Tools
         [Separator]
 
         public Color viewColor = new Color(1, 1, 1, 0.15f);
-        [ConditionalField("isOutlined", true)]
+        [ConditionalHide("isOutlined", true)]
         public Color outlineColor = new Color(1, 1, 1, 1);
 
         [Space]

@@ -57,10 +57,14 @@ Drawers based on build-in classes **PropertyDrawer** and associated **PropertyAt
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc7.png)
 
-#### ConditionalFieldAttribute
+#### ConditionalHideAttribute
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc9.png)
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc8.png)
+
+#### ConditionalDisableAttribute
+
+TODO
 
 #### AssetPreviewAttribute
 
@@ -116,6 +120,10 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2;
 #### RandomAttribute
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc23.png)
+
+#### DirectoryAttribute
+
+TODO
 
 ### Ordered Property Drawers
 
