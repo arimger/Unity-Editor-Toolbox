@@ -863,7 +863,7 @@ MonoBehaviour:
   imReadOnly: Read only text
   enumFlag: 3
   transformRequired: {fileID: 0}
-  var1: -8
+  var1: 3
   dir: Editor Toolbox/Editor Resources
   text: 
 --- !u!4 &245793973

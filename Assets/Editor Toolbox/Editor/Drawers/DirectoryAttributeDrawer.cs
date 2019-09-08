@@ -58,12 +58,13 @@ namespace Toolbox.Editor
             internal static readonly float directoryButtonWidth = 30.0f;
 
             internal static readonly GUIStyle directoryButtonStyle;
+
             internal static readonly GUIContent directoryButtonContent;
     
             static Style()
             {
                 directoryButtonStyle = new GUIStyle(EditorStyles.miniButton);
-                directoryButtonContent = new GUIContent(EditorGUIUtility.FindTexture("Folder Icon"));
+                directoryButtonContent = new GUIContent(EditorGUIUtility.FindTexture("Folder Icon"), "Pick directory");
             }
         }
     }

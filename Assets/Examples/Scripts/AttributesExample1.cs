@@ -23,7 +23,7 @@ namespace Toolbox.Examples
         [Group("Custom group"), Indent]
         public string textInGroup;
 
-        [Help("How needs label?")]
+        [Help("Who needs label?")]
         [Group("Another group"), AssetPreview(useLabel: false)]
         public GameObject asset;
         [Group("Another group"), AssetPreview]
@@ -32,8 +32,8 @@ namespace Toolbox.Examples
         [Group("Custom group"), ReadOnly]
         public int intInGroup;
 
-        [Help("Use this toggle to enable/disable property.", UnityMessageType.Warning)]
-        [Help("Use this toggle to enable/disable property.", UnityMessageType.Error), HideLabel]
+        [Help("Use this toggle to show/hide property.", UnityMessageType.Warning)]
+        [Help("Use this toggle to show/hide property.", UnityMessageType.Error), HideLabel]
         public bool isTrue;
 
         [Space, Separator, Space]
