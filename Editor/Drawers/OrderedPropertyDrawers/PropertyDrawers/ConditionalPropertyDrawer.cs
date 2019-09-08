@@ -50,8 +50,7 @@ namespace Toolbox.Editor
         /// <param name="attribute"></param>
         public override void HandleProperty(SerializedProperty property, DrawIfAttribute attribute)
         {
-            if (!IsDrawable(property, attribute)) return;
-            base.HandleProperty(property, attribute);
+            if (IsDrawable(property, attribute)) base.HandleProperty(property, attribute);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Toolbox.Editor
         }
 
 
-        protected ConditionalDisableAttribute Attribute => attribute as ConditionalDisableAttribute;
+        protected ConditionalAttribute Attribute => attribute as ConditionalAttribute;
 
         protected string PropertyToCheck => Attribute.PropertyToCheck;
 
