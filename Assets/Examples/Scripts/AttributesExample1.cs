@@ -88,6 +88,12 @@ namespace Toolbox.Examples
         [Random(-10, 10)]
         public int var1;
 
+        [Directory]
+        public string dir;
+
+        [ConditionalDisable("imImportantBool")]
+        public string text;
+
 
 #if UNITY_EDITOR
         private void OnValidate()

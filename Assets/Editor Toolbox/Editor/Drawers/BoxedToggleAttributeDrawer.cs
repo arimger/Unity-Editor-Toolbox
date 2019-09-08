@@ -6,26 +6,17 @@ namespace Toolbox.Editor
     [CustomPropertyDrawer(typeof(BoxedToggleAttribute))]
     public class BoxedToggleAttributeDrawer : PropertyDrawer
     {
-        /// <summary>
-        /// Optional height offset, will be added to standard <see cref="height"/> value.
-        /// </summary>
-        private float additionalHeight;
-
-
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return Style.height + additionalHeight;
+            return Style.height;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (property.propertyType != SerializedPropertyType.Boolean)
             {
-                var helpBoxRect = new Rect(position.x, position.y, position.width, position.height / 2);
-                EditorGUI.HelpBox(helpBoxRect, "Toggle attribute used in non-boolean value field.", MessageType.Error);
-                additionalHeight = Style.height + Style.spacing;
-                position.height = additionalHeight - Style.spacing;
-                position.y += additionalHeight + Style.spacing;
+                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
+                                 " - " + attribute.GetType() + " can be used only on boolean value properties.");
                 EditorGUI.PropertyField(position, property, label, property.isExpanded);
                 return;
             }

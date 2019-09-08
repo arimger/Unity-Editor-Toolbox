@@ -852,7 +852,7 @@ MonoBehaviour:
   x: 43
   tagSelector: EditorOnly
   iNeedNewName: {x: 0, y: 0, z: 0}
-  imImportantBool: 1
+  imImportantBool: 0
   minMaxValues: {x: 19.6, y: 53}
   suffixNeededHere: 10
   prefab: {fileID: 894540630}
@@ -863,7 +863,9 @@ MonoBehaviour:
   imReadOnly: Read only text
   enumFlag: 3
   transformRequired: {fileID: 0}
-  var1: 0
+  var1: -8
+  dir: Editor Toolbox/Editor Resources
+  text: 
 --- !u!4 &245793973
 Transform:
   m_ObjectHideFlags: 0
