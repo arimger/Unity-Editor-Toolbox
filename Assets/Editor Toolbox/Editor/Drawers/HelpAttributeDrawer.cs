@@ -24,14 +24,14 @@ namespace Toolbox.Editor
             position.height = Style.height;
             position.y += Style.spacing;
 
-            EditorGUI.HelpBox(position, HelpAttribute.Text, (MessageType)HelpAttribute.Type);
+            EditorGUI.HelpBox(position, Attribute.Text, (MessageType)Attribute.Type);
         }
 
 
         /// <summary>
         /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::HelpAttribute"/>.
         /// </summary>
-        private HelpAttribute HelpAttribute => attribute as HelpAttribute;
+        private HelpAttribute Attribute => attribute as HelpAttribute;
 
 
         /// <summary>

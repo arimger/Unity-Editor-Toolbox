@@ -25,6 +25,7 @@ namespace Toolbox.Editor
         /// </summary>
         private static readonly DrawElementCallback[] DrawElementCallbacks = new DrawElementCallback[]
         {       
+            DrawToggle,
             DrawTag,
             DrawLayer
         };
@@ -136,6 +137,21 @@ namespace Toolbox.Editor
             return rect;
         }
 
+        private static Rect DrawToggle(GameObject gameObject, Rect rect)
+        {
+            rect = new Rect(rect.x + rect.width - Style.toggleWidth, rect.y, Style.toggleWidth, rect.height);
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                Style.backgroundStyle.Draw(rect, false, false, false, false);
+            }
+
+            var value = EditorGUI.ToggleLeft(new Rect(rect.x + Style.padding, rect.y, rect.width, rect.height), GUIContent.none, gameObject.activeSelf);
+            if (value != gameObject.activeSelf) gameObject.SetActive(value);
+
+            return rect;
+        }
+
 
         /// <summary>
         /// Static representation of custom hierarchy style.
@@ -146,6 +162,7 @@ namespace Toolbox.Editor
             /// Custom rect handling fields
             /// 
 
+            internal static readonly float padding = 2.0f;
             internal static readonly float maxHeight = 16.0f;
             internal static readonly float maxWidth = 55.0f;
             internal static readonly float lineWidth = 1.0f;
@@ -153,18 +170,20 @@ namespace Toolbox.Editor
             internal static readonly float iconWidth = 17.0f;
             internal static readonly float iconHeight = 17.0f;
             internal static readonly float layerWidth = 17.0f;
+            internal static readonly float toggleWidth = 17.0f;
 
             internal static readonly Color lineColor;
             internal static readonly Color labelColor;
 
             /// 
             /// Custom label styles
+            ///
             /// 
-
+            internal static readonly GUIStyle toggleStyle;
             internal static readonly GUIStyle tagLabelStyle;
             internal static readonly GUIStyle layerLabelStyle;
             internal static readonly GUIStyle backgroundStyle;
-
+       
             static Style()
             {
                 lineColor = new Color(0.59f, 0.59f, 0.59f);
@@ -186,6 +205,8 @@ namespace Toolbox.Editor
                     fontSize = 8,
                     alignment = TextAnchor.UpperCenter
                 };
+
+                toggleStyle = new GUIStyle(EditorStyles.toggle);
 
                 //set proper background texture object
                 var backgroundTex = new Texture2D(1, 1);

@@ -41,7 +41,7 @@ namespace Toolbox.Editor
 
             additionalHeight = 0;
 
-            if (AssetPreviewAttribute.UseLabel)
+            if (Attribute.UseLabel)
             {
                 EditorGUI.PropertyField(position, property, label, true);
             }
@@ -62,8 +62,8 @@ namespace Toolbox.Editor
                 //caching indent difference
                 var indent = position.width - EditorGUI.IndentedRect(position).width;
                 //setting image style
-                var width = Mathf.Clamp(AssetPreviewAttribute.Width, 0, previewTexture.width);
-                var height = Mathf.Clamp(AssetPreviewAttribute.Height, 0, previewTexture.height);
+                var width = Mathf.Clamp(Attribute.Width, 0, previewTexture.width);
+                var height = Mathf.Clamp(Attribute.Height, 0, previewTexture.height);
 
                 Style.textureStyle.normal.background = previewTexture;
                 //setting additional height as preview + 2x spacing + 2x frame offset
@@ -87,7 +87,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::AssetPreviewAttribute"/>.
         /// </summary>
-        private AssetPreviewAttribute AssetPreviewAttribute => attribute as AssetPreviewAttribute;
+        private AssetPreviewAttribute Attribute => attribute as AssetPreviewAttribute;
 
 
         /// <summary>

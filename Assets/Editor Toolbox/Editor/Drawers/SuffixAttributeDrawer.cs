@@ -10,7 +10,7 @@ namespace Toolbox.Editor
         {
             var propertyLabel = new GUIContent(property.displayName);
             //set up needed fields
-            var suffixLabel = new GUIContent(SuffixAttribute.SuffixLabel);
+            var suffixLabel = new GUIContent(Attribute.SuffixLabel);
             var suffixStyle = new GUIStyle(EditorStyles.miniLabel);
             var suffixSize = suffixStyle.CalcSize(suffixLabel);
             var suffixRect = new Rect(position.xMax - suffixSize.x, position.y, suffixSize.x, position.height);
@@ -27,6 +27,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::SuffixAttribute"/>.
         /// </summary>
-        private SuffixAttribute SuffixAttribute => attribute as SuffixAttribute;
+        private SuffixAttribute Attribute => attribute as SuffixAttribute;
     }
 }

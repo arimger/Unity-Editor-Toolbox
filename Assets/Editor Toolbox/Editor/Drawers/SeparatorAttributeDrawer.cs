@@ -21,15 +21,15 @@ namespace Toolbox.Editor
 
         public override float GetHeight()
         {
-            return SeparatorAttribute.Thickness + SeparatorAttribute.Padding;
+            return Attribute.Thickness + Attribute.Padding;
         }
 
         public override void OnGUI(Rect rect)
         {
-            DrawLine(rect, SeparatorAttribute.Thickness, SeparatorAttribute.Padding, EditorGUIUtility.standardVerticalSpacing);
+            DrawLine(rect, Attribute.Thickness, Attribute.Padding, EditorGUIUtility.standardVerticalSpacing);
         }
 
 
-        private SeparatorAttribute SeparatorAttribute => attribute as SeparatorAttribute;
+        private SeparatorAttribute Attribute => attribute as SeparatorAttribute;
     }
 }

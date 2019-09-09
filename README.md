@@ -125,6 +125,14 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2;
 
 TODO
 
+#### BroadcastButtonAttribute
+
+TODO
+
+#### InstanceButtonAttribute
+
+TODO
+
 ### Ordered Property Drawers
 
 Drawers based on classes **OrderedDrawer** and associated **OrderedAttribute**.  

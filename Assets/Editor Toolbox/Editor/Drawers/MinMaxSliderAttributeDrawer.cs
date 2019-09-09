@@ -30,8 +30,8 @@ namespace Toolbox.Editor
             var labelWidth = EditorGUIUtility.labelWidth;
             var fieldWidth = EditorGUIUtility.fieldWidth;
 
-            var minValue = MinMaxSliderAttribute.MinValue;
-            var maxValue = MinMaxSliderAttribute.MaxValue;
+            var minValue = Attribute.MinValue;
+            var maxValue = Attribute.MaxValue;
             var xValue = property.vector2Value.x;
             var yValue = property.vector2Value.y;
 
@@ -65,7 +65,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::MinMaxSliderAttribute"/>.
         /// </summary>
-        private MinMaxSliderAttribute MinMaxSliderAttribute => attribute as MinMaxSliderAttribute;
+        private MinMaxSliderAttribute Attribute => attribute as MinMaxSliderAttribute;
 
 
         /// <summary>

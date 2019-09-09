@@ -19,16 +19,19 @@ namespace Toolbox.Editor
 
         protected override void OnBeginGroup(GroupAttribute attribute)
         {
-            EditorGUILayout.BeginVertical(Style.sectionStyle);
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal(Style.headerBackgroundStyle);
             EditorGUILayout.LabelField(attribute.GroupName, Style.headerStyle);
             EditorGUILayout.EndHorizontal();
+            GUILayout.Space(-Style.spacing * 2);
+            EditorGUILayout.BeginVertical(Style.sectionBackgroundStyle);
+            GUILayout.Space(Style.spacing * 2);
             EditorGUI.indentLevel++;
         }
 
         protected override void OnEndGroup(GroupAttribute attribute)
         {
             EditorGUI.indentLevel--;
+            GUILayout.Space(Style.spacing * 2);
             EditorGUILayout.EndVertical();
         }
 
@@ -38,14 +41,18 @@ namespace Toolbox.Editor
         /// </summary>
         private static class Style
         {
+            internal static readonly float spacing = 2.5f;
+
             internal static GUIStyle headerStyle;
-            internal static GUIStyle sectionStyle;
+            internal static GUIStyle headerBackgroundStyle;
+            internal static GUIStyle sectionBackgroundStyle;
             internal static GUIStyle foldoutStyle;
    
             static Style()
             {
                 headerStyle = new GUIStyle(EditorStyles.boldLabel);
-                sectionStyle = new GUIStyle(GUI.skin.box);
+                headerBackgroundStyle = new GUIStyle(GUI.skin.box);
+                sectionBackgroundStyle = new GUIStyle(GUI.skin.box);
                 foldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontStyle = FontStyle.Bold

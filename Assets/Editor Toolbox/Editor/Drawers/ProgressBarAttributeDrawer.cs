@@ -28,10 +28,10 @@ namespace Toolbox.Editor
             }
 
             var value = property.propertyType == SerializedPropertyType.Integer ? property.intValue : property.floatValue;
-            var minValue = ProgressBarAttribute.MinValue;
-            var maxValue = ProgressBarAttribute.MaxValue;
-            var barText = !string.IsNullOrEmpty(ProgressBarAttribute.Name)
-                ? ProgressBarAttribute.Name + " " + value + "|" + maxValue
+            var minValue = Attribute.MinValue;
+            var maxValue = Attribute.MaxValue;
+            var barText = !string.IsNullOrEmpty(Attribute.Name)
+                ? Attribute.Name + " " + value + "|" + maxValue
                 : value + "|" + maxValue;
             value = Mathf.Clamp(value, minValue, maxValue);
             var fill = value / (maxValue - minValue);
@@ -48,7 +48,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::ProgressBarAttribute"/>.
         /// </summary>
-        private ProgressBarAttribute ProgressBarAttribute => attribute as ProgressBarAttribute;
+        private ProgressBarAttribute Attribute => attribute as ProgressBarAttribute;
 
 
         /// <summary>
