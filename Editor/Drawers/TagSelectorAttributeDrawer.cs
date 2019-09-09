@@ -28,7 +28,7 @@ namespace Toolbox.Editor
 
             EditorGUI.BeginProperty(position, label, property);
 
-            if (TagSelectorAttribute.UseDefaultTagFieldDrawer)
+            if (Attribute.UseDefaultTagFieldDrawer)
             {
                 property.stringValue = EditorGUI.TagField(position, label, property.stringValue);
             }
@@ -66,6 +66,6 @@ namespace Toolbox.Editor
         }
 
 
-        private TagSelectorAttribute TagSelectorAttribute => attribute as TagSelectorAttribute;
+        private TagSelectorAttribute Attribute => attribute as TagSelectorAttribute;
     }
 }

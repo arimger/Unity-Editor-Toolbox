@@ -225,7 +225,7 @@ namespace Toolbox.Editor
 
         public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
         {
-            var refAttribute = ClassTypeConstraintAttribute;
+            var refAttribute = Attribute;
             var refProperty = property.FindPropertyRelative("classReference");
 
             if (refProperty == null)
@@ -285,6 +285,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::ClassTypeConstraintAttribute"/>.
         /// </summary>
-        private ClassTypeConstraintAttribute ClassTypeConstraintAttribute => attribute as ClassTypeConstraintAttribute;
+        private ClassTypeConstraintAttribute Attribute => attribute as ClassTypeConstraintAttribute;
     }
 }

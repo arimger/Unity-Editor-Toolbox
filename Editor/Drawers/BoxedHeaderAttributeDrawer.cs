@@ -18,7 +18,7 @@ namespace Toolbox.Editor
             //caching disabled group(prevent header from disabling)
             var cached = GUI.enabled;
             GUI.enabled = true;
-            EditorGUI.LabelField(position, new GUIContent(FancyHeaderAttribute.Header), Style.headerStyle);
+            EditorGUI.LabelField(position, new GUIContent(BoxedHeaderAttribute.Header), Style.headerStyle);
             GUI.enabled = cached;
         }
 
@@ -26,7 +26,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::BoxedHeaderAttribute"/>.
         /// </summary>
-        private BoxedHeaderAttribute FancyHeaderAttribute => attribute as BoxedHeaderAttribute;
+        private BoxedHeaderAttribute BoxedHeaderAttribute => attribute as BoxedHeaderAttribute;
 
 
         /// <summary>

@@ -30,7 +30,7 @@ namespace Toolbox.Editor
             //draw random button using custom style class
             if (GUI.Button(buttonRect, Style.buttonContent))
             {
-                var random = Random.Range(RandomAttribute.MinValue, RandomAttribute.MaxValue);
+                var random = Random.Range(Attribute.MinValue, Attribute.MaxValue);
                 if (property.propertyType == SerializedPropertyType.Integer)
                 {
                     property.intValue = (int)random;
@@ -46,7 +46,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::RandomAttribute"/>.
         /// </summary>
-        private RandomAttribute RandomAttribute => attribute as RandomAttribute;
+        private RandomAttribute Attribute => attribute as RandomAttribute;
 
 
         /// <summary>

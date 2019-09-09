@@ -44,7 +44,7 @@ namespace Toolbox.Editor
             if (property.objectReferenceValue == null)
             {
                 var helpBoxRect = new Rect(position.x, position.y, position.width, Style.height);
-                EditorGUI.HelpBox(helpBoxRect, NotNullAttribute.Label, MessageType.Error);
+                EditorGUI.HelpBox(helpBoxRect, Attribute.Label, MessageType.Error);
                 //set additional height as help box height + 2x spacing between properties
                 additionalHeight = Style.height + Style.spacing * 2;
                 position.height -= additionalHeight;
@@ -59,7 +59,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::NotNullAttribute"/>.
         /// </summary>
-        private NotNullAttribute NotNullAttribute => attribute as NotNullAttribute;
+        private NotNullAttribute Attribute => attribute as NotNullAttribute;
 
 
         /// <summary>

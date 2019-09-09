@@ -22,7 +22,7 @@ namespace Toolbox.Editor
             }
 
             EditorGUI.LabelField(position, GUIContent.none, GUI.skin.box);
-            label.text = string.IsNullOrEmpty(ToggleAttribute.Label) ? label.text : ToggleAttribute.Label;
+            label.text = string.IsNullOrEmpty(Attribute.Label) ? label.text : Attribute.Label;
             EditorGUI.BeginChangeCheck();
             position.x += Style.padding;
             position.y += Style.spacing;
@@ -35,7 +35,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::BoxedToggleAttribute"/>.
         /// </summary>
-        private BoxedToggleAttribute ToggleAttribute => attribute as BoxedToggleAttribute;
+        private BoxedToggleAttribute Attribute => attribute as BoxedToggleAttribute;
 
 
         /// <summary>
