@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 using UnityEngine;
 using UnityEditor;
@@ -40,19 +41,30 @@ namespace Toolbox.Editor
 
             if (!settings) return;
 
+            Type GetTargetType(Type drawerType)
+            {
+                return drawerType.GetMethod("GetAttributeType", BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy).Invoke(null, null) as Type;
+            }
+
             //create all needed preset drawer instances and store them in list
             for (var i = 0; i < settings.PresetDrawersCount; i++)
             {
                 var type = settings.GetPresetDrawerTypeAt(i);
                 if (type == null) continue;
-                drawers.Add(Activator.CreateInstance(type, properties) as OrderedDrawerBase);
+                var drawer = Activator.CreateInstance(type, properties) as OrderedDrawerBase;
+                drawers.Add(drawer);
+                var targetType = GetTargetType(type);
+                propertyDrawers.Add(targetType, drawer);
             }
             //create all needed property drawer instances and store them in list
             for (var i = 0; i < settings.PropertyDrawersCount; i++)
             {
                 var type = settings.GetPropertyDrawerTypeAt(i);
                 if (type == null) continue;
-                drawers.Add(Activator.CreateInstance(type) as OrderedDrawerBase);
+                var drawer = Activator.CreateInstance(type) as OrderedDrawerBase;
+                drawers.Add(drawer);
+                var targetType = GetTargetType(type);
+                propertyDrawers.Add(targetType, drawer);
             }
             //inject nested drawers in provided order
             for (var i = 0; i < drawers.Count - 1; i++)
@@ -61,6 +73,7 @@ namespace Toolbox.Editor
             }
         }
 
+        protected Dictionary<Type, OrderedDrawerBase> propertyDrawers = new Dictionary<Type, OrderedDrawerBase>();
 
         /// <summary>
         /// All available drawers setted from <see cref="ComponentEditorSettings"/>.
@@ -116,6 +129,16 @@ namespace Toolbox.Editor
             }
         }
 
+        protected virtual void HandlePropertyPoC(SerializedProperty property)
+        {
+            var orderedAttribute = property.GetAttribute<OrderedAttribute>();
+            if (orderedAttribute != null)
+            {
+                Debug.Log(orderedAttribute + " " + propertyDrawers.ContainsKey(orderedAttribute.GetType()));
+            }
+            EditorGUILayout.PropertyField(property, property.isExpanded);
+        }
+
 
         /// <summary>
         /// Inspector GUI re-draw event.
@@ -134,7 +157,7 @@ namespace Toolbox.Editor
 
                 while (property.NextVisible(false))
                 {
-                    HandleProperty(property.Copy());
+                    HandlePropertyPoC(property.Copy());
                 }
             }
             serializedObject.ApplyModifiedProperties();
