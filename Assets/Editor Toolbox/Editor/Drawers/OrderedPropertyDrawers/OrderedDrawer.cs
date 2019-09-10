@@ -38,6 +38,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Attribute type associated with this drawer.
         /// </summary>
-        public Type AttributeType => typeof(T);
+        public static Type GetAttributeType() => typeof(T);
     }
 }
