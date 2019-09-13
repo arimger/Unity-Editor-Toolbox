@@ -2,78 +2,84 @@
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
+using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
-//TODO: handling children; excluding non-needed drawers;
+//TODO: handling children;
 
 namespace Toolbox.Editor
 {
+    using Toolbox.Editor.Drawers;
+
     /// <summary>
     /// Base editor class.
     /// </summary>
     [CanEditMultipleObjects, CustomEditor(typeof(Object), true, isFallback = true)]
     public class ComponentEditor : UnityEditor.Editor
     {
-        private static ComponentEditorSettings settings;
+        protected static ComponentEditorSettings settings;
 
+        protected static Dictionary<Type, ToolboxAreaDrawerBase> areaDrawers = new Dictionary<Type, ToolboxAreaDrawerBase>();
+
+        protected static Dictionary<Type, ToolboxPropertyDrawerBase> propertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
+ 
 
         /// <summary>
-        /// Initializes all needed <see cref="OrderedDrawer{T}"/>s using EditorSettings asset.
+        /// Initializes all needed <see cref="ToolboxPropertyDrawer{T}"/>s using EditorSettings asset.
         /// </summary>
-        private void InitializeEditor()
+        [InitializeOnLoadMethod]
+        private static void InitializeEditor()
         {
-            //NOTE: cannot search for assets in static constructor since this is ScriptableObject class,
-            //in future releases ComponentEditorUtility will take care over settings initialization;
-
             //find settings asset in whole asset database if needed
-            if (settings == null)
-            {
-                var guids = AssetDatabase.FindAssets("t:ComponentEditorSettings");
-                if (guids == null || guids.First() == null) return;
-                var path = AssetDatabase.GUIDToAssetPath(guids.First());
+            var guids = AssetDatabase.FindAssets("t:ComponentEditorSettings");
+            if (guids == null || guids.First() == null) return;
+            var path = AssetDatabase.GUIDToAssetPath(guids.First());
 
-                settings = AssetDatabase.LoadAssetAtPath(path, typeof(ComponentEditorSettings)) as ComponentEditorSettings;
-            }
+            settings = AssetDatabase.LoadAssetAtPath(path, typeof(ComponentEditorSettings)) as ComponentEditorSettings;
 
             if (!settings) return;
 
+            //local method used in search for proper target attributes
             Type GetTargetType(Type drawerType)
             {
                 return drawerType.GetMethod("GetAttributeType", BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy).Invoke(null, null) as Type;
             }
 
-            //create all needed preset drawer instances and store them in list
-            for (var i = 0; i < settings.PresetDrawersCount; i++)
+            //iterate over all assigned property drawers, create them and store
+            for (var i = 0; i < settings.AreaDrawersCount; i++)
             {
-                var type = settings.GetPresetDrawerTypeAt(i);
+                var type = settings.GetAreaDrawerTypeAt(i);
                 if (type == null) continue;
-                var drawer = Activator.CreateInstance(type, properties) as OrderedDrawerBase;
-                drawers.Add(drawer);
+                var drawer = Activator.CreateInstance(type) as ToolboxAreaDrawerBase;
                 var targetType = GetTargetType(type);
-                propertyDrawers.Add(targetType, drawer);
+                if (propertyDrawers.ContainsKey(targetType))
+                {
+                    Debug.LogWarning(targetType + " is already associated to more than one area drawer.");
+                    continue;
+                }
+                areaDrawers.Add(targetType, drawer);
             }
-            //create all needed property drawer instances and store them in list
+            //iterate over all assigned property drawers, create them and store
             for (var i = 0; i < settings.PropertyDrawersCount; i++)
             {
                 var type = settings.GetPropertyDrawerTypeAt(i);
                 if (type == null) continue;
-                var drawer = Activator.CreateInstance(type) as OrderedDrawerBase;
-                drawers.Add(drawer);
+                var drawer = Activator.CreateInstance(type) as ToolboxPropertyDrawerBase;
                 var targetType = GetTargetType(type);
+                if (propertyDrawers.ContainsKey(targetType))
+                {
+                    Debug.LogWarning(targetType + " is already associated to more than one property drawer.");
+                    continue;
+                }
                 propertyDrawers.Add(targetType, drawer);
-            }
-            //inject nested drawers in provided order
-            for (var i = 0; i < drawers.Count - 1; i++)
-            {
-                drawers[i].NestedDrawer = drawers[i + 1];
             }
         }
 
-        protected Dictionary<Type, OrderedDrawerBase> propertyDrawers = new Dictionary<Type, OrderedDrawerBase>();
 
         /// <summary>
         /// All available drawers setted from <see cref="ComponentEditorSettings"/>.
@@ -94,8 +100,6 @@ namespace Toolbox.Editor
             ReflectionUtility.GetAllFields(target, f => serializedObject.FindProperty(f.Name) != null)
                 .ToList()
                 .ForEach(f => properties.Add(serializedObject.FindProperty(f.Name)));
-
-            InitializeEditor();
         }
 
         /// <summary>
@@ -105,38 +109,61 @@ namespace Toolbox.Editor
         { }
 
         /// <summary>
-        /// Handles desired property display process. Starts drawing using first known
-        /// <see cref="OrderedDrawer{T}"/>(if exists) or standard
+        /// Handles desired property display process. Starts drawing using all known and needed
+        /// <see cref="ToolboxPropertyDrawer{T}"/>s or standard
         /// <see cref="EditorGUI.PropertyField(Rect, SerializedProperty)"/> method.
         /// </summary>
         /// <param name="property">Property to display.</param>
         protected virtual void HandleProperty(SerializedProperty property)
         {
-            if (!settings || !settings.UseOrderedDrawers)
+            //use only standard property drawing system
+            if (!settings || !settings.UseToolboxDrawers)
             {
                 EditorGUILayout.PropertyField(property, property.isExpanded);
                 return;
             }
 
-            try
+            var areaAttributes = property.GetAttributes<ToolboxAreaAttribute>();
+            Array.Sort(areaAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
+            //begin all needed area drawers in proper order
+            for (var i = 0; i < areaAttributes.Length; i++)
             {
-                drawers.First().HandleProperty(property);
+                if (areaDrawers.ContainsKey(areaAttributes[i].GetType()))
+                {
+                    areaDrawers[areaAttributes[i].GetType()].OnGuiBegin(areaAttributes[i]);
+                }
+                else
+                {
+                    Debug.LogError("Error - " + areaAttributes[i].GetType() + " is not supported. Assign it in ComponentEditorSettings.");
+                }
+            }  
+            //get property attribute(only one allowed)
+            var propertyAttribute = property.GetAttribute<ToolboxPropertyAttribute>();
+            if (propertyAttribute != null)
+            {
+                if (propertyDrawers.ContainsKey(propertyAttribute.GetType()))
+                {
+                    propertyDrawers[propertyAttribute.GetType()].OnGui(property, propertyAttribute);
+                }
+                else
+                {
+                    Debug.LogError("Error - " + propertyAttribute.GetType() + " is not supported. Assign it in ComponentEditorSettings.");
+                    EditorGUILayout.PropertyField(property, property.isExpanded);
+                }
             }
-            catch (NullReferenceException e)
+            else
             {
-                Debug.LogError(e);
                 EditorGUILayout.PropertyField(property, property.isExpanded);
             }
-        }
 
-        protected virtual void HandlePropertyPoC(SerializedProperty property)
-        {
-            var orderedAttribute = property.GetAttribute<OrderedAttribute>();
-            if (orderedAttribute != null)
+            //end all needed area drawers in proper order
+            for (var i = areaAttributes.Length - 1; i >= 0; i--)
             {
-                Debug.Log(orderedAttribute + " " + propertyDrawers.ContainsKey(orderedAttribute.GetType()));
+                if (areaDrawers.ContainsKey(areaAttributes[i].GetType()))
+                {
+                    areaDrawers[areaAttributes[i].GetType()].OnGuiEnd(areaAttributes[i]);
+                }
             }
-            EditorGUILayout.PropertyField(property, property.isExpanded);
         }
 
 
@@ -147,6 +174,7 @@ namespace Toolbox.Editor
         {
             EditorGUILayout.LabelField("Component Editor", EditorStyles.centeredGreyMiniLabel);
 
+            Stopwatch sw = Stopwatch.StartNew();
             serializedObject.Update();
             var property = serializedObject.GetIterator();
             if (property.NextVisible(true))
@@ -157,9 +185,11 @@ namespace Toolbox.Editor
 
                 while (property.NextVisible(false))
                 {
-                    HandlePropertyPoC(property.Copy());
+                    HandleProperty(property.Copy());
                 }
             }
+            sw.Stop();
+            //Debug.Log(sw.ElapsedTicks);
             serializedObject.ApplyModifiedProperties();
         }
     }

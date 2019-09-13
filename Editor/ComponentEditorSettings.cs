@@ -7,61 +7,84 @@ using UnityEngine;
 
 namespace Toolbox.Editor
 {
+    using Toolbox.Editor.Drawers;
+
     [CreateAssetMenu(menuName = "Editor Toolbox/Settings", order = 1)]
     public class ComponentEditorSettings : ScriptableObject
     {
         [SerializeField]
-        private bool useOrderedDrawers = true;
+        private bool useToolboxDrawers = true;
 
         [DrawIf("useOrderedDrawers", true)]
-        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedPresetDrawer<>))]
-        private List<SerializedTypeReference> presetHandlers;
+        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxAreaDrawer<>))]
+        private List<SerializedTypeReference> areaDrawerHandlers;
         [DrawIf("useOrderedDrawers", true)]
-        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(OrderedPropertyDrawer<>))]
-        private List<SerializedTypeReference> propertyHandlers;
+        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxGroupDrawer<>))]
+        private List<SerializedTypeReference> groupDrawerHandlers;
+        [DrawIf("useOrderedDrawers", true)]
+        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxPropertyDrawer<>))]
+        private List<SerializedTypeReference> propertyDrawerHandlers;
 
 
-        public void AddPresetHandler(SerializedTypeReference attributeHandler)
+        public void AddAreaDrawerHandler(SerializedTypeReference drawerReference)
         {
-            if (presetHandlers == null) presetHandlers = new List<SerializedTypeReference>();
-            presetHandlers.Add(attributeHandler);
+            if (areaDrawerHandlers == null) areaDrawerHandlers = new List<SerializedTypeReference>();
+            areaDrawerHandlers.Add(drawerReference);
         }
 
-        public void RemovePresetHandler(SerializedTypeReference attributeHandler)
+        public void AddGroupDrawerHandler(SerializedTypeReference drawerReference)
         {
-            presetHandlers?.Remove(attributeHandler);
+            if (groupDrawerHandlers == null) groupDrawerHandlers = new List<SerializedTypeReference>();
+            groupDrawerHandlers.Add(drawerReference);
         }
 
-        public void AddPropertyHandler(SerializedTypeReference attributeHandler)
+        public void AddPropertyDrawerHandler(SerializedTypeReference drawerReference)
         {
-            if (propertyHandlers == null) propertyHandlers = new List<SerializedTypeReference>();
-            propertyHandlers.Add(attributeHandler);
+            if (propertyDrawerHandlers == null) propertyDrawerHandlers = new List<SerializedTypeReference>();
+            propertyDrawerHandlers.Add(drawerReference);
         }
 
-        public void RemovePropertyHandler(SerializedTypeReference attributeHandler)
+        public void RemoveAreaDrawerHandler(SerializedTypeReference drawerReference)
         {
-            propertyHandlers?.Remove(attributeHandler);
+            areaDrawerHandlers?.Remove(drawerReference);
         }
 
-        public Type GetPresetDrawerTypeAt(int index)
+        public void RemoveGroupDrawerHandler(SerializedTypeReference drawerReference)
         {
-            return presetHandlers[index].Type;
+            groupDrawerHandlers?.Remove(drawerReference);
+        }
+
+        public void RemovePropertyDrawerHandler(SerializedTypeReference drawerReference)
+        {
+            propertyDrawerHandlers?.Remove(drawerReference);
+        }
+
+        public Type GetAreaDrawerTypeAt(int index)
+        {
+            return areaDrawerHandlers[index];
+        }
+
+        public Type GetGroupDrawerTypeAt(int index)
+        {
+            return groupDrawerHandlers[index];
         }
 
         public Type GetPropertyDrawerTypeAt(int index)
         {
-            return propertyHandlers[index].Type;
+            return propertyDrawerHandlers[index].Type;
         }
 
 
-        public bool UseOrderedDrawers
+        public bool UseToolboxDrawers
         {
-            get => useOrderedDrawers;
-            set => useOrderedDrawers = value;
+            get => useToolboxDrawers;
+            set => useToolboxDrawers = value;
         }
 
-        public int PresetDrawersCount => presetHandlers != null ? presetHandlers.Count : 0;
+        public int AreaDrawersCount => areaDrawerHandlers != null ? areaDrawerHandlers.Count : 0;
 
-        public int PropertyDrawersCount => propertyHandlers != null ? propertyHandlers.Count : 0;
+        public int GroupDrawersCount => groupDrawerHandlers != null ? groupDrawerHandlers.Count : 0;
+
+        public int PropertyDrawersCount => propertyDrawerHandlers != null ? propertyDrawerHandlers.Count : 0;
     }
 }

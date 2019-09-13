@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace Toolbox.Editor
 {
-    public abstract class OrderedGroupDrawer<T> : OrderedPresetDrawer<T> where T : OrderedGroupAttribute
+    public abstract class OrderedGroupDrawer<T> : OrderedPresetDrawer<T> where T : ToolboxGroupAttribute
     {
         /// <summary>
         /// Collection of all grouped properties by stored group name.
