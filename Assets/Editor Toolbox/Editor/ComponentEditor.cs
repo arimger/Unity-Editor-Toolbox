@@ -27,7 +27,9 @@ namespace Toolbox.Editor
         protected static Dictionary<Type, ToolboxAreaDrawerBase> areaDrawers = new Dictionary<Type, ToolboxAreaDrawerBase>();
 
         protected static Dictionary<Type, ToolboxPropertyDrawerBase> propertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
- 
+
+        protected static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawer = new Dictionary<Type, ToolboxConditionDrawerBase>();
+
 
         /// <summary>
         /// Initializes all needed <see cref="ToolboxPropertyDrawer{T}"/>s using EditorSettings asset.
@@ -82,11 +84,6 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// All available drawers setted from <see cref="ComponentEditorSettings"/>.
-        /// </summary>
-        protected List<OrderedDrawerBase> drawers = new List<OrderedDrawerBase>();
-
-        /// <summary>
         /// All available and serialized fields(excluding children).
         /// </summary>
         protected List<SerializedProperty> properties = new List<SerializedProperty>();
@@ -109,9 +106,7 @@ namespace Toolbox.Editor
         { }
 
         /// <summary>
-        /// Handles desired property display process. Starts drawing using all known and needed
-        /// <see cref="ToolboxPropertyDrawer{T}"/>s or standard
-        /// <see cref="EditorGUI.PropertyField(Rect, SerializedProperty)"/> method.
+        /// Handles desired property display process.
         /// </summary>
         /// <param name="property">Property to display.</param>
         protected virtual void HandleProperty(SerializedProperty property)
@@ -123,6 +118,7 @@ namespace Toolbox.Editor
                 return;
             }
 
+            //handle area attributes
             var areaAttributes = property.GetAttributes<ToolboxAreaAttribute>();
             Array.Sort(areaAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
             //begin all needed area drawers in proper order
@@ -136,7 +132,28 @@ namespace Toolbox.Editor
                 {
                     Debug.LogError("Error - " + areaAttributes[i].GetType() + " is not supported. Assign it in ComponentEditorSettings.");
                 }
-            }  
+            }
+
+            //handle condition attribute(only one allowed)
+            var conditionAttribute = property.GetAttribute<ToolboxConditionAttribute>();
+            var conditionState = PropertyCondition.Valid;
+            if (conditionState == PropertyCondition.NonValid)
+            {
+                //end all area drawers without drawing property
+                for (var i = areaAttributes.Length - 1; i >= 0; i--)
+                {
+                    if (areaDrawers.ContainsKey(areaAttributes[i].GetType()))
+                    {
+                        areaDrawers[areaAttributes[i].GetType()].OnGuiEnd(areaAttributes[i]);
+                    }
+                }
+                return;
+            }
+            if (conditionState == PropertyCondition.Disabled)
+            {
+                EditorGUI.BeginDisabledGroup(true);
+            }
+
             //get property attribute(only one allowed)
             var propertyAttribute = property.GetAttribute<ToolboxPropertyAttribute>();
             if (propertyAttribute != null)
@@ -155,7 +172,10 @@ namespace Toolbox.Editor
             {
                 EditorGUILayout.PropertyField(property, property.isExpanded);
             }
-
+            if (conditionState == PropertyCondition.Disabled)
+            {
+                EditorGUI.EndDisabledGroup();
+            }
             //end all needed area drawers in proper order
             for (var i = areaAttributes.Length - 1; i >= 0; i--)
             {
