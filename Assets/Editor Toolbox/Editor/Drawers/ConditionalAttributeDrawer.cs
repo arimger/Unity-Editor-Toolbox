@@ -27,7 +27,7 @@ namespace Toolbox.Editor
                 else
                 {
                     Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                     " - " + PropertyToCheck + "does not exists.");
+                                     " - " + PropertyToCheck + " does not exists.");
                 }
             }
             else

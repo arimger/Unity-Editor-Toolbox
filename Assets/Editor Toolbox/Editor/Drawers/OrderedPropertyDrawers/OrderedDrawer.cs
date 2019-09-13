@@ -6,10 +6,10 @@ using UnityEditor;
 namespace Toolbox.Editor
 {
     /// <summary>
-    /// Representation of all ordered drawers based on <see cref="OrderedAttribute"/>.
+    /// Representation of all ordered drawers based on <see cref="ToolboxAttribute"/>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class OrderedDrawer<T> : OrderedDrawerBase where T : OrderedAttribute
+    public abstract class OrderedDrawer<T> : OrderedDrawerBase where T : ToolboxAttribute
     {
         /// <summary>
         /// Tries to display property excluding all non-target properties.

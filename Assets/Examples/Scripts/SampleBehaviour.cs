@@ -88,7 +88,7 @@ public class SampleBehaviour : MonoBehaviour
 
     [BoxedHeader("12")]
 
-    [ReadOnly]
+    [ReadOnlyField]
     public string var11 = "Im read only";
 
     [BoxedHeader("13")]
@@ -126,15 +126,15 @@ public class SampleBehaviour : MonoBehaviour
     [Directory]
     public string directory;
 
-    [OrderedSpace(10, 10)]
+    //[OrderedSpace(10, 10)]
 
     [ReorderableList(ListStyle.Boxed, elementLabel:"GameObject")]
     public GameObject[] list;
 
-    [Group("Custom group")]
-    public int var14;
-    [Separator]
-    public int var15;
-    [Group("Custom group")]
-    public int var16;
+    //[Group("Custom group")]
+    //public int var14;
+    //[Separator]
+    //public int var15;
+    //[Group("Custom group")]
+    //public int var16;
 }

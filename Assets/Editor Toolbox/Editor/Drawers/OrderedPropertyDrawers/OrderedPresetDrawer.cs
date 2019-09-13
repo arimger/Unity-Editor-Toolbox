@@ -11,7 +11,7 @@ namespace Toolbox.Editor
     /// Constructor-based drawer, needs list of <see cref="SerializedProperty"/> objects for data preset.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class OrderedPresetDrawer<T> : OrderedDrawer<T> where T : OrderedAttribute
+    public abstract class OrderedPresetDrawer<T> : OrderedDrawer<T> where T : ToolboxAttribute
     {
         /// <summary>
         /// Cached all target properties during preset.

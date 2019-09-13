@@ -8,7 +8,7 @@ using UnityEditor;
 
 namespace Toolbox.Editor
 {
-    public class BoxedGroupDrawer : OrderedGroupDrawer<GroupAttribute>
+    public class BoxedGroupDrawer : OrderedGroupDrawer<BoxedGroupAttribute>
     {
         public BoxedGroupDrawer() : base(null)
         { }
@@ -17,7 +17,7 @@ namespace Toolbox.Editor
         { }
 
 
-        protected override void OnBeginGroup(GroupAttribute attribute)
+        protected override void OnBeginGroup(BoxedGroupAttribute attribute)
         {
             EditorGUILayout.BeginHorizontal(Style.headerBackgroundStyle);
             EditorGUILayout.LabelField(attribute.GroupName, Style.headerStyle);
@@ -28,7 +28,7 @@ namespace Toolbox.Editor
             EditorGUI.indentLevel++;
         }
 
-        protected override void OnEndGroup(GroupAttribute attribute)
+        protected override void OnEndGroup(BoxedGroupAttribute attribute)
         {
             EditorGUI.indentLevel--;
             GUILayout.Space(Style.spacing * 2);

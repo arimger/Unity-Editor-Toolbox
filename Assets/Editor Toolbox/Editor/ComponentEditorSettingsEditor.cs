@@ -8,18 +8,20 @@ namespace Toolbox.Editor
     [CanEditMultipleObjects, CustomEditor(typeof(ComponentEditorSettings), true, isFallback = false)]
     public class ComponentEditorSettingsEditor : ComponentEditor
     {
-        private SerializedProperty useOrderedDrawersProperty;
+        private SerializedProperty useToolboxDrawersProperty;
 
-        private ReorderableList presetHandlersList;
-        private ReorderableList propertyHandlersList;
+        private ReorderableList areaDrawerHandlersList;
+        private ReorderableList groupDrawerHandlersList;
+        private ReorderableList propertyDrawerHandlersList;
 
 
         protected override void OnEnable()
         {
-            useOrderedDrawersProperty = serializedObject.FindProperty("useOrderedDrawers");
+            useToolboxDrawersProperty = serializedObject.FindProperty("useToolboxDrawers");
 
-            presetHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("presetHandlers"));
-            propertyHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("propertyHandlers"));
+            areaDrawerHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("areaDrawerHandlers"));
+            groupDrawerHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("groupDrawerHandlers"));
+            propertyDrawerHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("propertyDrawerHandlers"));
         }
 
         protected override void OnDisable()
@@ -29,16 +31,15 @@ namespace Toolbox.Editor
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-            EditorGUILayout.PropertyField(useOrderedDrawersProperty);
-            if (useOrderedDrawersProperty.boolValue)
+            EditorGUILayout.PropertyField(useToolboxDrawersProperty);
+            if (useToolboxDrawersProperty.boolValue)
             {
-                EditorGUILayout.HelpBox("Select all wanted property drawers in specific order. " +
-                        "Remember that they will be drawn in provided way, " +
-                        "if any ordered drawer interrupts this cycle, " +
-                        "then each next one will be ignored.", MessageType.Info);
-                presetHandlersList.DoLayoutList();
-                EditorGUILayout.Space();
-                propertyHandlersList.DoLayoutList();
+                EditorGUILayout.HelpBox("Select all wanted drawers and press \"Apply\" button.", MessageType.Info);
+                areaDrawerHandlersList.DoLayoutList();
+                EditorGUILayout.Separator();
+                groupDrawerHandlersList.DoLayoutList();
+                EditorGUILayout.Separator();
+                propertyDrawerHandlersList.DoLayoutList();
             }
             serializedObject.ApplyModifiedProperties();
 
@@ -59,7 +60,7 @@ namespace Toolbox.Editor
 
             static Style()
             {
-                buttonContent = new GUIContent("Apply", "Apply all changes");
+                buttonContent = new GUIContent("Apply", "Apply changes");
 
                 buttonOptions = new GUILayoutOption[]
                 {

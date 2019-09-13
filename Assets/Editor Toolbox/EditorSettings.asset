@@ -12,13 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b97690dbca7025a4ebeae4ac93229110, type: 3}
   m_Name: EditorSettings
   m_EditorClassIdentifier: 
-  useOrderedDrawers: 1
-  presetHandlers:
-  - classReference: Toolbox.Editor.BoxedGroupDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.HorizontalGroupDrawer, Toolbox-Editor
-  propertyHandlers:
-  - classReference: Toolbox.Editor.LineDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.SpaceDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.ConditionalPropertyDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.DisabledOnlyPropertyDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.CollectionPropertyDrawer, Toolbox-Editor
+  useToolboxDrawers: 1
+  areaDrawerHandlers:
+  - classReference: Toolbox.Editor.Drawers.DisableAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.DisableIfAttributeDrawer, Toolbox-Editor
+  groupDrawerHandlers:
+  - classReference: Toolbox.Editor.Drawers.BoxedGroupAttributeDrawer, Toolbox-Editor
+  propertyDrawerHandlers:
+  - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
