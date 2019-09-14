@@ -967,6 +967,7 @@ namespace Toolbox.Editor.Internal
             get; set;
         }
 
+
         /// <summary>
         /// Static representation of standard list style.
         /// Provides all needed <see cref="GUIStyle"/>s, paddings, widths, heights, etc.

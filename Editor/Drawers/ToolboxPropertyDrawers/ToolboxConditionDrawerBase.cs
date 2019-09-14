@@ -10,7 +10,7 @@ namespace Toolbox.Editor.Drawers
         Disabled
     }
 
-    public abstract class ToolboxConditionDrawerBase
+    public abstract class ToolboxConditionDrawerBase : ToolboxDrawer
     {
         public virtual PropertyCondition OnGuiValidate(SerializedProperty property)
         {

@@ -1,10 +1,48 @@
-﻿namespace Toolbox.Editor.Drawers
+﻿using UnityEngine;
+using UnityEditor;
+
+namespace Toolbox.Editor.Drawers
 {
-    public class ToolboxConditionDrawer<T> : ToolboxConditionDrawerBase where T : ToolboxAttribute
+    public class ToolboxConditionDrawer<T> : ToolboxConditionDrawerBase where T : ToolboxConditionAttribute
     {
         /// <summary>
         /// Attribute type associated with this drawer.
         /// </summary>
         public static System.Type GetAttributeType() => typeof(T);
+
+
+        public override sealed PropertyCondition OnGuiValidate(SerializedProperty property)
+        {
+            var targetAttribute = property.GetAttribute<T>();
+            if (targetAttribute != null)
+            {
+                return OnGuiValidate(property, targetAttribute);
+            }
+            else
+            {
+                Debug.LogError("Target attribute not found.");
+            }
+
+            return base.OnGuiValidate(property);
+        }
+
+        public override sealed PropertyCondition OnGuiValidate(SerializedProperty property, ToolboxAttribute attribute)
+        {
+            if (attribute is T targetAttribute)
+            {
+                return OnGuiValidate(property, targetAttribute);
+            }
+            else
+            {
+                Debug.LogError("Target attribute not found.");
+            }
+
+            return base.OnGuiValidate(property, attribute);
+        }
+
+        public virtual PropertyCondition OnGuiValidate(SerializedProperty property, T attribute)
+        {
+            return base.OnGuiValidate(property, attribute);
+        }
     }
 }

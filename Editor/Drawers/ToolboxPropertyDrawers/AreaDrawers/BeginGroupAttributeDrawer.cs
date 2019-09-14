@@ -3,11 +3,25 @@ using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class BoxedGroupAttributeDrawer : ToolboxGroupDrawer<GroupAttribute>
+    public class BeginGroupAttributeDrawer : ToolboxAreaDrawer<BeginGroupAttribute>
     {
-        /// <summary>
-        /// Custom styling class.
-        /// </summary>
+        public override void OnGuiBegin(BeginGroupAttribute attribute)
+        {
+            if (attribute.Label != null)
+            {
+                EditorGUILayout.BeginHorizontal(Style.headerBackgroundStyle);
+                EditorGUILayout.LabelField(attribute.Label, Style.headerStyle);
+                EditorGUILayout.EndHorizontal();
+                //remove additional space between header and vertical group
+                GUILayout.Space(-Style.spacing * 2);
+            }
+
+            EditorGUILayout.BeginVertical(Style.sectionBackgroundStyle);
+            //add additional space between vertical group and first property
+            GUILayout.Space(Style.spacing * 2);
+        }
+
+
         private static class Style
         {
             internal static readonly float spacing = 2.5f;
