@@ -44,7 +44,6 @@ namespace Toolbox.Editor.Drawers
 
         public virtual void OnGui(SerializedProperty property, T attribute)
         {
-
             base.OnGui(property);
         }
     }

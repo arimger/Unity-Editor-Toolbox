@@ -13,6 +13,7 @@ namespace Toolbox.Editor
         private ReorderableList areaDrawerHandlersList;
         private ReorderableList groupDrawerHandlersList;
         private ReorderableList propertyDrawerHandlersList;
+        private ReorderableList conditionDrawerHandlersList;
 
 
         protected override void OnEnable()
@@ -22,6 +23,7 @@ namespace Toolbox.Editor
             areaDrawerHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("areaDrawerHandlers"));
             groupDrawerHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("groupDrawerHandlers"));
             propertyDrawerHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("propertyDrawerHandlers"));
+            conditionDrawerHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("conditionDrawerHandlers"));
         }
 
         protected override void OnDisable()
@@ -35,11 +37,13 @@ namespace Toolbox.Editor
             if (useToolboxDrawersProperty.boolValue)
             {
                 EditorGUILayout.HelpBox("Select all wanted drawers and press \"Apply\" button.", MessageType.Info);
-                areaDrawerHandlersList.DoLayoutList();
+                areaDrawerHandlersList.DoLayoutList();    
                 EditorGUILayout.Separator();
                 groupDrawerHandlersList.DoLayoutList();
                 EditorGUILayout.Separator();
                 propertyDrawerHandlersList.DoLayoutList();
+                EditorGUILayout.Separator();
+                conditionDrawerHandlersList.DoLayoutList();
             }
             serializedObject.ApplyModifiedProperties();
 

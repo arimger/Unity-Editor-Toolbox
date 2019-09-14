@@ -126,8 +126,6 @@ public class SampleBehaviour : MonoBehaviour
     [Directory]
     public string directory;
 
-    //[OrderedSpace(10, 10)]
-
     [ReorderableList(ListStyle.Boxed, elementLabel:"GameObject")]
     public GameObject[] list;
 

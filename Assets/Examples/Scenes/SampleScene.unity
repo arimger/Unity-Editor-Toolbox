@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.5748171, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2002,7 +2002,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c96bc1945c12e5246b1faac636a63516, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  var1: 0
+  var1: 82
   targetTag: MainCamera
   progressBar: 25.4
   newLabel: 25.4
@@ -2028,6 +2028,7 @@ MonoBehaviour:
   randomValue: -1.8507824
   directory: Examples/Models
   list:
+  - {fileID: 2133702603}
   - {fileID: 2133702603}
   - {fileID: 2133702603}
 --- !u!4 &959025299
@@ -3681,50 +3682,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1754315183}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1871822359
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1871822361}
-  - component: {fileID: 1871822360}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1871822360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1871822359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb9bdeed55d92764f9936e329bba46d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  list: 000000000000000000000000
---- !u!4 &1871822361
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1871822359}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1885889718
 PrefabInstance:
   m_ObjectHideFlags: 0

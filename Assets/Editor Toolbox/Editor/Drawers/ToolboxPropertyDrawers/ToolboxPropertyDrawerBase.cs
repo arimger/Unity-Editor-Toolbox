@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
-    public abstract class ToolboxPropertyDrawerBase
+    public abstract class ToolboxPropertyDrawerBase : ToolboxDrawer
     {
         public virtual void OnGui(SerializedProperty property)
         {

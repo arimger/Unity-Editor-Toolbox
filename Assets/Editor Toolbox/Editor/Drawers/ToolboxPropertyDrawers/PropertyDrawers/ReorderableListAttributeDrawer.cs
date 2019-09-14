@@ -10,10 +10,21 @@ namespace Toolbox.Editor.Drawers
 
     public class ReorderableListAttributeDrawer : ToolboxPropertyDrawer<ReorderableListAttribute>
     {
+        //NOTE: we have to clear cache when components/selection change;
+        [InitializeOnLoadMethod]
+        public static void InitializeDrawer()
+        {
+            Selection.selectionChanged += () =>
+            {
+                listInstances.Clear();
+            };
+        }
+
+
         /// <summary>
         /// Collection of all stored <see cref="ReorderableList"/> instances by its <see cref="SerializedObject"/>.
         /// </summary>
-        private Dictionary<SerializedObject, ReorderableList> reorderableLists = new Dictionary<SerializedObject, ReorderableList>();
+        private readonly static Dictionary<string, ReorderableList> listInstances = new Dictionary<string, ReorderableList>();
 
 
         /// <summary>
@@ -23,17 +34,18 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         public override void OnGui(SerializedProperty property, ReorderableListAttribute attribute)
         {
-            var key = property.serializedObject;
-            if (!reorderableLists.ContainsKey(key))
+            var key = property.serializedObject.targetObject.GetInstanceID() + "-" + property.name;
+            
+            if (!listInstances.ContainsKey(key))
             {
-                reorderableLists[key] = ToolboxEditorUtility.CreateList(property,
+                listInstances[key] = ToolboxEditorUtility.CreateList(property,
                     attribute.ListStyle,
                     attribute.ElementLabel,
                     attribute.FixedSize,
                     attribute.Draggable);
             }
 
-            reorderableLists[key].DoLayoutList();
+            listInstances[key].DoLayoutList();
         }
     }
 }
