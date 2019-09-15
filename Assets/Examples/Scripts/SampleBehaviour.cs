@@ -126,6 +126,9 @@ public class SampleBehaviour : MonoBehaviour
     [Directory]
     public string directory;
 
+    [HeaderArea("Toolbox Attributes", HeaderStyle.Boxed)]
+    [HeaderArea("1", HeaderStyle.Boxed)]
+
     [ReorderableList(ListStyle.Boxed, elementLabel:"GameObject")]
     public GameObject[] list;
 

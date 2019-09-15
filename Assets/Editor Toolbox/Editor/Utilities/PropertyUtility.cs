@@ -9,15 +9,12 @@ namespace Toolbox.Editor
     {
         public static T GetAttribute<T>(this SerializedProperty property) where T : Attribute
         {
-            T[] attributes = GetAttributes<T>(property);
-            return attributes.Length > 0 ? attributes[0] : null;
+            return ReflectionUtility.GetField(GetTargetObject(property), property.name).GetCustomAttribute<T>(true);
         }
 
         public static T[] GetAttributes<T>(this SerializedProperty property) where T : Attribute
         {
-            FieldInfo fieldInfo = ReflectionUtility.GetField(GetTargetObject(property), property.name);
-
-            return (T[])fieldInfo.GetCustomAttributes(typeof(T), true);
+            return (T[])ReflectionUtility.GetField(GetTargetObject(property), property.name).GetCustomAttributes(typeof(T), true);
         }
 
         public static UnityEngine.Object GetTargetObject(this SerializedProperty property)

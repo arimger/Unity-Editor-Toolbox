@@ -166,7 +166,7 @@ namespace Toolbox.Editor
                     {
                         HandleToolboxProperty(property.Copy());
                     }
-                }   
+                }
             }
             serializedObject.ApplyModifiedProperties();
         }
@@ -204,6 +204,8 @@ namespace Toolbox.Editor
 
                 //get all available area attributes
                 areaAttributes = property.GetAttributes<ToolboxAreaAttribute>();
+                //keep area attributes in proper order
+                Array.Sort(areaAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
 
                 //get only one attribute per type
                 groupAttribute = property.GetAttribute<ToolboxGroupAttribute>();
@@ -217,8 +219,6 @@ namespace Toolbox.Editor
             /// </summary>
             public void OnGui()
             {
-                //handle area attributes
-                Array.Sort(areaAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
                 //begin all needed area drawers in proper order
                 for (var i = 0; i < areaAttributes.Length; i++)
                 {
