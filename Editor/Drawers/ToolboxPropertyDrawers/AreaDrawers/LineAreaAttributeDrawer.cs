@@ -1,6 +1,6 @@
 ﻿namespace Toolbox.Editor.Drawers
 {
-    public class LineDrawer : ToolboxAreaDrawer<LineAreaAttribute>
+    public class LineAreaAttributeDrawer : ToolboxAreaDrawer<LineAreaAttribute>
     {
         public override void OnGuiBegin(LineAreaAttribute attribute)
         {

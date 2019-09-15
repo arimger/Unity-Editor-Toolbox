@@ -8,9 +8,9 @@ using UnityEngine;
 using UnityEditor;
 using PixelCoor = UnityEngine.Vector2Int;
 
-namespace Toolbox.Editor.Tools
+namespace Toolbox.Editor.Tools.Wizards
 {
-    public sealed class ViewGenerator : ScriptableWizard
+    public sealed class ViewGeneratorWizard : ScriptableWizard
     {
         private const string assetSaveLocation = "Assets/ToolAssets/Views/";
 
@@ -61,7 +61,7 @@ namespace Toolbox.Editor.Tools
                 Directory.CreateDirectory(assetSaveLocation);
             }
 
-            DisplayWizard("Generate Field of View", typeof(ViewGenerator));
+            DisplayWizard("Generate Field of View", typeof(ViewGeneratorWizard));
         }
 
         /// <summary>

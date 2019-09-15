@@ -39,7 +39,10 @@ namespace Toolbox.Editor
                 EditorGUILayout.HelpBox("Select all wanted drawers and press \"Apply\" button.", MessageType.Info);
                 areaDrawerHandlersList.DoLayoutList();    
                 EditorGUILayout.Separator();
+                EditorGUILayout.HelpBox("Work in progress.", MessageType.Warning);
+                EditorGUI.BeginDisabledGroup(true);
                 groupDrawerHandlersList.DoLayoutList();
+                EditorGUI.EndDisabledGroup();
                 EditorGUILayout.Separator();
                 propertyDrawerHandlersList.DoLayoutList();
                 EditorGUILayout.Separator();

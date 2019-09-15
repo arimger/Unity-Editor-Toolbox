@@ -6,9 +6,9 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor.Tools
+namespace Toolbox.Editor.Tools.Wizards
 {
-    public sealed class GridGenerator : ScriptableWizard
+    public sealed class GridGeneratorWizard : ScriptableWizard
     {
         private const string assetSaveLocation = "Assets/ToolAssets/Grids/";
 
@@ -38,7 +38,7 @@ namespace Toolbox.Editor.Tools
                 Directory.CreateDirectory(assetSaveLocation);
             }
 
-            DisplayWizard("Generate Grid", typeof(GridGenerator));
+            DisplayWizard("Generate Grid", typeof(GridGeneratorWizard));
         }
 
         /// <summary>
