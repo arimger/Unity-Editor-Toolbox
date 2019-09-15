@@ -14,17 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useToolboxDrawers: 1
   areaDrawerHandlers:
+  - classReference: Toolbox.Editor.Drawers.BeginGroupAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.EndGroupAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.EndHorizontalAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.BeginIndentAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.EndIndentAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.BeginGroupAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.EndGroupAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.LineAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HeaderAreaAttributeDrawer, Toolbox-Editor
-  groupDrawerHandlers:
-  - classReference: Toolbox.Editor.Drawers.BoxedGroupAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.LineAreaAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox-Editor
+  groupDrawerHandlers: []
   propertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
   conditionDrawerHandlers:

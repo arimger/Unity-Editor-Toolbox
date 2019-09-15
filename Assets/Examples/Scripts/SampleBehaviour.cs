@@ -132,10 +132,24 @@ public class SampleBehaviour : MonoBehaviour
     [ReorderableList(ListStyle.Boxed, elementLabel:"GameObject")]
     public GameObject[] list;
 
-    //[Group("Custom group")]
-    //public int var14;
-    //[Separator]
-    //public int var15;
-    //[Group("Custom group")]
-    //public int var16;
+    [HeaderArea("2", HeaderStyle.Boxed)]
+
+    [BeginGroup("Custom group")]
+    public int var14;
+    [Separator]
+    public int var15;
+    public int var16;
+    [BeginIndent]
+    public int var17;
+    public int var18;
+    [EndIndent]
+    public int var19;
+    [EndGroup]
+    public int var20;
+
+
+    private void Start()
+    {
+        transform.hideFlags = HideFlags.HideInInspector;
+    }
 }

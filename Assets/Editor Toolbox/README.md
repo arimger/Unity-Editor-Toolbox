@@ -17,9 +17,9 @@ Copy and paste `Editor Toolbox` directory into your project (basically into `Ass
 
 ## Attributes
 
-### Standard Property Drawers
+### Standard Drawers
 
-Drawers based on build-in classes **PropertyDrawer** and associated **PropertyAttribute**.
+Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associated **PropertyAttribute**.
 
 &nbsp;
 
@@ -64,7 +64,8 @@ Drawers based on build-in classes **PropertyDrawer** and associated **PropertyAt
 
 #### ConditionalDisableAttribute
 
-TODO
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc24.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc25.png)
 
 #### AssetPreviewAttribute
 
@@ -123,42 +124,56 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2;
 
 #### DirectoryAttribute
 
-TODO
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc26.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc27.png)
 
 #### BroadcastButtonAttribute
 
-TODO
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc28.png)
 
 #### InstanceButtonAttribute
 
-TODO
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc29.png)
 
-### Ordered Property Drawers
+### Toolbox Drawers
 
-Drawers based on classes **OrderedDrawer** and associated **OrderedAttribute**.  
+Drawers based on classes **ToolboxDrawer** and associated **ToolboxAttribute**.  
 For proper work they need at least one settings file located in your project.  
 Predefined one - `Editor Toolbox/EditorSettings.asset`.
 
 &nbsp;
 
-> Editor Toolbox/Scripts/Attributes/OrderedAttributes\
-> Editor Toolbox/Editor/Drawers/OrderedDrawers
+> Editor Toolbox/Scripts/Attributes/ToolboxAttributes\
+> Editor Toolbox/Editor/Drawers/ToolboxDrawers
 
 &nbsp;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc5.png)
 
-#### GroupAttribute
+#### AreaAttributes
+
+Display/create something before and after property in desired order(using Order property). In fact **ToolboxAreaDrawers** are like extended version of **DecoratorDrawers**.
+
 ```
-[Group("Group1")]
+[BeginGroup("Group1")]
 public int var1;
-[Group("Group1")]
 public int var2;
 public int var3;
-[Group("Group1")]
+[EndGroup]
 public int var4;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc18.png)
+```
+[BeginIndent]
+public int var1;
+public int var2;
+public int var3;
+[EndIndent]
+public int var4;
+```
+```
+[SpaceArea(spaceBefore = 10.0f, spaceAfter = 5.0f)]
+public int var1;
+```
 
 #### ReorderableListAttribute
 
@@ -169,13 +184,21 @@ public List<string> standardStyleList;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc7.png)
 
-#### DrawIfAttribute
+#### HideAttribute
 
-Same like standard PropertyDrawer for **ConditionalFieldAttribute** but works with Enum types and arrays/lists.
+Hides any property.
 
-#### ReadOnlyAttribute
+#### HideIfAttribute
 
-Same like standard PropertyDrawer for **ReadOnlyFieldAttribute** but works with arrays and lists.
+Same like standard PropertyDrawer for **ConditionalHideAttribute** but works with Enum types and arrays/lists. Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
+
+#### DisableAttribute
+
+Disables any property. Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
+
+#### DisableIfAttribute
+
+Same like standard PropertyDrawer for **ConditionalDisableAttribute** but works with Enum types and arrays/lists. Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
 
 ```
 [ReadOnly]
@@ -209,7 +232,7 @@ public GameObject[] boxedStyleList = new GameObject[4];
 ## Tools and Editors
 
 ### Terrain Editor
-Editor Toolbox/Editor/Tools/TerrainToolEditor.cs
+Editor Toolbox/Editor/Tools/Editors/TerrainToolEditor.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc1.png)
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc9.png)
@@ -226,11 +249,11 @@ TODO
 
 
 ### Field of View Generator
-Editor Toolbox/Editor/Tools/AssetGenerators/ViewGenerator.cs
+Editor Toolbox/Editor/Tools/Wizards/ViewGeneratorWizard.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc3.png)
 
 ### Grid Generator
-Editor Toolbox/Editor/Tools/AssetGenerators/GridGenerator.cs
+Editor Toolbox/Editor/Tools/Wizards/GridGeneratorWizard.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc4.png)

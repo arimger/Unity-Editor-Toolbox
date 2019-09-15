@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -12,19 +13,28 @@ namespace Toolbox.Editor.Drawers
     {
         //NOTE: we have to clear cache when components/selection change;
         [InitializeOnLoadMethod]
-        public static void InitializeDrawer()
+        private static void InitializeDrawer()
         {
-            Selection.selectionChanged += () =>
-            {
-                listInstances.Clear();
-            };
+            Selection.selectionChanged += DeinitializeDrawer;
+        }
+
+        private static void DeinitializeDrawer()
+        {
+            listInstances.Clear();
+        }
+
+        private static string GenerateKey(SerializedProperty property)
+        {
+            //TODO: check whenever hash code is outdated and reinitialize drawer
+            return property.serializedObject.GetHashCode() + "-" +
+                   property.serializedObject.targetObject.GetInstanceID() + "-" + property.name;
         }
 
 
         /// <summary>
         /// Collection of all stored <see cref="ReorderableList"/> instances by its <see cref="SerializedObject"/>.
         /// </summary>
-        private readonly static Dictionary<string, ReorderableList> listInstances = new Dictionary<string, ReorderableList>();
+        private static Dictionary<string, ReorderableList> listInstances = new Dictionary<string, ReorderableList>();
 
 
         /// <summary>
@@ -34,18 +44,18 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         public override void OnGui(SerializedProperty property, ReorderableListAttribute attribute)
         {
-            var key = property.serializedObject.targetObject.GetInstanceID() + "-" + property.name;
-            
-            if (!listInstances.ContainsKey(key))
+            var key = GenerateKey(property);
+
+            if (!listInstances.TryGetValue(key, out ReorderableList list))
             {
-                listInstances[key] = ToolboxEditorUtility.CreateList(property,
+                list = listInstances[key] = ToolboxEditorUtility.CreateList(property,
                     attribute.ListStyle,
                     attribute.ElementLabel,
                     attribute.FixedSize,
                     attribute.Draggable);
             }
 
-            listInstances[key].DoLayoutList();
+            list.DoLayoutList(); 
         }
     }
 }

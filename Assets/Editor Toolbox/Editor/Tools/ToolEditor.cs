@@ -4,7 +4,7 @@ using UnityTools = UnityEditor.Tools;
 
 //TODO:
 
-namespace Toolbox.Editor.Tools.Editors
+namespace Toolbox.Editor.Tools
 {
     public abstract class ToolEditor : ComponentEditor
     {
