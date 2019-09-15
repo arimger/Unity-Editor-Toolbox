@@ -18,7 +18,7 @@ namespace Toolbox.Editor.Tools.Editors
     /// Editor for <see cref="TerrainTool"/> component. Provides tools to manipulate game environment.
     /// </summary>
     [CustomEditor(typeof(TerrainTool), true, isFallback = false)]
-    public class TerrainToolEditor : ToolEditor
+    public sealed class TerrainToolEditor : ToolEditor
     {
         private static bool settingsSectionToggle = true;
         private static bool paintingToolToggle;
@@ -56,9 +56,6 @@ namespace Toolbox.Editor.Tools.Editors
             brushPrefabsProperty = serializedObject.FindProperty("brushPrefabs");
 
             brushPrefabsList = ToolboxEditorUtility.CreateLinedList(brushPrefabsProperty, "Item");
-
-            var treeIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Tree Icon.png");
-            var bushIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Bush Icon.png");
         }
 
         /// <summary>
@@ -78,10 +75,11 @@ namespace Toolbox.Editor.Tools.Editors
             EditorPrefs.SetFloat("TerrainEditor.brushDensity", brushDensity);
         }
 
+
         /// <summary>
         /// Scene view managment used in tool functionality.
         /// </summary>
-        protected virtual void OnSceneGUI()
+        private void OnSceneGUI()
         {
             if (!paintingToolToggle)
             {
@@ -119,21 +117,6 @@ namespace Toolbox.Editor.Tools.Editors
 
             SceneView.RepaintAll();
         }
-
-        /// <summary>
-        /// Editor re-draw method.
-        /// </summary>
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-
-            serializedObject.Update();
-            DrawButtonsStrip();
-            DrawToolSection();
-            DrawSettingsSection();
-            serializedObject.ApplyModifiedProperties();
-        }
-
 
         /// <summary>
         /// Draws all functional buttons(tool toggles).
@@ -223,7 +206,7 @@ namespace Toolbox.Editor.Tools.Editors
 
             settingsSectionToggle = EditorGUILayout.Foldout(settingsSectionToggle, "Settings", Style.headerToggleStyle);
             GUILayout.EndHorizontal();
-            //all settings fields
+            //draw all settings fields
             if (settingsSectionToggle)
             {
                 EditorGUILayout.Space();
@@ -238,6 +221,22 @@ namespace Toolbox.Editor.Tools.Editors
 
             EditorGUILayout.EndVertical();
         }
+
+
+        /// <summary>
+        /// Editor re-draw method.
+        /// </summary>
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+
+            serializedObject.Update();
+            DrawButtonsStrip();
+            DrawToolSection();
+            DrawSettingsSection();
+            serializedObject.ApplyModifiedProperties();
+        }
+
 
         #region Creation methods
 
@@ -356,7 +355,7 @@ namespace Toolbox.Editor.Tools.Editors
                 brushColor = new Color(0, 0, 0, 0.4f);
 
                 treeIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Tree Icon.png");
-                noneIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor None Icon.png");
+                noneIcon = null;//ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor None Icon.png");
                 brushIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Brush Icon.png");
                 terrainIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Terrain Icon.png");
                 settingsIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Settings Icon.png");
