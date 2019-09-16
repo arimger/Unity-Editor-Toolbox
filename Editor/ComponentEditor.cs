@@ -20,20 +20,20 @@ namespace Toolbox.Editor
     [CanEditMultipleObjects, CustomEditor(typeof(Object), true, isFallback = true)]
     public class ComponentEditor : UnityEditor.Editor
     {
-        protected static ComponentEditorSettings settings;
+        private static ComponentEditorSettings settings;
 
 
-        protected static Dictionary<Type, ToolboxAreaDrawerBase> areaDrawers = new Dictionary<Type, ToolboxAreaDrawerBase>();
+        private static Dictionary<Type, ToolboxAreaDrawerBase> areaDrawers = new Dictionary<Type, ToolboxAreaDrawerBase>();
 
-        protected static Dictionary<Type, ToolboxGroupDrawerBase> groupDrawers = new Dictionary<Type, ToolboxGroupDrawerBase>();
+        private static Dictionary<Type, ToolboxGroupDrawerBase> groupDrawers = new Dictionary<Type, ToolboxGroupDrawerBase>();
 
-        protected static Dictionary<Type, ToolboxPropertyDrawerBase> propertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
+        private static Dictionary<Type, ToolboxPropertyDrawerBase> propertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
 
-        protected static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers = new Dictionary<Type, ToolboxConditionDrawerBase>();
+        private static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers = new Dictionary<Type, ToolboxConditionDrawerBase>();
 
 
         /// <summary>
-        /// Initializes all needed <see cref="ToolboxDrawer"/>s using EditorSettings asset.
+        /// Initializes EditorSettings asset.
         /// </summary>
         [InitializeOnLoadMethod]
         private static void InitializeEditor()
@@ -44,8 +44,19 @@ namespace Toolbox.Editor
             var path = AssetDatabase.GUIDToAssetPath(guids.First());
 
             settings = AssetDatabase.LoadAssetAtPath(path, typeof(ComponentEditorSettings)) as ComponentEditorSettings;
+        }
 
-            if (!settings) return;
+        /// <summary>
+        /// Initializes all needed <see cref="ToolboxDrawer"/>s using previously cached EditorSettings asset.
+        /// </summary>
+        [InitializeOnLoadMethod]
+        private static void InitializeDrawers()
+        {
+            if (!settings)
+            {
+                Debug.LogWarning("EditorSettings not found. Cannot initialize ToolboxDrawers.");
+                return;
+            }
 
             //local method used in drawer creation
             void CreateDrawer<T>(Type drawerType, Dictionary<Type, T> drawersCollection) where T : ToolboxDrawer
@@ -56,7 +67,7 @@ namespace Toolbox.Editor
                 var targetType = GetTargetType(drawerType);
                 if (drawersCollection.ContainsKey(targetType))
                 {
-                    Debug.LogWarning(targetType + " is already associated to more than one editor drawer.");
+                    Debug.LogWarning(targetType + " is already associated to more than one ToolboxDrawer.");
                     return;
                 }
                 drawersCollection.Add(targetType, drawer);
@@ -127,12 +138,12 @@ namespace Toolbox.Editor
         /// <param name="property">Property to display.</param>
         protected virtual void HandleToolboxProperty(SerializedProperty property)
         {
-            if (!propertyHandlers.ContainsKey(property.name))
+            if (!propertyHandlers.TryGetValue(property.name, out PropertyHandler propertyHandler))
             {
-                propertyHandlers[property.name] = new PropertyHandler(property);
+                propertyHandlers[property.name] = propertyHandler = new PropertyHandler(property);
             }
 
-            propertyHandlers[property.name].OnGui();
+            propertyHandler.OnGui();
         }
 
 
@@ -147,12 +158,14 @@ namespace Toolbox.Editor
             var property = serializedObject.GetIterator();
             if (property.NextVisible(true))
             {
+                //draw standard script property
                 EditorGUI.BeginDisabledGroup(true);
                 EditorGUILayout.PropertyField(property);
                 EditorGUI.EndDisabledGroup();
 
                 if (!settings || !settings.UseToolboxDrawers)
                 {
+                    //draw every property in build-in process
                     while (property.NextVisible(false))
                     {
                         HandleStandardProperty(property.Copy());
@@ -160,6 +173,7 @@ namespace Toolbox.Editor
                 }
                 else
                 {
+                    //draw every property using ToolboxAttributes&Drawers
                     while (property.NextVisible(false))
                     {
                         HandleToolboxProperty(property.Copy());
