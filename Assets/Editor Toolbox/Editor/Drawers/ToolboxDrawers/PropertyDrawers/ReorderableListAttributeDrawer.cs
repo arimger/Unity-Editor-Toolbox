@@ -25,14 +25,14 @@ namespace Toolbox.Editor.Drawers
 
         private static string GenerateKey(SerializedProperty property)
         {
-            //TODO: check whenever hash code is outdated and reinitialize drawer
-            return property.serializedObject.GetHashCode() + "-" +
-                   property.serializedObject.targetObject.GetInstanceID() + "-" + property.name;
+            //TODO: check whenever hash code is outdated and reinitialize drawer if needed
+            return property.serializedObject.GetHashCode() + "-" + property.name;
+            //property.serializedObject.targetObject.GetInstanceID() + "-" + property.name;
         }
 
 
         /// <summary>
-        /// Collection of all stored <see cref="ReorderableList"/> instances by its <see cref="SerializedObject"/>.
+        /// Collection of all stored <see cref="ReorderableList"/> instances.
         /// </summary>
         private static Dictionary<string, ReorderableList> listInstances = new Dictionary<string, ReorderableList>();
 
@@ -48,7 +48,7 @@ namespace Toolbox.Editor.Drawers
 
             if (!listInstances.TryGetValue(key, out ReorderableList list))
             {
-                list = listInstances[key] = ToolboxEditorUtility.CreateList(property,
+                listInstances[key] = list = ToolboxEditorUtility.CreateList(property,
                     attribute.ListStyle,
                     attribute.ElementLabel,
                     attribute.FixedSize,
