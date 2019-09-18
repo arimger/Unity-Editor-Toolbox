@@ -197,7 +197,7 @@ public List<string> standardStyleList;
 [InLineEditor]
 public Transform var1;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc32.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc32.png)
 
 #### HideAttribute
 
@@ -210,7 +210,7 @@ Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
 
 #### DisableAttribute
 
-Disables any property. 
+Disables any property.   
 Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.  
 
 #### DisableIfAttribute
@@ -278,6 +278,7 @@ TODO
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc3.png)
 
 ### Grid Generator
-Editor Toolbox/Editor/Tools/Wizards/GridGeneratorWizard.cs
+
+> Editor Toolbox/Editor/Tools/Wizards/GridGeneratorWizard.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc4.png)
