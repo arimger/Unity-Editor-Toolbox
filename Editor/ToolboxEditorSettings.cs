@@ -10,7 +10,7 @@ namespace Toolbox.Editor
     using Toolbox.Editor.Drawers;
 
     [CreateAssetMenu(menuName = "Editor Toolbox/Settings", order = 1)]
-    public class ComponentEditorSettings : ScriptableObject
+    public class ToolboxEditorSettings : ScriptableObject
     {
         [SerializeField]
         private bool useToolboxDrawers = true;

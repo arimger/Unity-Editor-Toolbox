@@ -4,9 +4,9 @@ using UnityEngine;
 namespace Toolbox.Editor
 {
     [InitializeOnLoad]
-    public static class HierarchyEditorWindow
+    public static class ToolboxEditorHierarchy
     {
-        static HierarchyEditorWindow()
+        static ToolboxEditorHierarchy()
         {
             EditorApplication.hierarchyWindowItemOnGUI += OnItemCallback;
         }
@@ -98,7 +98,7 @@ namespace Toolbox.Editor
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
 
-            if (contentIcon.name != ToolboxEditorUtility.defaultIconName)
+            if (contentIcon.name != Utility.defaultIconName)
             {
                 GUI.Label(contentRect, contentIcon);
             }
@@ -129,7 +129,7 @@ namespace Toolbox.Editor
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
 
-            if (content.text != ToolboxEditorUtility.defaultUnityTag)
+            if (content.text != Utility.defaultUnityTag)
             {
                 EditorGUI.LabelField(rect, content, Style.tagLabelStyle);
             }
@@ -218,6 +218,16 @@ namespace Toolbox.Editor
                 backgroundStyle = new GUIStyle();
                 backgroundStyle.normal.background = backgroundTex;
             }
+        }
+
+        /// <summary>
+        /// Custom utility class.
+        /// </summary>
+        internal static class Utility
+        {
+            internal const string defaultUnityTag = "Untagged";
+
+            internal const string defaultIconName = "GameObject Icon";
         }
     }
 }

@@ -4,7 +4,7 @@
     {
         public override void OnGuiBegin(LineAreaAttribute attribute)
         {
-            ToolboxEditorUtility.DrawLayoutLine(attribute.Thickness, attribute.Padding);
+            ToolboxEditorGui.DrawLayoutLine(attribute.Thickness, attribute.Padding);
         }
     }
 }

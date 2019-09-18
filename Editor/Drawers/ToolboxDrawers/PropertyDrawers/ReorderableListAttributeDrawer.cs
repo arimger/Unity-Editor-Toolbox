@@ -15,7 +15,7 @@ namespace Toolbox.Editor.Drawers
         [InitializeOnLoadMethod]
         private static void InitializeDrawer()
         {
-            Selection.selectionChanged += DeinitializeDrawer;
+            ToolboxEditorUtility.onEditorReload += DeinitializeDrawer;
         }
 
         private static void DeinitializeDrawer()
@@ -23,6 +23,11 @@ namespace Toolbox.Editor.Drawers
             listInstances.Clear();
         }
 
+        /// <summary>
+        /// Generate new key based on <see cref="SerializedProperty"/> hash code.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
         private static string GenerateKey(SerializedProperty property)
         {
             //TODO: check whenever hash code is outdated and reinitialize drawer if needed
@@ -38,7 +43,7 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Draws <see cref="ReorderableList"/> if provided property is previously cached array/list.
+        /// Draws <see cref="ReorderableList"/> if provided property is previously cached array/list or creates completely new instance.
         /// </summary>
         /// <param name="property">Property to draw.</param>
         /// <param name="attribute"></param>
@@ -48,7 +53,7 @@ namespace Toolbox.Editor.Drawers
 
             if (!listInstances.TryGetValue(key, out ReorderableList list))
             {
-                listInstances[key] = list = ToolboxEditorUtility.CreateList(property,
+                listInstances[key] = list = ToolboxEditorGui.CreateList(property,
                     attribute.ListStyle,
                     attribute.ElementLabel,
                     attribute.FixedSize,

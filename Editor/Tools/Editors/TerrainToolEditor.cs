@@ -55,7 +55,7 @@ namespace Toolbox.Editor.Tools.Editors
             terrainProperty = serializedObject.FindProperty("terrain");
             brushPrefabsProperty = serializedObject.FindProperty("brushPrefabs");
 
-            brushPrefabsList = ToolboxEditorUtility.CreateLinedList(brushPrefabsProperty, "Item");
+            brushPrefabsList = ToolboxEditorGui.CreateLinedList(brushPrefabsProperty, "Item");
         }
 
         /// <summary>
@@ -354,11 +354,11 @@ namespace Toolbox.Editor.Tools.Editors
             {
                 brushColor = new Color(0, 0, 0, 0.4f);
 
-                treeIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Tree Icon.png");
-                noneIcon = null;//ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor None Icon.png");
-                brushIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Brush Icon.png");
-                terrainIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Terrain Icon.png");
-                settingsIcon = ToolboxEditorUtility.LoadEditorAsset<Texture>("Editor Settings Icon.png");
+                treeIcon = ToolboxAssetUtility.LoadEditorAsset<Texture>("Editor Tree Icon.png");
+                noneIcon = null;//ToolboxAssetUtility.LoadEditorAsset<Texture>("Editor None Icon.png");
+                brushIcon = ToolboxAssetUtility.LoadEditorAsset<Texture>("Editor Brush Icon.png");
+                terrainIcon = ToolboxAssetUtility.LoadEditorAsset<Texture>("Editor Terrain Icon.png");
+                settingsIcon = ToolboxAssetUtility.LoadEditorAsset<Texture>("Editor Settings Icon.png");
 
                 smallIconStyle = new GUIStyle()
                 {

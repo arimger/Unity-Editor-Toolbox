@@ -5,8 +5,9 @@ namespace Toolbox.Editor
 {
     using Toolbox.Editor.Internal;
 
-    [CanEditMultipleObjects, CustomEditor(typeof(ComponentEditorSettings), true, isFallback = false)]
-    public class ComponentEditorSettingsEditor : ComponentEditor
+    [CustomEditor(typeof(ToolboxEditorSettings), true, isFallback = false)]
+    [CanEditMultipleObjects]
+    public class ToolboxEditorSettingsEditor : ToolboxEditor
     {
         private SerializedProperty useToolboxDrawersProperty;
 
@@ -20,10 +21,10 @@ namespace Toolbox.Editor
         {
             useToolboxDrawersProperty = serializedObject.FindProperty("useToolboxDrawers");
 
-            areaDrawerHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("areaDrawerHandlers"));
-            groupDrawerHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("groupDrawerHandlers"));
-            propertyDrawerHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("propertyDrawerHandlers"));
-            conditionDrawerHandlersList = ToolboxEditorUtility.CreateBoxedList(serializedObject.FindProperty("conditionDrawerHandlers"));
+            areaDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("areaDrawerHandlers"));
+            groupDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("groupDrawerHandlers"));
+            propertyDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("propertyDrawerHandlers"));
+            conditionDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("conditionDrawerHandlers"));
         }
 
         protected override void OnDisable()
@@ -54,7 +55,7 @@ namespace Toolbox.Editor
             EditorGUILayout.Space();
             if (GUILayout.Button(Style.buttonContent, Style.buttonOptions))
             {
-                ComponentEditorUtility.ReimportEditor();
+                ToolboxEditorUtility.ReimportEditor();
             }
         }
 
