@@ -317,7 +317,7 @@ MonoBehaviour:
   var13: {fileID: 0}
   randomValue: -1.8507824
   directory: Examples/Models
-  sceneName: SampleScen
+  sceneName: SampleScene
   list:
   - {fileID: 2133702603}
   - {fileID: 2133702603}
@@ -330,6 +330,7 @@ MonoBehaviour:
   var19: 0
   var20: 0
   var21: {fileID: 1452203516}
+  vars1: 01000000020000000300000004000000
 --- !u!4 &959025299
 Transform:
   m_ObjectHideFlags: 2

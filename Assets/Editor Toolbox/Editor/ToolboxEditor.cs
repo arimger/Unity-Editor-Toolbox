@@ -141,7 +141,7 @@ namespace Toolbox.Editor
                 var conditionState = PropertyCondition.Valid;
                 if (conditionAttribute != null)
                 {
-                    ToolboxEditorUtility.GetConditionDrawer(conditionAttribute)?.OnGuiValidate(property, conditionAttribute);
+                    conditionState = ToolboxEditorUtility.GetConditionDrawer(conditionAttribute)?.OnGuiValidate(property, conditionAttribute) ?? conditionState;
                 }
 
                 if (conditionState == PropertyCondition.NonValid)

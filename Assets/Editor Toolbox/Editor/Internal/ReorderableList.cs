@@ -90,12 +90,15 @@ namespace Toolbox.Editor.Internal
         public ReorderableList(SerializedProperty list) : this(list, null, true, true, false)
         { }
 
-        public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hadHeader, bool hasFixedSize)
+        public ReorderableList(SerializedProperty list, bool draggable) : this(list, null, draggable, true, false)
+        { }
+
+        public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool hasFixedSize)
         {
             id = GUIUtility.GetControlID(FocusType.Keyboard);
 
             Draggable = draggable;
-            HasHeader = hadHeader;
+            HasHeader = hasHeader;
             HasFixedSize = hasFixedSize;
             ElementLabel = elementLabel;
 

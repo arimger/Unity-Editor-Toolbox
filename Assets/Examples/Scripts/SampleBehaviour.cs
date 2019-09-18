@@ -157,6 +157,11 @@ public class SampleBehaviour : MonoBehaviour
     [InLineEditor]
     public Transform var21;
 
+    [HeaderArea("4", HeaderStyle.Boxed)]
+
+    [Disable]
+    public int[] vars1 = new[] {1, 2, 3, 4};
+
 
     private void Start()
     {
