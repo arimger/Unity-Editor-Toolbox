@@ -135,6 +135,12 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc29.png)
 
+#### SceneNameAttribute
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc30.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc31.png)
+
+
 ### Toolbox Drawers
 
 Drawers based on classes **ToolboxDrawer** and associated **ToolboxAttribute**.  
@@ -152,7 +158,8 @@ Predefined one - `Editor Toolbox/EditorSettings.asset`.
 
 #### AreaAttributes
 
-Display/create something before and after property in desired order(using Order property). In fact **ToolboxAreaDrawers** are like extended version of **DecoratorDrawers**.
+Display/create something before and after property in desired order(using Order property).   
+In fact **ToolboxAreaDrawers** are like extended version of **DecoratorDrawers**. 
 
 ```
 [BeginGroup("Group1")]
@@ -184,24 +191,35 @@ public List<string> standardStyleList;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc7.png)
 
+#### InLineEditorAttribute
+
+```
+[InLineEditor]
+public Transform var1;
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc32.png)
+
 #### HideAttribute
 
 Hides any property.
 
 #### HideIfAttribute
 
-Same like standard PropertyDrawer for **ConditionalHideAttribute** but works with Enum types and arrays/lists. Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
+Same like standard PropertyDrawer for **ConditionalHideAttribute** but works with Enum types and arrays/lists.   
+Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
 
 #### DisableAttribute
 
-Disables any property. Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
+Disables any property. 
+Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.  
 
 #### DisableIfAttribute
 
-Same like standard PropertyDrawer for **ConditionalDisableAttribute** but works with Enum types and arrays/lists. Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
+Same like standard PropertyDrawer for **ConditionalDisableAttribute** but works with Enum types and arrays/lists.   
+Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
 
 ```
-[ReadOnly]
+[Disable, ReorderableList]
 public int[] vars1 = new [] { 1, 2, 3, 4 };
 ```
 
@@ -209,10 +227,13 @@ public int[] vars1 = new [] { 1, 2, 3, 4 };
 
 ## Reorderable List
 
-Editor Toolbox/Editor/Internal/ReorderableList.cs
+> Editor Toolbox/Editor/Internal/ReorderableList.cs
 
 Custom implementation of standard ReorderableList(UnityEditorInternal). Useable as attribute in inspector fields or single object in custom editors.
 
+```
+var list = new ReorderableList(SerializedProperty property, string elementLabel, bool draggable, bool hasHeader, bool fixedSize);
+```
 ```
 [ReorderableList(ListStyle.Lined, "Item")]
 public List<int> linedStyleList;
@@ -232,13 +253,15 @@ public GameObject[] boxedStyleList = new GameObject[4];
 ## Tools and Editors
 
 ### Terrain Editor
-Editor Toolbox/Editor/Tools/Editors/TerrainToolEditor.cs
+
+> Editor Toolbox/Editor/Tools/Editors/TerrainToolEditor.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc1.png)
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc9.png)
 
 ### Hierarchy Editor
-Editor Toolbox/Editor/HierarchyEditorWindow.cs
+
+> Editor Toolbox/Editor/ToolboxEditorHierarchy.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc2.png)
 
@@ -249,7 +272,8 @@ TODO
 
 
 ### Field of View Generator
-Editor Toolbox/Editor/Tools/Wizards/ViewGeneratorWizard.cs
+
+> Editor Toolbox/Editor/Tools/Wizards/ViewGeneratorWizard.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc3.png)
 
