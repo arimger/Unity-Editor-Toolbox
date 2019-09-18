@@ -6,7 +6,7 @@ using UnityTools = UnityEditor.Tools;
 
 namespace Toolbox.Editor.Tools
 {
-    public abstract class ToolEditor : ComponentEditor
+    public abstract class ToolEditor : ToolboxEditor
     {
         protected override void OnEnable()
         {

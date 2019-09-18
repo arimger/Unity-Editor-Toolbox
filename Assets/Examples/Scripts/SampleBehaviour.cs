@@ -126,6 +126,11 @@ public class SampleBehaviour : MonoBehaviour
     [Directory]
     public string directory;
 
+    [BoxedHeader("18")]
+
+    [SceneName]
+    public string sceneName;
+
     [HeaderArea("Toolbox Attributes", HeaderStyle.Boxed)]
     [HeaderArea("1", HeaderStyle.Boxed)]
 
@@ -146,6 +151,11 @@ public class SampleBehaviour : MonoBehaviour
     public int var19;
     [EndGroup]
     public int var20;
+
+    [HeaderArea("3", HeaderStyle.Boxed)]
+
+    [InLineEditor]
+    public Transform var21;
 
 
     private void Start()
