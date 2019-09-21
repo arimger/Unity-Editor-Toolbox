@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b97690dbca7025a4ebeae4ac93229110, type: 3}
   m_Name: EditorSettings
   m_EditorClassIdentifier: 
+  useToolboxHierarchy: 1
   useToolboxDrawers: 1
   areaDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.BeginGroupAttributeDrawer, Toolbox-Editor
@@ -25,8 +26,8 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox-Editor
   groupDrawerHandlers: []
   propertyDrawerHandlers:
-  - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
   conditionDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.DisableAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.DisableIfAttributeDrawer, Toolbox-Editor

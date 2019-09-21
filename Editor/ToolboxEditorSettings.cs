@@ -13,6 +13,8 @@ namespace Toolbox.Editor
     public class ToolboxEditorSettings : ScriptableObject
     {
         [SerializeField]
+        private bool useToolboxHierarchy = true;
+        [SerializeField]
         private bool useToolboxDrawers = true;
 
         [HideIf("useOrderedDrawers", true)]
@@ -98,6 +100,12 @@ namespace Toolbox.Editor
         {
             get => useToolboxDrawers;
             set => useToolboxDrawers = value;
+        }
+
+        public bool UseToolboxHierarchy
+        {
+            get => useToolboxHierarchy;
+            set => useToolboxHierarchy = value;
         }
 
         public int AreaDrawersCount => areaDrawerHandlers != null ? areaDrawerHandlers.Count : 0;

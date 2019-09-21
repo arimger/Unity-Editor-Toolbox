@@ -10,6 +10,7 @@ namespace Toolbox.Editor
     public class ToolboxEditorSettingsEditor : ToolboxEditor
     {
         private SerializedProperty useToolboxDrawersProperty;
+        private SerializedProperty useToolboxHierarchyProperty;
 
         private ReorderableList areaDrawerHandlersList;
         private ReorderableList groupDrawerHandlersList;
@@ -18,8 +19,9 @@ namespace Toolbox.Editor
 
 
         protected override void OnEnable()
-        {
+        {       
             useToolboxDrawersProperty = serializedObject.FindProperty("useToolboxDrawers");
+            useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
 
             areaDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("areaDrawerHandlers"));
             groupDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("groupDrawerHandlers"));
@@ -34,6 +36,7 @@ namespace Toolbox.Editor
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
+            EditorGUILayout.PropertyField(useToolboxHierarchyProperty);
             EditorGUILayout.PropertyField(useToolboxDrawersProperty);
             if (useToolboxDrawersProperty.boolValue)
             {

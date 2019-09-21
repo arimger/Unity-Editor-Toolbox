@@ -1,7 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Reflection;
 
 using UnityEditor;
 using UnityEngine;
@@ -12,54 +11,17 @@ namespace Toolbox.Editor
     [CustomPropertyDrawer(typeof(ClassTypeConstraintAttribute), true)]
     public sealed class SerializedTypeReferenceDrawer : PropertyDrawer
     {
-        #region Type Filtering
-
-        private static List<Type> GetFilteredTypes(ClassTypeConstraintAttribute filter)
-        {
-            var types = new List<Type>();
-            var assembly = Assembly.GetExecutingAssembly();
-
-            types.AddRange(GetFilteredAssemblyTypes(assembly, filter));
-
-            foreach (var referencedAssembly in assembly.GetReferencedAssemblies())
-            {
-                types.AddRange(GetFilteredAssemblyTypes(Assembly.Load(referencedAssembly), filter));
-            }
-
-            types.Sort((a, b) => a.FullName.CompareTo(b.FullName));
-
-            return types;
-        }
-
-        private static List<Type> GetFilteredAssemblyTypes(Assembly assembly, ClassTypeConstraintAttribute filter)
-        {
-            var types = new List<Type>();
-            foreach (var type in assembly.GetTypes())
-            {
-                if (!type.IsVisible || !type.IsClass)
-                    continue;
-
-                if (filter != null && !filter.IsConstraintSatisfied(type))
-                    continue;
-
-                types.Add(type);
-            }
-
-            return types;
-        }
-
-        #endregion
-
-
         private static int selectionControlID;
 
-        [Obsolete]
-        private static string selectedClassRef;
 
-
-        private static Type ResolveType(string classRef)
+        /// <summary>
+        /// Get <see cref="Type"/> from name or null if does not exist.
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
+        private static Type ResolveType(string typeName)
         {
-            return !string.IsNullOrEmpty(classRef) ? Type.GetType(classRef) : null;
+            return !string.IsNullOrEmpty(typeName) ? Type.GetType(typeName) : null;
         }
 
         /// <summary>
@@ -99,6 +61,12 @@ namespace Toolbox.Editor
                     return "Scripts/" + type.FullName.Replace('.', '/');
             }
         }
+
+
+        #region Obsolete 
+
+        [Obsolete]
+        private static string selectedClassRef;
 
         [Obsolete]
         private void DrawTypeSelectionRect(Rect position, SerializedProperty property, ClassTypeConstraintAttribute filter, GUIContent label)
@@ -190,7 +158,7 @@ namespace Toolbox.Editor
         private void DrawTypeDropDown(Rect rect, SerializedProperty property, ClassTypeConstraintAttribute filter)
         {
             var refType = ResolveType(property.stringValue);
-            var refTypes = GetFilteredTypes(filter);
+            var refTypes = filter.GetFilteredTypes();
             var menu = new GenericMenu();
             menu.AddItem(new GUIContent("<None>"), refType == null, OnTypeSelected, null);
             menu.AddSeparator("");
@@ -214,15 +182,32 @@ namespace Toolbox.Editor
             EditorWindow.focusedWindow.SendEvent(EditorGUIUtility.CommandEvent("TypeReferenceUpdated"));
         }
 
+        #endregion
 
-        private readonly static OrderedDictionary filteredTypes = new OrderedDictionary();
+
+        /// <summary>
+        /// Dictionary used to store all previously filtered types.
+        /// </summary>
+        private readonly static Dictionary<Type, List<Type>> filteredTypes = new Dictionary<Type, List<Type>>();
 
 
+        /// <summary>
+        /// Return current propety height.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return EditorStyles.popup.CalcHeight(GUIContent.none, 0);
         }
 
+        /// <summary>
+        /// Draws property using provided <see cref="Rect"/>.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
         public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
         {
             var refAttribute = Attribute;
@@ -249,19 +234,17 @@ namespace Toolbox.Editor
             var refLabels = new List<string>() { "<None>" };
             var index = -1;
 
-            //getting all filtered and associated types to provided attribute
-            if (filteredTypes.Contains(refAttribute.AssemblyType))
+            //get stored types if possible or create new item
+            if (!filteredTypes.TryGetValue(refAttribute.AssemblyType, out refTypes))
             {
-                refTypes = filteredTypes[refAttribute.AssemblyType] as List<Type>;
+                refTypes = filteredTypes[refAttribute.AssemblyType] = refAttribute.GetFilteredTypes();
             }
-            //getting all needed types and saving results to dictionary
             else
             {
-                refTypes = GetFilteredTypes(refAttribute);
-                filteredTypes.Add(refAttribute.AssemblyType, refTypes);
+                refTypes = filteredTypes[refAttribute.AssemblyType];
             }
 
-            //creating labels from filtered types
+            //create labels from filtered types
             for (int i = 0; i < refTypes.Count; i++)
             {
                 var menuType = refTypes[i];
@@ -272,13 +255,13 @@ namespace Toolbox.Editor
                 refLabels.Add(menuLabel);
             }
 
-            //drawing reference property
+            //draw reference property
             EditorGUI.BeginProperty(rect, label, refProperty);
             label = property.name != "data" ? label : GUIContent.none;
             index = EditorGUI.Popup(rect, label.text, index + 1, refLabels.ToArray());
-            //getting correct class reference, index = 0 is reserved to <None> type
+            //get correct class reference, index = 0 is reserved to <None> type
             refProperty.stringValue = index >= 1 ? SerializedTypeReference.GetClassReference(refTypes[index - 1]) : "";
-            EditorGUI.EndProperty();        
+            EditorGUI.EndProperty();     
         }
 
 

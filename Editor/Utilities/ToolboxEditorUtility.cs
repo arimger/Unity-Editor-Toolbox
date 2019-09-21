@@ -143,7 +143,9 @@ namespace Toolbox.Editor
         }
 
 
-        internal static bool ToolboxDrawersAllowed => !settings || !settings.UseToolboxDrawers;
+        internal static bool ToolboxDrawersAllowed => settings?.UseToolboxDrawers ?? false;
+
+        internal static bool ToolboxHierarchyAllowed => settings?.UseToolboxHierarchy ?? false;
 
 
         internal static Action onEditorReload;
