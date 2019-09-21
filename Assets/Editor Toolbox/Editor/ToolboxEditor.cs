@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
-using UnityEditor;
 using Object = UnityEngine.Object;
+using UnityEditor;
 
 //TODO: handling children;
 
@@ -44,6 +44,7 @@ namespace Toolbox.Editor
         {
             if (!propertyHandlers.TryGetValue(property.name, out PropertyHandler propertyHandler))
             {
+                //initialize and store new property handler
                 propertyHandlers[property.name] = propertyHandler = new PropertyHandler(property);
             }
 
@@ -56,7 +57,7 @@ namespace Toolbox.Editor
         /// </summary>
         public override void OnInspectorGUI()
         {
-            if (ToolboxEditorUtility.ToolboxDrawersAllowed)
+            if (!ToolboxEditorUtility.ToolboxDrawersAllowed)
             {
                 DrawDefaultInspector();
                 return;

@@ -557,8 +557,10 @@ namespace Toolbox.Editor.Internal
 
         private bool IsMouseInsideActiveElement(Rect listRect)
         {
+            //cache current event
             var evt = Event.current;
             var mouseRowIndex = GetRowIndex(evt.mousePosition.y - listRect.y);
+            //check if mouse position is inside current row rect 
             return mouseRowIndex == Index && GetRowRect(mouseRowIndex, listRect).Contains(evt.mousePosition);
         }
 
@@ -632,12 +634,11 @@ namespace Toolbox.Editor.Internal
 
         private Rect GetContentRect(Rect rect)
         {
-            var r = rect;
-            r.xMax -= Style.padding;
-            r.xMin += Draggable
-                ? Style.handleArea
+            rect.xMax -= Style.padding;
+            rect.xMin += Draggable 
+                ? Style.handleArea 
                 : Style.padding;
-            return r;
+            return rect;
         }
 
         private Rect GetRowRect(int index, Rect listRect)
@@ -862,11 +863,7 @@ namespace Toolbox.Editor.Internal
 
         public float GetHeight()
         {
-            var totalheight = 0.0f;
-            totalheight += MiddleHeight;
-            totalheight += HeaderHeight;
-            totalheight += FooterHeight;
-            return totalheight;
+            return MiddleHeight + HeaderHeight + FooterHeight;
         }
 
 

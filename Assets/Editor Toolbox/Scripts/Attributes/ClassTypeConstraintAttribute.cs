@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 
 using UnityEngine;
 
@@ -40,6 +43,60 @@ public abstract class ClassTypeConstraintAttribute : PropertyAttribute
     }
 
     /// <summary>
+    /// Get all proper types from executing assembly.
+    /// </summary>
+    /// <returns></returns>
+    public List<Type> GetFilteredTypes()
+    {
+        var types = new List<Type>();
+
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        foreach (var assembly in assemblies)
+        {
+            types.AddRange(GetFilteredAssemblyTypes(assembly));
+        }
+
+        //old way to filter all types from executing assemblies
+
+        //var assembly = Assembly.GetExecutingAssembly();
+
+        //types.AddRange(GetFilteredAssemblyTypes(assembly));
+
+        //foreach (var referencedAssembly in assembly.GetReferencedAssemblies())
+        //{
+        //    types.AddRange(GetFilteredAssemblyTypes(Assembly.Load(referencedAssembly)));
+        //}
+
+        types.Sort((a, b) => a.FullName.CompareTo(b.FullName));
+
+        return types;
+    }
+
+    /// <summary>
+    /// Get all filtered type from provided assembly.
+    /// </summary>
+    /// <param name="assembly"></param>
+    /// <returns></returns>
+    public List<Type> GetFilteredAssemblyTypes(Assembly assembly)
+    {
+        var types = new List<Type>();
+        foreach (var type in assembly.GetTypes())
+        {
+            //check type basics
+            if (!type.IsVisible || !type.IsClass)
+                continue;
+            //check filter constraints
+            if (!IsConstraintSatisfied(type))
+                continue;
+
+            types.Add(type);
+        }
+
+        return types;
+    }
+
+
+    /// <summary>
     /// Determines whether the specified <see cref="Type"/> satisfies filter constraint.
     /// </summary>
     /// <param name="type">Type to test.</param>
@@ -51,6 +108,7 @@ public abstract class ClassTypeConstraintAttribute : PropertyAttribute
     {
         return AllowAbstract || !type.IsAbstract;
     }
+
 
     /// <summary>
     /// Gets or sets whether abstract classes can be selected from drop-down.

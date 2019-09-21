@@ -41,18 +41,27 @@ namespace Toolbox.Editor
 
             additionalHeight = 0;
 
+            var warnColor = GUI.backgroundColor;
+            var cachedColor = GUI.backgroundColor;
+      
             if (property.objectReferenceValue == null)
             {
                 var helpBoxRect = new Rect(position.x, position.y, position.width, Style.height);
+
                 EditorGUI.HelpBox(helpBoxRect, Attribute.Label, MessageType.Error);
+
                 //set additional height as help box height + 2x spacing between properties
                 additionalHeight = Style.height + Style.spacing * 2;
                 position.height -= additionalHeight;
                 //adjust OY position for target property
-                position.y += additionalHeight;          
+                position.y += additionalHeight;
+
+                warnColor = Style.backgroundColor;
             }
 
+            GUI.backgroundColor = warnColor;
             EditorGUI.PropertyField(position, property, label, property.isExpanded);
+            GUI.backgroundColor = cachedColor;
         }
 
 
@@ -70,6 +79,8 @@ namespace Toolbox.Editor
             internal static readonly float height = EditorGUIUtility.singleLineHeight * 1.25f * 2;
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
             internal static readonly float padding = 5.0f;
+
+            internal static readonly Color backgroundColor = Color.red;
         }
     }
 }

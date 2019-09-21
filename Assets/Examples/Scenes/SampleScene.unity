@@ -308,7 +308,7 @@ MonoBehaviour:
   var9: {fileID: 2133702603}
   var10: 0
   type1:
-    classReference: UnityEditor.Editor, UnityEditor
+    classReference: UnityEditor.GridBrush, UnityEditor
   type2:
     classReference: System.Collections.ArrayList, mscorlib
   var11: Im read only
