@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using UnityEditor;
 
 //TODO: handling children;
 
@@ -51,6 +51,40 @@ namespace Toolbox.Editor
             propertyHandler.OnGui();
         }
 
+        /// <summary>
+        /// Draws custom inspector using <see cref="ToolboxDrawer"/>s.
+        /// </summary>
+        protected virtual void DrawCustomInspector()
+        {
+            //begin iteration over all properties
+            var property = serializedObject.GetIterator();
+            if (property.NextVisible(true))
+            {
+                //handle situation when first property is not mono script
+                if (property.name != Defaults.defaultScriptPropertyName)
+                {
+                    DrawDefaultInspector();
+                    return;
+                }
+
+                //begin Toolbox inspector
+                EditorGUILayout.LabelField(Defaults.defaultEditorHeaderText, EditorStyles.centeredGreyMiniLabel);
+
+                //draw standard script property
+                EditorGUI.BeginDisabledGroup(true);
+                EditorGUILayout.PropertyField(property);
+                EditorGUI.EndDisabledGroup();
+
+                serializedObject.Update();
+                //draw every property using ToolboxAttributes&Drawers
+                while (property.NextVisible(false))
+                {
+                    HandleProperty(property.Copy());
+                }
+                serializedObject.ApplyModifiedProperties();
+            }
+        }
+
 
         /// <summary>
         /// Inspector GUI re-draw call.
@@ -63,25 +97,7 @@ namespace Toolbox.Editor
                 return;
             }
 
-            //begin Toolbox inspector
-            EditorGUILayout.LabelField("Component Editor", EditorStyles.centeredGreyMiniLabel);
-
-            serializedObject.Update();
-            var property = serializedObject.GetIterator();
-            if (property.NextVisible(true))
-            {
-                //draw standard script property
-                EditorGUI.BeginDisabledGroup(true);
-                EditorGUILayout.PropertyField(property);
-                EditorGUI.EndDisabledGroup();
-
-                //draw every property using ToolboxAttributes&Drawers
-                while (property.NextVisible(false))
-                {
-                    HandleProperty(property.Copy());
-                }
-            }
-            serializedObject.ApplyModifiedProperties();
+            DrawCustomInspector();
         }
 
 
@@ -182,6 +198,16 @@ namespace Toolbox.Editor
                     ToolboxEditorUtility.GetAreaDrawer(areaAttributes[i])?.OnGuiEnd(areaAttributes[i]);
                 }
             }
+        }
+
+
+        internal static class Defaults
+        {
+            internal const string defaultEditorHeaderText = "Component Editor";
+
+            internal const string defaultScriptPropertyName = "m_Script";
+
+            internal const string defaultScriptPropertyType = "PPtr<MonoScript>";
         }
     }
 }

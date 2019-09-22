@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Toolbox.Editor.Drawers;
+using UnityEngine;
 
 [ExecuteAlways]
 public class SampleBehaviour : MonoBehaviour
@@ -130,6 +131,13 @@ public class SampleBehaviour : MonoBehaviour
 
     [SceneName]
     public string sceneName;
+
+    [BoxedHeader("19")]
+
+    [Preset("presetValues")]
+    public int presetTarget;
+
+    private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
 
     [HeaderArea("Toolbox Attributes", HeaderStyle.Boxed)]
     [HeaderArea("1", HeaderStyle.Boxed)]

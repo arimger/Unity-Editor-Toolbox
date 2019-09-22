@@ -44,7 +44,7 @@ RenderSettings:
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -88,7 +88,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 4f45668bfc38b4c4bb6229eef4382cbb,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -306,18 +307,19 @@ MonoBehaviour:
   var7: 21.44
   var8: {fileID: 2133702603}
   var9: {fileID: 2133702603}
-  var10: 0
+  var10: 2.79
   type1:
     classReference: UnityEditor.GridBrush, UnityEditor
   type2:
     classReference: System.Collections.ArrayList, mscorlib
   var11: Im read only
-  var12: 1
+  var12: 0
   enumFlag: 3
   var13: {fileID: 0}
   randomValue: -1.8507824
   directory: Examples/Models
   sceneName: SampleScene
+  presetTarget: 3
   list:
   - {fileID: 2133702603}
   - {fileID: 2133702603}
@@ -361,17 +363,17 @@ PrefabInstance:
     - target: {fileID: 5059060190599569102, guid: 5573ca52cac7c2d4cb2536e37e9be1f1,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.080558136
+      value: 0.0311
       objectReference: {fileID: 0}
     - target: {fileID: 5059060190599569102, guid: 5573ca52cac7c2d4cb2536e37e9be1f1,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 21.4
       objectReference: {fileID: 0}
     - target: {fileID: 5059060190599569102, guid: 5573ca52cac7c2d4cb2536e37e9be1f1,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.1666591
+      value: -0.0054
       objectReference: {fileID: 0}
     - target: {fileID: 5059060190599569102, guid: 5573ca52cac7c2d4cb2536e37e9be1f1,
         type: 3}
@@ -447,7 +449,7 @@ GameObject:
   - component: {fileID: 1108399859}
   - component: {fileID: 1108399858}
   m_Layer: 0
-  m_Name: Tools GameObject
+  m_Name: Tool GameObject
   m_TagString: EditorOnly
   m_Icon: {fileID: 2800000, guid: 3d0e0a2631bdc5b4a966fbc73129806f, type: 3}
   m_NavMeshLayer: 0
@@ -613,17 +615,17 @@ PrefabInstance:
     - target: {fileID: 5059060190599569102, guid: e4263a04cf09ace4b8568f054ea426ee,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.07688323
+      value: 0.026
       objectReference: {fileID: 0}
     - target: {fileID: 5059060190599569102, guid: e4263a04cf09ace4b8568f054ea426ee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 7.7
       objectReference: {fileID: 0}
     - target: {fileID: 5059060190599569102, guid: e4263a04cf09ace4b8568f054ea426ee,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.16444707
+      value: -0.0347
       objectReference: {fileID: 0}
     - target: {fileID: 5059060190599569102, guid: e4263a04cf09ace4b8568f054ea426ee,
         type: 3}
