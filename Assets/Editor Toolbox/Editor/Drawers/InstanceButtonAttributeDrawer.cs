@@ -53,7 +53,7 @@ namespace Toolbox.Editor
                         Debug.LogWarning("ButtonAttribute - " + Attribute.InstanceType + " component not found in selected GameObject.");
                         return;
                     }
-
+                   
                     method.Invoke(targetComponent, null);
                 }
                 else

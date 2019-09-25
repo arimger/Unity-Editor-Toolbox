@@ -1,9 +1,11 @@
-﻿using Toolbox.Editor.Drawers;
-using UnityEngine;
+﻿using UnityEngine;
 
 [ExecuteAlways]
 public class SampleBehaviour : MonoBehaviour
 {
+    [Help("This sample component provides all additional inspector extensions(drawers and associated attributes) implemented in Editor Toolbox plugin. " +
+          "Check SampleBehaviour.cs file for more details.", order = -1)]
+
     [BoxedHeader("1")]
 
     [Help("You can provide more information in HelpBoxes.", order = 100)]
@@ -136,6 +138,11 @@ public class SampleBehaviour : MonoBehaviour
 
     [Preset("presetValues")]
     public int presetTarget;
+
+    [BoxedHeader("20")]
+
+    [SearchableEnum]
+    public KeyCode enumSearch;
 
     private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
 
