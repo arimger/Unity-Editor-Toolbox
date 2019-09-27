@@ -1,5 +1,8 @@
 ﻿using System;
 
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class ToolboxPropertyAttribute : ToolboxAttribute
-{ }
+namespace UnityEngine
+{
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class ToolboxPropertyAttribute : ToolboxAttribute
+    { }
+}

@@ -1,12 +1,15 @@
 ﻿using System;
 
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public abstract class ToolboxGroupAttribute : ToolboxAttribute
+namespace UnityEngine
 {
-    protected ToolboxGroupAttribute(string groupName)
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public abstract class ToolboxGroupAttribute : ToolboxAttribute
     {
-        GroupName = groupName;
-    }
+        protected ToolboxGroupAttribute(string groupName)
+        {
+            GroupName = groupName;
+        }
 
-    public string GroupName { get; protected set; }
+        public string GroupName { get; protected set; }
+    }
 }

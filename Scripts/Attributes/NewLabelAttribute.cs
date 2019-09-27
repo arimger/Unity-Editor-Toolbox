@@ -1,16 +1,18 @@
 ﻿using System;
 
-using UnityEngine;
-
-[AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class NewLabelAttribute : PropertyAttribute
+namespace UnityEngine
 {
-    public NewLabelAttribute(string newLabel, string oldLabel = null)
+    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class NewLabelAttribute : PropertyAttribute
     {
-        NewLabel = newLabel;
-        OldLabel = oldLabel;
-    }
+        public NewLabelAttribute(string newLabel, string oldLabel = null)
+        {
+            NewLabel = newLabel;
+            OldLabel = oldLabel;
+        }
 
-    public string NewLabel { get; private set; }
-    public string OldLabel { get; private set; }
+        public string NewLabel { get; private set; }
+
+        public string OldLabel { get; private set; }
+    }
 }

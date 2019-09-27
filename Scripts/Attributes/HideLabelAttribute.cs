@@ -1,7 +1,8 @@
 ﻿using System;
 
-using UnityEngine;
-
-[AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class HideLabelAttribute : PropertyAttribute
-{ }
+namespace UnityEngine
+{
+    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class HideLabelAttribute : PropertyAttribute
+    { }
+}

@@ -1,16 +1,18 @@
 ﻿using System;
 
-using UnityEngine;
-
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class RandomAttribute : PropertyAttribute
+namespace UnityEngine
 {
-    public RandomAttribute(float minValue, float maxValue)
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class RandomAttribute : PropertyAttribute
     {
-        MinValue = minValue;
-        MaxValue = maxValue;
-    }
+        public RandomAttribute(float minValue, float maxValue)
+        {
+            MinValue = minValue;
+            MaxValue = maxValue;
+        }
 
-    public float MinValue { get; private set; }
-    public float MaxValue { get; private set; }
+        public float MinValue { get; private set; }
+
+        public float MaxValue { get; private set; }
+    }
 }

@@ -1,17 +1,19 @@
 ﻿using System;
 
-using UnityEngine;
-
-[AttributeUsage(validOn:AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class BoxedToggleAttribute : PropertyAttribute
+namespace UnityEngine
 {
-    public BoxedToggleAttribute()
-    { }
-
-    public BoxedToggleAttribute(string label)
+    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class BoxedToggleAttribute : PropertyAttribute
     {
-        Label = label;
-    }
+        public BoxedToggleAttribute()
+        {
+        }
 
-    public string Label { get; private set; }
+        public BoxedToggleAttribute(string label)
+        {
+            Label = label;
+        }
+
+        public string Label { get; private set; }
+    }
 }

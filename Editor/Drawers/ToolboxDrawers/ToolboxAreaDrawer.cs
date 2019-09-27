@@ -1,4 +1,6 @@
-﻿namespace Toolbox.Editor.Drawers
+﻿using UnityEngine;
+
+namespace Toolbox.Editor.Drawers
 {
     public abstract class ToolboxAreaDrawer<T> : ToolboxAreaDrawerBase where T : ToolboxAreaAttribute
     {        
@@ -22,7 +24,7 @@
             }
             else
             {
-                UnityEngine.Debug.LogError("Target attribute not found.");
+                Debug.LogError("Target attribute not found.");
             }
 
             base.OnGuiBegin();
@@ -42,7 +44,7 @@
             }
             else
             {
-                UnityEngine.Debug.LogError("Target attribute not found.");
+                Debug.LogError("Target attribute not found.");
             }
 
             base.OnGuiEnd();

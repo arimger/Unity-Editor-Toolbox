@@ -1,9 +1,8 @@
 ﻿using System;
 
-using UnityEngine;
-
-[AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-public class TagSelectorAttribute : PropertyAttribute
+namespace UnityEngine
 {
-    public bool UseDefaultTagFieldDrawer = false;
+    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    public class TagSelectorAttribute : PropertyAttribute
+    { }
 }

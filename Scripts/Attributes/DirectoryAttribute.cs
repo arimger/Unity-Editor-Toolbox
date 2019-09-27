@@ -1,7 +1,8 @@
 ﻿using System;
 
-using UnityEngine;
-
-[AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false)]
-public class DirectoryAttribute : PropertyAttribute
-{ }
+namespace UnityEngine
+{
+    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false)]
+    public class DirectoryAttribute : PropertyAttribute
+    { }
+}

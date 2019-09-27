@@ -1,19 +1,20 @@
 ﻿using System;
 
-using UnityEngine;
-
-[AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class IndentAttribute : PropertyAttribute
+namespace UnityEngine
 {
-    public IndentAttribute()
+    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class IndentAttribute : PropertyAttribute
     {
-        IndentLevelChange = 1;
-    }
+        public IndentAttribute()
+        {
+            IndentLevelChange = 1;
+        }
 
-    public IndentAttribute(int indentLevelChange)
-    {
-        IndentLevelChange = indentLevelChange;
-    }
+        public IndentAttribute(int indentLevelChange)
+        {
+            IndentLevelChange = indentLevelChange;
+        }
 
-    public int IndentLevelChange { get; private set; }
+        public int IndentLevelChange { get; private set; }
+    }
 }
