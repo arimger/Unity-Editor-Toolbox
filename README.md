@@ -149,11 +149,11 @@ private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
 public int presetTarget;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc32.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc33.png)
 
 #### SearchableEnum
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc33.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc34.png)
 
 ### Toolbox Drawers
 
@@ -280,6 +280,8 @@ public GameObject[] boxedStyleList = new GameObject[4];
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc2.png)
 
 ### Toolbar
+
+> Editor Toolbox/Editor/ToolboxEditorToolbar.cs
 
 ```csharp
 using Toolbox.Editor;
