@@ -148,8 +148,16 @@ namespace Toolbox.Editor
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
 
-            var value = EditorGUI.ToggleLeft(new Rect(rect.x + Style.padding, rect.y, rect.width, rect.height), GUIContent.none, gameObject.activeSelf);
-            if (value != gameObject.activeSelf) gameObject.SetActive(value);
+            var value = GUI.Toggle(new Rect(rect.x + Style.padding, rect.y, rect.width, rect.height), gameObject.activeSelf, GUIContent.none);
+            //NOTE: using EditorGUI.Toggle will couse bug and deselect all hierarchy toggles when will you pick multiselected property in inspector
+            if (rect.Contains(Event.current.mousePosition))
+            {
+                if (value != gameObject.activeSelf)
+                {
+                    Undo.RecordObject(gameObject, "SetActive");
+                    gameObject.SetActive(value);
+                }
+            }
 
             return rect;
         }

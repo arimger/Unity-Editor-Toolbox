@@ -1,14 +1,15 @@
 ﻿using System;
 
-using UnityEngine;
-
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class PresetAttribute : PropertyAttribute
+namespace UnityEngine
 {
-    public PresetAttribute(string presetPropertyName)
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class PresetAttribute : PropertyAttribute
     {
-        PresetPropertyName = presetPropertyName;
-    }
+        public PresetAttribute(string presetPropertyName)
+        {
+            PresetPropertyName = presetPropertyName;
+        }
 
-    public string PresetPropertyName { get; private set; }
+        public string PresetPropertyName { get; private set; }
+    }
 }

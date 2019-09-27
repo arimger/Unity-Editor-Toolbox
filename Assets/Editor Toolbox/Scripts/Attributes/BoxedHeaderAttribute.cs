@@ -1,14 +1,15 @@
 ﻿using System;
 
-using UnityEngine;
-
-[AttributeUsage(AttributeTargets.Field)]
-public class BoxedHeaderAttribute : PropertyAttribute
+namespace UnityEngine
 {
-    public BoxedHeaderAttribute(string header)
+    [AttributeUsage(AttributeTargets.Field)]
+    public class BoxedHeaderAttribute : PropertyAttribute
     {
-        Header = header;
-    }
+        public BoxedHeaderAttribute(string header)
+        {
+            Header = header;
+        }
 
-    public string Header { get; private set; }
+        public string Header { get; private set; }
+    }
 }

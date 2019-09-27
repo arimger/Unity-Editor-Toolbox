@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
-using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
+using UnityEngine;
 
 namespace Toolbox.Editor
 {
@@ -27,40 +26,32 @@ namespace Toolbox.Editor
             }
 
             EditorGUI.BeginProperty(position, label, property);
-
-            if (Attribute.UseDefaultTagFieldDrawer)
+            var tags = new List<string>
             {
-                property.stringValue = EditorGUI.TagField(position, label, property.stringValue);
+                "<None>"
+            };
+            tags.AddRange(InternalEditorUtility.tags);
+            var propertyString = property.stringValue;
+            var index = -1;
+            if (propertyString == "")
+            {
+                index = 0;
             }
             else
             {
-                var tags = new List<string>
+                for (int i = 1; i < tags.Count; i++)
                 {
-                    "<None>"
-                };
-                tags.AddRange(InternalEditorUtility.tags);
-                var propertyString = property.stringValue;
-                var index = -1;
-                if (propertyString == "")
-                {
-                    index = 0;
-                }
-                else
-                {
-                    for (int i = 1; i < tags.Count; i++)
+                    if (tags[i] == propertyString)
                     {
-                        if (tags[i] == propertyString)
-                        {
-                            index = i;
-                            break;
-                        }
+                        index = i;
+                        break;
                     }
                 }
-
-                index = EditorGUI.Popup(position, label.text, index, tags.ToArray());
-
-                property.stringValue = index >= 1 ? tags[index] : "";
             }
+
+            index = EditorGUI.Popup(position, label.text, index, tags.ToArray());
+
+            property.stringValue = index >= 1 ? tags[index] : "";
 
             EditorGUI.EndProperty();
         }

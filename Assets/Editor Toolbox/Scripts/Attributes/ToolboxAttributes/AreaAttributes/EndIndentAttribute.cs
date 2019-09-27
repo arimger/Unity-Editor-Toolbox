@@ -1,12 +1,15 @@
 ﻿using System;
 
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class EndIndentAttribute : ToolboxAreaAttribute
+namespace UnityEngine
 {
-    public EndIndentAttribute(int indentToSubtract = 1)
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class EndIndentAttribute : ToolboxAreaAttribute
     {
-        IndentToSubtract = indentToSubtract;
-    }
+        public EndIndentAttribute(int indentToSubtract = 1)
+        {
+            IndentToSubtract = indentToSubtract;
+        }
 
-    public int IndentToSubtract { get; private set; }
+        public int IndentToSubtract { get; private set; }
+    }
 }

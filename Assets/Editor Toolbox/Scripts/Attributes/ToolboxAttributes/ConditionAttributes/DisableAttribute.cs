@@ -1,5 +1,8 @@
 ﻿using System;
 
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class DisableAttribute : ToolboxConditionAttribute
-{ }
+namespace UnityEngine
+{
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class DisableAttribute : ToolboxConditionAttribute
+    { }
+}

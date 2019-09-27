@@ -1,15 +1,18 @@
 ﻿using System;
 
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public abstract class ConditionAttribute : ToolboxConditionAttribute
+namespace UnityEngine
 {
-    public ConditionAttribute(string comparedPropertyName, object comparedConditionValue)
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public abstract class ConditionAttribute : ToolboxConditionAttribute
     {
-        ComparedPropertyName = comparedPropertyName;
-        ComparedConditionValue = comparedConditionValue;
+        public ConditionAttribute(string comparedPropertyName, object comparedConditionValue)
+        {
+            ComparedPropertyName = comparedPropertyName;
+            ComparedConditionValue = comparedConditionValue;
+        }
+
+        public string ComparedPropertyName { get; private set; }
+
+        public object ComparedConditionValue { get; private set; }
     }
-
-    public string ComparedPropertyName { get; private set; }
-
-    public object ComparedConditionValue { get; private set; }
 }

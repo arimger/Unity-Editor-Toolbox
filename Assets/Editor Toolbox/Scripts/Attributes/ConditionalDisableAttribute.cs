@@ -1,8 +1,11 @@
 ﻿using System;
 
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class ConditionalDisableAttribute : ConditionalAttribute
+namespace UnityEngine
 {
-    public ConditionalDisableAttribute(string propertyToCheck, object compareValue = null) : base(propertyToCheck, compareValue)
-    { }
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class ConditionalDisableAttribute : ConditionalAttribute
+    {
+        public ConditionalDisableAttribute(string propertyToCheck, object compareValue = null) : base(propertyToCheck, compareValue)
+        { }
+    }
 }

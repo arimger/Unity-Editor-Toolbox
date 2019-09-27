@@ -759,15 +759,16 @@ namespace Toolbox.Editor.Internal
 
             //display array size property without indentation
             using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
-            {        
+            {
+                var property = Size;
                 EditorGUI.BeginDisabledGroup(HasFixedSize);
-                EditorGUI.BeginProperty(rect, GUIContent.none, Size);
+                EditorGUI.BeginProperty(rect, Style.arraySizeFieldContent, property);
                 EditorGUI.BeginChangeCheck();
                 //cache delayed size value using delayed int field
-                var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, Size.intValue, Style.sizeLabel), 0);
+                var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, property.intValue, Style.sizeLabel), 0);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    Size.intValue = sizeValue;
+                    property.intValue = sizeValue;
                 }
                 EditorGUI.EndProperty();
                 EditorGUI.EndDisabledGroup();
@@ -996,6 +997,7 @@ namespace Toolbox.Editor.Internal
             internal static readonly GUIContent iconToolbarDrop;
             internal static readonly GUIContent iconToolbarRemove;
             internal static readonly GUIContent listIsEmptyContent;
+            internal static readonly GUIContent arraySizeFieldContent;
 
             internal static readonly GUIStyle sizeLabel;
             internal static readonly GUIStyle footerButton;
@@ -1011,6 +1013,7 @@ namespace Toolbox.Editor.Internal
                 iconToolbarDrop = EditorGUIUtility.TrIconContent("Toolbar Plus More", "Choose to add to list");
                 iconToolbarRemove = EditorGUIUtility.TrIconContent("Toolbar Minus", "Remove selection from list");
                 listIsEmptyContent = EditorGUIUtility.TrTextContent("List is Empty");
+                arraySizeFieldContent = EditorGUIUtility.TrTextContent("", "List size");
 
                 sizeLabel = new GUIStyle(EditorStyles.miniTextField)
                 {

@@ -1,15 +1,18 @@
 ﻿using System;
 
-/// <summary>
-/// Begins indentation group in inspector. Use <seealso cref="EndIndentAttribute"/> on serialized property to end this group.
-/// </summary>
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class BeginIndentAttribute : ToolboxAreaAttribute
+namespace UnityEngine
 {
-    public BeginIndentAttribute(int indentToAdd = 1)
+    /// <summary>
+    /// Begins indentation group in inspector. Use <seealso cref="EndIndentAttribute"/> on serialized property to end this group.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class BeginIndentAttribute : ToolboxAreaAttribute
     {
-        IndentToAdd = indentToAdd;
-    }
+        public BeginIndentAttribute(int indentToAdd = 1)
+        {
+            IndentToAdd = indentToAdd;
+        }
 
-    public int IndentToAdd { get; private set; }
+        public int IndentToAdd { get; private set; }
+    }
 }

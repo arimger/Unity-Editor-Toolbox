@@ -1,14 +1,15 @@
 ﻿using System;
 
-using UnityEngine;
-
-[AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-public class SuffixAttribute : PropertyAttribute
+namespace UnityEngine
 {
-    public SuffixAttribute(string suffixLabel)
+    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    public class SuffixAttribute : PropertyAttribute
     {
-        SuffixLabel = suffixLabel;
-    }
+        public SuffixAttribute(string suffixLabel)
+        {
+            SuffixLabel = suffixLabel;
+        }
 
-    public string SuffixLabel { get; private set; }
+        public string SuffixLabel { get; private set; }
+    }
 }

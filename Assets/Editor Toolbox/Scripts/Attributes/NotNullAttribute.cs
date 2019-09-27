@@ -1,19 +1,20 @@
 ﻿using System;
 
-using UnityEngine;
-
-[AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false)]
-public class NotNullAttribute : PropertyAttribute
+namespace UnityEngine
 {
-    public NotNullAttribute()
+    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false)]
+    public class NotNullAttribute : PropertyAttribute
     {
-        Label = "Variable has to be assigned.";
-    }
+        public NotNullAttribute()
+        {
+            Label = "Variable has to be assigned.";
+        }
 
-    public NotNullAttribute(string label)
-    {
-        Label = label;
-    }
+        public NotNullAttribute(string label)
+        {
+            Label = label;
+        }
 
-    public string Label { get; private set; }
+        public string Label { get; private set; }
+    }
 }

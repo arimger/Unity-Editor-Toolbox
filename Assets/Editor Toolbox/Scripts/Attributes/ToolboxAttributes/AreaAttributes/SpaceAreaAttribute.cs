@@ -1,15 +1,18 @@
 ﻿using System;
 
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public class SpaceAreaAttribute : ToolboxAreaAttribute
+namespace UnityEngine
 {
-    public SpaceAreaAttribute(float spaceBefore = 5.0f, float spaceAfter = 0.0f)
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class SpaceAreaAttribute : ToolboxAreaAttribute
     {
-        SpaceBefore = spaceBefore;
-        SpaceAfter = spaceAfter;
+        public SpaceAreaAttribute(float spaceBefore = 5.0f, float spaceAfter = 0.0f)
+        {
+            SpaceBefore = spaceBefore;
+            SpaceAfter = spaceAfter;
+        }
+
+        public float SpaceBefore { get; private set; }
+
+        public float SpaceAfter { get; private set; }
     }
-
-    public float SpaceBefore { get; private set; }
-
-    public float SpaceAfter { get; private set; }
 }

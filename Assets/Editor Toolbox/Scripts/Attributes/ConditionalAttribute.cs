@@ -1,14 +1,15 @@
-﻿using UnityEngine;
-
-public abstract class ConditionalAttribute : PropertyAttribute
+﻿namespace UnityEngine
 {
-    public ConditionalAttribute(string propertyToCheck, object compareValue = null)
+    public abstract class ConditionalAttribute : PropertyAttribute
     {
-        PropertyToCheck = propertyToCheck;
-        CompareValue = compareValue;
+        public ConditionalAttribute(string propertyToCheck, object compareValue = null)
+        {
+            PropertyToCheck = propertyToCheck;
+            CompareValue = compareValue;
+        }
+
+        public string PropertyToCheck { get; private set; }
+
+        public object CompareValue { get; private set; }
     }
-
-    public string PropertyToCheck { get; private set; }
-
-    public object CompareValue { get; private set; }
 }

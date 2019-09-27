@@ -1,4 +1,6 @@
-﻿namespace Toolbox.Editor.Drawers
+﻿using UnityEngine;
+
+namespace Toolbox.Editor.Drawers
 {
     public class LineAreaAttributeDrawer : ToolboxAreaDrawer<LineAreaAttribute>
     {

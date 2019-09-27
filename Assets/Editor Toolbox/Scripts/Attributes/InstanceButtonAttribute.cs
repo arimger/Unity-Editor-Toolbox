@@ -1,12 +1,16 @@
 ﻿using System;
 
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
-public class InstanceButtonAttribute : ButtonAttribute
+namespace UnityEngine
 {
-    public InstanceButtonAttribute(Type instanceType, string methodName, string label = null, ButtonActivityType type = ButtonActivityType.Everything) : base(methodName, label, type)
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
+    public class InstanceButtonAttribute : ButtonAttribute
     {
-        InstanceType = instanceType;
-    }
+        public InstanceButtonAttribute(Type instanceType, string methodName, string label = null,
+            ButtonActivityType type = ButtonActivityType.Everything) : base(methodName, label, type)
+        {
+            InstanceType = instanceType;
+        }
 
-    public Type InstanceType { get; private set; }
+        public Type InstanceType { get; private set; }
+    }
 }
