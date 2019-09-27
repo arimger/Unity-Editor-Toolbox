@@ -319,7 +319,7 @@ MonoBehaviour:
   randomValue: -1.8507824
   directory: Examples/Models
   sceneName: SampleScene
-  presetTarget: 3
+  presetTarget: 1
   enumSearch: 27
   list:
   - {fileID: 2133702603}

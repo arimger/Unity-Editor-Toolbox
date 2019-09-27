@@ -139,12 +139,12 @@ public class SampleBehaviour : MonoBehaviour
     [Preset("presetValues")]
     public int presetTarget;
 
+    private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
+
     [BoxedHeader("20")]
 
     [SearchableEnum]
     public KeyCode enumSearch;
-
-    private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
 
     [HeaderArea("Toolbox Attributes", HeaderStyle.Boxed)]
     [HeaderArea("1", HeaderStyle.Boxed)]
