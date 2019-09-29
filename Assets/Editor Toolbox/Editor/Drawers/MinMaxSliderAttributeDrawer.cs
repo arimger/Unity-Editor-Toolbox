@@ -63,7 +63,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::MinMaxSliderAttribute"/>.
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="MinMaxSliderAttribute"/>.
         /// </summary>
         private MinMaxSliderAttribute Attribute => attribute as MinMaxSliderAttribute;
 

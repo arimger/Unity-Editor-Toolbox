@@ -25,7 +25,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::SuffixAttribute"/>.
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="SuffixAttribute"/>.
         /// </summary>
         private SuffixAttribute Attribute => attribute as SuffixAttribute;
     }

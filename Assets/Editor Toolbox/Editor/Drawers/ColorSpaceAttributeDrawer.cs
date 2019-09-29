@@ -27,7 +27,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::ColorSpaceAttribute"/>.
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="ColorSpaceAttribute"/>.
         /// </summary>
         private ColorSpaceAttribute Attribute => attribute as ColorSpaceAttribute;
     }

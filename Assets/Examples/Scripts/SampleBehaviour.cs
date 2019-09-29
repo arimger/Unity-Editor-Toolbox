@@ -146,6 +146,11 @@ public class SampleBehaviour : MonoBehaviour
     [SearchableEnum]
     public KeyCode enumSearch;
 
+    [BoxedHeader("21")]
+
+    [Clamp(0.0f, 11.2f)]
+    public double clampedValue;
+
     [HeaderArea("Toolbox Attributes", HeaderStyle.Boxed)]
     [HeaderArea("1", HeaderStyle.Boxed)]
 

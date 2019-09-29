@@ -321,6 +321,7 @@ MonoBehaviour:
   sceneName: SampleScene
   presetTarget: 1
   enumSearch: 27
+  clampedValue: 6.21999979019165
   list:
   - {fileID: 2133702603}
   - {fileID: 2133702603}

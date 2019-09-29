@@ -66,7 +66,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::NotNullAttribute"/>.
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="NotNullAttribute"/>.
         /// </summary>
         private NotNullAttribute Attribute => attribute as NotNullAttribute;
 
