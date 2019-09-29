@@ -102,7 +102,9 @@ public class SampleBehaviour : MonoBehaviour
     [BoxedHeader("14")]
 
     [EnumFlag]
-    public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2;
+    public FlagExample enumFlag1 = FlagExample.Flag1 | FlagExample.Flag2;
+    [EnumFlag(EnumStyle.Button)]
+    public FlagExample enumFlag2 = FlagExample.Flag1 | FlagExample.Flag2;
 
     [System.Flags]
     public enum FlagExample
