@@ -85,7 +85,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::AssetPreviewAttribute"/>.
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="AssetPreviewAttribute"/>.
         /// </summary>
         private AssetPreviewAttribute Attribute => attribute as AssetPreviewAttribute;
 

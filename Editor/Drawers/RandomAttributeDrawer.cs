@@ -44,7 +44,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::RandomAttribute"/>.
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="RandomAttribute"/>.
         /// </summary>
         private RandomAttribute Attribute => attribute as RandomAttribute;
 

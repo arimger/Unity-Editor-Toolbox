@@ -2,8 +2,10 @@
 
 using System;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
-using Boo.Lang;
+
 using UnityEngine;
 using Object = UnityEngine.Object;
 using UnityEditor;
@@ -21,11 +23,17 @@ namespace Toolbox.Editor
     /// </summary>
     public class ToolbarButton
     {
-        public ToolbarButton(Action onClickAction, GUIContent labelContent)
+        public ToolbarButton(Action onClickAction, GUIContent labelContent) : this(onClickAction, labelContent, 0)
+        { }
+
+        public ToolbarButton(Action onClickAction, GUIContent labelContent, int order)
         {
+            Order = order;
             OnClickAction = onClickAction;
             LabelContent = labelContent;
         }
+
+        public int Order { get; set; }
 
         public Action OnClickAction { get; private set; }
 
@@ -142,11 +150,13 @@ namespace Toolbox.Editor
         public static void AddToolbarButton(ToolbarButton button)
         {
             buttons.Add(button);
+            buttons.Sort((a, b) => a.Order.CompareTo(b.Order));
         }
 
         public static void RemoveToolbarButton(ToolbarButton button)
         {
             buttons.Remove(button);
+            buttons.Sort((a, b) => a.Order.CompareTo(b.Order));
         }
 
 

@@ -151,9 +151,18 @@ public int presetTarget;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc33.png)
 
-#### SearchableEnum
+#### SearchableEnumAttribute
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc34.png)
+
+#### ClampAttribute
+
+```csharp
+[Clamp(minValue = 1.5f, maxValue = 11.3f)]
+public double var1;
+```
+
+---
 
 ### Toolbox Drawers
 

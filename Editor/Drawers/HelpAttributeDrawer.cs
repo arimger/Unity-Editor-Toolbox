@@ -29,7 +29,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::HelpAttribute"/>.
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="HelpAttribute"/>.
         /// </summary>
         private HelpAttribute Attribute => attribute as HelpAttribute;
 

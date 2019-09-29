@@ -13,8 +13,9 @@ namespace Toolbox.Editor
             EditorGUI.indentLevel -= Attribute.IndentLevelChange;
         }
 
+
         /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::IndentAttribute"/>.
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="IndentAttribute"/>.
         /// </summary>
         private IndentAttribute Attribute => attribute as IndentAttribute;
     }

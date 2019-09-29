@@ -46,7 +46,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::ProgressBarAttribute"/>.
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="ProgressBarAttribute"/>.
         /// </summary>
         private ProgressBarAttribute Attribute => attribute as ProgressBarAttribute;
 

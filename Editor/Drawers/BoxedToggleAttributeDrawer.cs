@@ -33,7 +33,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::BoxedToggleAttribute"/>.
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="BoxedToggleAttribute"/>.
         /// </summary>
         private BoxedToggleAttribute Attribute => attribute as BoxedToggleAttribute;
 

@@ -266,7 +266,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="global::ClassTypeConstraintAttribute"/>.
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="ClassTypeConstraintAttribute"/>.
         /// </summary>
         private ClassTypeConstraintAttribute Attribute => attribute as ClassTypeConstraintAttribute;
     }
