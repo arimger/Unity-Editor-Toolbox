@@ -16,7 +16,6 @@ namespace UnityEngine
     public enum EnumStyle
     {
         Popup,
-        [Obsolete("Work in progress.")]
         Button
     }
 }

@@ -104,7 +104,7 @@ public class SampleBehaviour : MonoBehaviour
     [EnumFlag]
     public FlagExample enumFlag1 = FlagExample.Flag1 | FlagExample.Flag2;
     [EnumFlag(EnumStyle.Button)]
-    public FlagExample enumFlag2 = FlagExample.Flag1 | FlagExample.Flag2;
+    public FlagExample enumFlag2 = FlagExample.Flag1 | FlagExample.Flag2 | FlagExample.Flag7;
 
     [System.Flags]
     public enum FlagExample
@@ -113,6 +113,12 @@ public class SampleBehaviour : MonoBehaviour
         Flag1 = 1,
         Flag2 = 2,
         Flag3 = 4,
+        Flag4 = 8,
+        Flag5 = 16,
+        Flag6 = 32,
+        Flag7 = 64,
+        Flag8 = 128,
+        Flag9 = 256,
         Everything = ~0
     }
 

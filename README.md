@@ -111,7 +111,15 @@ public enum FlagExample
 [EnumFlag]
 public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2;
 ```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc20.png)
+
+```csharp
+[EnumFlag(EnumStyle.Button)]
+public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExample.Flag4 | FlagExample.Flag8;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc35.png)
 
 #### NotNullAttribute
 

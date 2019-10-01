@@ -314,7 +314,8 @@ MonoBehaviour:
     classReference: System.Collections.ArrayList, mscorlib
   var11: Im read only
   var12: 0
-  enumFlag: 3
+  enumFlag1: 84
+  enumFlag2: 204
   var13: {fileID: 0}
   randomValue: -1.8507824
   directory: Examples/Models
