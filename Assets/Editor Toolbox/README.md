@@ -12,12 +12,17 @@ Copy and paste `Editor Toolbox` directory into your project (basically into `Ass
 ## Table Of Contents
 
 - [Attributes](#attributes)
+	- [Unity Property Drawers](#unitydrawers)
+	- [Toolbox Property Drawers](#toolboxdrawers)
 - [ReorderableList](#reorderable-list)
 - [Tools and Editors](#tools-and-editors)
+	- [Terrain Editor](#terraineditor)
+	- [Hierarchy](#hierarchy)
+	- [Toolbar](#toolbar)
 
 ## Attributes
 
-### Standard Drawers
+### Unity Property Drawers <a name="unitydrawers"></a>
 
 Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associated **PropertyAttribute**.
 
@@ -172,7 +177,7 @@ public double var1;
 
 ---
 
-### Toolbox Drawers
+### Toolbox Property Drawers <a name="toolboxdrawers"></a>
 
 Drawers based on classes **ToolboxDrawer** and associated **ToolboxAttribute**.  
 For proper work they need at least one settings file located in your project.  
@@ -283,20 +288,20 @@ public GameObject[] boxedStyleList = new GameObject[4];
 
 ## Tools and Editors
 
-### Terrain Editor
+### Terrain Editor <a name="terraineditor"></a>
 
 > Editor Toolbox/Editor/Tools/Editors/TerrainToolEditor.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc1.png)
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc9.png)
 
-### Hierarchy 
+### Hierarchy <a name="hierarchy"></a>
 
 > Editor Toolbox/Editor/ToolboxEditorHierarchy.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc2.png)
 
-### Toolbar
+### Toolbar <a name="toolbar"></a>
 
 > Editor Toolbox/Editor/ToolboxEditorToolbar.cs
 
