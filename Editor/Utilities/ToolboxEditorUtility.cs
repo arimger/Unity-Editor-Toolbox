@@ -18,8 +18,6 @@ namespace Toolbox.Editor
 
         private readonly static Dictionary<Type, ToolboxAreaDrawerBase> areaDrawers = new Dictionary<Type, ToolboxAreaDrawerBase>();
 
-        private readonly static Dictionary<Type, ToolboxGroupDrawerBase> groupDrawers = new Dictionary<Type, ToolboxGroupDrawerBase>();
-
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> propertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
 
         private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers = new Dictionary<Type, ToolboxConditionDrawerBase>();
@@ -71,12 +69,6 @@ namespace Toolbox.Editor
                 CreateDrawer(settings.GetAreaDrawerTypeAt(i), areaDrawers);
             }
 
-            //iterate over all assigned group drawers, create them and store
-            for (var i = 0; i < settings.GroupDrawersCount; i++)
-            {
-                CreateDrawer(settings.GetGroupDrawerTypeAt(i), groupDrawers);
-            }
-
             //iterate over all assigned property drawers, create them and store
             for (var i = 0; i < settings.PropertyDrawersCount; i++)
             {
@@ -109,15 +101,6 @@ namespace Toolbox.Editor
         internal static ToolboxAreaDrawerBase GetAreaDrawer<T>(T attribute) where T : ToolboxAreaAttribute
         {
             if (!areaDrawers.TryGetValue(attribute.GetType(), out ToolboxAreaDrawerBase drawer))
-            {
-                throw new AttributeNotSupportedException(attribute);
-            }
-            return drawer;
-        }
-
-        internal static ToolboxGroupDrawerBase GetGroupDrawer<T>(T attribute) where T : ToolboxGroupAttribute
-        {
-            if (!groupDrawers.TryGetValue(attribute.GetType(), out ToolboxGroupDrawerBase drawer))
             {
                 throw new AttributeNotSupportedException(attribute);
             }
