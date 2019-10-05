@@ -23,18 +23,6 @@ namespace Toolbox.Editor.Drawers
             listInstances.Clear();
         }
 
-        /// <summary>
-        /// Generate new key based on <see cref="SerializedProperty"/> hash code.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        private static string GenerateKey(SerializedProperty property)
-        {
-            //TODO: check whenever hash code is outdated and reinitialize drawer if needed
-            return property.serializedObject.GetHashCode() + "-" + property.name;
-            //property.serializedObject.targetObject.GetInstanceID() + "-" + property.name;
-        }
-
 
         /// <summary>
         /// Collection of all stored <see cref="ReorderableList"/> instances.
