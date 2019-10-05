@@ -5,7 +5,7 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class InLineEditorAttribute : ToolboxPropertyAttribute
     {
-        public InLineEditorAttribute(bool drawHeader = false, bool drawPreview = false)
+        public InLineEditorAttribute(bool drawHeader = false, bool drawPreview = true)
         {
             DrawHeader = drawHeader;
             DrawPreview = drawPreview;

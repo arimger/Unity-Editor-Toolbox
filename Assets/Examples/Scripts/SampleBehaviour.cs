@@ -185,12 +185,15 @@ public class SampleBehaviour : MonoBehaviour
     [InLineEditor]
     public Transform var21;
 
-    [HeaderArea("4", HeaderStyle.Boxed)]
+    [SpaceArea]
 
-    [InLineEditor(drawPreview:true)]
+    [InLineEditor]
     public Material var22;
-    [InLineEditor(drawPreview:true)]
-    public Mesh var23;
+
+    [SpaceArea]
+
+    [InLineEditor(true, true)]
+    public Texture var23;
 
     [HeaderArea("5", HeaderStyle.Boxed)]
 
