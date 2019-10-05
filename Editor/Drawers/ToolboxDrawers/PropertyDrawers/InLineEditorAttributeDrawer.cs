@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEditor;
+using UnityEditorInternal;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -48,7 +49,6 @@ namespace Toolbox.Editor.Drawers
                 return;
 
             var key = GenerateKey(property);
-
             //get (or create) editor for this property
             if (!editorInstances.TryGetValue(key, out UnityEditor.Editor editor))
             {
@@ -68,16 +68,28 @@ namespace Toolbox.Editor.Drawers
                 {
                     editor.DrawHeader();
                 }
-
+                //NOTE: if MaterialEditor does not draw header we have to force visibility of its properties
+                else
+                {
+                    InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
+                }
+                //cache proper label width for this property
+                var labelWidth = EditorGUIUtility.labelWidth;
                 //draw whole inspector and apply all changes 
                 editor.serializedObject.Update();
                 editor.OnInspectorGUI();
                 editor.serializedObject.ApplyModifiedProperties();
+                //restore old label width
+                //NOTE: there is sometimes bug when some of MaterialEditors override labelWidth property
+                EditorGUIUtility.labelWidth = labelWidth;
 
-                if (!editor.HasPreviewGUI()) return;
+                if (!editor.HasPreviewGUI())
+                {
+                    return;
+                }
 
                 //draw preview if possible and needed
-                if(attribute.DrawPreview)
+                if (attribute.DrawPreview)
                 {
                     editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, attribute.PreviewHeight), Style.previewStyle);
                 }
