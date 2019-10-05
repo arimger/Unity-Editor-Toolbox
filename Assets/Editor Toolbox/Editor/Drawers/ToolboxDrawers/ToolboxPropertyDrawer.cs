@@ -11,6 +11,17 @@ namespace Toolbox.Editor.Drawers
         public static System.Type GetAttributeType() => typeof(T);
 
 
+        /// <summary>
+        /// Generate new key based on <see cref="SerializedProperty"/> hash code.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        protected static string GenerateKey(SerializedProperty property)
+        {
+            return property.serializedObject.GetHashCode() + "-" + property.name;
+        }
+
+
         public override sealed void OnGui(SerializedProperty property)
         {
             var targetAttribute = property.GetAttribute<T>();

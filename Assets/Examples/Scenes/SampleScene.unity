@@ -335,6 +335,8 @@ MonoBehaviour:
   var19: 0
   var20: 0
   var21: {fileID: 1452203516}
+  var22: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
+  var23: {fileID: 4300004, guid: 961e58de9bf26d746b3007a805cddb17, type: 3}
   vars1: 01000000020000000300000004000000
 --- !u!4 &959025299
 Transform:

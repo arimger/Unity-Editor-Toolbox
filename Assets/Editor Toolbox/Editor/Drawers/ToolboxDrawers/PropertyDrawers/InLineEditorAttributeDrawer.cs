@@ -22,11 +22,6 @@ namespace Toolbox.Editor.Drawers
             editorInstances.Clear();
         }
 
-        private static string GenerateKey(SerializedProperty property)
-        {
-            return property.serializedObject.GetHashCode() + "-" + property.name;
-        }
-
 
         private static Dictionary<string, UnityEditor.Editor> editorInstances = new Dictionary<string, UnityEditor.Editor>();
 
@@ -37,10 +32,11 @@ namespace Toolbox.Editor.Drawers
         {
             EditorGUILayout.PropertyField(property, property.isExpanded);
 
-            //TODO: arrays support
-            if (property.isArray)
+            //basically arrays and multiple values are not supported yet
+            if (property.isArray || property.hasMultipleDifferentValues)
                 return;
 
+            //reference value type validation
             if (property.propertyType != SerializedPropertyType.ObjectReference)
             {
                 Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
@@ -53,18 +49,38 @@ namespace Toolbox.Editor.Drawers
 
             var key = GenerateKey(property);
 
+            //get (or create) editor for this property
             if (!editorInstances.TryGetValue(key, out UnityEditor.Editor editor))
             {
                 editorInstances[key] = editor = UnityEditor.Editor.CreateEditor(property.objectReferenceValue);
             }
+            //if reference values does not match we have to reset editor
+            else if (editor.target != property.objectReferenceValue)
+            {
+                editorInstances.Remove(key);
+                return;
+            }
 
             if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, new GUIContent("Inspector Preview"), true, Style.foldoutStyle))
             {
+                //draw header if needed
+                if (attribute.DrawHeader)
+                {
+                    editor.DrawHeader();
+                }
+
+                //draw whole inspector and apply all changes 
                 editor.serializedObject.Update();
-                EditorGUI.indentLevel++;
                 editor.OnInspectorGUI();
-                EditorGUI.indentLevel--;
                 editor.serializedObject.ApplyModifiedProperties();
+
+                if (!editor.HasPreviewGUI()) return;
+
+                //draw preview if possible and needed
+                if(attribute.DrawPreview)
+                {
+                    editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, attribute.PreviewHeight), Style.previewStyle);
+                }
             }
         }
 
@@ -72,15 +88,16 @@ namespace Toolbox.Editor.Drawers
         private static class Style
         {
             internal static readonly GUIStyle foldoutStyle;
+            internal static readonly GUIStyle previewStyle;
 
             static Style()
             {
                 foldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
-                    //fontStyle = FontStyle.Bold,
                     fontSize = 9,
                     alignment = TextAnchor.MiddleLeft
                 };
+                previewStyle = new GUIStyle(EditorStyles.helpBox);
             }
         }
     }

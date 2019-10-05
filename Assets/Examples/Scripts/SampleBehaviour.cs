@@ -187,6 +187,13 @@ public class SampleBehaviour : MonoBehaviour
 
     [HeaderArea("4", HeaderStyle.Boxed)]
 
+    [InLineEditor(drawPreview: true)]
+    public Material var22;
+    [InLineEditor(drawPreview:true)]
+    public Mesh var23;
+
+    [HeaderArea("5", HeaderStyle.Boxed)]
+
     [Disable]
     public int[] vars1 = new[] {1, 2, 3, 4};
 
