@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 using UnityEngine;
 using UnityEditor;
@@ -29,6 +30,72 @@ namespace Toolbox.Editor.Drawers
         #endregion
 
 
+        /// <summary>
+        /// Draws inlined version of <see cref="UnityEditor.Editor" and handles all unexpected situations.
+        /// </summary>
+        /// <param name="editor"></param>
+        /// <param name="attribute"></param>
+        private void HandlePrewarmEditor(UnityEditor.Editor editor, InLineEditorAttribute attribute)
+        {
+            if (!attribute.DrawHeader)
+            {
+                //force expanded inspector if header is not expected
+                if (!InternalEditorUtility.GetIsInspectorExpanded(editor.target))
+                {
+                    InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
+#if !UNITY_2019_1_OR_NEWER
+                    //in older versions editor's foldout are based on m_IsVisible foldout and Awake() method
+                    var isVisible = editor.GetType().GetField("m_IsVisible",
+                        BindingFlags.Instance | BindingFlags.NonPublic);
+                    if (isVisible != null)
+                    {
+                        isVisible.SetValue(editor, true);
+                    }
+#endif
+                }
+            }
+
+            //prevent custom editors for overriding label width
+            var labelWidth = EditorGUIUtility.labelWidth;
+            HandleStandardEditor(editor, attribute);
+            EditorGUIUtility.labelWidth = labelWidth;
+        }
+
+        /// <summary>
+        /// Draw inlined editor using provided <see cref="UnityEditor.Editor"/> object.
+        /// </summary>
+        /// <param name="editor"></param>
+        /// <param name="attribute"></param>
+        private void HandleStandardEditor(UnityEditor.Editor editor, InLineEditorAttribute attribute)
+        {
+            //begin inlined editor by drawing separation line
+            ToolboxEditorGui.DrawLayoutLine();
+
+            //draw header if needed
+            if (attribute.DrawHeader)
+            {
+                editor.DrawHeader();
+            }
+
+            //draw whole inspector and apply all changes 
+            editor.serializedObject.Update();
+            editor.OnInspectorGUI();
+            editor.serializedObject.ApplyModifiedProperties();
+
+            if (editor.HasPreviewGUI())
+            {
+                //draw preview if possible and needed
+                if (attribute.DrawPreview)
+                {
+                    editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, attribute.PreviewHeight), Style.previewStyle);
+                }
+            }
+
+            //end inlined editor by drawing separation line
+            ToolboxEditorGui.DrawLayoutLine();
+        }
+
+
         public override void OnGui(SerializedProperty property, InLineEditorAttribute attribute)
         {
             EditorGUILayout.PropertyField(property, property.isExpanded);
@@ -41,7 +108,7 @@ namespace Toolbox.Editor.Drawers
             if (property.propertyType != SerializedPropertyType.ObjectReference)
             {
                 Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only on reference value properties.");      
+                                 " - " + attribute.GetType() + " can be used only on reference value properties.");
                 return;
             }
 
@@ -63,36 +130,8 @@ namespace Toolbox.Editor.Drawers
 
             if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, new GUIContent("Inspector Preview"), true, Style.foldoutStyle))
             {
-                //draw header if needed
-                if (attribute.DrawHeader)
-                {
-                    editor.DrawHeader();
-                }
-                //NOTE: if MaterialEditor does not draw header we have to force visibility of its properties
-                else
-                {
-                    InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
-                }
-                //cache proper label width for this property
-                var labelWidth = EditorGUIUtility.labelWidth;
-                //draw whole inspector and apply all changes 
-                editor.serializedObject.Update();
-                editor.OnInspectorGUI();
-                editor.serializedObject.ApplyModifiedProperties();
-                //restore old label width
-                //NOTE: there is sometimes bug when some of MaterialEditors override labelWidth property
-                EditorGUIUtility.labelWidth = labelWidth;
-
-                if (!editor.HasPreviewGUI())
-                {
-                    return;
-                }
-
-                //draw preview if possible and needed
-                if (attribute.DrawPreview)
-                {
-                    editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, attribute.PreviewHeight), Style.previewStyle);
-                }
+                //draw and prewarm inlined editor
+                HandlePrewarmEditor(editor, attribute);
             }
         }
 
