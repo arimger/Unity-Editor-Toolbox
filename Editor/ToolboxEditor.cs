@@ -40,7 +40,7 @@ namespace Toolbox.Editor
         /// Handles desired property display process using <see cref="ToolboxDrawer"/>s.
         /// </summary>
         /// <param name="property">Property to display.</param>
-        protected virtual void HandleProperty(SerializedProperty property)
+        protected virtual void DrawCustomProperty(SerializedProperty property)
         {
             if (!propertyHandlers.TryGetValue(property.name, out PropertyHandler propertyHandler))
             {
@@ -79,7 +79,7 @@ namespace Toolbox.Editor
                 //draw every property using ToolboxAttributes&Drawers
                 while (property.NextVisible(false))
                 {
-                    HandleProperty(property.Copy());
+                    DrawCustomProperty(property.Copy());
                 }
                 serializedObject.ApplyModifiedProperties();
             }

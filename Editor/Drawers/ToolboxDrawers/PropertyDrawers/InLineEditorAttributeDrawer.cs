@@ -31,7 +31,7 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Draws inlined version of <see cref="UnityEditor.Editor" and handles all unexpected situations.
+        /// Draws inlined version of <see cref="UnityEditor.Editor"></see> and handles all unexpected situations.
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
@@ -44,7 +44,7 @@ namespace Toolbox.Editor.Drawers
                 {
                     InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
 #if !UNITY_2019_1_OR_NEWER
-                    //in older versions editor's foldout are based on m_IsVisible foldout and Awake() method
+                    //in older versions editor's foldouts are based on m_IsVisible field and Awake() method
                     var isVisible = editor.GetType().GetField("m_IsVisible",
                         BindingFlags.Instance | BindingFlags.NonPublic);
                     if (isVisible != null)
@@ -62,7 +62,7 @@ namespace Toolbox.Editor.Drawers
         }
 
         /// <summary>
-        /// Draw inlined editor using provided <see cref="UnityEditor.Editor"/> object.
+        /// Draws inlined editor using provided <see cref="UnityEditor.Editor"/> object.
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
@@ -96,6 +96,12 @@ namespace Toolbox.Editor.Drawers
         }
 
 
+        /// <summary>
+        /// Handles property drawing process and tries to create inlined version of <see cref="UnityEditor.Editor"/>
+        /// for <see cref="UnityEngine.Object"/> associated to this property.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="attribute"></param>
         public override void OnGui(SerializedProperty property, InLineEditorAttribute attribute)
         {
             EditorGUILayout.PropertyField(property, property.isExpanded);
@@ -128,7 +134,7 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, new GUIContent("Inspector Preview"), true, Style.foldoutStyle))
+            if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, new GUIContent(property.objectReferenceValue.GetType().Name + " Inspector Preview"), true, Style.foldoutStyle))
             {
                 //draw and prewarm inlined editor
                 HandlePrewarmEditor(editor, attribute);
@@ -136,6 +142,9 @@ namespace Toolbox.Editor.Drawers
         }
 
 
+        /// <summary>
+        /// Custom style representation.
+        /// </summary>
         private static class Style
         {
             internal static readonly GUIStyle foldoutStyle;
@@ -148,7 +157,16 @@ namespace Toolbox.Editor.Drawers
                     fontSize = 9,
                     alignment = TextAnchor.MiddleLeft
                 };
-                previewStyle = new GUIStyle(EditorStyles.helpBox);
+
+                //create background texture for all previews
+                var backgroundTex = new Texture2D(1, 1);
+                backgroundTex.SetPixel(0, 0, new Color(0, 0, 0, 0));
+                backgroundTex.Apply();
+                backgroundTex.hideFlags = HideFlags.HideAndDontSave;
+
+                //create preview style based on transparent texture
+                previewStyle = new GUIStyle();
+                previewStyle.normal.background = backgroundTex;
             }
         }
     }
