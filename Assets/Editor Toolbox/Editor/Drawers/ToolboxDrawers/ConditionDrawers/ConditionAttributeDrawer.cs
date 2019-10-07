@@ -1,6 +1,4 @@
-﻿using System;
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
@@ -21,16 +19,14 @@ namespace Toolbox.Editor.Drawers
             {
                 case SerializedPropertyType.Boolean:
                     return propertyToCheck.boolValue.Equals(attribute.ComparedConditionValue);
-                case SerializedPropertyType.Enum:
-                    //TODO: handling flags
-                    var index = Array.IndexOf(Enum.GetValues(attribute.ComparedConditionValue.GetType()), attribute.ComparedConditionValue);
-                    return propertyToCheck.enumValueIndex.Equals(index);
                 case SerializedPropertyType.String:
                     return propertyToCheck.stringValue.Equals(attribute.ComparedConditionValue);
                 case SerializedPropertyType.Integer:
                     return propertyToCheck.intValue.Equals(attribute.ComparedConditionValue);
                 case SerializedPropertyType.Float:
                     return propertyToCheck.floatValue.Equals(attribute.ComparedConditionValue);
+                case SerializedPropertyType.Enum:
+                    return propertyToCheck.intValue.Equals((int)attribute.ComparedConditionValue);
                 default:
                     Debug.LogError("Error - " + propertyToCheck.type + " value type is not supported by ConditionAttributeDrawers.");
                     return true;
