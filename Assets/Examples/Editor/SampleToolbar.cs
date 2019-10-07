@@ -8,14 +8,23 @@ using Toolbox.Editor;
 [InitializeOnLoad]
 public static class SampleToolbar
 {
+    /// <summary>
+    /// This field will be used to exclude toolbar buttons for all scenes except this one.
+    /// </summary>
     private readonly static string mySampleSceneName = "SampleScene";
 
-    private readonly static ToolbarButton myCustomButton;
+    /// <summary>
+    /// Collection of all <see cref="ToolbarButton"/>s needed in custom scene.
+    /// </summary>
+    private readonly static ToolbarButton[] myCustomButtons = new ToolbarButton[4];
 
 
     static SampleToolbar()
     {
-        myCustomButton = new ToolbarButton(() => Debug.Log("Toolbar Test"), new GUIContent("1"));
+        myCustomButtons[0] = new ToolbarButton(() => Debug.Log("Toolbar Test 1"), new GUIContent("1"));
+        myCustomButtons[1] = new ToolbarButton(() => Debug.Log("Toolbar Test 2"), new GUIContent("2"));
+        myCustomButtons[2] = new ToolbarButton(() => Debug.Log("Toolbar Test 3"), new GUIContent("3"));
+        myCustomButtons[3] = new ToolbarButton(() => Debug.Log("Toolbar Test 4"), new GUIContent("4"));
 
         EditorSceneManager.sceneOpened -= SceneOpenedCallback;
         EditorSceneManager.sceneOpened += SceneOpenedCallback;
@@ -25,6 +34,9 @@ public static class SampleToolbar
     }
 
 
+    /// <summary>
+    /// This method is used to validate first scene after Editor launch.
+    /// </summary>
     private static void ValidateFirstScene()
     {
         if (string.IsNullOrEmpty(SceneManager.GetActiveScene().name))
@@ -37,15 +49,26 @@ public static class SampleToolbar
         SceneOpenedCallback(SceneManager.GetActiveScene(), OpenSceneMode.Single);
     }
 
+    /// <summary>
+    /// Handle <see cref="ToolbarButton"/>s addition for provided scene.
+    /// </summary>
+    /// <param name="scene"></param>
+    /// <param name="mode"></param>
     private static void SceneOpenedCallback(Scene scene, OpenSceneMode mode)
     {
         if (scene.name == mySampleSceneName)
         {
-            ToolboxEditorToolbar.AddToolbarButton(myCustomButton);
+            foreach (var button in myCustomButtons)
+            {
+                ToolboxEditorToolbar.AddToolbarButton(button);
+            }
         }
         else
         {
-            ToolboxEditorToolbar.RemoveToolbarButton(myCustomButton);
+            foreach (var button in myCustomButtons)
+            {
+                ToolboxEditorToolbar.RemoveToolbarButton(button);
+            }
         }
     }
 }

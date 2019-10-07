@@ -234,6 +234,16 @@ public List<string> standardStyleList;
 public Transform var1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc32.png)
+```csharp
+[InLineEditor]
+public AudioClip var1;
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc36.png)
+```csharp
+[InLineEditor(drawHeader:false, drawPreview:true)]
+public Material var1;
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc37.png)
 
 #### HideAttribute
 
@@ -304,6 +314,10 @@ public GameObject[] boxedStyleList = new GameObject[4];
 ### Toolbar <a name="toolbar"></a>
 
 > Editor Toolbox/Editor/ToolboxEditorToolbar.cs
+
+Check **Examples** for more details.
+
+> Examples/Editor/SampleToolbar.cs
 
 ```csharp
 using Toolbox.Editor;

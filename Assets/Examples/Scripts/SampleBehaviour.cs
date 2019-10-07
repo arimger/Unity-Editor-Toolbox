@@ -195,6 +195,19 @@ public class SampleBehaviour : MonoBehaviour
     [InLineEditor(true, true)]
     public Texture var23;
 
+    [SpaceArea]
+
+    [InLineEditor]
+    public AudioClip var24;
+
+    [SpaceArea]
+
+    [InLineEditor]
+    public Mesh var25;
+
+    [InLineEditor(drawHeader: false, drawPreview: true)]
+    public GameObject var26;
+
     [HeaderArea("5", HeaderStyle.Boxed)]
 
     [Disable]
