@@ -41,24 +41,26 @@ namespace Toolbox.Editor
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
                 if (method != null)
                 {
-                    var targetGameObject = Selection.activeGameObject;
-                    if (targetGameObject == null)
+                    foreach (var target in Selection.gameObjects)
                     {
-                        return;
-                    }
+                        if (target == null)
+                        {
+                            continue;
+                        }
 
-                    var targetComponent = targetGameObject.GetComponent(Attribute.InstanceType);
-                    if (targetComponent == null)
-                    {
-                        Debug.LogWarning("ButtonAttribute - " + Attribute.InstanceType + " component not found in selected GameObject.");
-                        return;
+                        var targetComponent = target.GetComponent(Attribute.InstanceType);
+                        if (targetComponent == null)
+                        {
+                            Debug.LogWarning("ButtonAttribute - " + Attribute.InstanceType + " component not found in selected GameObject(" + target.name + ").");
+                            continue;
+                        }
+
+                        method.Invoke(targetComponent, null);
                     }
-                   
-                    method.Invoke(targetComponent, null);
                 }
                 else
                 {
-                    Debug.LogWarning("ButtonAttribute - " + Attribute.MethodName + " method not found.");
+                    Debug.LogWarning("ButtonAttribute - " + Attribute.MethodName + " method not found inside " + Attribute.InstanceType + " type.");
                 }
             }
             EditorGUI.EndDisabledGroup();

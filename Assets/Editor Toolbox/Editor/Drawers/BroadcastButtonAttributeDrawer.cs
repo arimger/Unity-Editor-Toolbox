@@ -34,9 +34,11 @@ namespace Toolbox.Editor
             EditorGUI.BeginDisabledGroup(disable);
             if (GUI.Button(position, string.IsNullOrEmpty(Attribute.Label) ? Attribute.MethodName : Attribute.Label))
             {
-                var targetGameObject = Selection.activeGameObject;
-                if (targetGameObject == null) return;
-                targetGameObject.SendMessage(Attribute.MethodName, SendMessageOptions.RequireReceiver);
+                foreach (var target in Selection.gameObjects)
+                {
+                    if (target == null) return;
+                    target.SendMessage(Attribute.MethodName, SendMessageOptions.RequireReceiver);
+                }
             }
             EditorGUI.EndDisabledGroup();
         }
