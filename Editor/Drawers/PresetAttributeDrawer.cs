@@ -30,9 +30,8 @@ namespace Toolbox.Editor.Drawers
             var presetObject = presetValues.GetValue(presetTarget);
             if (presetObject is IList)
             {
-                if (fieldInfo.FieldType == (presetValues.FieldType.IsGenericType
-                        ? presetValues.FieldType.GetGenericArguments()[0]
-                        : presetValues.FieldType.GetElementType()))
+                //check if types match between property and provided preset
+                if (fieldInfo.FieldType == (presetValues.FieldType.IsGenericType ? presetValues.FieldType.GetGenericArguments()[0] : presetValues.FieldType.GetElementType()))
                 {
                     var list = presetObject as IList;
                     var values = new object[list.Count];
@@ -47,15 +46,25 @@ namespace Toolbox.Editor.Drawers
 
                     EditorGUI.BeginProperty(position, label, property);
                     EditorGUI.BeginChangeCheck();
+                    //get index value from popup
                     index = EditorGUI.Popup(position, label.text, index, options);
+                    //validate index value
                     index = Mathf.Clamp(index, 0, list.Count - 1);
                     if (EditorGUI.EndChangeCheck())
                     {
+                        //udpate property value using fieldInfo field
                         property.serializedObject.Update();
                         foreach (var target in presetTargets)
                         {
                             fieldInfo.SetValue(target, values[index]);
+
+                            //workaround to call OnValidate during fieldInfo edit
+                            if (target is MonoBehaviour)
+                            {
+                                (target as MonoBehaviour).SendMessage("OnValidate", SendMessageOptions.DontRequireReceiver);
+                            }
                         }
+
                         property.serializedObject.ApplyModifiedProperties();
                         property.serializedObject.SetIsDifferentCacheDirty();
                     }
