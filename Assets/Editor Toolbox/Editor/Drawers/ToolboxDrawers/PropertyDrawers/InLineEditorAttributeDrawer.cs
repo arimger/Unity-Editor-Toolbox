@@ -121,7 +121,7 @@ namespace Toolbox.Editor.Drawers
             if (property.objectReferenceValue == null)
                 return;
 
-            var key = GenerateKey(property);
+            var key = ToolboxEditorUtility.GeneratePropertyKey(property);
             //get (or create) editor for this property
             if (!editorInstances.TryGetValue(key, out UnityEditor.Editor editor))
             {

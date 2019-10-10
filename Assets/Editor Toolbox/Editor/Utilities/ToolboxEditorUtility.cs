@@ -126,6 +126,12 @@ namespace Toolbox.Editor
         }
 
 
+        internal static string GeneratePropertyKey(SerializedProperty property)
+        {
+            return property.serializedObject.GetHashCode() + "-" + property.name;
+        }
+
+
         internal static bool ToolboxDrawersAllowed => settings?.UseToolboxDrawers ?? false;
 
         internal static bool ToolboxHierarchyAllowed => settings?.UseToolboxHierarchy ?? false;

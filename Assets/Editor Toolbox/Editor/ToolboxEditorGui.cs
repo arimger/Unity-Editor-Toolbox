@@ -1,12 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
+using UnityEngine;
 using UnityEditor;
 
 namespace Toolbox.Editor
 {
     using Toolbox.Editor.Internal;
 
-    public static class ToolboxEditorGui
-    {
+    public static partial class ToolboxEditorGui
+    {        
         /// <summary>
         /// Creates inspector line.
         /// </summary>
@@ -163,7 +167,6 @@ namespace Toolbox.Editor
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
 
             internal static readonly Color standardLineColor = new Color(0.3f, 0.3f, 0.3f);
-            internal static readonly Color standardBackgroundColor = new Color(0.82f, 0.82f, 0.82f);
 
             internal static GUIStyle boxStyle;
 
@@ -171,6 +174,41 @@ namespace Toolbox.Editor
             {
                 boxStyle = new GUIStyle(GUI.skin.box);
             }
+        }
+    }
+
+
+    [InitializeOnLoad]
+    public static partial class ToolboxEditorGui
+    {        
+        /// <summary>
+        /// All available and serialized properties handlers.
+        /// </summary>
+        private static readonly Dictionary<string, ToolboxPropertyHandler> propertyHandlers = new Dictionary<string, ToolboxPropertyHandler>();
+
+
+        static ToolboxEditorGui()
+        {
+            ToolboxEditorUtility.onEditorReload += propertyHandlers.Clear;
+        }
+
+
+        /// <summary>
+        /// Draws property using additional <see cref="PropertyDrawer"/>s and <see cref="Drawers.ToolboxDrawer"/>s.
+        /// </summary>
+        /// <param name="property"></param>
+        public static void DrawProperty(SerializedProperty property)
+        {
+            //generate property key using internal method
+            var key = ToolboxEditorUtility.GeneratePropertyKey(property);
+            //check if this property is currently handled
+            if (!propertyHandlers.TryGetValue(key, out ToolboxPropertyHandler propertyHandler))
+            {
+                //initialize and store new property handler
+                propertyHandlers[key] = propertyHandler = new ToolboxPropertyHandler(property);
+            }
+
+            propertyHandler.OnGui();
         }
     }
 }
