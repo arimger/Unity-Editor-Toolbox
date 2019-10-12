@@ -15,11 +15,13 @@ Copy and paste `Editor Toolbox` directory into your project (basically into `Ass
 	- [Unity Property Drawers](#unitydrawers)
 	- [Toolbox Property Drawers](#toolboxdrawers)
 - [ReorderableList](#reorderable-list)
+- [Editor Extensions](#editor-extensions)
+	- [Hierarchy](#hierarchy)
+	- [Project](#project)
+	- [Toolbar](#toolbar)
 - [Tools and Editors](#tools-and-editors)
 	- [Terrain Editor](#terraineditor)
-	- [Hierarchy](#hierarchy)
-	- [Toolbar](#toolbar)
-
+	
 ## Attributes
 
 ### Unity Property Drawers <a name="unitydrawers"></a>
@@ -296,20 +298,24 @@ public GameObject[] boxedStyleList = new GameObject[4];
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc8.png)
 
-## Tools and Editors
-
-### Terrain Editor <a name="terraineditor"></a>
-
-> Editor Toolbox/Editor/Tools/Editors/TerrainToolEditor.cs
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc1.png)
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc9.png)
+## Editor Extensions
 
 ### Hierarchy <a name="hierarchy"></a>
+
+Enable custom hierarchy overlay in **ToolboxEditorSettings**.
 
 > Editor Toolbox/Editor/ToolboxEditorHierarchy.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc2.png)
+
+### Project <a name="project"></a>
+
+Set custom folder icons in **ToolboxEditorSettings**.
+
+> Editor Toolbox/Editor/ToolboxEditorProject.cs
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc12.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc11.png)
 
 ### Toolbar <a name="toolbar"></a>
 
@@ -337,6 +343,16 @@ public static class MyEditorUtility
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc10.png)
+
+## Tools and Editors
+
+### Terrain Editor <a name="terraineditor"></a>
+
+> Editor Toolbox/Editor/Tools/Editors/TerrainToolEditor.cs
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc9.png)
+
 
 ---
 
