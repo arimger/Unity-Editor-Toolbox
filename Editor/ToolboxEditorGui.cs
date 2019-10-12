@@ -189,6 +189,7 @@ namespace Toolbox.Editor
 
         static ToolboxEditorGui()
         {
+            //everytime when editor is reloaded we have to clear all handlers
             ToolboxEditorUtility.onEditorReload += propertyHandlers.Clear;
         }
 

@@ -8,12 +8,24 @@ namespace Toolbox.Editor
     [CustomPropertyDrawer(typeof(DirectoryAttribute))]
     public class DirectoryAttributeDrawer : PropertyDrawer
     {
-        private float additionalHeight;
-
-
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return EditorGUI.GetPropertyHeight(property) + additionalHeight;
+            //validate property type
+            if (property.propertyType != SerializedPropertyType.String)
+            {
+                return base.GetPropertyHeight(property, label);
+            }
+
+            var additionalHeight = 0.0f;
+
+            //validate directory path
+            if (!Directory.Exists(Application.dataPath + "/" + property.stringValue))
+            {
+                additionalHeight = Style.boxHeight + Style.spacing;
+            }
+
+            //return proper height
+            return base.GetPropertyHeight(property, label) + additionalHeight;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -26,14 +38,12 @@ namespace Toolbox.Editor
                 return;
             }
 
-            additionalHeight = 0;
             //current stored path validation
             if (!Directory.Exists(Application.dataPath + "/" + property.stringValue))
             {
                 var helpBoxRect = new Rect(position.x, position.y, position.width, Style.boxHeight);
                 EditorGUI.HelpBox(helpBoxRect, "Provided directory does not exist in Project.", MessageType.Warning);
-                additionalHeight = Style.boxHeight + Style.spacing;
-                position.y += additionalHeight + Style.spacing;
+                position.y += Style.boxHeight + Style.spacing + Style.spacing;
             }
 
             position.height = Style.height;
@@ -45,7 +55,7 @@ namespace Toolbox.Editor
             //create additional pick directory button
             if (GUI.Button(position, Style.directoryButtonContent, Style.directoryButtonStyle))
             {
-                property.stringValue = EditorUtility.OpenFolderPanel("Pick directory", "", "").Replace(Application.dataPath + "/", "");
+                property.stringValue = EditorUtility.OpenFolderPanel("Pick directory", "Assets", "").Replace(Application.dataPath + "/", "");
             }
         }
 

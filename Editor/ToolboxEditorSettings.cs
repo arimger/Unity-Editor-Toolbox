@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -15,7 +14,13 @@ namespace Toolbox.Editor
         [SerializeField]
         private bool useToolboxHierarchy = true;
         [SerializeField]
+        private bool useToolboxProject = true;
+        [SerializeField]
         private bool useToolboxDrawers = true;
+
+        [HideIf("useToolboxProject", true)]
+        [SerializeField, ReorderableList(ListStyle.Boxed)]
+        private List<FolderIcon> customFolders;
 
         [HideIf("useOrderedDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxAreaDrawer<>))]
@@ -29,6 +34,23 @@ namespace Toolbox.Editor
         [HideIf("useOrderedDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxConditionDrawer<>))]
         private List<SerializedTypeReference> conditionDrawerHandlers;
+
+
+        public void AddCustomFolder(FolderIcon path)
+        {
+            if (customFolders == null) customFolders = new List<FolderIcon>();
+            customFolders.Add(path);
+        }
+
+        public void RemoveCustomFolder(FolderIcon path)
+        {
+            customFolders?.Remove(path);
+        }
+
+        public FolderIcon GetCustomFolderAt(int index)
+        {
+            return customFolders[index];
+        }
 
 
         public void AddAreaDrawerHandler(SerializedTypeReference drawerReference)
@@ -96,17 +118,27 @@ namespace Toolbox.Editor
         }
 
 
+        public bool UseToolboxHierarchy
+        {
+            get => useToolboxHierarchy;
+            set => useToolboxHierarchy = value;
+        }
+
+        public bool UseToolboxProject
+        {
+            get => useToolboxProject;
+            set => useToolboxProject = value;
+        }
+
         public bool UseToolboxDrawers
         {
             get => useToolboxDrawers;
             set => useToolboxDrawers = value;
         }
 
-        public bool UseToolboxHierarchy
-        {
-            get => useToolboxHierarchy;
-            set => useToolboxHierarchy = value;
-        }
+
+        public int CustomFoldersCount => customFolders != null ? customFolders.Count : 0;
+
 
         public int AreaDrawersCount => areaDrawerHandlers != null ? areaDrawerHandlers.Count : 0;
 

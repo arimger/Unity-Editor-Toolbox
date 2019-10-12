@@ -13,7 +13,15 @@ MonoBehaviour:
   m_Name: EditorSettings
   m_EditorClassIdentifier: 
   useToolboxHierarchy: 1
+  useToolboxProject: 1
   useToolboxDrawers: 1
+  customFolders:
+  - path: Editor Toolbox
+    icon: {fileID: 2800000, guid: ae0be9d8caf5cfe4b94dd88cb2315c03, type: 3}
+  - path: Editor Toolbox/Scripts
+    icon: {fileID: 2800000, guid: 3e1a8a037c2edc54993a6a7d4e9f2a8d, type: 3}
+  - path: Examples/Scripts
+    icon: {fileID: 2800000, guid: 3e1a8a037c2edc54993a6a7d4e9f2a8d, type: 3}
   areaDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.BeginGroupAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox-Editor

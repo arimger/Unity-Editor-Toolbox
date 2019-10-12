@@ -16,6 +16,7 @@ namespace UnityEngine
         public bool UseLabel { get; private set; }
 
         public float Height { get; private set; }
+
         public float Width { get; private set; }
     }
 }
