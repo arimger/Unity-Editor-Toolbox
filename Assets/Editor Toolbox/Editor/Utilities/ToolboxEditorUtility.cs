@@ -16,11 +16,15 @@ namespace Toolbox.Editor
     {
         private static ToolboxEditorSettings settings;
 
+
         private readonly static Dictionary<Type, ToolboxAreaDrawerBase> areaDrawers = new Dictionary<Type, ToolboxAreaDrawerBase>();
 
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> propertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
 
         private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers = new Dictionary<Type, ToolboxConditionDrawerBase>();
+
+
+        private readonly static Dictionary<string, Texture> folderIcons = new Dictionary<string, Texture>();
 
 
         [InitializeOnLoadMethod]
@@ -30,6 +34,12 @@ namespace Toolbox.Editor
             if (guids == null || guids.Length == 0) return;
             var path = AssetDatabase.GUIDToAssetPath(guids.First());
             settings = AssetDatabase.LoadAssetAtPath(path, typeof(ToolboxEditorSettings)) as ToolboxEditorSettings;
+
+            if (!settings)
+            {
+                Debug.LogWarning("ToolboxEditorSettings not found. Cannot initialize Toolbox core functionalities. " +
+                                 "You can create new settings file using CreateAsset menu -> Create -> Toolbox Editor -> Settings.");
+            }
         }
 
         [InitializeOnLoadMethod]
@@ -37,8 +47,6 @@ namespace Toolbox.Editor
         {
             if (!settings)
             {
-                Debug.LogWarning("EditorSettings not found. Cannot initialize ToolboxDrawers. " +
-                                 "You can create new settings file using CreateAsset menu -> Create -> Toolbox Editor -> Settings.");
                 return;
             }
 
@@ -79,6 +87,23 @@ namespace Toolbox.Editor
             for (var i = 0; i < settings.ConditionDrawersCount; i++)
             {
                 CreateDrawer(settings.GetConditionDrawerTypeAt(i), conditionDrawers);
+            }
+        }
+
+        [InitializeOnLoadMethod]
+        internal static void InitializeProject()
+        {
+            //check if settings file is available
+            if (!settings)
+            {
+                return;
+            }
+
+            //store all folder icons inside dictionary
+            for (var i = 0; i < settings.CustomFoldersCount; i++)
+            {
+                var customFolder = settings.GetCustomFolderAt(i);
+                folderIcons.Add(customFolder.Path, customFolder.Icon);
             }
         }
 
@@ -132,7 +157,20 @@ namespace Toolbox.Editor
         }
 
 
+        internal static bool IsCustomFolder(string path)
+        {
+            return folderIcons.ContainsKey(path);
+        }
+
+        internal static bool TryGetFolderIcon(string path, out Texture icon)
+        {
+            return folderIcons.TryGetValue(path, out icon);
+        }
+
+
         internal static bool ToolboxDrawersAllowed => settings?.UseToolboxDrawers ?? false;
+
+        internal static bool ToolboxProjectAllowed => settings?.UseToolboxProject ?? false;
 
         internal static bool ToolboxHierarchyAllowed => settings?.UseToolboxHierarchy ?? false;
 

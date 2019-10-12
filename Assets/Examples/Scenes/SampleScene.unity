@@ -307,7 +307,7 @@ MonoBehaviour:
   var7: 21.44
   var8: {fileID: 2133702603}
   var9: {fileID: 2133702603}
-  var10: 2.79
+  var10: 2.16
   type1:
     classReference: UnityEditor.GridBrush, UnityEditor
   type2:
@@ -320,8 +320,8 @@ MonoBehaviour:
   randomValue: -1.8507824
   directory: Examples/Models
   sceneName: SampleScene
-  presetTarget: 1
-  enumSearch: 27
+  presetTarget: 3
+  enumSearch: 8
   clampedValue: 6.21999979019165
   list:
   - {fileID: 2133702603}
