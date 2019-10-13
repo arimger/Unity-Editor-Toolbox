@@ -70,7 +70,7 @@ namespace Toolbox.Editor
                 additionalHeight += height + Style.frameSize * 2 + Style.spacing * 2;
                 position.height = height + Style.frameSize;
                 position.width = width + Style.frameSize + indent;
-                position.y += position.height / 2 - Style.height;
+                position.y += Style.height + Style.spacing;
                 //drawing frame
                 EditorGUI.LabelField(position, GUIContent.none, Style.backgroundStyle);
                 position.height = height;

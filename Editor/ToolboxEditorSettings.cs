@@ -14,13 +14,13 @@ namespace Toolbox.Editor
         [SerializeField]
         private bool useToolboxHierarchy = true;
         [SerializeField]
-        private bool useToolboxProject = true;
+        private bool useToolboxFolders = true;
         [SerializeField]
         private bool useToolboxDrawers = true;
 
         [HideIf("useToolboxProject", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed)]
-        private List<FolderIcon> customFolders;
+        private List<FolderData> customFolders;
 
         [HideIf("useOrderedDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxAreaDrawer<>))]
@@ -36,18 +36,18 @@ namespace Toolbox.Editor
         private List<SerializedTypeReference> conditionDrawerHandlers;
 
 
-        public void AddCustomFolder(FolderIcon path)
+        public void AddCustomFolder(FolderData path)
         {
-            if (customFolders == null) customFolders = new List<FolderIcon>();
+            if (customFolders == null) customFolders = new List<FolderData>();
             customFolders.Add(path);
         }
 
-        public void RemoveCustomFolder(FolderIcon path)
+        public void RemoveCustomFolder(FolderData path)
         {
             customFolders?.Remove(path);
         }
 
-        public FolderIcon GetCustomFolderAt(int index)
+        public FolderData GetCustomFolderAt(int index)
         {
             return customFolders[index];
         }
@@ -126,8 +126,8 @@ namespace Toolbox.Editor
 
         public bool UseToolboxProject
         {
-            get => useToolboxProject;
-            set => useToolboxProject = value;
+            get => useToolboxFolders;
+            set => useToolboxFolders = value;
         }
 
         public bool UseToolboxDrawers
