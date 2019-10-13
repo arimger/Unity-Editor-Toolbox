@@ -18,13 +18,11 @@ namespace Toolbox.Editor
 
 
         private readonly static Dictionary<Type, ToolboxAreaDrawerBase> areaDrawers = new Dictionary<Type, ToolboxAreaDrawerBase>();
-
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> propertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
-
         private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers = new Dictionary<Type, ToolboxConditionDrawerBase>();
 
 
-        private readonly static Dictionary<string, Texture> folderIcons = new Dictionary<string, Texture>();
+        private readonly static Dictionary<string, FolderData> foldersData = new Dictionary<string, FolderData>();
 
 
         [InitializeOnLoadMethod]
@@ -103,7 +101,7 @@ namespace Toolbox.Editor
             for (var i = 0; i < settings.CustomFoldersCount; i++)
             {
                 var customFolder = settings.GetCustomFolderAt(i);
-                folderIcons.Add(customFolder.Path, customFolder.Icon);
+                foldersData.Add(customFolder.Path, customFolder);
             }
         }
 
@@ -159,18 +157,18 @@ namespace Toolbox.Editor
 
         internal static bool IsCustomFolder(string path)
         {
-            return folderIcons.ContainsKey(path);
+            return foldersData.ContainsKey(path);
         }
 
-        internal static bool TryGetFolderIcon(string path, out Texture icon)
+        internal static bool TryGetFolderData(string path, out FolderData data)
         {
-            return folderIcons.TryGetValue(path, out icon);
+            return foldersData.TryGetValue(path, out data);
         }
 
 
         internal static bool ToolboxDrawersAllowed => settings?.UseToolboxDrawers ?? false;
 
-        internal static bool ToolboxProjectAllowed => settings?.UseToolboxProject ?? false;
+        internal static bool ToolboxFoldersAllowed => settings?.UseToolboxProject ?? false;
 
         internal static bool ToolboxHierarchyAllowed => settings?.UseToolboxHierarchy ?? false;
 

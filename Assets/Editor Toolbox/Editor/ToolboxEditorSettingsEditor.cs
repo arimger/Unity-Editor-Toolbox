@@ -14,7 +14,7 @@ namespace Toolbox.Editor
         private bool drawersSettingsEnabled;
 
         private SerializedProperty useToolboxDrawersProperty;
-        private SerializedProperty useToolboxProjectProperty;
+        private SerializedProperty useToolboxFoldersProperty;
         private SerializedProperty useToolboxHierarchyProperty;
 
         private ReorderableList customFoldersList;
@@ -32,7 +32,7 @@ namespace Toolbox.Editor
             drawersSettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.drawersSettingsEnabled", false);
 
             useToolboxDrawersProperty = serializedObject.FindProperty("useToolboxDrawers");
-            useToolboxProjectProperty = serializedObject.FindProperty("useToolboxProject");
+            useToolboxFoldersProperty = serializedObject.FindProperty("useToolboxFolders");
             useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
 
             customFoldersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("customFolders"));
@@ -68,8 +68,8 @@ namespace Toolbox.Editor
             {
                 EditorGUILayout.Space();
 
-                EditorGUILayout.PropertyField(useToolboxProjectProperty);
-                EditorGUI.BeginDisabledGroup(!useToolboxProjectProperty.boolValue);
+                EditorGUILayout.PropertyField(useToolboxFoldersProperty);
+                EditorGUI.BeginDisabledGroup(!useToolboxFoldersProperty.boolValue);
                 customFoldersList.DoLayoutList();
                 EditorGUI.EndDisabledGroup();
             }

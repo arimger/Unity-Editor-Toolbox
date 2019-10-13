@@ -9,41 +9,18 @@ namespace Toolbox.Editor
             return ToolboxEditorUtility.IsCustomFolder(path);
         }
 
-        internal static bool TryGetFolderIcon(string path, out Texture icon)
+        internal static bool TryGetFolderData(string path, out FolderData data)
         {
-            return ToolboxEditorUtility.TryGetFolderIcon(path, out icon);
+            return ToolboxEditorUtility.TryGetFolderData(path, out data);
         }
 
-        internal static Texture GetFolderIcon(string path)
+        internal static FolderData GetFolderData(string path)
         {
-            ToolboxEditorUtility.TryGetFolderIcon(path, out Texture icon);
-            return icon;
+            ToolboxEditorUtility.TryGetFolderData(path, out FolderData data);
+            return data;
         }
 
 
-        internal static bool ToolboxFoldersAllowed => ToolboxEditorUtility.ToolboxProjectAllowed;
-    }
-
-
-    [System.Serializable]
-    public struct FolderIcon
-    {
-        [SerializeField, Directory, Tooltip("Relative path from Assets directory.")]
-        private string path;
-        [SerializeField, AssetPreview]
-        private Texture icon;
-
-
-        public string Path
-        {
-            get => "Assets/" + path;
-            set => path = value;
-        }
-
-        public Texture Icon
-        {
-            get => icon;
-            set => icon = value;
-        }
+        internal static bool ToolboxFoldersAllowed => ToolboxEditorUtility.ToolboxFoldersAllowed;
     }
 }

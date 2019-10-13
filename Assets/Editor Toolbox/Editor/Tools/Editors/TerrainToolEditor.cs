@@ -42,19 +42,30 @@ namespace Toolbox.Editor.Tools.Editors
         /// </summary>
         protected override void OnEnable()
         {
-            settingsSectionToggle = EditorPrefs.GetBool("TerrainEditor.settingsSectionToggle", true);
-            paintingSectionToggle = EditorPrefs.GetBool("TerrainEditor.paintingSectionToggle", true);
+            //set proper toggles
+            settingsSectionToggle = EditorPrefs.GetBool("TerrainEditor.settingsSectionToggle", settingsSectionToggle);
+            paintingSectionToggle = EditorPrefs.GetBool("TerrainEditor.paintingSectionToggle", paintingSectionToggle);
 
-            gridSize = EditorPrefs.GetFloat("TerrainEditor.gridSize", 1.0f);
-            brushRadius = EditorPrefs.GetFloat("TerrainEditor.brushRadius", 8.0f);
-            brushDensity = EditorPrefs.GetFloat("TerrainEditor.brushDensity", 50.0f);
+            //set proper brush settings
+            gridSize = EditorPrefs.GetFloat("TerrainEditor.gridSize", gridSize);
+            brushRadius = EditorPrefs.GetFloat("TerrainEditor.brushRadius", brushRadius);
+            brushDensity = EditorPrefs.GetFloat("TerrainEditor.brushDensity", brushDensity);
 
+            var r = EditorPrefs.GetFloat("TerrainEditor.brushColor.r", brushColor.r);
+            var g = EditorPrefs.GetFloat("TerrainEditor.brushColor.g", brushColor.g);
+            var b = EditorPrefs.GetFloat("TerrainEditor.brushColor.b", brushColor.b);
+            var a = EditorPrefs.GetFloat("TerrainEditor.brushColor.a", brushColor.a);
+            brushColor = new Color(r, g, b, a);
+
+            //basic editor initialization
             base.OnEnable();
 
+            //get all needed and serialized properties from component
             layerProperty = serializedObject.FindProperty("terrainLayer");
             terrainProperty = serializedObject.FindProperty("terrain");
             brushPrefabsProperty = serializedObject.FindProperty("brushPrefabs");
 
+            //creation of prefabs list
             brushPrefabsList = ToolboxEditorGui.CreateLinedList(brushPrefabsProperty, "Item");
         }
 
@@ -73,6 +84,11 @@ namespace Toolbox.Editor.Tools.Editors
             EditorPrefs.SetFloat("TerrainEditor.gridSize", gridSize);
             EditorPrefs.SetFloat("TerrainEditor.brushRadius", brushRadius);
             EditorPrefs.SetFloat("TerrainEditor.brushDensity", brushDensity);
+
+            EditorPrefs.SetFloat("TerrainEditor.brushColor.r", brushColor.r);
+            EditorPrefs.SetFloat("TerrainEditor.brushColor.g", brushColor.g);
+            EditorPrefs.SetFloat("TerrainEditor.brushColor.b", brushColor.b);
+            EditorPrefs.SetFloat("TerrainEditor.brushColor.a", brushColor.a);
         }
 
 
@@ -216,7 +232,8 @@ namespace Toolbox.Editor.Tools.Editors
 
                 gridSize = Mathf.Max(EditorGUILayout.FloatField("Grid Size", gridSize), 0);
                 brushRadius = EditorGUILayout.Slider("Brush Size", brushRadius, 0, 100);
-                brushDensity = EditorGUILayout.Slider("Density", brushDensity, 0, 1);
+                brushDensity = EditorGUILayout.Slider("Brush Density", brushDensity, 0, 1);
+                brushColor = EditorGUILayout.ColorField("Brush Color", brushColor);
             }
 
             EditorGUILayout.EndVertical();
