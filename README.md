@@ -12,7 +12,7 @@ Copy and paste `Editor Toolbox` directory into your project (basically into `Ass
 ## Table Of Contents
 
 - [Attributes](#attributes)
-	- [Unity Property Drawers](#unitydrawers)
+	- [Native Property Drawers](#nativedrawers)
 	- [Toolbox Property Drawers](#toolboxdrawers)
 - [ReorderableList](#reorderable-list)
 - [Editor Extensions](#editor-extensions)
@@ -24,7 +24,7 @@ Copy and paste `Editor Toolbox` directory into your project (basically into `Ass
 	
 ## Attributes
 
-### Unity Property Drawers <a name="unitydrawers"></a>
+### Native Property Drawers <a name="nativedrawers"></a>
 
 Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associated **PropertyAttribute**.
 

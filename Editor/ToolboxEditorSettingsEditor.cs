@@ -53,6 +53,8 @@ namespace Toolbox.Editor
 
         public override void OnInspectorGUI()
         {
+            EditorGUILayout.HelpBox("To approve all changes press the \"Apply\" button below.", MessageType.Info);
+
             serializedObject.Update();
 
             if (hierarchySettingsEnabled = EditorGUILayout.Foldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.foldoutStyle))
@@ -83,7 +85,6 @@ namespace Toolbox.Editor
                 EditorGUILayout.PropertyField(useToolboxDrawersProperty);
 
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
-                EditorGUILayout.HelpBox("Select all wanted drawers and press \"Apply\" button.", MessageType.Info);
                 areaDrawerHandlersList.DoLayoutList();
                 EditorGUILayout.Separator();
                 EditorGUILayout.HelpBox("Deprecated.", MessageType.Warning);

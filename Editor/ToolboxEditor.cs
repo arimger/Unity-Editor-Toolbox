@@ -32,6 +32,7 @@ namespace Toolbox.Editor
         /// <param name="property">Property to display.</param>
         protected virtual void DrawCustomProperty(SerializedProperty property)
         {
+            //ToolboxEditorGui class will handle all properties and drawers
             ToolboxEditorGui.DrawProperty(property);
         }
 
@@ -75,12 +76,14 @@ namespace Toolbox.Editor
         /// </summary>
         public override void OnInspectorGUI()
         {
+            //draw default inspector if ToolboxDrawers are not allowed
             if (!ToolboxEditorUtility.ToolboxDrawersAllowed)
             {
                 DrawDefaultInspector();
                 return;
             }
 
+            //draw custom inspector using additionally custom ToolboxDrawers
             DrawCustomInspector();
         }
 
