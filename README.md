@@ -314,7 +314,9 @@ Set custom folder icons in **ToolboxEditorSettings**.
 
 > Editor Toolbox/Editor/ToolboxEditorProject.cs
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc12.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc12.png)  
+
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc11.png)
 
 ### Toolbar <a name="toolbar"></a>

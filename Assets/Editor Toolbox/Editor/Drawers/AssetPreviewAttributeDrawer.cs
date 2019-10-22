@@ -47,9 +47,9 @@ namespace Toolbox.Editor
             }
             else
             {
-                //setting additional height as opposite label
+                //set additional height as opposite label
                 additionalHeight -= Style.height;
-                //adjusting OY position since we need no label
+                //adjust OY position since we need no label
                 position.y -= Style.height;
             }
 
@@ -59,26 +59,26 @@ namespace Toolbox.Editor
 
                 if (!previewTexture) return;
 
-                //caching indent difference
+                //cache indent difference
                 var indent = position.width - EditorGUI.IndentedRect(position).width;
-                //setting image style
+                //set image style
                 var width = Mathf.Clamp(Attribute.Width, 0, previewTexture.width);
                 var height = Mathf.Clamp(Attribute.Height, 0, previewTexture.height);
 
                 Style.textureStyle.normal.background = previewTexture;
-                //setting additional height as preview + 2x spacing + 2x frame offset
+                //set additional height as preview + 2x spacing + 2x frame offset
                 additionalHeight += height + Style.frameSize * 2 + Style.spacing * 2;
                 position.height = height + Style.frameSize;
                 position.width = width + Style.frameSize + indent;
                 position.y += Style.height + Style.spacing;
-                //drawing frame
+                //draw frame
                 EditorGUI.LabelField(position, GUIContent.none, Style.backgroundStyle);
                 position.height = height;
                 position.width = width + indent;
-                //adjusting image to frame center
+                //adjust image to frame center
                 position.y += Style.frameSize / 2;
                 position.x += Style.frameSize / 2;
-                //drawing preview texture
+                //draw preview texture
                 EditorGUI.LabelField(position, GUIContent.none, Style.textureStyle);
             }
         }

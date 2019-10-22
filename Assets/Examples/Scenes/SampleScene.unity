@@ -314,15 +314,15 @@ MonoBehaviour:
     classReference: System.Collections.ArrayList, mscorlib
   var11: Im read only
   var12: 0
-  enumFlag1: 84
-  enumFlag2: 204
+  enumFlag1: 82
+  enumFlag2: 198
   var13: {fileID: 0}
-  randomValue: -1.8507824
-  directory: Examples/Models
+  randomValue: -1.2688389
+  directory: ToolAssets
   sceneName: SampleScene
   presetTarget: 3
   enumSearch: 8
-  clampedValue: 6.21999979019165
+  clampedValue: 4.699999809265137
   list:
   - {fileID: 2133702603}
   - {fileID: 2133702603}
@@ -333,7 +333,7 @@ MonoBehaviour:
   var17: 0
   var18: 0
   var19: 0
-  var20: 0
+  var20: 86
   var21: {fileID: 1452203516}
   var22: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
   var23: {fileID: 2800000, guid: 944a8e7523b24474383ee2dc61c3bbf1, type: 3}
