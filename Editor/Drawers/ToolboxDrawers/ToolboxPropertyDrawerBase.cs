@@ -5,6 +5,12 @@ namespace Toolbox.Editor.Drawers
 {
     public abstract class ToolboxPropertyDrawerBase : ToolboxDrawer
     {
+        public ToolboxPropertyDrawerBase()
+        {
+            ToolboxEditorUtility.onEditorReload += OnGuiReload;
+        }
+
+
         public virtual void OnGui(SerializedProperty property)
         {
             EditorGUILayout.PropertyField(property, property.isExpanded);
@@ -14,5 +20,8 @@ namespace Toolbox.Editor.Drawers
         {
             OnGui(property);    
         }
+
+        public virtual void OnGuiReload()
+        { }
     }
 }

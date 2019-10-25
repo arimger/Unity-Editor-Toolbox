@@ -1,8 +1,8 @@
-﻿using UnityEditor;
+﻿#define TOOLBOX_EDITOR
+
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
-
-//TODO: handling children;
 
 namespace Toolbox.Editor
 {
@@ -33,7 +33,7 @@ namespace Toolbox.Editor
         protected virtual void DrawCustomProperty(SerializedProperty property)
         {
             //ToolboxEditorGui class will handle all properties and drawers
-            ToolboxEditorGui.DrawProperty(property);
+            ToolboxEditorGui.DrawToolboxProperty(property);
         }
 
         /// <summary>

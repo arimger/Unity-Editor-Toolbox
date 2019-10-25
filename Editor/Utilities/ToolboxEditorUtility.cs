@@ -18,7 +18,9 @@ namespace Toolbox.Editor
 
 
         private readonly static Dictionary<Type, ToolboxAreaDrawerBase> areaDrawers = new Dictionary<Type, ToolboxAreaDrawerBase>();
+
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> propertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
+
         private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers = new Dictionary<Type, ToolboxConditionDrawerBase>();
 
 
@@ -151,7 +153,7 @@ namespace Toolbox.Editor
 
         internal static string GeneratePropertyKey(SerializedProperty property)
         {
-            return property.serializedObject.GetHashCode() + "-" + property.name;
+            return property.serializedObject.GetHashCode() + "-" + property.propertyPath;
         }
 
 

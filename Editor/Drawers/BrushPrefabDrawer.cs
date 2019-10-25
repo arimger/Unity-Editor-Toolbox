@@ -8,6 +8,7 @@ namespace Toolbox.Editor
     {
         private float additionalHeight;
 
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return EditorGUI.GetPropertyHeight(property, label, property.isExpanded) + additionalHeight;
@@ -19,13 +20,14 @@ namespace Toolbox.Editor
 
             var basePosition = position;
 
+            //get all available properties
             var targetProperty = property.FindPropertyRelative("target");
             var useRandomRotationProperty = property.FindPropertyRelative("useRandomRotation");
-            var minRandomRotation = property.FindPropertyRelative("minRotation");
-            var maxRandomRotation = property.FindPropertyRelative("maxRotation");
+            var minRandomRotationProperty = property.FindPropertyRelative("minRotation");
+            var maxRandomRotationProperty = property.FindPropertyRelative("maxRotation");
             var useRandomScaleProperty = property.FindPropertyRelative("useRandomScale");
-            var minRandomScale = property.FindPropertyRelative("minScale");
-            var maxRandomScale = property.FindPropertyRelative("maxScale");
+            var minRandomScaleProperty = property.FindPropertyRelative("minScale");
+            var maxRandomScaleProperty = property.FindPropertyRelative("maxScale");
 
             EditorGUI.BeginProperty(position, label, property);
             position.height = Style.height;
@@ -46,15 +48,14 @@ namespace Toolbox.Editor
                 EditorGUI.DrawRect(new Rect(position.x, position.y - Style.spacing / 2, position.width, Style.lineWidth), Style.lineColor);
                 EditorGUI.PropertyField(position, useRandomRotationProperty);
                 EditorGUI.BeginDisabledGroup(!useRandomRotationProperty.boolValue);
-                //if (useRandomRotationProperty.boolValue)
                 {
                     EditorGUI.indentLevel++;
                     position.y += position.height;
-                    position.height = EditorGUI.GetPropertyHeight(minRandomRotation);
-                    EditorGUI.PropertyField(position, minRandomRotation);
+                    position.height = EditorGUI.GetPropertyHeight(minRandomRotationProperty);
+                    EditorGUI.PropertyField(position, minRandomRotationProperty);
                     position.y += position.height;
-                    position.height = EditorGUI.GetPropertyHeight(maxRandomRotation);
-                    EditorGUI.PropertyField(position, maxRandomRotation);
+                    position.height = EditorGUI.GetPropertyHeight(maxRandomRotationProperty);
+                    EditorGUI.PropertyField(position, maxRandomRotationProperty);
                     EditorGUI.indentLevel--;
                 }
                 EditorGUI.EndDisabledGroup();
@@ -66,15 +67,14 @@ namespace Toolbox.Editor
                 EditorGUI.DrawRect(new Rect(position.x, position.y - Style.spacing / 2, position.width, Style.lineWidth), Style.lineColor);
                 EditorGUI.PropertyField(position, useRandomScaleProperty);
                 EditorGUI.BeginDisabledGroup(!useRandomScaleProperty.boolValue);
-                //if (useRandomRotationProperty.boolValue)
                 {
                     EditorGUI.indentLevel++;
                     position.y += position.height;
-                    position.height = EditorGUI.GetPropertyHeight(minRandomScale);
-                    EditorGUI.PropertyField(position, minRandomScale);
+                    position.height = EditorGUI.GetPropertyHeight(minRandomScaleProperty);
+                    EditorGUI.PropertyField(position, minRandomScaleProperty);
                     position.y += position.height;
-                    position.height = EditorGUI.GetPropertyHeight(maxRandomScale);
-                    EditorGUI.PropertyField(position, maxRandomScale);
+                    position.height = EditorGUI.GetPropertyHeight(maxRandomScaleProperty);
+                    EditorGUI.PropertyField(position, maxRandomScaleProperty);
                     EditorGUI.indentLevel--;
                 }
                 EditorGUI.EndDisabledGroup();
