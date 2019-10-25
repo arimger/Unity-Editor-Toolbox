@@ -792,10 +792,12 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public void DrawStandardElement(Rect rect, SerializedProperty element, bool selected, bool focused, bool draggable)
         {
+            const string standardElementName = "Element";
+
             var displayName = element.displayName;          
             if (ElementLabel != null)
             {
-                displayName = element.displayName.Replace("Element", ElementLabel);
+                displayName = element.displayName.Replace(standardElementName, ElementLabel);
             }
             var displayContent = new GUIContent(displayName);
             EditorGUIUtility.labelWidth -= Style.handleArea;
@@ -844,7 +846,7 @@ namespace Toolbox.Editor.Internal
             EditorGUI.LabelField(rect, Style.listIsEmptyContent);
         }
 
-        #endregion
+#endregion
 
 
         public void GrabKeyboardFocus()

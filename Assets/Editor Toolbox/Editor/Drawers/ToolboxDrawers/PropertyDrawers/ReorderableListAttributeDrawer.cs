@@ -11,19 +11,6 @@ namespace Toolbox.Editor.Drawers
 
     public class ReorderableListAttributeDrawer : ToolboxPropertyDrawer<ReorderableListAttribute>
     {
-        //NOTE: we have to clear cache when components/selection change;
-        [InitializeOnLoadMethod]
-        private static void InitializeDrawer()
-        {
-            ToolboxEditorUtility.onEditorReload += DeinitializeDrawer;
-        }
-
-        private static void DeinitializeDrawer()
-        {
-            listInstances.Clear();
-        }
-
-
         /// <summary>
         /// Collection of all stored <see cref="ReorderableList"/> instances.
         /// </summary>
@@ -49,6 +36,14 @@ namespace Toolbox.Editor.Drawers
             }
 
             list.DoLayoutList(); 
+        }
+
+        /// <summary>
+        /// Handles data clearing between editors.
+        /// </summary>
+        public override void OnGuiReload()
+        {
+            listInstances.Clear();
         }
     }
 }

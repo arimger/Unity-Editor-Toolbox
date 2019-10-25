@@ -198,7 +198,7 @@ namespace Toolbox.Editor
         /// Draws property using additional <see cref="PropertyDrawer"/>s and <see cref="Drawers.ToolboxDrawer"/>s.
         /// </summary>
         /// <param name="property"></param>
-        public static void DrawProperty(SerializedProperty property)
+        public static void DrawToolboxProperty(SerializedProperty property)
         {
             //generate property key using internal method
             var key = ToolboxEditorUtility.GeneratePropertyKey(property);
@@ -209,7 +209,7 @@ namespace Toolbox.Editor
                 propertyHandlers[key] = propertyHandler = new ToolboxPropertyHandler(property);
             }
 
-            propertyHandler.OnGui();
+            propertyHandler.OnGuiLayout();
         }
     }
 }

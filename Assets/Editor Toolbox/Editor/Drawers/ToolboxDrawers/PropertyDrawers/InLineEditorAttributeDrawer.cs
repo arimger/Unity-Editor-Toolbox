@@ -11,23 +11,10 @@ namespace Toolbox.Editor.Drawers
 {
     public class InLineEditorAttributeDrawer : ToolboxPropertyDrawer<InLineEditorAttribute>
     {
-        #region Data persistence handlers 
-
-        [InitializeOnLoadMethod]
-        private static void InitializeDrawer()
-        {
-            ToolboxEditorUtility.onEditorReload += DeinitializeDrawer;
-        }
-
-        private static void DeinitializeDrawer()
-        {
-            editorInstances.Clear();
-        }
-
-
+        /// <summary>
+        /// Collection of all stored <see cref="UnityEditor.Editor"/> instances.
+        /// </summary>
         private static Dictionary<string, UnityEditor.Editor> editorInstances = new Dictionary<string, UnityEditor.Editor>();
-
-        #endregion
 
 
         /// <summary>
@@ -139,6 +126,15 @@ namespace Toolbox.Editor.Drawers
                 //draw and prewarm inlined editor
                 HandlePrewarmEditor(editor, attribute);
             }
+        }
+
+        /// <summary>
+        /// Handles data clearing between editors.
+        /// </summary>
+        public override void OnGuiReload()
+        {
+            //clear all obsolete editors
+            editorInstances.Clear();
         }
 
 
