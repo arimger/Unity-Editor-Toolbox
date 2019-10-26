@@ -1,13 +1,9 @@
-﻿#define TOOLBOX_EDITOR
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
-    using Toolbox.Editor.Drawers;
-
     /// <summary>
     /// Base editor class.
     /// </summary>
