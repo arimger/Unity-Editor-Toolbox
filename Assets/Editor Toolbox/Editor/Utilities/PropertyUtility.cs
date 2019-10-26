@@ -7,6 +7,26 @@ namespace Toolbox.Editor
 {
     public static class PropertyUtility
     {
+        [InitializeOnLoadMethod]
+        private static void SetUpReflectionMethods()
+        {
+            builtInPropertyUtilityType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.ScriptAttributeUtility");
+
+            //TODO: handle this case:
+            //NOTE: in Unity 2019.3 it should be GetDrawerTypeForPropertyAndType
+            getDrawerTypeForTypeMethod = builtInPropertyUtilityType.GetMethod("GetDrawerTypeForType", 
+                BindingFlags.NonPublic | BindingFlags.Static);
+            getFieldInfoForPropertyMethod = builtInPropertyUtilityType.GetMethod("GetFieldInfoFromProperty",
+                BindingFlags.NonPublic | BindingFlags.Static);
+        }
+
+
+        private static Type builtInPropertyUtilityType;
+
+        private static MethodInfo getDrawerTypeForTypeMethod;
+        private static MethodInfo getFieldInfoForPropertyMethod;
+
+
         public static T GetAttribute<T>(this SerializedProperty property) where T : Attribute
         {
             return ReflectionUtility.GetField(GetTargetObject(property), property.name).GetCustomAttribute<T>(true);
@@ -72,6 +92,25 @@ namespace Toolbox.Editor
             }
 
             return parent;
+        }
+
+
+
+        internal static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType)
+        {
+            var parameters = new object[] { property, null };
+            var result = getFieldInfoForPropertyMethod.Invoke(null, parameters);
+            propertyType = parameters[1] as Type;
+            return result as FieldInfo;
+        }
+
+
+        internal static bool HasCustomDrawer(this SerializedProperty property, Type drawerType)
+        {
+            //NOTE: property reference will be helpuf in future releases
+            var parameters = new object[] { drawerType };
+            var result = getDrawerTypeForTypeMethod.Invoke(null, parameters) as Type;
+            return result != null && typeof(PropertyDrawer).IsAssignableFrom(result);
         }
     }
 }

@@ -214,6 +214,19 @@ public class SampleBehaviour : MonoBehaviour
     public int[] vars1 = new[] {1, 2, 3, 4};
 
 
+    [System.Serializable]
+    public class SampleNestedClass
+    {
+        public int i = 0;
+        [ReorderableList]
+        public string[] strings;
+    }
+
+    [HeaderArea("6", HeaderStyle.Boxed)]
+
+    public SampleNestedClass var29;
+
+
     private void Start()
     {
         transform.hideFlags = HideFlags.HideInInspector;

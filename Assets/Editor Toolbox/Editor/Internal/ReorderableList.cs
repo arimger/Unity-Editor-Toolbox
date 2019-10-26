@@ -193,6 +193,7 @@ namespace Toolbox.Editor.Internal
             {
                 //we are dragging, so we need to build the new list of target indices
                 var targetIndex = CalculateRowIndex();
+
                 nonDragTargetIndices.Clear();
                 for (int i = 0; i < arraySize; i++)
                 {

@@ -22,10 +22,6 @@ namespace Toolbox.Editor
         private readonly ToolboxAreaAttribute[] areaAttributes;
 
         /// <summary>
-        /// First cached <see cref="ToolboxGroupAttribute"/>.
-        /// </summary>
-        private readonly ToolboxGroupAttribute groupAttribute;
-        /// <summary>
         /// First cached <see cref="ToolboxPropertyAttribute"/>.
         /// </summary>
         private readonly ToolboxPropertyAttribute propertyAttribute;
@@ -35,8 +31,14 @@ namespace Toolbox.Editor
         private readonly ToolboxConditionAttribute conditionAttribute;
 
 
-        private readonly FieldInfo fieldInfo;
+        /// <summary>
+        /// Field info associated to <see cref="property"/>.
+        /// </summary>
+        private readonly FieldInfo propertyFieldInfo;
 
+        /// <summary>
+        /// This flag determines  whenever property has custom <see cref="PropertyDrawer"/>.
+        /// </summary>
         private readonly bool hasCustomPropertyDrawer;
 
 
@@ -44,25 +46,41 @@ namespace Toolbox.Editor
         {
             this.property = property;
 
-            fieldInfo = ToolboxDrawerUtility.GetFieldInfoFromProperty(property, out Type propertyType);
+            //get field info associated with this property
+            propertyFieldInfo = property.GetFieldInfo(out Type propertyType);
 
-            if (fieldInfo == null)
+            if (propertyFieldInfo == null)
+            {
+                return;
+            }
+
+            //check if this property has built-in drawer
+            if (!(hasCustomPropertyDrawer = property.HasCustomDrawer(propertyType)))
+            {
+                var propertyAttributes = propertyFieldInfo.GetCustomAttributes<PropertyAttribute>();
+                foreach (var attribute in propertyAttributes)
+                {
+                    if (hasCustomPropertyDrawer = property.HasCustomDrawer(attribute.GetType()))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            //validate property using associated field info
+            if (propertyFieldInfo == null || propertyFieldInfo.Name != property.name)
             {
                 return;
             }
 
             //get all available area attributes
-            areaAttributes = fieldInfo.GetCustomAttributes<ToolboxAreaAttribute>().ToArray();
+            areaAttributes = propertyFieldInfo.GetCustomAttributes<ToolboxAreaAttribute>().ToArray();     
             //keep area attributes in proper order
             Array.Sort(areaAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
 
             //get only one attribute per type
-            groupAttribute = fieldInfo.GetCustomAttribute<ToolboxGroupAttribute>();
-            propertyAttribute = fieldInfo.GetCustomAttribute<ToolboxPropertyAttribute>();
-            conditionAttribute = fieldInfo.GetCustomAttribute<ToolboxConditionAttribute>();
-
-            //check if this property has built-in drawer
-            hasCustomPropertyDrawer = ToolboxDrawerUtility.PropertyHasCustomDrawer(property, propertyType);
+            propertyAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxPropertyAttribute>();
+            conditionAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxConditionAttribute>();
         }
 
 
@@ -70,10 +88,10 @@ namespace Toolbox.Editor
         /// Draw property using Unity's layouting system and cached <see cref="ToolboxDrawer"/>s.
         /// </summary>
         public void OnGuiLayout()
-        {
+        {               
+            //begin all needed area drawers in proper order
             if (areaAttributes != null)
             {            
-                //begin all needed area drawers in proper order
                 for (var i = 0; i < areaAttributes.Length; i++)
                 {
                     ToolboxEditorUtility.GetAreaDrawer(areaAttributes[i])?.OnGuiBegin(areaAttributes[i]);
@@ -89,13 +107,7 @@ namespace Toolbox.Editor
 
             if (conditionState == PropertyCondition.NonValid)
             {
-                //end all area drawers without drawing property
-                for (var i = areaAttributes.Length - 1; i >= 0; i--)
-                {
-                    ToolboxEditorUtility.GetAreaDrawer(areaAttributes[i])?.OnGuiEnd(areaAttributes[i]);
-                }
-
-                return;
+                goto Finish;
             }
 
             //disable property field if it is needed
@@ -120,9 +132,10 @@ namespace Toolbox.Editor
                 EditorGUI.EndDisabledGroup();
             }
 
+            Finish:
+            //end all needed area drawers in proper order
             if (areaAttributes != null)
             {
-                //end all needed area drawers in proper order
                 for (var i = areaAttributes.Length - 1; i >= 0; i--)
                 {
                     ToolboxEditorUtility.GetAreaDrawer(areaAttributes[i])?.OnGuiEnd(areaAttributes[i]);
@@ -136,14 +149,14 @@ namespace Toolbox.Editor
         /// <param name="property"></param>
         public void OnGuiDefault()
         {
-            //all "single" and  all properties with custom drawers should be drawn in standard way
-            if (hasCustomPropertyDrawer || !property.hasChildren)
+            //all "single" and all properties with custom drawers should be drawn in standard way
+            if (!property.hasChildren || hasCustomPropertyDrawer)
             {
                 EditorGUILayout.PropertyField(property, property.isExpanded);
                 return;
             }
 
-            //draw standard foldout for children-based property
+            //draw standard foldout for children-based properties
             property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, new GUIContent(property.displayName), true);
 
             if (!property.isExpanded)
@@ -176,13 +189,7 @@ namespace Toolbox.Editor
                 iterateThroughChildren = false;
 
                 //handle current property using Toolbox drawers
-                EditorGUI.BeginChangeCheck();
                 ToolboxEditorGui.DrawToolboxProperty(iterProperty.Copy());
-                //NOTE: changing child properties (like array size) may invalidate the iterator, so stop now, or we may get errors
-                if (EditorGUI.EndChangeCheck())
-                {
-                    break;
-                };
             }
 
             //restore old indent level

@@ -294,7 +294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   var1: 82
-  targetTag: MainCamera
+  targetTag: Untagged
   progressBar: 25.4
   newLabel: 25.4
   var2: {x: 28.4, y: 59.1}
@@ -317,7 +317,7 @@ MonoBehaviour:
   enumFlag1: 82
   enumFlag2: 198
   var13: {fileID: 0}
-  randomValue: -1.2688389
+  randomValue: -8.382832
   directory: ToolAssets
   sceneName: SampleScene
   presetTarget: 3
@@ -341,6 +341,12 @@ MonoBehaviour:
   var25: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   var26: {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
   vars1: 01000000020000000300000004000000
+  var29:
+    i: 0
+    strings:
+    - 
+    - 
+    - 
 --- !u!4 &959025299
 Transform:
   m_ObjectHideFlags: 2
