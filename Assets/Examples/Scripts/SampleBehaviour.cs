@@ -224,7 +224,7 @@ public class SampleBehaviour : MonoBehaviour
 
     [HeaderArea("6", HeaderStyle.Boxed)]
 
-    public SampleNestedClass var29;
+    public SampleNestedClass var27;
 
 
     private void Start()
