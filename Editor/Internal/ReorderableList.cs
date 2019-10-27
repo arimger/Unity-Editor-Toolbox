@@ -95,7 +95,7 @@ namespace Toolbox.Editor.Internal
 
         public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool hasFixedSize)
         {
-            id = GUIUtility.GetControlID(FocusType.Keyboard);
+            id = GetHashCode();
 
             Draggable = draggable;
             HasHeader = hasHeader;
@@ -434,17 +434,20 @@ namespace Toolbox.Editor.Internal
                         Index += 1;
                         currentEvent.Use();
                     }
+
                     if (currentEvent.keyCode == KeyCode.UpArrow)
                     {
                         Index -= 1;
                         currentEvent.Use();
                     }
+
                     if (currentEvent.keyCode == KeyCode.Escape && GUIUtility.hotControl == id)
                     {
                         GUIUtility.hotControl = 0;
                         IsDragging = false;
                         currentEvent.Use();
                     }
+
                     //don't allow arrowing through the ends of the list
                     Index = Mathf.Clamp(Index, 0, List.arraySize - 1);
                     break;
@@ -471,13 +474,17 @@ namespace Toolbox.Editor.Internal
                         GUIUtility.hotControl = id;
                         nonDragTargetIndices = new List<int>();
                     }
+
                     GrabKeyboardFocus();
                     currentEvent.Use();
                     clicked = true;
                     break;
 
                 case EventType.MouseDrag:
-                    if (!Draggable || GUIUtility.hotControl != id) break;
+                    if (!Draggable || GUIUtility.hotControl != id)
+                    {
+                        break;
+                    }
 
                     //set dragging state on first MouseDrag event after we got hotcontrol 
                     //to prevent animating elements when deleting elements by context menu
@@ -487,7 +494,7 @@ namespace Toolbox.Editor.Internal
                     UpdateDraggedY(listRect);
                     currentEvent.Use();
                     break;
-
+              
                 case EventType.MouseUp:
                     if (!Draggable)
                     {
@@ -497,12 +504,18 @@ namespace Toolbox.Editor.Internal
                             //set the keyboard control
                             onMouseUpCallback(this);
                         }
+
                         break;
                     }
 
                     //hotcontrol is only set when list is draggable
-                    if (GUIUtility.hotControl != id) break;
+                    if (GUIUtility.hotControl != id)
+                    {
+                        break;
+                    }
+
                     currentEvent.Use();
+
                     IsDragging = false;
 
                     try
@@ -543,12 +556,13 @@ namespace Toolbox.Editor.Internal
                     }
                     finally
                     {
-                        //cleanup before we exitGUI proper.
+                        //cleanup before we exit GUI
                         GUIUtility.hotControl = 0;
                         nonDragTargetIndices = null;
                     }
                     break;
             }
+
             //if the index has changed and there is a selected callback, call it
             if ((Index != oldIndex || clicked) && onSelectCallback != null)
             {
