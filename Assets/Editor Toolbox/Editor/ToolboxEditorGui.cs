@@ -189,27 +189,50 @@ namespace Toolbox.Editor
 
         static ToolboxEditorGui()
         {
-            //everytime when editor is reloaded we have to clear all handlers
-            ToolboxEditorUtility.onEditorReload += propertyHandlers.Clear;
+            //everytime when editor is reloaded we have to clear all stored handlers
+            ToolboxDrawerUtility.onEditorReload += propertyHandlers.Clear;
         }
 
+
+        /// <summary>
+        /// Returns(and creates if cannot find any related handler) <see cref="ToolboxPropertyHandler"/> associated and prepared for given property.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        internal static ToolboxPropertyHandler GetPropertyHandler(SerializedProperty property)
+        {
+            //generate property key using internal method
+            var key = ToolboxSettingsUtility.GeneratePropertyKey(property);
+            //check if this property is currently handled
+            if (!propertyHandlers.TryGetValue(key, out ToolboxPropertyHandler propertyHandler))
+            {
+                //initialize and store new property handler
+                return propertyHandlers[key] = propertyHandler = new ToolboxPropertyHandler(property);
+            }
+
+            return propertyHandler;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="position"></param>
+        public static void DrawToolboxProperty(SerializedProperty property, Rect position)
+        {
+            //TODO:
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Draws property using additional <see cref="PropertyDrawer"/>s and <see cref="Drawers.ToolboxDrawer"/>s.
         /// </summary>
         /// <param name="property"></param>
-        public static void DrawToolboxProperty(SerializedProperty property)
+        public static void DrawLayoutToolboxProperty(SerializedProperty property)
         {
-            //generate property key using internal method
-            var key = ToolboxEditorUtility.GeneratePropertyKey(property);
-            //check if this property is currently handled
-            if (!propertyHandlers.TryGetValue(key, out ToolboxPropertyHandler propertyHandler))
-            {
-                //initialize and store new property handler
-                propertyHandlers[key] = propertyHandler = new ToolboxPropertyHandler(property);
-            }
-
-            propertyHandler.OnGuiLayout();
+            //draw property using desired handler
+            GetPropertyHandler(property).OnGuiLayout();
         }
     }
 }

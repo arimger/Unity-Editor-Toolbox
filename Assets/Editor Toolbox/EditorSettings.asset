@@ -39,12 +39,12 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.LineAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HighlightAttributeDrawer, Toolbox-Editor
-  groupDrawerHandlers: []
   propertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
   conditionDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.DisableAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.DisableIfAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HideAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HideIfAttributeDrawer, Toolbox-Editor
+  collectionDrawerHandlers:
+  - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor

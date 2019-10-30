@@ -5,12 +5,6 @@ namespace Toolbox.Editor.Drawers
 {
     public abstract class ToolboxPropertyDrawer<T> : ToolboxPropertyDrawerBase where T : ToolboxPropertyAttribute
     {
-        /// <summary>
-        /// Attribute type associated with this drawer.
-        /// </summary>
-        public static System.Type GetAttributeType() => typeof(T);
-
-
         public override sealed void OnGui(SerializedProperty property)
         {
             var targetAttribute = property.GetAttribute<T>();
@@ -41,6 +35,7 @@ namespace Toolbox.Editor.Drawers
 
             base.OnGui(property, attribute);
         }
+
 
         public virtual void OnGui(SerializedProperty property, T attribute)
         {

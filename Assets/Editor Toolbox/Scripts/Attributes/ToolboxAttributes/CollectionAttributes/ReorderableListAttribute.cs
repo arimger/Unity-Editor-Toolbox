@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-    public class ReorderableListAttribute : ToolboxPropertyAttribute
+    public class ReorderableListAttribute : ToolboxCollectionAttribute
     {
         public ReorderableListAttribute(ListStyle style = ListStyle.Round, string elementLabel = null,  bool fixedSize = false, bool draggable = true)
         {

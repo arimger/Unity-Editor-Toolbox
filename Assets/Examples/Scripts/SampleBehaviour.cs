@@ -56,7 +56,8 @@ public class SampleBehaviour : MonoBehaviour
 
     [BoxedHeader("9")]
 
-    [InstanceButton(typeof(SampleBehaviour), "ResetVar8", "Use this button to reset var8 using instance", ButtonActivityType.OnPlayMode, order = 100)]
+    [InstanceButton(typeof(SampleBehaviour), "ResetVar8", 
+        "Use this button to reset var8 using this instance[in Play mode]", ButtonActivityType.OnPlayMode, order = 100)]
     [BroadcastButton("ResetVar8", "Use this button to reset var8 using broadcasting", ButtonActivityType.OnEditMode, order = 100)]
 
     [AssetPreview]
@@ -208,7 +209,7 @@ public class SampleBehaviour : MonoBehaviour
     [InLineEditor(drawHeader: false, drawPreview: true)]
     public GameObject var26;
 
-    [HeaderArea("5", HeaderStyle.Boxed)]
+    [HeaderArea("4", HeaderStyle.Boxed)]
 
     [Disable]
     public int[] vars1 = new[] {1, 2, 3, 4};
@@ -218,11 +219,11 @@ public class SampleBehaviour : MonoBehaviour
     public class SampleNestedClass
     {
         public int i = 0;
-        [ReorderableList]
+        [ReorderableList, TagSelector]
         public string[] strings;
     }
 
-    [HeaderArea("6", HeaderStyle.Boxed)]
+    [HeaderArea("5", HeaderStyle.Boxed)]
 
     public SampleNestedClass var27;
 
