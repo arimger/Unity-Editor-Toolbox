@@ -40,7 +40,7 @@ namespace Toolbox.Editor
         /// <param name="rect"></param>
         private static void OnItemCallback(int instanceID, Rect rect)
         {
-            if (!ToolboxEditorUtility.ToolboxHierarchyAllowed) return;
+            if (!ToolboxSettingsUtility.ToolboxHierarchyAllowed) return;
 
             var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             if (gameObject)

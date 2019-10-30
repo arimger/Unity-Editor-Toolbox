@@ -20,12 +20,11 @@ namespace Toolbox.Editor
         private ReorderableList customFoldersList;
 
         private ReorderableList areaDrawerHandlersList;
-        private ReorderableList groupDrawerHandlersList;
         private ReorderableList propertyDrawerHandlersList;
         private ReorderableList conditionDrawerHandlersList;
+        private ReorderableList collectionDrawerHandlersList;
 
-
-        protected override void OnEnable()
+        private void OnEnable()
         {
             hierarchySettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.hierarchySettingsEnabled", false);
             projectSettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.projectSettingsEnabled", false);
@@ -38,12 +37,12 @@ namespace Toolbox.Editor
             customFoldersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("customFolders"));
 
             areaDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("areaDrawerHandlers"));
-            groupDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("groupDrawerHandlers"));
             propertyDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("propertyDrawerHandlers"));
             conditionDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("conditionDrawerHandlers"));
+            collectionDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("collectionDrawerHandlers"));
         }
 
-        protected override void OnDisable()
+        private void OnDisable()
         {
             EditorPrefs.SetBool("ToolboxEditorSettings.hierarchySettingsEnabled", hierarchySettingsEnabled);
             EditorPrefs.SetBool("ToolboxEditorSettings.projectSettingsEnabled", projectSettingsEnabled);
@@ -87,12 +86,9 @@ namespace Toolbox.Editor
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
                 areaDrawerHandlersList.DoLayoutList();
                 EditorGUILayout.Separator();
-                EditorGUILayout.HelpBox("Deprecated.", MessageType.Warning);
-                EditorGUI.BeginDisabledGroup(true);
-                groupDrawerHandlersList.DoLayoutList();
-                EditorGUI.EndDisabledGroup();
-                EditorGUILayout.Separator();
                 propertyDrawerHandlersList.DoLayoutList();
+                EditorGUILayout.Separator();
+                collectionDrawerHandlersList.DoLayoutList();
                 EditorGUILayout.Separator();
                 conditionDrawerHandlersList.DoLayoutList();
                 EditorGUI.EndDisabledGroup();
@@ -106,7 +102,7 @@ namespace Toolbox.Editor
 
             if (GUILayout.Button(Style.buttonContent, Style.buttonOptions))
             {
-                ToolboxEditorUtility.ReimportEditor();
+                ToolboxSettingsUtility.ReimportEditor();
             }
         }
 

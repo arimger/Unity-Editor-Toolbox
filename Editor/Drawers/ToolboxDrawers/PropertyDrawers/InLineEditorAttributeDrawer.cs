@@ -22,7 +22,7 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
-        private void HandlePrewarmEditor(UnityEditor.Editor editor, InLineEditorAttribute attribute)
+        private void HandleEditorPrewarm(UnityEditor.Editor editor, InLineEditorAttribute attribute)
         {
             if (!attribute.DrawHeader)
             {
@@ -31,8 +31,9 @@ namespace Toolbox.Editor.Drawers
                 {
                     InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
 #if !UNITY_2019_1_OR_NEWER
+                    const string isVisibleFieldName = "m_IsVisible";
                     //in older versions editor's foldouts are based on m_IsVisible field and Awake() method
-                    var isVisible = editor.GetType().GetField("m_IsVisible",
+                    var isVisible = editor.GetType().GetField(isVisibleFieldName,
                         BindingFlags.Instance | BindingFlags.NonPublic);
                     if (isVisible != null)
                     {
@@ -44,7 +45,7 @@ namespace Toolbox.Editor.Drawers
 
             //prevent custom editors for overriding label width
             var labelWidth = EditorGUIUtility.labelWidth;
-            HandleStandardEditor(editor, attribute);
+            HandleEditorDrawing(editor, attribute);
             EditorGUIUtility.labelWidth = labelWidth;
         }
 
@@ -53,7 +54,7 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
-        private void HandleStandardEditor(UnityEditor.Editor editor, InLineEditorAttribute attribute)
+        private void HandleEditorDrawing(UnityEditor.Editor editor, InLineEditorAttribute attribute)
         {
             //begin inlined editor by drawing separation line
             ToolboxEditorGui.DrawLayoutLine();
@@ -93,9 +94,11 @@ namespace Toolbox.Editor.Drawers
         {
             EditorGUILayout.PropertyField(property, property.isExpanded);
 
-            //basically arrays and multiple values are not supported yet
-            if (property.isArray || property.hasMultipleDifferentValues)
+            //basically multiple values are not supported
+            if (property.hasMultipleDifferentValues)
+            {
                 return;
+            }
 
             //reference value type validation
             if (property.propertyType != SerializedPropertyType.ObjectReference)
@@ -106,9 +109,11 @@ namespace Toolbox.Editor.Drawers
             }
 
             if (property.objectReferenceValue == null)
+            {
                 return;
+            }
 
-            var key = ToolboxEditorUtility.GeneratePropertyKey(property);
+            var key = ToolboxSettingsUtility.GeneratePropertyKey(property);
             //get (or create) editor for this property
             if (!editorInstances.TryGetValue(key, out UnityEditor.Editor editor))
             {
@@ -124,7 +129,7 @@ namespace Toolbox.Editor.Drawers
             if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, new GUIContent(property.objectReferenceValue.GetType().Name + " Inspector Preview"), true, Style.foldoutStyle))
             {
                 //draw and prewarm inlined editor
-                HandlePrewarmEditor(editor, attribute);
+                HandleEditorPrewarm(editor, attribute);
             }
         }
 

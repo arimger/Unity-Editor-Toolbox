@@ -9,7 +9,7 @@ namespace Toolbox.Editor.Drawers
 {
     using Toolbox.Editor.Internal;
 
-    public class ReorderableListAttributeDrawer : ToolboxPropertyDrawer<ReorderableListAttribute>
+    public class ReorderableListAttributeDrawer : ToolboxCollectionDrawer<ReorderableListAttribute>
     {
         /// <summary>
         /// Collection of all stored <see cref="ReorderableList"/> instances.
@@ -24,7 +24,7 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         public override void OnGui(SerializedProperty property, ReorderableListAttribute attribute)
         {
-            var key = ToolboxEditorUtility.GeneratePropertyKey(property);
+            var key = ToolboxSettingsUtility.GeneratePropertyKey(property);
 
             if (!listInstances.TryGetValue(key, out ReorderableList list))
             {

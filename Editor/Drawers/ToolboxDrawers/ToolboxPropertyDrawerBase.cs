@@ -7,7 +7,7 @@ namespace Toolbox.Editor.Drawers
     {
         public ToolboxPropertyDrawerBase()
         {
-            ToolboxEditorUtility.onEditorReload += OnGuiReload;
+            ToolboxDrawerUtility.onEditorReload += OnGuiReload;
         }
 
 

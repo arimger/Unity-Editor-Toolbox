@@ -8,19 +8,15 @@ namespace Toolbox.Editor.Tools
 {
     public abstract class ToolEditor : ToolboxEditor
     {
-        protected override void OnEnable()
+        protected virtual void OnEnable()
         {
-            base.OnEnable();
-
             UnityTools.hidden = true;
             Target.transform.hideFlags = HideFlags.HideInInspector;
             Target.transform.position = Vector3.zero;
         }
 
-        protected override void OnDisable()
+        protected virtual void OnDisable()
         {
-            base.OnDisable();
-
             UnityTools.hidden = false;
         }
 

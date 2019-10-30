@@ -5,12 +5,6 @@ namespace Toolbox.Editor.Drawers
 {
     public class ToolboxConditionDrawer<T> : ToolboxConditionDrawerBase where T : ToolboxConditionAttribute
     {
-        /// <summary>
-        /// Attribute type associated with this drawer.
-        /// </summary>
-        public static System.Type GetAttributeType() => typeof(T);
-
-
         public override sealed PropertyCondition OnGuiValidate(SerializedProperty property)
         {
             var targetAttribute = property.GetAttribute<T>();
@@ -39,6 +33,7 @@ namespace Toolbox.Editor.Drawers
 
             return base.OnGuiValidate(property, attribute);
         }
+
 
         public virtual PropertyCondition OnGuiValidate(SerializedProperty property, T attribute)
         {

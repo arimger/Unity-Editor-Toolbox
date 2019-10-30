@@ -11,25 +11,13 @@ namespace Toolbox.Editor
     public class ToolboxEditor : UnityEditor.Editor
     {
         /// <summary>
-        /// Editor initialization.
-        /// </summary>
-        protected virtual void OnEnable()
-        { }
-
-        /// <summary>
-        /// Editor deinitialization.
-        /// </summary>
-        protected virtual void OnDisable()
-        { }
-
-        /// <summary>
         /// Handles desired property display process using <see cref="ToolboxDrawer"/>s.
         /// </summary>
         /// <param name="property">Property to display.</param>
         protected virtual void DrawCustomProperty(SerializedProperty property)
         {
             //ToolboxEditorGui class will handle all properties and drawers
-            ToolboxEditorGui.DrawToolboxProperty(property);
+            ToolboxEditorGui.DrawLayoutToolboxProperty(property);
         }
 
         /// <summary>
@@ -42,7 +30,7 @@ namespace Toolbox.Editor
             if (property.NextVisible(true))
             {
                 //handle situation when first property is not mono script
-                if (property.name != Defaults.defaultScriptPropertyName)
+                if (property.propertyPath != Defaults.defaultScriptPropertyPath)
                 {
                     DrawDefaultInspector();
                     return;
@@ -57,7 +45,7 @@ namespace Toolbox.Editor
                 EditorGUI.EndDisabledGroup();
 
                 serializedObject.Update();
-                //draw every property using ToolboxAttributes&Drawers
+                //draw every property using Toolbox drawers
                 while (property.NextVisible(false))
                 {
                     DrawCustomProperty(property.Copy());
@@ -73,7 +61,7 @@ namespace Toolbox.Editor
         public override void OnInspectorGUI()
         {
             //draw default inspector if ToolboxDrawers are not allowed
-            if (!ToolboxEditorUtility.ToolboxDrawersAllowed)
+            if (!ToolboxSettingsUtility.ToolboxDrawersAllowed)
             {
                 DrawDefaultInspector();
                 return;
@@ -88,7 +76,7 @@ namespace Toolbox.Editor
         {
             internal const string defaultEditorHeaderText = "Component Editor";
 
-            internal const string defaultScriptPropertyName = "m_Script";
+            internal const string defaultScriptPropertyPath = "m_Script";
 
             internal const string defaultScriptPropertyType = "PPtr<MonoScript>";
         }

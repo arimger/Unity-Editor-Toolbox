@@ -4,12 +4,6 @@ namespace Toolbox.Editor.Drawers
 {
     public abstract class ToolboxAreaDrawer<T> : ToolboxAreaDrawerBase where T : ToolboxAreaAttribute
     {        
-        /// <summary>
-        /// Attribute type associated with this drawer.
-        /// </summary>
-        public static System.Type GetAttributeType() => typeof(T);
-
-
         public override sealed void OnGuiBegin()
         {
             base.OnGuiBegin();
@@ -49,6 +43,7 @@ namespace Toolbox.Editor.Drawers
 
             base.OnGuiEnd();
         }
+
 
         public virtual void OnGuiBegin(T attribute)
         {

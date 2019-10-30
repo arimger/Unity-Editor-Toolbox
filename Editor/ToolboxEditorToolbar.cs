@@ -33,6 +33,7 @@ namespace Toolbox.Editor
             LabelContent = labelContent;
         }
 
+
         public int Order { get; set; }
 
         public Action OnClickAction { get; private set; }

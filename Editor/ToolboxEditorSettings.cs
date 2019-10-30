@@ -26,14 +26,14 @@ namespace Toolbox.Editor
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxAreaDrawer<>))]
         private List<SerializedTypeReference> areaDrawerHandlers;
         [HideIf("useOrderedDrawers", true)]
-        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxGroupDrawer<>))]
-        private List<SerializedTypeReference> groupDrawerHandlers;
-        [HideIf("useOrderedDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxPropertyDrawer<>))]
         private List<SerializedTypeReference> propertyDrawerHandlers;
         [HideIf("useOrderedDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxConditionDrawer<>))]
         private List<SerializedTypeReference> conditionDrawerHandlers;
+        [HideIf("useOrderedDrawers", true)]
+        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxCollectionDrawer<>))]
+        private List<SerializedTypeReference> collectionDrawerHandlers;
 
 
         public void AddCustomFolder(FolderData path)
@@ -59,12 +59,6 @@ namespace Toolbox.Editor
             areaDrawerHandlers.Add(drawerReference);
         }
 
-        public void AddGroupDrawerHandler(SerializedTypeReference drawerReference)
-        {
-            if (groupDrawerHandlers == null) groupDrawerHandlers = new List<SerializedTypeReference>();
-            groupDrawerHandlers.Add(drawerReference);
-        }
-
         public void AddPropertyDrawerHandler(SerializedTypeReference drawerReference)
         {
             if (propertyDrawerHandlers == null) propertyDrawerHandlers = new List<SerializedTypeReference>();
@@ -77,14 +71,15 @@ namespace Toolbox.Editor
             conditionDrawerHandlers.Add(drawerReference);
         }
 
+        public void AddCollectionDrawerHandler(SerializedTypeReference drawerReference)
+        {
+            if (conditionDrawerHandlers == null) collectionDrawerHandlers = new List<SerializedTypeReference>();
+            collectionDrawerHandlers.Add(drawerReference);
+        }
+
         public void RemoveAreaDrawerHandler(SerializedTypeReference drawerReference)
         {
             areaDrawerHandlers?.Remove(drawerReference);
-        }
-
-        public void RemoveGroupDrawerHandler(SerializedTypeReference drawerReference)
-        {
-            groupDrawerHandlers?.Remove(drawerReference);
         }
 
         public void RemovePropertyDrawerHandler(SerializedTypeReference drawerReference)
@@ -97,14 +92,14 @@ namespace Toolbox.Editor
             conditionDrawerHandlers?.Remove(drawerReference);
         }
 
+        public void RemoveCollectionDrawerHandler(SerializedTypeReference drawerReference)
+        {
+            collectionDrawerHandlers?.Remove(drawerReference);
+        }
+
         public Type GetAreaDrawerTypeAt(int index)
         {
             return areaDrawerHandlers[index];
-        }
-
-        public Type GetGroupDrawerTypeAt(int index)
-        {
-            return groupDrawerHandlers[index];
         }
 
         public Type GetPropertyDrawerTypeAt(int index)
@@ -115,6 +110,11 @@ namespace Toolbox.Editor
         public Type GetConditionDrawerTypeAt(int index)
         {
             return conditionDrawerHandlers[index].Type;
+        }
+
+        public Type GetCollectionDrawerTypeAt(int index)
+        {
+            return collectionDrawerHandlers[index].Type;
         }
 
 
@@ -142,10 +142,10 @@ namespace Toolbox.Editor
 
         public int AreaDrawersCount => areaDrawerHandlers != null ? areaDrawerHandlers.Count : 0;
 
-        public int GroupDrawersCount => groupDrawerHandlers != null ? groupDrawerHandlers.Count : 0;
-
         public int PropertyDrawersCount => propertyDrawerHandlers != null ? propertyDrawerHandlers.Count : 0;
 
         public int ConditionDrawersCount => conditionDrawerHandlers != null ? conditionDrawerHandlers.Count : 0;
+
+        public int CollectionDrawersCount => collectionDrawerHandlers != null ? collectionDrawerHandlers.Count : 0;
     }
 }
