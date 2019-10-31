@@ -16,7 +16,6 @@ namespace Toolbox.Editor
         /// <param name="property">Property to display.</param>
         protected virtual void DrawCustomProperty(SerializedProperty property)
         {
-            //ToolboxEditorGui class will handle all properties and drawers
             ToolboxEditorGui.DrawLayoutToolboxProperty(property);
         }
 
@@ -25,33 +24,30 @@ namespace Toolbox.Editor
         /// </summary>
         protected virtual void DrawCustomInspector()
         {
-            //begin iteration over all properties
+            const string editorHeaderText = "Component Editor";
+
+            var expanded = true;
+
+            serializedObject.Update();
+
             var property = serializedObject.GetIterator();
-            if (property.NextVisible(true))
+            if (property.NextVisible(expanded))
             {
-                //handle situation when first property is not mono script
-                if (property.propertyPath != Defaults.defaultScriptPropertyPath)
-                {
-                    DrawDefaultInspector();
-                    return;
-                }
+                expanded = false;
 
-                //begin Toolbox inspector
-                EditorGUILayout.LabelField(Defaults.defaultEditorHeaderText, EditorStyles.centeredGreyMiniLabel);
+                EditorGUILayout.LabelField(editorHeaderText, EditorDefaults.headerTextStyle);
 
-                //draw standard script property
-                EditorGUI.BeginDisabledGroup(true);
+                EditorGUI.BeginDisabledGroup(property.type == EditorDefaults.defaultScriptPropertyType);
                 EditorGUILayout.PropertyField(property);
                 EditorGUI.EndDisabledGroup();
 
-                serializedObject.Update();
-                //draw every property using Toolbox drawers
-                while (property.NextVisible(false))
+                while (property.NextVisible(expanded))
                 {
                     DrawCustomProperty(property.Copy());
                 }
-                serializedObject.ApplyModifiedProperties();
             }
+
+            serializedObject.ApplyModifiedProperties();
         }
 
 
@@ -60,25 +56,42 @@ namespace Toolbox.Editor
         /// </summary>
         public override void OnInspectorGUI()
         {
-            //draw default inspector if ToolboxDrawers are not allowed
             if (!ToolboxSettingsUtility.ToolboxDrawersAllowed)
             {
                 DrawDefaultInspector();
                 return;
             }
 
-            //draw custom inspector using additionally custom ToolboxDrawers
             DrawCustomInspector();
         }
 
 
-        internal static class Defaults
+        /// <summary>
+        /// Additional utility class. Contains useful constant and custom styling fields.
+        /// </summary>
+        internal static class EditorDefaults
         {
-            internal const string defaultEditorHeaderText = "Component Editor";
+            internal static GUIStyle headerTextStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
 
             internal const string defaultScriptPropertyPath = "m_Script";
 
             internal const string defaultScriptPropertyType = "PPtr<MonoScript>";
+
+
+            internal static bool IsDefaultScriptProperty(SerializedProperty property)
+            {
+                return defaultScriptPropertyPath == property.propertyPath;
+            }
+
+            internal static bool IsDefaultScriptPropertyByPath(string propertyPath)
+            {
+                return defaultScriptPropertyPath == propertyPath;
+            }
+
+            internal static bool IsDefaultScriptPropertyByType(string propertyType)
+            {
+                return defaultScriptPropertyType == propertyType;
+            }
         }
     }
 }

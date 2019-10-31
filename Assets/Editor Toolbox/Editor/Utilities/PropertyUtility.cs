@@ -95,7 +95,6 @@ namespace Toolbox.Editor
         }
 
 
-
         internal static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType)
         {
             var parameters = new object[] { property, null };
@@ -104,6 +103,10 @@ namespace Toolbox.Editor
             return result as FieldInfo;
         }
 
+        internal static string GetPropertyKey(this SerializedProperty property)
+        {
+            return property.serializedObject.GetHashCode() + "-" + property.propertyPath;
+        }
 
         internal static bool HasCustomDrawer(this SerializedProperty property, Type drawerType)
         {

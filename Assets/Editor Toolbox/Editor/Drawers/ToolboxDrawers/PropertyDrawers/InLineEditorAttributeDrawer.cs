@@ -113,7 +113,7 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            var key = ToolboxSettingsUtility.GeneratePropertyKey(property);
+            var key = property.GetPropertyKey();
             //get (or create) editor for this property
             if (!editorInstances.TryGetValue(key, out UnityEditor.Editor editor))
             {

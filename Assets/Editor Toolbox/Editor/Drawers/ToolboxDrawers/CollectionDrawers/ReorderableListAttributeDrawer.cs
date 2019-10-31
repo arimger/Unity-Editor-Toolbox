@@ -24,7 +24,7 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         public override void OnGui(SerializedProperty property, ReorderableListAttribute attribute)
         {
-            var key = ToolboxSettingsUtility.GeneratePropertyKey(property);
+            var key = property.GetPropertyKey();
 
             if (!listInstances.TryGetValue(key, out ReorderableList list))
             {
