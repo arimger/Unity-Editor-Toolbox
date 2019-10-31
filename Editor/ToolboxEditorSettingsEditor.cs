@@ -34,12 +34,12 @@ namespace Toolbox.Editor
             useToolboxFoldersProperty = serializedObject.FindProperty("useToolboxFolders");
             useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
 
-            customFoldersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("customFolders"));
+            customFoldersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("customFolders"));
 
-            areaDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("areaDrawerHandlers"));
-            propertyDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("propertyDrawerHandlers"));
-            conditionDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("conditionDrawerHandlers"));
-            collectionDrawerHandlersList = ToolboxEditorGui.CreateBoxedList(serializedObject.FindProperty("collectionDrawerHandlers"));
+            areaDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("areaDrawerHandlers"));
+            propertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("propertyDrawerHandlers"));
+            conditionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("conditionDrawerHandlers"));
+            collectionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("collectionDrawerHandlers"));
         }
 
         private void OnDisable()
@@ -52,6 +52,8 @@ namespace Toolbox.Editor
 
         public override void OnInspectorGUI()
         {
+            const float lineTickiness = 1.0f;
+
             EditorGUILayout.HelpBox("To approve all changes press the \"Apply\" button below.", MessageType.Info);
 
             serializedObject.Update();
@@ -62,8 +64,10 @@ namespace Toolbox.Editor
 
                 EditorGUILayout.PropertyField(useToolboxHierarchyProperty);
             }
-
-            ToolboxEditorGui.DrawLayoutLine();
+            else
+            {
+                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
+            }
 
             if (projectSettingsEnabled = EditorGUILayout.Foldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.foldoutStyle))
             {
@@ -74,9 +78,11 @@ namespace Toolbox.Editor
                 customFoldersList.DoLayoutList();
                 EditorGUI.EndDisabledGroup();
             }
-
-            ToolboxEditorGui.DrawLayoutLine();
-
+            else
+            {
+                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
+            }
+        
             if (drawersSettingsEnabled = EditorGUILayout.Foldout(drawersSettingsEnabled, Style.drawersSettingsContent, true, Style.foldoutStyle))
             {
                 EditorGUILayout.Space();
@@ -86,15 +92,21 @@ namespace Toolbox.Editor
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
                 areaDrawerHandlersList.DoLayoutList();
                 EditorGUILayout.Separator();
+                EditorGUILayout.Separator();
                 propertyDrawerHandlersList.DoLayoutList();
                 EditorGUILayout.Separator();
+                EditorGUILayout.Separator();
                 collectionDrawerHandlersList.DoLayoutList();
+                EditorGUILayout.Separator();
                 EditorGUILayout.Separator();
                 conditionDrawerHandlersList.DoLayoutList();
                 EditorGUI.EndDisabledGroup();
             }
+            else
+            {
+                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
+            }
 
-            ToolboxEditorGui.DrawLayoutLine();
             serializedObject.ApplyModifiedProperties();
 
             EditorGUILayout.Space();
