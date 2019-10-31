@@ -24,15 +24,15 @@ namespace Toolbox.Editor
         /// <summary>
         /// First cached <see cref="ToolboxPropertyAttribute"/>.
         /// </summary>
-        private readonly ToolboxPropertyAttribute propertyAttribute;
+        private readonly ToolboxPropertyAttribute propertySingleAttribute;
+        /// <summary>
+        /// First cached <see cref="ToolboxCollectionAttribute"/>.
+        /// </summary>
+        private readonly ToolboxCollectionAttribute propertyArrayAttribute;
         /// <summary>
         /// First cached <see cref="ToolboxConditionAttribute"/>.
         /// </summary>
         private readonly ToolboxConditionAttribute conditionAttribute;
-        /// <summary>
-        /// First cached <see cref="ToolboxCollectionAttribute"/>.
-        /// </summary>
-        private readonly ToolboxCollectionAttribute collectionAttribute;
 
 
         /// <summary>
@@ -79,15 +79,15 @@ namespace Toolbox.Editor
             if (property.isArray)
             {
                 //get collection drawer associated to this array field
-                collectionAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxCollectionAttribute>();
+                propertyArrayAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxCollectionAttribute>();
             }
             else
             {
                 //get property drawer associated to this property
-                propertyAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxPropertyAttribute>();
+                propertySingleAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxPropertyAttribute>();
             }
 
-            hasToolboxPropertyDrawer = propertyAttribute != null || collectionAttribute != null;
+            hasToolboxPropertyDrawer = propertySingleAttribute != null || propertyArrayAttribute != null;
 
             //validate child property using associated field info
             if (propertyFieldInfo == null || propertyFieldInfo.Name != property.name)
@@ -142,11 +142,11 @@ namespace Toolbox.Editor
             {
                 if (property.isArray)
                 {
-                    ToolboxDrawerUtility.GetCollectionDrawer(collectionAttribute)?.OnGui(property, collectionAttribute);
+                    ToolboxDrawerUtility.GetCollectionDrawer(propertyArrayAttribute)?.OnGui(property, propertyArrayAttribute);
                 }
                 else
                 {
-                    ToolboxDrawerUtility.GetPropertyDrawer(propertyAttribute)?.OnGui(property, propertyAttribute);
+                    ToolboxDrawerUtility.GetPropertyDrawer(propertySingleAttribute)?.OnGui(property, propertySingleAttribute);
                 }
             }
             else

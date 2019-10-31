@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEditor;
@@ -178,44 +176,10 @@ namespace Toolbox.Editor
     }
 
 
-    [InitializeOnLoad]
     public static partial class ToolboxEditorGui
-    {        
+    {                
         /// <summary>
-        /// All available and serialized properties handlers.
-        /// </summary>
-        private static readonly Dictionary<string, ToolboxPropertyHandler> propertyHandlers = new Dictionary<string, ToolboxPropertyHandler>();
-
-
-        static ToolboxEditorGui()
-        {
-            //everytime when editor is reloaded we have to clear all stored handlers
-            ToolboxDrawerUtility.onEditorReload += propertyHandlers.Clear;
-        }
-
-
-        /// <summary>
-        /// Returns(and creates if cannot find any related handler) <see cref="ToolboxPropertyHandler"/> associated and prepared for given property.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        internal static ToolboxPropertyHandler GetPropertyHandler(SerializedProperty property)
-        {
-            //generate property key using internal method
-            var key = ToolboxSettingsUtility.GeneratePropertyKey(property);
-            //check if this property is currently handled
-            if (!propertyHandlers.TryGetValue(key, out ToolboxPropertyHandler propertyHandler))
-            {
-                //initialize and store new property handler
-                return propertyHandlers[key] = propertyHandler = new ToolboxPropertyHandler(property);
-            }
-
-            return propertyHandler;
-        }
-
-
-        /// <summary>
-        /// 
+        /// Not implemented.
         /// </summary>
         /// <param name="property"></param>
         /// <param name="position"></param>
@@ -231,8 +195,7 @@ namespace Toolbox.Editor
         /// <param name="property"></param>
         public static void DrawLayoutToolboxProperty(SerializedProperty property)
         {
-            //draw property using desired handler
-            GetPropertyHandler(property).OnGuiLayout();
+            ToolboxDrawerUtility.GetPropertyHandler(property).OnGuiLayout();
         }
     }
 }
