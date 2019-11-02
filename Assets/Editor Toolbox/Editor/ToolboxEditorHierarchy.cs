@@ -40,7 +40,10 @@ namespace Toolbox.Editor
         /// <param name="rect"></param>
         private static void OnItemCallback(int instanceID, Rect rect)
         {
-            if (!ToolboxSettingsUtility.ToolboxHierarchyAllowed) return;
+            if (!ToolboxHierarchyUtility.ToolboxHierarchyAllowed)
+            {
+                return;
+            }
 
             var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             if (gameObject)
@@ -97,6 +100,8 @@ namespace Toolbox.Editor
 
         private static Rect DrawIcon(GameObject gameObject, Rect rect)
         {
+            const string defaultIconName = "GameObject Icon";
+
             //get specific icon for this gameObject
             var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
             var contentIcon = content.image;
@@ -115,7 +120,7 @@ namespace Toolbox.Editor
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
             //draw specific icon 
-            if (contentIcon.name != Utility.defaultIconName)
+            if (contentIcon.name != defaultIconName)
             {
                 GUI.Label(contentRect, contentIcon);
             }
@@ -140,6 +145,8 @@ namespace Toolbox.Editor
 
         private static Rect DrawTag(GameObject gameObject, Rect rect)
         {
+            const string defaultUnityTag = "Untagged";
+
             var content = new GUIContent(gameObject.tag);
 
             if (Event.current.type == EventType.Repaint)
@@ -147,7 +154,7 @@ namespace Toolbox.Editor
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
 
-            if (content.text != Utility.defaultUnityTag)
+            if (content.text != defaultUnityTag)
             {
                 EditorGUI.LabelField(rect, content, Style.tagLabelStyle);
             }
@@ -238,16 +245,6 @@ namespace Toolbox.Editor
                 backgroundStyle = new GUIStyle();
                 backgroundStyle.normal.background = backgroundTex;
             }
-        }
-
-        /// <summary>
-        /// Custom utility class.
-        /// </summary>
-        internal static class Utility
-        {
-            internal const string defaultUnityTag = "Untagged";
-
-            internal const string defaultIconName = "GameObject Icon";
         }
     }
 }

@@ -50,10 +50,11 @@ namespace Toolbox.Editor
     {
         private static readonly List<ToolbarButton> buttons = new List<ToolbarButton>();
 
+        private static readonly Type containterType = typeof(IMGUIContainer);
         private static readonly Type toolbarType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.Toolbar");
         private static readonly Type guiViewType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.GUIView");
 
-        private static readonly FieldInfo onGuiHandler = typeof(IMGUIContainer).GetField("m_OnGUIHandler",
+        private static readonly FieldInfo onGuiHandler = containterType.GetField("m_OnGUIHandler",
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         private static readonly PropertyInfo visualTree = guiViewType.GetProperty("visualTree",
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -75,13 +76,16 @@ namespace Toolbox.Editor
 
             //try to find toolbar object
             var toolbars = Resources.FindObjectsOfTypeAll(toolbarType);
+
             toolbar = toolbars.Length > 0 ? toolbars[0] : null;
 
             if (toolbar == null) return;
 
             //get current toolbar containter using reflection
-            var elements = visualTree.GetValue(toolbar, null) as VisualElement;
-            var container = elements.First() as IMGUIContainer;
+            var elements = visualTree.GetValue(toolbar, null) 
+                as VisualElement;
+            var container = elements.First() 
+                as IMGUIContainer;
 
             //create additional gui handler for new elements
             var handler = onGuiHandler.GetValue(container) as Action;
@@ -92,6 +96,9 @@ namespace Toolbox.Editor
 
         private static void OnGuiHandler()
         {
+            const float fromToolsOffsetX = 400.0f;
+            const float fromStripOffsetX = 100.0f;
+
             if (buttons.Count == 0) return;
 
             var screenWidth = EditorGUIUtility.currentViewWidth;
@@ -99,8 +106,8 @@ namespace Toolbox.Editor
 
             var buttonsRect = new Rect(0, 0, screenWidth, screenHeight);
             //random calculations known from UnityCsReference
-            buttonsRect.xMin += 400;
-            buttonsRect.xMax = (screenWidth - 100) / 2;
+            buttonsRect.xMin += fromToolsOffsetX;
+            buttonsRect.xMax = (screenWidth - fromStripOffsetX) / 2;
             //additional rect styling
             buttonsRect.xMin += Style.spacing;
             buttonsRect.xMax -= Style.spacing;

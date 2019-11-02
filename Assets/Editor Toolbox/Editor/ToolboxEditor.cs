@@ -11,10 +11,25 @@ namespace Toolbox.Editor
     public class ToolboxEditor : UnityEditor.Editor
     {
         /// <summary>
+        /// Inspector GUI re-draw call.
+        /// </summary>
+        public override void OnInspectorGUI()
+        {
+            if (!ToolboxDrawerUtility.ToolboxDrawersAllowed)
+            {
+                DrawDefaultInspector();
+                return;
+            }
+
+            DrawCustomInspector();
+        }
+
+
+        /// <summary>
         /// Handles desired property display process using <see cref="ToolboxDrawer"/>s.
         /// </summary>
         /// <param name="property">Property to display.</param>
-        protected virtual void DrawCustomProperty(SerializedProperty property)
+        public virtual void DrawCustomProperty(SerializedProperty property)
         {
             ToolboxEditorGui.DrawLayoutToolboxProperty(property);
         }
@@ -22,7 +37,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws custom inspector using <see cref="ToolboxDrawer"/>s.
         /// </summary>
-        protected virtual void DrawCustomInspector()
+        public virtual void DrawCustomInspector()
         {
             const string editorHeaderText = "Component Editor";
 
@@ -48,21 +63,6 @@ namespace Toolbox.Editor
             }
 
             serializedObject.ApplyModifiedProperties();
-        }
-
-
-        /// <summary>
-        /// Inspector GUI re-draw call.
-        /// </summary>
-        public override void OnInspectorGUI()
-        {
-            if (!ToolboxSettingsUtility.ToolboxDrawersAllowed)
-            {
-                DrawDefaultInspector();
-                return;
-            }
-
-            DrawCustomInspector();
         }
 
 

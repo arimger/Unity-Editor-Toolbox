@@ -25,12 +25,13 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
+            var rawPropertyHeight = EditorGUI.GetPropertyHeight(property);
             //get icons properties
             var bigIconProperty = property.FindPropertyRelative("icon");
             var smallIconProperty = property.FindPropertyRelative("smallIcon");
-
+       
             //get specific rects for folder icons
-            var bigFolderIconRect = new Rect(position.x, position.yMax - Style.iconHeight, Style.iconWidth, Style.iconHeight);
+            var bigFolderIconRect = new Rect(position.x, position.yMin + rawPropertyHeight, Style.iconWidth, Style.iconHeight);
             var smallFolderIconRect = new Rect(position.x + Style.iconWidth,
                 bigFolderIconRect.y + Style.smallIconHeight / 2 - Style.spacing, Style.smallIconWidth, Style.smallIconHeight);
 
@@ -72,7 +73,8 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal const float spacing = 2.0f;
+            internal static float height = EditorGUIUtility.singleLineHeight;
+            internal static float spacing = EditorGUIUtility.standardVerticalSpacing;
 
             internal const float iconWidth = ToolboxEditorProject.Style.folderIconWidth;
             internal const float iconHeight = ToolboxEditorProject.Style.folderIconHeight;

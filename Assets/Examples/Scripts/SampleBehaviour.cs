@@ -227,6 +227,11 @@ public class SampleBehaviour : MonoBehaviour
 
     public SampleNestedClass var27;
 
+    [HeaderArea("6", HeaderStyle.Boxed)]
+
+    [Highlight(0, 1, 0)]
+    public GameObject var28;
+
 
     private void Start()
     {

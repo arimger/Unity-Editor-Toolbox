@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Toolbox.Editor
 {
@@ -7,7 +9,7 @@ namespace Toolbox.Editor
         private readonly static Dictionary<string, FolderData> foldersData = new Dictionary<string, FolderData>();
 
 
-        internal static void InitializeProject(ToolboxEditorSettings settings)
+        internal static void InitializeProject(IToolboxProjectSettings settings)
         {
             for (var i = 0; i < settings.CustomFoldersCount; i++)
             {
@@ -34,6 +36,6 @@ namespace Toolbox.Editor
         }
 
 
-        internal static bool ToolboxFoldersAllowed => ToolboxSettingsUtility.ToolboxFoldersAllowed;
+        internal static bool ToolboxFoldersAllowed => ToolboxSettingsUtility.Settings.UseToolboxProject;
     }
 }

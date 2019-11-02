@@ -8,8 +8,50 @@ namespace Toolbox.Editor
 {
     using Toolbox.Editor.Drawers;
 
+    public interface IToolboxDrawerSettings
+    {
+        void AddAreaDrawerHandler(SerializedTypeReference drawerReference);
+        void AddPropertyDrawerHandler(SerializedTypeReference drawerReference);
+        void AddConditionDrawerHandler(SerializedTypeReference drawerReference);
+        void AddCollectionDrawerHandler(SerializedTypeReference drawerReference);
+        void RemoveAreaDrawerHandler(SerializedTypeReference drawerReference);
+        void RemovePropertyDrawerHandler(SerializedTypeReference drawerReference);
+        void RemoveConditionDrawerHandler(SerializedTypeReference drawerReference);
+        void RemoveCollectionDrawerHandler(SerializedTypeReference drawerReference);
+
+        Type GetAreaDrawerTypeAt(int index);
+        Type GetPropertyDrawerTypeAt(int index);
+        Type GetConditionDrawerTypeAt(int index);
+        Type GetCollectionDrawerTypeAt(int index);
+
+
+        bool UseToolboxDrawers { get; }
+
+        int AreaDrawersCount { get; }
+        int PropertyDrawersCount { get; }
+        int ConditionDrawersCount { get; }
+        int CollectionDrawersCount { get; }
+    }
+
+    public interface IToolboxProjectSettings
+    {
+        void AddCustomFolder(FolderData path);
+        void RemoveCustomFolder(FolderData path);
+
+        FolderData GetCustomFolderAt(int index);
+
+        bool UseToolboxProject { get; }
+
+        int CustomFoldersCount { get; }
+    }
+
+    public interface IToolboxHierarchySettings
+    {
+        bool UseToolboxHierarchy { get; }
+    }
+
     [CreateAssetMenu(menuName = "Editor Toolbox/Settings", order = 1)]
-    public class ToolboxEditorSettings : ScriptableObject
+    public class ToolboxEditorSettings : ScriptableObject, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxDrawerSettings
     {
         [SerializeField]
         private bool useToolboxHierarchy = true;
