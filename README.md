@@ -12,8 +12,8 @@ Copy and paste `Editor Toolbox` directory into your project (basically into `Ass
 ## Table Of Contents
 
 - [Attributes](#attributes)
-	- [Native Property Drawers](#nativedrawers)
-	- [Toolbox Property Drawers](#toolboxdrawers)
+	- [Native Drawers](#nativedrawers)
+	- [Toolbox Drawers](#toolboxdrawers)
 - [ReorderableList](#reorderable-list)
 - [Editor Extensions](#editor-extensions)
 	- [Hierarchy](#hierarchy)
@@ -24,7 +24,7 @@ Copy and paste `Editor Toolbox` directory into your project (basically into `Ass
 	
 ## Attributes
 
-### Native Property Drawers <a name="nativedrawers"></a>
+### Native Drawers <a name="nativedrawers"></a>
 
 Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associated **PropertyAttribute**.
 
@@ -179,9 +179,9 @@ public double var1;
 
 ---
 
-### Toolbox Property Drawers <a name="toolboxdrawers"></a>
+### Toolbox Drawers <a name="toolboxdrawers"></a>
 
-Drawers based on classes **ToolboxDrawer** and associated **ToolboxAttribute**.  
+Drawers based on classes inheriting from **ToolboxDrawer** and associated **ToolboxAttribute**. A quite powerful custom system that allows you to create really flexible drawers. You can use them without limitations(they are working with sub-classes and as array children). Every ToolboxDrawer is layout-based.
 For proper work they need at least one settings file located in your project.  
 Predefined one - `Editor Toolbox/EditorSettings.asset`.
 
