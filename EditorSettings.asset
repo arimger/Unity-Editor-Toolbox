@@ -19,12 +19,12 @@ MonoBehaviour:
   - path: Editor Toolbox
     icon: {fileID: 2800000, guid: 2eea0569e5355f54f85f255b66258c99, type: 3}
     smallIcon: {fileID: 2800000, guid: d60665959d07e2f44b8f902e335fee86, type: 3}
-  - path: Editor Toolbox/Editor
-    icon: {fileID: 2800000, guid: 3847f86d30bbd424eb6f48f73c46efc7, type: 3}
-    smallIcon: {fileID: 2800000, guid: 44900d2bc81f34e45b61dcc8428eae29, type: 3}
   - path: Editor Toolbox/Scripts
     icon: {fileID: 2800000, guid: 3e1a8a037c2edc54993a6a7d4e9f2a8d, type: 3}
     smallIcon: {fileID: 2800000, guid: a07249c8298c99341a970508d9e500e6, type: 3}
+  - path: Editor Toolbox/Editor
+    icon: {fileID: 2800000, guid: 3847f86d30bbd424eb6f48f73c46efc7, type: 3}
+    smallIcon: {fileID: 2800000, guid: 44900d2bc81f34e45b61dcc8428eae29, type: 3}
   - path: Examples/Scripts
     icon: {fileID: 2800000, guid: 3e1a8a037c2edc54993a6a7d4e9f2a8d, type: 3}
     smallIcon: {fileID: 2800000, guid: a07249c8298c99341a970508d9e500e6, type: 3}

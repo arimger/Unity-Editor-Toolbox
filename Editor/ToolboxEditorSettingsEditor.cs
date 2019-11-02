@@ -35,11 +35,19 @@ namespace Toolbox.Editor
             useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
 
             customFoldersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("customFolders"));
+            customFoldersList.HasHeader = false;
 
             areaDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("areaDrawerHandlers"));
+            areaDrawerHandlersList.HasHeader = false;
+  
             propertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("propertyDrawerHandlers"));
+            propertyDrawerHandlersList.HasHeader = false;
+
             conditionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("conditionDrawerHandlers"));
+            conditionDrawerHandlersList.HasHeader = false;
+  
             collectionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("collectionDrawerHandlers"));
+            collectionDrawerHandlersList.HasHeader = false;
         }
 
         private void OnDisable()
@@ -50,57 +58,94 @@ namespace Toolbox.Editor
         }
 
 
+        private bool DrawListFoldout(ReorderableList list)
+        {
+            return list.List.isExpanded = EditorGUILayout.Foldout(list.List.isExpanded, list.List.displayName, true, Style.propertyFoldoutStyle);
+        }
+
+
         public override void OnInspectorGUI()
         {
             const float lineTickiness = 1.0f;
 
-            EditorGUILayout.HelpBox("To approve all changes press the \"Apply\" button below.", MessageType.Info);
+            EditorGUILayout.HelpBox("To approve all changes press the \"Apply\" button.", MessageType.Info);
 
             serializedObject.Update();
 
-            if (hierarchySettingsEnabled = EditorGUILayout.Foldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.foldoutStyle))
+            if (hierarchySettingsEnabled = EditorGUILayout.Foldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.settingsFoldoutStyle))
             {
+                EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
 
                 EditorGUILayout.PropertyField(useToolboxHierarchyProperty);
+
+                EditorGUILayout.Space();
+                EditorGUI.indentLevel--;
             }
             else
             {
                 ToolboxEditorGui.DrawLayoutLine(lineTickiness);
             }
 
-            if (projectSettingsEnabled = EditorGUILayout.Foldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.foldoutStyle))
+            if (projectSettingsEnabled = EditorGUILayout.Foldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.settingsFoldoutStyle))
             {
+                EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
 
                 EditorGUILayout.PropertyField(useToolboxFoldersProperty);
+
+                EditorGUILayout.Space();
+                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
+
                 EditorGUI.BeginDisabledGroup(!useToolboxFoldersProperty.boolValue);
-                customFoldersList.DoLayoutList();
+                if (DrawListFoldout(customFoldersList))
+                {
+                    customFoldersList.DoLayoutList();
+                }         
                 EditorGUI.EndDisabledGroup();
+
+                EditorGUILayout.Space();
+                EditorGUI.indentLevel--;
             }
             else
             {
                 ToolboxEditorGui.DrawLayoutLine(lineTickiness);
             }
         
-            if (drawersSettingsEnabled = EditorGUILayout.Foldout(drawersSettingsEnabled, Style.drawersSettingsContent, true, Style.foldoutStyle))
+            if (drawersSettingsEnabled = EditorGUILayout.Foldout(drawersSettingsEnabled, Style.drawersSettingsContent, true, Style.settingsFoldoutStyle))
             {
+                EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
 
                 EditorGUILayout.PropertyField(useToolboxDrawersProperty);
 
+                EditorGUILayout.Space();
+                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
+
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
-                areaDrawerHandlersList.DoLayoutList();
+                if (DrawListFoldout(areaDrawerHandlersList))
+                {
+                    areaDrawerHandlersList.DoLayoutList();
+                }
                 EditorGUILayout.Separator();
+                if (DrawListFoldout(propertyDrawerHandlersList))
+                {
+                    propertyDrawerHandlersList.DoLayoutList();
+                }
                 EditorGUILayout.Separator();
-                propertyDrawerHandlersList.DoLayoutList();
+                if (DrawListFoldout(collectionDrawerHandlersList))
+                {
+                    collectionDrawerHandlersList.DoLayoutList();
+                }
                 EditorGUILayout.Separator();
-                EditorGUILayout.Separator();
-                collectionDrawerHandlersList.DoLayoutList();
-                EditorGUILayout.Separator();
-                EditorGUILayout.Separator();
-                conditionDrawerHandlersList.DoLayoutList();
+                if (DrawListFoldout(conditionDrawerHandlersList))
+                {
+                    conditionDrawerHandlersList.DoLayoutList();
+                }
                 EditorGUI.EndDisabledGroup();
+
+                EditorGUILayout.Space();
+                EditorGUI.indentLevel--;
             }
             else
             {
@@ -112,21 +157,22 @@ namespace Toolbox.Editor
             EditorGUILayout.Space();
             EditorGUILayout.Space();
 
-            if (GUILayout.Button(Style.buttonContent, Style.buttonOptions))
+            if (GUILayout.Button(Style.applyButtonContent, Style.buttonOptions))
             {
-                ToolboxSettingsUtility.ReimportEditor();
+                ToolboxSettingsUtility.ReimportSettings();
             }
         }
 
 
         internal static class Style
         {
-            internal static GUIStyle foldoutStyle;
+            internal static GUIStyle settingsFoldoutStyle;
+            internal static GUIStyle propertyFoldoutStyle;
 
             internal static GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings");
             internal static GUIContent projectSettingsContent = new GUIContent("Project Settings");
             internal static GUIContent drawersSettingsContent = new GUIContent("Drawers Settings");
-            internal static GUIContent buttonContent = new GUIContent("Apply", "Apply changes");
+            internal static GUIContent applyButtonContent = new GUIContent("Apply", "Apply changes");
 
             internal static GUILayoutOption[] buttonOptions = new GUILayoutOption[]
             {
@@ -135,10 +181,15 @@ namespace Toolbox.Editor
 
             static Style()
             {
-                foldoutStyle = new GUIStyle(EditorStyles.foldout)
+                settingsFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontStyle = FontStyle.Bold,
                     fontSize = 11
+                };
+                propertyFoldoutStyle = new GUIStyle(EditorStyles.foldout)
+                {
+                    fontStyle = FontStyle.Bold,
+                    fontSize = 10
                 };
             }
         }

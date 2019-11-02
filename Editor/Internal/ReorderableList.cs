@@ -80,7 +80,10 @@ namespace Toolbox.Editor.Internal
         private readonly int id = -1;
 
         private float draggedY;
-        private float dragOffset = 0;
+        private float dragOffset;
+
+        private float headerHeight = 18.0f;
+        private float footerHeight = 20.0f;
 
         private List<int> nonDragTargetIndices;
 
@@ -814,6 +817,7 @@ namespace Toolbox.Editor.Internal
             {
                 displayName = element.displayName.Replace(standardElementName, ElementLabel);
             }
+
             var displayContent = new GUIContent(displayName);
             EditorGUIUtility.labelWidth -= Style.handleArea;
             EditorGUI.PropertyField(rect, element, displayContent, element.isExpanded);
@@ -940,8 +944,9 @@ namespace Toolbox.Editor.Internal
 
         public float HeaderHeight
         {
-            get; set;
-        } = 18;
+            get => HasHeader ? headerHeight : 0.0f;
+            set => headerHeight = value;
+        }
 
         public float MiddleHeight
         {
@@ -950,8 +955,9 @@ namespace Toolbox.Editor.Internal
 
         public float FooterHeight
         {
-            get; set;
-        } = 20;
+            get => HasFixedSize ? footerHeight : 0.0f;
+            set => footerHeight = value;
+        }
 
         /// <summary>
         /// Standard spacing between elements.

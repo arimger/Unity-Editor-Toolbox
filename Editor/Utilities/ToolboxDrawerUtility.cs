@@ -18,17 +18,16 @@ namespace Toolbox.Editor
             Selection.selectionChanged += onEditorReload + ClearHandlers;
         }
 
+        #region Fields
+
+        private readonly static Dictionary<Type, ToolboxAreaDrawerBase>      areaDrawers       = new Dictionary<Type, ToolboxAreaDrawerBase>();
+        private readonly static Dictionary<Type, ToolboxPropertyDrawerBase>  propertyDrawers   = new Dictionary<Type, ToolboxPropertyDrawerBase>();
+        private readonly static Dictionary<Type, ToolboxPropertyDrawerBase>  collectionDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
+        private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers  = new Dictionary<Type, ToolboxConditionDrawerBase>();
 
         private static readonly Dictionary<string, ToolboxPropertyHandler> propertyHandlers = new Dictionary<string, ToolboxPropertyHandler>();
 
-
-        private readonly static Dictionary<Type, ToolboxAreaDrawerBase> areaDrawers = new Dictionary<Type, ToolboxAreaDrawerBase>();
-
-        private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> propertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
-
-        private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> collectionDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
-
-        private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers = new Dictionary<Type, ToolboxConditionDrawerBase>();
+        #endregion
 
 
         internal static void ClearHandlers()
@@ -41,7 +40,7 @@ namespace Toolbox.Editor
             throw new NotImplementedException();
         }
 
-        internal static void InitializeDrawers(ToolboxEditorSettings settings)
+        internal static void InitializeDrawers(IToolboxDrawerSettings settings)
         {
             //local method used in drawer creation
             void CreateDrawer<T>(Type drawerType, Type targetAttributeType, Dictionary<Type, T> drawersCollection) where T : ToolboxDrawer
@@ -115,12 +114,14 @@ namespace Toolbox.Editor
             }
         }
 
+
         internal static ToolboxAreaDrawerBase GetAreaDrawer<T>(T attribute) where T : ToolboxAreaAttribute
         {
             if (!areaDrawers.TryGetValue(attribute.GetType(), out ToolboxAreaDrawerBase drawer))
             {
                 throw new AttributeNotSupportedException(attribute);
             }
+
             return drawer;
         }
 
@@ -130,6 +131,7 @@ namespace Toolbox.Editor
             {
                 throw new AttributeNotSupportedException(attribute);
             }
+
             return drawer;
         }
 
@@ -139,6 +141,7 @@ namespace Toolbox.Editor
             {
                 throw new AttributeNotSupportedException(attribute);
             }
+
             return drawer;
         }
 
@@ -148,6 +151,7 @@ namespace Toolbox.Editor
             {
                 throw new AttributeNotSupportedException(attribute);
             }
+
             return drawer;
         }
 
@@ -164,7 +168,7 @@ namespace Toolbox.Editor
         }
 
 
-        internal static bool ToolboxDrawersAllowed => ToolboxSettingsUtility.ToolboxDrawersAllowed;
+        internal static bool ToolboxDrawersAllowed => ToolboxSettingsUtility.Settings.UseToolboxDrawers;
 
 
         internal static Action onEditorReload;
