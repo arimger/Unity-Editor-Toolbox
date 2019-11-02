@@ -955,7 +955,7 @@ namespace Toolbox.Editor.Internal
 
         public float FooterHeight
         {
-            get => HasFixedSize ? footerHeight : 0.0f;
+            get => HasFixedSize ? 0.0f : footerHeight;
             set => footerHeight = value;
         }
 
