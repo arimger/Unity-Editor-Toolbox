@@ -937,11 +937,6 @@ namespace Toolbox.Editor.Internal
             get; set;
         }
 
-        public bool UseDefaultStyle
-        {
-            get; set;
-        }
-
         public float HeaderHeight
         {
             get => HasHeader ? headerHeight : 0.0f;

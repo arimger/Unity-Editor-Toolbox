@@ -1,13 +1,13 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
     /// <summary>
     /// Base editor class.
     /// </summary>
-    [CanEditMultipleObjects, CustomEditor(typeof(Object), true, isFallback = true)]
+    [CustomEditor(typeof(Object), true, isFallback = true)]
+    [CanEditMultipleObjects]
     public class ToolboxEditor : UnityEditor.Editor
     {
         /// <summary>
@@ -50,9 +50,9 @@ namespace Toolbox.Editor
             {
                 expanded = false;
 
-                EditorGUILayout.LabelField(editorHeaderText, EditorDefaults.headerTextStyle);
+                EditorGUILayout.LabelField(editorHeaderText, EditorUtility.headerTextStyle);
 
-                EditorGUI.BeginDisabledGroup(property.type == EditorDefaults.defaultScriptPropertyType);
+                EditorGUI.BeginDisabledGroup(property.type == EditorUtility.defaultScriptPropertyType);
                 EditorGUILayout.PropertyField(property);
                 EditorGUI.EndDisabledGroup();
 
@@ -69,7 +69,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Additional utility class. Contains useful constant and custom styling fields.
         /// </summary>
-        internal static class EditorDefaults
+        internal static class EditorUtility
         {
             internal static GUIStyle headerTextStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
 

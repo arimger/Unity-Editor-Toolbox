@@ -65,6 +65,41 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent title, bool toggleOnLabelClick, GUIStyle foldoutStyle)
+        {
+            const float xPadding = 15.0f;
+            const float yPadding = 2.0f;
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                Style.boxStyle.Draw(rect, false, false, false, false);
+            }
+
+            rect.xMin += xPadding;
+            rect.yMin -= yPadding - (rect.height - foldoutStyle.fontSize) / 2;
+
+            return EditorGUI.Foldout(rect, foldout, title, toggleOnLabelClick, foldoutStyle);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static bool DrawLayoutHeaderFoldout(bool foldout, GUIContent title, bool toggleOnLabelClick, GUIStyle foldoutStyle)
+        {
+            const float headerHeight = 25.0f;
+
+            var rect = GUILayoutUtility.GetRect(1, headerHeight);
+            rect.xMin = 0;
+            rect.xMax = EditorGUIUtility.currentViewWidth;
+
+            return DrawHeaderFoldout(rect, foldout, title, toggleOnLabelClick, foldoutStyle);
+        }
+
+        /// <summary>
         /// Creates <see cref="ReorderableList"/> using standard background.
         /// </summary>
         /// <param name="property"></param>

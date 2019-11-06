@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,7 +7,7 @@ using Random = UnityEngine.Random;
 using UnityEditor;
 using UnityTools = UnityEditor.Tools;
 
-//TODO: brush color in options; environment tool;
+//TODO: environment tool;
 
 namespace Toolbox.Editor.Tools.Editors
 {
@@ -336,7 +335,7 @@ namespace Toolbox.Editor.Tools.Editors
 
         public static bool MassPlace(int count)
         {
-            return EditorUtility.DisplayDialog("Mass Place", "Are you sure about placing " + count + " objects?", "Yes", "Cancel");
+            return UnityEditor.EditorUtility.DisplayDialog("Mass Place", "Are you sure about placing " + count + " objects?", "Yes", "Cancel");
         }
 
         #endregion
