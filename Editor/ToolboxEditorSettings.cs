@@ -8,22 +8,24 @@ namespace Toolbox.Editor
 {
     using Toolbox.Editor.Drawers;
 
-    public interface IToolboxDrawerSettings
+    public interface IToolboxDrawersSettings
     {
         void AddAreaDrawerHandler(SerializedTypeReference drawerReference);
         void AddPropertyDrawerHandler(SerializedTypeReference drawerReference);
         void AddConditionDrawerHandler(SerializedTypeReference drawerReference);
         void AddCollectionDrawerHandler(SerializedTypeReference drawerReference);
+        void AddTargetTypeDrawerHandler(SerializedTypeReference drawerReference);
         void RemoveAreaDrawerHandler(SerializedTypeReference drawerReference);
         void RemovePropertyDrawerHandler(SerializedTypeReference drawerReference);
         void RemoveConditionDrawerHandler(SerializedTypeReference drawerReference);
         void RemoveCollectionDrawerHandler(SerializedTypeReference drawerReference);
+        void RemoveTargetTypeDrawerHandler(SerializedTypeReference drawerReference);
 
         Type GetAreaDrawerTypeAt(int index);
         Type GetPropertyDrawerTypeAt(int index);
         Type GetConditionDrawerTypeAt(int index);
         Type GetCollectionDrawerTypeAt(int index);
-
+        Type GetTargetTypeDrawerTypeAt(int index);
 
         bool UseToolboxDrawers { get; }
 
@@ -31,6 +33,7 @@ namespace Toolbox.Editor
         int PropertyDrawersCount { get; }
         int ConditionDrawersCount { get; }
         int CollectionDrawersCount { get; }
+        int TargetTypeDrawersCount { get; }
     }
 
     public interface IToolboxProjectSettings
@@ -51,7 +54,7 @@ namespace Toolbox.Editor
     }
 
     [CreateAssetMenu(menuName = "Editor Toolbox/Settings", order = 1)]
-    public class ToolboxEditorSettings : ScriptableObject, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxDrawerSettings
+    public class ToolboxEditorSettings : ScriptableObject, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxDrawersSettings
     {
         [SerializeField]
         private bool useToolboxHierarchy = true;
@@ -64,18 +67,22 @@ namespace Toolbox.Editor
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         private List<FolderData> customFolders;
 
-        [HideIf("useOrderedDrawers", true)]
+        [HideIf("useToolboxDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxAreaDrawer<>))]
         private List<SerializedTypeReference> areaDrawerHandlers;
-        [HideIf("useOrderedDrawers", true)]
+        [HideIf("useToolboxDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxPropertyDrawer<>))]
         private List<SerializedTypeReference> propertyDrawerHandlers;
-        [HideIf("useOrderedDrawers", true)]
+        [HideIf("useToolboxDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxConditionDrawer<>))]
         private List<SerializedTypeReference> conditionDrawerHandlers;
-        [HideIf("useOrderedDrawers", true)]
+        [HideIf("useToolboxDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxCollectionDrawer<>))]
         private List<SerializedTypeReference> collectionDrawerHandlers;
+
+        [HideIf("useToolboxDrawers", true)]
+        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxTargetTypeDrawer))]
+        private List<SerializedTypeReference> targetTypeDrawerHandlers;
 
 
         public void AddCustomFolder(FolderData path)
@@ -119,6 +126,12 @@ namespace Toolbox.Editor
             collectionDrawerHandlers.Add(drawerReference);
         }
 
+        public void AddTargetTypeDrawerHandler(SerializedTypeReference drawerReference)
+        {
+            if (targetTypeDrawerHandlers == null) targetTypeDrawerHandlers = new List<SerializedTypeReference>();
+            targetTypeDrawerHandlers.Add(drawerReference);
+        }
+
         public void RemoveAreaDrawerHandler(SerializedTypeReference drawerReference)
         {
             areaDrawerHandlers?.Remove(drawerReference);
@@ -139,6 +152,11 @@ namespace Toolbox.Editor
             collectionDrawerHandlers?.Remove(drawerReference);
         }
 
+        public void RemoveTargetTypeDrawerHandler(SerializedTypeReference drawerReference)
+        {
+            targetTypeDrawerHandlers?.Remove(drawerReference);
+        }
+
         public Type GetAreaDrawerTypeAt(int index)
         {
             return areaDrawerHandlers[index];
@@ -157,6 +175,11 @@ namespace Toolbox.Editor
         public Type GetCollectionDrawerTypeAt(int index)
         {
             return collectionDrawerHandlers[index].Type;
+        }
+
+        public Type GetTargetTypeDrawerTypeAt(int index)
+        {
+            return targetTypeDrawerHandlers[index].Type;
         }
 
 
@@ -189,5 +212,7 @@ namespace Toolbox.Editor
         public int ConditionDrawersCount => conditionDrawerHandlers != null ? conditionDrawerHandlers.Count : 0;
 
         public int CollectionDrawersCount => collectionDrawerHandlers != null ? collectionDrawerHandlers.Count : 0;
+
+        public int TargetTypeDrawersCount => targetTypeDrawerHandlers != null ? targetTypeDrawerHandlers.Count : 0;
     }
 }

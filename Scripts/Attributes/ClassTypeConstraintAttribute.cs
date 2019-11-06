@@ -59,17 +59,6 @@ namespace UnityEngine
                 types.AddRange(GetFilteredAssemblyTypes(assembly));
             }
 
-            //old way to filter all types from executing assemblies
-
-            //var assembly = Assembly.GetExecutingAssembly();
-
-            //types.AddRange(GetFilteredAssemblyTypes(assembly));
-
-            //foreach (var referencedAssembly in assembly.GetReferencedAssemblies())
-            //{
-            //    types.AddRange(GetFilteredAssemblyTypes(Assembly.Load(referencedAssembly)));
-            //}
-
             types.Sort((a, b) => a.FullName.CompareTo(b.FullName));
 
             return types;
@@ -83,14 +72,18 @@ namespace UnityEngine
         public List<Type> GetFilteredAssemblyTypes(Assembly assembly)
         {
             var types = new List<Type>();
+
             foreach (var type in assembly.GetTypes())
             {
-                //check type basics
                 if (!type.IsVisible || !type.IsClass)
+                {
                     continue;
-                //check filter constraints
+                }
+
                 if (!IsConstraintSatisfied(type))
+                {
                     continue;
+                }
 
                 types.Add(type);
             }
@@ -155,10 +148,13 @@ namespace UnityEngine
         /// <inheritdoc/>
         public override bool IsConstraintSatisfied(Type type)
         {
-            if (type == AssemblyType || !base.IsConstraintSatisfied(type)) return false;
+            if (type == AssemblyType || !base.IsConstraintSatisfied(type))
+            {
+                return false;
+            }
 
             return AssemblyType.IsGenericType
-                ? AssemblyType.IsSubclassOfRawGeneric(type)
+                ? AssemblyType.IsAssignableFromRawGeneric(type)
                 : AssemblyType.IsAssignableFrom(type);
         }
     }

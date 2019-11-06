@@ -36,18 +36,27 @@ namespace Toolbox.Editor
 
 
         /// <summary>
+        /// Type associated to <see cref="property"/>
+        /// </summary>
+        private readonly Type propertyType;
+        /// <summary>
         /// Field info associated to <see cref="property"/>.
         /// </summary>
         private readonly FieldInfo propertyFieldInfo;
+
 
         /// <summary>
         /// This flag determines whenever property has custom <see cref="PropertyDrawer"/>.
         /// </summary>
         private readonly bool hasNativePropertyDrawer;
         /// <summary>
-        /// This flag determines whenever property has custom <see cref="ToolboxPropertyDrawer{T}"/> or <see cref="ToolboxCollectionDrawer{T}"/>.
+        /// This flag determines whenever property has custom <see cref="ToolboxTargetTypeDrawer"/> for its type, <see cref="ToolboxPropertyDrawer{T}"/> or <see cref="ToolboxCollectionDrawer{T}"/>.
         /// </summary>
         private readonly bool hasToolboxPropertyDrawer;
+        /// <summary>
+        /// This flag determines whenever property has custom <see cref="ToolboxTargetTypeDrawer"/>.
+        /// </summary>
+        private readonly bool hasToolboxTargetTypeDrawer;
 
 
         public ToolboxPropertyHandler(SerializedProperty property)
@@ -55,7 +64,7 @@ namespace Toolbox.Editor
             this.property = property;
 
             //get field info associated with this property
-            propertyFieldInfo = property.GetFieldInfo(out Type propertyType);
+            propertyFieldInfo = property.GetFieldInfo(out propertyType);
 
             if (propertyFieldInfo == null)
             {
@@ -75,6 +84,8 @@ namespace Toolbox.Editor
                 }
             }
 
+            hasToolboxTargetTypeDrawer = ToolboxDrawerUtility.HasTargetTypeDrawer(propertyType);
+
             //specify drawer attribute 
             if (property.isArray)
             {
@@ -87,7 +98,7 @@ namespace Toolbox.Editor
                 propertySingleAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxPropertyAttribute>();
             }
 
-            hasToolboxPropertyDrawer = propertySingleAttribute != null || propertyArrayAttribute != null;
+            hasToolboxPropertyDrawer = hasToolboxTargetTypeDrawer || propertySingleAttribute != null || propertyArrayAttribute != null;
 
             //validate child property using associated field info
             if (propertyFieldInfo == null || propertyFieldInfo.Name != property.name)
@@ -137,10 +148,14 @@ namespace Toolbox.Editor
                 EditorGUI.BeginDisabledGroup(true);
             }
 
-            //get property drawer for single property
+            //get property drawer for single property or draw it in default way
             if (hasToolboxPropertyDrawer)
             {
-                if (property.isArray)
+                if (hasToolboxTargetTypeDrawer)
+                {
+                    ToolboxDrawerUtility.GetTargetTypeDrawer(propertyType).OnGui(property);
+                }
+                else if (property.isArray)
                 {
                     ToolboxDrawerUtility.GetCollectionDrawer(propertyArrayAttribute)?.OnGui(property, propertyArrayAttribute);
                 }

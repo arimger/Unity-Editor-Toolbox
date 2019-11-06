@@ -48,3 +48,4 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.HideIfAttributeDrawer, Toolbox-Editor
   collectionDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
+  targetTypeDrawerHandlers: []

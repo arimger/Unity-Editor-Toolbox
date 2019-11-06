@@ -24,6 +24,9 @@ namespace Toolbox.Editor
         private ReorderableList conditionDrawerHandlersList;
         private ReorderableList collectionDrawerHandlersList;
 
+        private ReorderableList targetTypeDrawerHandlersList;
+
+
         private void OnEnable()
         {
             hierarchySettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.hierarchySettingsEnabled", false);
@@ -39,7 +42,7 @@ namespace Toolbox.Editor
 
             areaDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("areaDrawerHandlers"));
             areaDrawerHandlersList.HasHeader = false;
-  
+
             propertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("propertyDrawerHandlers"));
             propertyDrawerHandlersList.HasHeader = false;
 
@@ -48,6 +51,9 @@ namespace Toolbox.Editor
   
             collectionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("collectionDrawerHandlers"));
             collectionDrawerHandlersList.HasHeader = false;
+
+            targetTypeDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("targetTypeDrawerHandlers"));
+            targetTypeDrawerHandlersList.HasHeader = false;
         }
 
         private void OnDisable()
@@ -60,7 +66,17 @@ namespace Toolbox.Editor
 
         private bool DrawListFoldout(ReorderableList list)
         {
-            return list.List.isExpanded = EditorGUILayout.Foldout(list.List.isExpanded, list.List.displayName, true, Style.propertyFoldoutStyle);
+            return DrawListFoldout(list, Style.drawerListFoldoutStyle);
+        }
+
+        private bool DrawListFoldout(ReorderableList list, GUIStyle style)
+        {
+            return DrawListFoldout(list, style, list.List.displayName);
+        }
+
+        private bool DrawListFoldout(ReorderableList list, GUIStyle style, string label)
+        {
+            return list.List.isExpanded = EditorGUILayout.Foldout(list.List.isExpanded, label, true, style);
         }
 
 
@@ -72,7 +88,7 @@ namespace Toolbox.Editor
 
             serializedObject.Update();
 
-            if (hierarchySettingsEnabled = EditorGUILayout.Foldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.settingsFoldoutStyle))
+            if (hierarchySettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.settingsFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
@@ -84,10 +100,10 @@ namespace Toolbox.Editor
             }
             else
             {
-                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
+                GUILayout.Space(-lineTickiness);
             }
 
-            if (projectSettingsEnabled = EditorGUILayout.Foldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.settingsFoldoutStyle))
+            if (projectSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.settingsFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
@@ -98,10 +114,10 @@ namespace Toolbox.Editor
                 ToolboxEditorGui.DrawLayoutLine(lineTickiness);
 
                 EditorGUI.BeginDisabledGroup(!useToolboxFoldersProperty.boolValue);
-                if (DrawListFoldout(customFoldersList))
+                if (DrawListFoldout(customFoldersList, Style.folderListFoldoutStyle))
                 {
                     customFoldersList.DoLayoutList();
-                }         
+                }
                 EditorGUI.EndDisabledGroup();
 
                 EditorGUILayout.Space();
@@ -109,10 +125,10 @@ namespace Toolbox.Editor
             }
             else
             {
-                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
+                GUILayout.Space(-lineTickiness);
             }
-        
-            if (drawersSettingsEnabled = EditorGUILayout.Foldout(drawersSettingsEnabled, Style.drawersSettingsContent, true, Style.settingsFoldoutStyle))
+
+            if (drawersSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(drawersSettingsEnabled, Style.drawersSettingsContent, true, Style.settingsFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
@@ -120,27 +136,39 @@ namespace Toolbox.Editor
                 EditorGUILayout.PropertyField(useToolboxDrawersProperty);
 
                 EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Attribute-based", Style.smallHeaderStyle);
+
                 ToolboxEditorGui.DrawLayoutLine(lineTickiness);
 
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
-                if (DrawListFoldout(areaDrawerHandlersList))
+                if (DrawListFoldout(areaDrawerHandlersList, Style.drawerListFoldoutStyle, "Decorator Drawers[Area]"))
                 {
                     areaDrawerHandlersList.DoLayoutList();
                 }
-                EditorGUILayout.Separator();
-                if (DrawListFoldout(propertyDrawerHandlersList))
+
+                if (DrawListFoldout(propertyDrawerHandlersList, Style.drawerListFoldoutStyle, "Property Drawers"))
                 {
                     propertyDrawerHandlersList.DoLayoutList();
                 }
-                EditorGUILayout.Separator();
-                if (DrawListFoldout(collectionDrawerHandlersList))
+
+                if (DrawListFoldout(collectionDrawerHandlersList, Style.drawerListFoldoutStyle, "Collection Drawers"))
                 {
                     collectionDrawerHandlersList.DoLayoutList();
                 }
-                EditorGUILayout.Separator();
-                if (DrawListFoldout(conditionDrawerHandlersList))
+
+                if (DrawListFoldout(conditionDrawerHandlersList, Style.drawerListFoldoutStyle, "Condition Drawers"))
                 {
                     conditionDrawerHandlersList.DoLayoutList();
+                }
+
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Type-based", Style.smallHeaderStyle);
+
+                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
+
+                if (DrawListFoldout(targetTypeDrawerHandlersList, Style.drawerListFoldoutStyle, "Target Type Drawers"))
+                {
+                    targetTypeDrawerHandlersList.DoLayoutList();
                 }
                 EditorGUI.EndDisabledGroup();
 
@@ -149,7 +177,7 @@ namespace Toolbox.Editor
             }
             else
             {
-                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
+                GUILayout.Space(-lineTickiness);
             }
 
             serializedObject.ApplyModifiedProperties();
@@ -166,8 +194,10 @@ namespace Toolbox.Editor
 
         internal static class Style
         {
+            internal static GUIStyle smallHeaderStyle;
             internal static GUIStyle settingsFoldoutStyle;
-            internal static GUIStyle propertyFoldoutStyle;
+            internal static GUIStyle drawerListFoldoutStyle;
+            internal static GUIStyle folderListFoldoutStyle;
 
             internal static GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings");
             internal static GUIContent projectSettingsContent = new GUIContent("Project Settings");
@@ -181,12 +211,21 @@ namespace Toolbox.Editor
 
             static Style()
             {
+                smallHeaderStyle = new GUIStyle(EditorStyles.label)
+                {
+                    fontStyle = FontStyle.Bold,
+                    fontSize = 10
+                };
                 settingsFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontStyle = FontStyle.Bold,
                     fontSize = 11
                 };
-                propertyFoldoutStyle = new GUIStyle(EditorStyles.foldout)
+                drawerListFoldoutStyle = new GUIStyle(EditorStyles.foldout)
+                {
+                    fontSize = 10
+                };
+                folderListFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontStyle = FontStyle.Bold,
                     fontSize = 10
