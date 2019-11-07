@@ -10,18 +10,18 @@ namespace Toolbox.Editor
 
     public interface IToolboxDrawersSettings
     {
-        void AddAreaDrawerHandler(SerializedTypeReference drawerReference);
+        void AddDecoratorDrawerHandler(SerializedTypeReference drawerReference);
         void AddPropertyDrawerHandler(SerializedTypeReference drawerReference);
         void AddConditionDrawerHandler(SerializedTypeReference drawerReference);
         void AddCollectionDrawerHandler(SerializedTypeReference drawerReference);
         void AddTargetTypeDrawerHandler(SerializedTypeReference drawerReference);
-        void RemoveAreaDrawerHandler(SerializedTypeReference drawerReference);
+        void RemoveDecoratorDrawerHandler(SerializedTypeReference drawerReference);
         void RemovePropertyDrawerHandler(SerializedTypeReference drawerReference);
         void RemoveConditionDrawerHandler(SerializedTypeReference drawerReference);
         void RemoveCollectionDrawerHandler(SerializedTypeReference drawerReference);
         void RemoveTargetTypeDrawerHandler(SerializedTypeReference drawerReference);
 
-        Type GetAreaDrawerTypeAt(int index);
+        Type GetDecoratorDrawerTypeAt(int index);
         Type GetPropertyDrawerTypeAt(int index);
         Type GetConditionDrawerTypeAt(int index);
         Type GetCollectionDrawerTypeAt(int index);
@@ -29,7 +29,7 @@ namespace Toolbox.Editor
 
         bool UseToolboxDrawers { get; }
 
-        int AreaDrawersCount { get; }
+        int DecoratorDrawersCount { get; }
         int PropertyDrawersCount { get; }
         int ConditionDrawersCount { get; }
         int CollectionDrawersCount { get; }
@@ -102,7 +102,7 @@ namespace Toolbox.Editor
         }
 
 
-        public void AddAreaDrawerHandler(SerializedTypeReference drawerReference)
+        public void AddDecoratorDrawerHandler(SerializedTypeReference drawerReference)
         {
             if (areaDrawerHandlers == null) areaDrawerHandlers = new List<SerializedTypeReference>();
             areaDrawerHandlers.Add(drawerReference);
@@ -132,7 +132,7 @@ namespace Toolbox.Editor
             targetTypeDrawerHandlers.Add(drawerReference);
         }
 
-        public void RemoveAreaDrawerHandler(SerializedTypeReference drawerReference)
+        public void RemoveDecoratorDrawerHandler(SerializedTypeReference drawerReference)
         {
             areaDrawerHandlers?.Remove(drawerReference);
         }
@@ -157,7 +157,7 @@ namespace Toolbox.Editor
             targetTypeDrawerHandlers?.Remove(drawerReference);
         }
 
-        public Type GetAreaDrawerTypeAt(int index)
+        public Type GetDecoratorDrawerTypeAt(int index)
         {
             return areaDrawerHandlers[index];
         }
@@ -205,7 +205,7 @@ namespace Toolbox.Editor
         public int CustomFoldersCount => customFolders != null ? customFolders.Count : 0;
 
 
-        public int AreaDrawersCount => areaDrawerHandlers != null ? areaDrawerHandlers.Count : 0;
+        public int DecoratorDrawersCount => areaDrawerHandlers != null ? areaDrawerHandlers.Count : 0;
 
         public int PropertyDrawersCount => propertyDrawerHandlers != null ? propertyDrawerHandlers.Count : 0;
 

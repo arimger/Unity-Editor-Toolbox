@@ -126,7 +126,7 @@ namespace Toolbox.Editor
             {
                 for (var i = 0; i < areaAttributes.Length; i++)
                 {
-                    ToolboxDrawerUtility.GetAreaDrawer(areaAttributes[i])?.OnGuiBegin(areaAttributes[i]);
+                    ToolboxDrawerUtility.GetDecoratorDrawer(areaAttributes[i])?.OnGuiBegin(areaAttributes[i]);
                 }
             }
 
@@ -181,7 +181,7 @@ namespace Toolbox.Editor
             {
                 for (var i = areaAttributes.Length - 1; i >= 0; i--)
                 {
-                    ToolboxDrawerUtility.GetAreaDrawer(areaAttributes[i])?.OnGuiEnd(areaAttributes[i]);
+                    ToolboxDrawerUtility.GetDecoratorDrawer(areaAttributes[i])?.OnGuiEnd(areaAttributes[i]);
                 }
             }
         }
