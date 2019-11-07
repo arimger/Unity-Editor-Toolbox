@@ -28,42 +28,56 @@ namespace Toolbox.Editor
                 return;
             }
 
+            Texture icon;
             //adjust rect for icon depending on current view and handled texture
             if (rect.width > rect.height)
             {
-                if (data.SmallIcon == null) return;
+                icon = data.SmallIcon;
 
                 //determinate exact folder icon rect
                 rect = new Rect(rect.xMin, rect.y, Style.folderIconWidthSmall, Style.folderIconHeightSmall);
-
-                rect.x += rect.width * Style.xToWidthRatioSmall;
+                
+                rect.x += Style.padding;
                 rect.y += rect.height * Style.yToHeightRatioSmall;
                 rect.width = Style.iconWidthSmall;
                 rect.height = Style.iconHeightSmall;
-
-                GUI.DrawTexture(rect, data.SmallIcon);
             }
             else
             {
-                if (data.Icon == null) return;
+                icon = data.Icon;
+
+                var offset = Mathf.Max(rect.height - Style.labelHeight - Style.folderIconHeight, 0);
+                var iconHeight       = rect.height - Style.labelHeight - offset;
 
                 //determinate exact folder icon rect
-                rect = new Rect(rect.x, rect.yMin, Style.folderIconWidth, Style.folderIconHeight);
-       
+                rect = new Rect(rect.x, rect.yMin + offset / 2 + Style.spacing, rect.width, iconHeight);
+
+                //calculate multipliers
+                var widthRatio = iconHeight / Style.folderIconWidth;
+                var heightRatio = iconHeight / Style.folderIconHeight;
+
+                //set final rect
                 rect.x += rect.width * Style.xToWidthRatio;
                 rect.y += rect.height * Style.yToHeightRatio;
-                rect.width = Style.iconWidth;
-                rect.height = Style.iconHeight;
-
-                GUI.DrawTexture(rect, data.Icon);
+                rect.width = Style.iconWidth * widthRatio;
+                rect.height = Style.iconHeight * heightRatio;         
             }
+
+            if (icon == null) return;
+
+            GUI.DrawTexture(rect, icon, ScaleMode.ScaleToFit, true);
         }
 
 
         internal static class Style
         {
+            internal const float spacing = 2.0f;
+            internal const float padding = 5.5f;
+            internal const float labelHeight = 16.0f;
+
             //x ratio will determinate OX position of icon
-            internal const float xToWidthRatio = 0.43f;
+            internal const float xToWidthRatio = 0.45f;
+            [System.Obsolete("Use padding instead.")]
             internal const float xToWidthRatioSmall = 0.25f;
 
             //y ratio will determinate OY position of icon

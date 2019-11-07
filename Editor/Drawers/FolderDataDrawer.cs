@@ -36,8 +36,8 @@ namespace Toolbox.Editor.Drawers
                 bigFolderIconRect.y + Style.smallIconHeight / 2 - Style.spacing, Style.smallIconWidth, Style.smallIconHeight);
 
             //draw folder icons using desired content
-            GUI.DrawTexture(bigFolderIconRect, Style.folderTexture);
-            GUI.DrawTexture(smallFolderIconRect, Style.folderTexture);
+            GUI.DrawTexture(bigFolderIconRect, Style.folderTexture, ScaleMode.ScaleToFit);
+            GUI.DrawTexture(smallFolderIconRect, Style.folderTexture, ScaleMode.ScaleToFit);
 
             //handle big icon texture preview if exist
             if (bigIconProperty.objectReferenceValue)
@@ -51,7 +51,7 @@ namespace Toolbox.Editor.Drawers
                 bigFolderIconRect.height = ToolboxEditorProject.Style.iconHeight;
 
                 //draw big preview icon
-                GUI.DrawTexture(bigFolderIconRect, previewTexture);
+                GUI.DrawTexture(bigFolderIconRect, previewTexture, ScaleMode.ScaleToFit);
             }
 
             //handle small icon texture preview if exist
@@ -60,13 +60,13 @@ namespace Toolbox.Editor.Drawers
                 var previewTexture = smallIconProperty.objectReferenceValue as Texture;
 
                 //adjust small icon rect using predefined style properties
-                smallFolderIconRect.x += smallFolderIconRect.width * ToolboxEditorProject.Style.xToWidthRatioSmall;
+                smallFolderIconRect.x += ToolboxEditorProject.Style.padding;
                 smallFolderIconRect.y += smallFolderIconRect.height * ToolboxEditorProject.Style.yToHeightRatioSmall;
                 smallFolderIconRect.width = ToolboxEditorProject.Style.iconWidthSmall;
                 smallFolderIconRect.height = ToolboxEditorProject.Style.iconHeightSmall;
 
                 //draw small preview icon
-                GUI.DrawTexture(smallFolderIconRect, previewTexture);
+                GUI.DrawTexture(smallFolderIconRect, previewTexture, ScaleMode.ScaleToFit);
             }
         }
 

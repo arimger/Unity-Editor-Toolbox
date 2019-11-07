@@ -17,17 +17,17 @@ MonoBehaviour:
   useToolboxDrawers: 1
   customFolders:
   - path: Editor Toolbox
-    icon: {fileID: 2800000, guid: 2eea0569e5355f54f85f255b66258c99, type: 3}
-    smallIcon: {fileID: 2800000, guid: d60665959d07e2f44b8f902e335fee86, type: 3}
+    icon: {fileID: 2800000, guid: ee4ce20abd2621b4687047a8e4e03f96, type: 3}
+    smallIcon: {fileID: 2800000, guid: ae0310c2e6a193f4f935eef57508cd40, type: 3}
   - path: Editor Toolbox/Scripts
-    icon: {fileID: 2800000, guid: 3e1a8a037c2edc54993a6a7d4e9f2a8d, type: 3}
-    smallIcon: {fileID: 2800000, guid: a07249c8298c99341a970508d9e500e6, type: 3}
+    icon: {fileID: 2800000, guid: 6315862a85e61a44e947fbd4b1b23e11, type: 3}
+    smallIcon: {fileID: 2800000, guid: e99d63b63394eba4aaf10385704d0ef3, type: 3}
   - path: Editor Toolbox/Editor
-    icon: {fileID: 2800000, guid: 3847f86d30bbd424eb6f48f73c46efc7, type: 3}
-    smallIcon: {fileID: 2800000, guid: 44900d2bc81f34e45b61dcc8428eae29, type: 3}
+    icon: {fileID: 2800000, guid: e22085615aa223c4e929f704dadf7736, type: 3}
+    smallIcon: {fileID: 2800000, guid: fd9a2277d1ea8144b9c8a4085b82092f, type: 3}
   - path: Examples/Scripts
-    icon: {fileID: 2800000, guid: 3e1a8a037c2edc54993a6a7d4e9f2a8d, type: 3}
-    smallIcon: {fileID: 2800000, guid: a07249c8298c99341a970508d9e500e6, type: 3}
+    icon: {fileID: 2800000, guid: 6315862a85e61a44e947fbd4b1b23e11, type: 3}
+    smallIcon: {fileID: 2800000, guid: e99d63b63394eba4aaf10385704d0ef3, type: 3}
   areaDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.BeginGroupAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox-Editor

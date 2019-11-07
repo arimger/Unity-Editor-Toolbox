@@ -22,7 +22,7 @@ namespace Toolbox.Editor
 
         private readonly static Dictionary<Type, ToolboxTargetTypeDrawer> targetTypeDrawers = new Dictionary<Type, ToolboxTargetTypeDrawer>();
 
-        private readonly static Dictionary<Type, ToolboxAreaDrawerBase>      areaDrawers       = new Dictionary<Type, ToolboxAreaDrawerBase>();
+        private readonly static Dictionary<Type, ToolboxAreaDrawerBase>      decoratorDrawers  = new Dictionary<Type, ToolboxAreaDrawerBase>();
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase>  propertyDrawers   = new Dictionary<Type, ToolboxPropertyDrawerBase>();
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase>  collectionDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
         private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers  = new Dictionary<Type, ToolboxConditionDrawerBase>();
@@ -32,21 +32,8 @@ namespace Toolbox.Editor
         #endregion
 
 
-        internal static void ClearHandlers()
+        private static void CreateAttributeDrawers(IToolboxDrawersSettings settings)
         {
-            propertyHandlers.Clear();
-        }
-
-        internal static void InitializeDrawers()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal static void InitializeDrawers(IToolboxDrawersSettings settings)
-        {
-            #region Attribute-based drawers 
-
-            //local method used in drawer creation
             void AddAttributeDrawer<T>(Type drawerType, Type targetAttributeType, Dictionary<Type, T> drawersCollection) where T : ToolboxDrawer
             {
                 if (drawerType == null) return;
@@ -62,7 +49,6 @@ namespace Toolbox.Editor
                 drawersCollection.Add(targetAttributeType, drawerInstance);
             }
 
-            //local method used in search for proper target attributes
             Type GetAttributeTargetType(Type drawerType, Type drawerBaseType)
             {
                 //validate drawer type reference
@@ -86,13 +72,12 @@ namespace Toolbox.Editor
                 //use base definition type to get target attribute type
                 return drawerType.IsGenericType ? drawerType.GetGenericArguments().FirstOrDefault() : null;
             }
-          
-            //iterate over all assigned and possible drawers related to attributes, create them and store
-            for (var i = 0; i < settings.AreaDrawersCount; i++)
+
+            for (var i = 0; i < settings.DecoratorDrawersCount; i++)
             {
-                var drawerType = settings.GetAreaDrawerTypeAt(i);
-                var targetType = GetAttributeTargetType(settings.GetAreaDrawerTypeAt(i), typeof(ToolboxAreaDrawer<>));
-                AddAttributeDrawer(drawerType, targetType, areaDrawers);
+                var drawerType = settings.GetDecoratorDrawerTypeAt(i);
+                var targetType = GetAttributeTargetType(settings.GetDecoratorDrawerTypeAt(i), typeof(ToolboxAreaDrawer<>));
+                AddAttributeDrawer(drawerType, targetType, decoratorDrawers);
             }
 
             for (var i = 0; i < settings.PropertyDrawersCount; i++)
@@ -115,22 +100,39 @@ namespace Toolbox.Editor
                 var targetType = GetAttributeTargetType(settings.GetConditionDrawerTypeAt(i), typeof(ToolboxConditionDrawer<>));
                 AddAttributeDrawer(drawerType, targetType, conditionDrawers);
             }
+        }
 
-            #endregion
-
-            //iterate over all assigned and possible drawers related to exact type
+        private static void CreateTargetTypeDrawers(IToolboxDrawersSettings settings)
+        {
             for (var i = 0; i < settings.TargetTypeDrawersCount; i++)
             {
                 var drawerType = settings.GetTargetTypeDrawerTypeAt(i);
                 if (drawerType == null) continue;
                 var drawerInstance = Activator.CreateInstance(drawerType) as ToolboxTargetTypeDrawer;
                 var targetTypes = drawerInstance.GetTargetType().GetAllChildClasses();
-     
+
                 foreach (var type in targetTypes)
                 {
                     targetTypeDrawers[type] = drawerInstance;
                 }
             }
+        }
+
+
+        internal static void ClearHandlers()
+        {
+            propertyHandlers.Clear();
+        }
+
+        internal static void InitializeDrawers()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void InitializeDrawers(IToolboxDrawersSettings settings)
+        {
+            CreateAttributeDrawers(settings);
+            CreateTargetTypeDrawers(settings);
         }
 
 
@@ -150,9 +152,9 @@ namespace Toolbox.Editor
             return drawer;
         }
 
-        internal static ToolboxAreaDrawerBase GetAreaDrawer<T>(T attribute) where T : ToolboxAreaAttribute
+        internal static ToolboxAreaDrawerBase    GetDecoratorDrawer<T>(T attribute) where T : ToolboxAreaAttribute
         {
-            if (!areaDrawers.TryGetValue(attribute.GetType(), out ToolboxAreaDrawerBase drawer))
+            if (!decoratorDrawers.TryGetValue(attribute.GetType(), out ToolboxAreaDrawerBase drawer))
             {
                 throw new AttributeNotSupportedException(attribute);
             }
