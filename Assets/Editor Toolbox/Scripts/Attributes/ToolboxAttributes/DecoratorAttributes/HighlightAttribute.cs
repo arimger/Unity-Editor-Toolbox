@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-    public class HighlightAttribute : ToolboxAreaAttribute
+    public class HighlightAttribute : ToolboxDecoratorAttribute
     {
         public HighlightAttribute(float r, float g, float b)
         {

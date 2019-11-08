@@ -22,7 +22,7 @@ namespace Toolbox.Editor
 
         private readonly static Dictionary<Type, ToolboxTargetTypeDrawer> targetTypeDrawers = new Dictionary<Type, ToolboxTargetTypeDrawer>();
 
-        private readonly static Dictionary<Type, ToolboxAreaDrawerBase>      decoratorDrawers  = new Dictionary<Type, ToolboxAreaDrawerBase>();
+        private readonly static Dictionary<Type, ToolboxDecoratorDrawerBase> decoratorDrawers  = new Dictionary<Type, ToolboxDecoratorDrawerBase>();
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase>  propertyDrawers   = new Dictionary<Type, ToolboxPropertyDrawerBase>();
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase>  collectionDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
         private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers  = new Dictionary<Type, ToolboxConditionDrawerBase>();
@@ -76,7 +76,7 @@ namespace Toolbox.Editor
             for (var i = 0; i < settings.DecoratorDrawersCount; i++)
             {
                 var drawerType = settings.GetDecoratorDrawerTypeAt(i);
-                var targetType = GetAttributeTargetType(settings.GetDecoratorDrawerTypeAt(i), typeof(ToolboxAreaDrawer<>));
+                var targetType = GetAttributeTargetType(settings.GetDecoratorDrawerTypeAt(i), typeof(ToolboxDecoratorDrawer<>));
                 AddAttributeDrawer(drawerType, targetType, decoratorDrawers);
             }
 
@@ -152,9 +152,9 @@ namespace Toolbox.Editor
             return drawer;
         }
 
-        internal static ToolboxAreaDrawerBase    GetDecoratorDrawer<T>(T attribute) where T : ToolboxAreaAttribute
+        internal static ToolboxDecoratorDrawerBase GetDecoratorDrawer<T>(T attribute) where T : ToolboxDecoratorAttribute
         {
-            if (!decoratorDrawers.TryGetValue(attribute.GetType(), out ToolboxAreaDrawerBase drawer))
+            if (!decoratorDrawers.TryGetValue(attribute.GetType(), out ToolboxDecoratorDrawerBase drawer))
             {
                 throw new AttributeNotSupportedException(attribute);
             }

@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
-    public class HeaderAreaAttribute : ToolboxAreaAttribute
+    public class HeaderAreaAttribute : ToolboxDecoratorAttribute
     {
         public HeaderAreaAttribute(string label, HeaderStyle style = HeaderStyle.Unity)
         {

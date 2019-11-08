@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class HeaderAreaAttributeDrawer : ToolboxAreaDrawer<HeaderAreaAttribute>
+    public class HeaderAreaAttributeDrawer : ToolboxDecoratorDrawer<HeaderAreaAttribute>
     {
         public override void OnGuiBegin(HeaderAreaAttribute attribute)
         {

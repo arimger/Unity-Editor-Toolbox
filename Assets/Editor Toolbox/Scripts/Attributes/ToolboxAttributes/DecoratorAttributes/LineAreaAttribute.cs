@@ -2,8 +2,8 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-    public class LineAreaAttribute : ToolboxAreaAttribute
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
+    public class LineAreaAttribute : ToolboxDecoratorAttribute
     {
         public LineAreaAttribute(float thickness = 0.75f, float padding = 6.0f)
         {

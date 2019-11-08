@@ -28,7 +28,7 @@ MonoBehaviour:
   - path: Examples/Scripts
     icon: {fileID: 2800000, guid: 6315862a85e61a44e947fbd4b1b23e11, type: 3}
     smallIcon: {fileID: 2800000, guid: e99d63b63394eba4aaf10385704d0ef3, type: 3}
-  areaDrawerHandlers:
+  decoratorDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.BeginGroupAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.BeginIndentAttributeDrawer, Toolbox-Editor
@@ -36,16 +36,16 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.EndHorizontalAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.EndIndentAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HeaderAreaAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.HighlightAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.LineAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.HighlightAttributeDrawer, Toolbox-Editor
   propertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
+  collectionDrawerHandlers:
+  - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
   conditionDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.DisableAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.DisableIfAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HideAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HideIfAttributeDrawer, Toolbox-Editor
-  collectionDrawerHandlers:
-  - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
   targetTypeDrawerHandlers: []

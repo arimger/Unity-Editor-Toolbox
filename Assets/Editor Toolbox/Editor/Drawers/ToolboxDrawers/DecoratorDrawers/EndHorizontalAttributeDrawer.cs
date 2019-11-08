@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class EndHorizontalAttributeDrawer : ToolboxAreaDrawer<EndHorizontalAttribute>
+    public class EndHorizontalAttributeDrawer : ToolboxDecoratorDrawer<EndHorizontalAttribute>
     {
         public override void OnGuiEnd(EndHorizontalAttribute attribute)
         {

@@ -2,7 +2,7 @@
 
 namespace Toolbox.Editor.Drawers
 {
-    public abstract  class ToolboxAreaDrawerBase : ToolboxDrawer
+    public abstract  class ToolboxDecoratorDrawerBase : ToolboxDrawer
     {
         public virtual void OnGuiBegin()
         { }

@@ -27,6 +27,27 @@ namespace Toolbox.Editor
         private static MethodInfo getFieldInfoForPropertyMethod;
 
 
+        private static bool IsBuiltInNumericProperty(SerializedProperty property)
+        {
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.Bounds:
+                case SerializedPropertyType.BoundsInt:
+                case SerializedPropertyType.Rect:
+                case SerializedPropertyType.RectInt:
+                case SerializedPropertyType.Quaternion:
+                case SerializedPropertyType.Vector2:
+                case SerializedPropertyType.Vector2Int:
+                case SerializedPropertyType.Vector3:
+                case SerializedPropertyType.Vector3Int:
+                case SerializedPropertyType.Vector4:
+                    return true;
+            }
+
+            return false;
+        }
+
+
         public static T GetAttribute<T>(this SerializedProperty property) where T : Attribute
         {
             return ReflectionUtility.GetField(GetTargetObject(property), property.name).GetCustomAttribute<T>(true);
@@ -110,7 +131,11 @@ namespace Toolbox.Editor
 
         internal static bool HasCustomDrawer(this SerializedProperty property, Type drawerType)
         {
-            //NOTE: property reference will be helpuf in future releases
+            if (IsBuiltInNumericProperty(property))
+            {
+                return true;
+            }
+
             var parameters = new object[] { drawerType };
             var result = getDrawerTypeForTypeMethod.Invoke(null, parameters) as Type;
             return result != null && typeof(PropertyDrawer).IsAssignableFrom(result);

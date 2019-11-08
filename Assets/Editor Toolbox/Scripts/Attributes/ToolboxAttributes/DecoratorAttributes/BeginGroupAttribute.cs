@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
-    public class BeginGroupAttribute : ToolboxAreaAttribute
+    public class BeginGroupAttribute : ToolboxDecoratorAttribute
     {
         public BeginGroupAttribute(string label = null)
         {

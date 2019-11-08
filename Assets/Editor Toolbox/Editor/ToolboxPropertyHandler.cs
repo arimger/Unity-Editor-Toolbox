@@ -17,9 +17,9 @@ namespace Toolbox.Editor
         private readonly SerializedProperty property;
 
         /// <summary>
-        /// All associated <see cref="ToolboxAreaAttribute"/>s.
+        /// All associated <see cref="ToolboxDecoratorAttribute"/>s.
         /// </summary>
-        private readonly ToolboxAreaAttribute[] areaAttributes;
+        private readonly ToolboxDecoratorAttribute[] decoratorAttributes;
 
         /// <summary>
         /// First cached <see cref="ToolboxPropertyAttribute"/>.
@@ -110,9 +110,9 @@ namespace Toolbox.Editor
             conditionAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxConditionAttribute>();
 
             //get all available area attributes
-            areaAttributes = propertyFieldInfo.GetCustomAttributes<ToolboxAreaAttribute>().ToArray();
+            decoratorAttributes = propertyFieldInfo.GetCustomAttributes<ToolboxDecoratorAttribute>().ToArray();
             //keep area attributes in proper order
-            Array.Sort(areaAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
+            Array.Sort(decoratorAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
         }
 
 
@@ -122,11 +122,11 @@ namespace Toolbox.Editor
         public void OnGuiLayout()
         {
             //begin all needed area drawers in proper order
-            if (areaAttributes != null)
+            if (decoratorAttributes != null)
             {
-                for (var i = 0; i < areaAttributes.Length; i++)
+                for (var i = 0; i < decoratorAttributes.Length; i++)
                 {
-                    ToolboxDrawerUtility.GetDecoratorDrawer(areaAttributes[i])?.OnGuiBegin(areaAttributes[i]);
+                    ToolboxDrawerUtility.GetDecoratorDrawer(decoratorAttributes[i])?.OnGuiBegin(decoratorAttributes[i]);
                 }
             }
 
@@ -177,11 +177,11 @@ namespace Toolbox.Editor
 
             Finish:
             //end all needed area drawers in proper order
-            if (areaAttributes != null)
+            if (decoratorAttributes != null)
             {
-                for (var i = areaAttributes.Length - 1; i >= 0; i--)
+                for (var i = decoratorAttributes.Length - 1; i >= 0; i--)
                 {
-                    ToolboxDrawerUtility.GetDecoratorDrawer(areaAttributes[i])?.OnGuiEnd(areaAttributes[i]);
+                    ToolboxDrawerUtility.GetDecoratorDrawer(decoratorAttributes[i])?.OnGuiEnd(decoratorAttributes[i]);
                 }
             }
         }
