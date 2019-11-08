@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class HighlightAttributeDrawer : ToolboxAreaDrawer<HighlightAttribute>
+    public class HighlightAttributeDrawer : ToolboxDecoratorDrawer<HighlightAttribute>
     {
         public override void OnGuiBegin(HighlightAttribute attribute)
         {

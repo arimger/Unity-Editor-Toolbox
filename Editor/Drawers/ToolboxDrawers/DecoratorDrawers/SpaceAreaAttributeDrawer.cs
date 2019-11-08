@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class SpaceAreaAttributeDrawer : ToolboxAreaDrawer<SpaceAreaAttribute>
+    public class SpaceAreaAttributeDrawer : ToolboxDecoratorDrawer<SpaceAreaAttribute>
     {
         public override void OnGuiBegin(SpaceAreaAttribute attribute)
         {

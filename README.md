@@ -182,8 +182,7 @@ public double var1;
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
 
 Drawers based on classes inheriting from **ToolboxDrawer** and associated **ToolboxAttribute**. A quite powerful custom system that allows you to create really flexible drawers. You can use them without limitations(they are working with sub-classes and as array children). Every ToolboxDrawer is layout-based.
-For proper work they need at least one settings file located in your project.  
-Predefined one - `Editor Toolbox/EditorSettings.asset`.
+For proper work they need at least one settings file located in your project. Predefined one - `Editor Toolbox/EditorSettings.asset`.
 
 &nbsp;
 
@@ -194,10 +193,11 @@ Predefined one - `Editor Toolbox/EditorSettings.asset`.
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc5.png)
 
-#### AreaAttributes
+#### ToolboxDecoratorAttributes
 
 Display/create something before and after property in desired order(using Order property).   
-In fact **ToolboxAreaDrawers** are like extended version of **DecoratorDrawers**. 
+In fact **ToolboxDecoratorDrawers** are like extended version of built-in **DecoratorDrawers**. 
+Unfortunately, standard decorators won't always work with ToolboxDrawers so try to use this replacement instead.
 
 ```csharp
 [BeginGroup("Group1")]
@@ -217,6 +217,14 @@ public int var4;
 ```
 ```csharp
 [SpaceArea(spaceBefore = 10.0f, spaceAfter = 5.0f, Order = 1)]
+public int var1;
+```
+```csharp
+[HeaderArea("My Custom Header")]
+public int var1;
+```
+```csharp
+[Highlight(0, 1, 0)]
 public int var1;
 ```
 

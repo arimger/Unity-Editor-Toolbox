@@ -9,9 +9,9 @@ namespace Toolbox.Editor
     [CanEditMultipleObjects]
     public class ToolboxEditorSettingsEditor : ToolboxEditor
     {
-        private bool hierarchySettingsEnabled;
-        private bool projectSettingsEnabled;
         private bool drawersSettingsEnabled;
+        private bool projectSettingsEnabled;
+        private bool hierarchySettingsEnabled;
 
         private SerializedProperty useToolboxDrawersProperty;
         private SerializedProperty useToolboxFoldersProperty;
@@ -19,19 +19,19 @@ namespace Toolbox.Editor
 
         private ReorderableList customFoldersList;
 
-        private ReorderableList areaDrawerHandlersList;
+        private ReorderableList decoratorDrawerHandlersList;
         private ReorderableList propertyDrawerHandlersList;
-        private ReorderableList conditionDrawerHandlersList;
         private ReorderableList collectionDrawerHandlersList;
+        private ReorderableList conditionDrawerHandlersList;
 
         private ReorderableList targetTypeDrawerHandlersList;
 
 
         private void OnEnable()
         {
-            hierarchySettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.hierarchySettingsEnabled", false);
-            projectSettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.projectSettingsEnabled", false);
             drawersSettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.drawersSettingsEnabled", false);
+            projectSettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.projectSettingsEnabled", false);
+            hierarchySettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.hierarchySettingsEnabled", false);
 
             useToolboxDrawersProperty = serializedObject.FindProperty("useToolboxDrawers");
             useToolboxFoldersProperty = serializedObject.FindProperty("useToolboxFolders");
@@ -40,8 +40,8 @@ namespace Toolbox.Editor
             customFoldersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("customFolders"));
             customFoldersList.HasHeader = false;
 
-            areaDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("areaDrawerHandlers"));
-            areaDrawerHandlersList.HasHeader = false;
+            decoratorDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("decoratorDrawerHandlers"));
+            decoratorDrawerHandlersList.HasHeader = false;
 
             propertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("propertyDrawerHandlers"));
             propertyDrawerHandlersList.HasHeader = false;
@@ -58,9 +58,9 @@ namespace Toolbox.Editor
 
         private void OnDisable()
         {
-            EditorPrefs.SetBool("ToolboxEditorSettings.hierarchySettingsEnabled", hierarchySettingsEnabled);
-            EditorPrefs.SetBool("ToolboxEditorSettings.projectSettingsEnabled", projectSettingsEnabled);
             EditorPrefs.SetBool("ToolboxEditorSettings.drawersSettingsEnabled", drawersSettingsEnabled);
+            EditorPrefs.SetBool("ToolboxEditorSettings.projectSettingsEnabled", projectSettingsEnabled);
+            EditorPrefs.SetBool("ToolboxEditorSettings.hierarchySettingsEnabled", hierarchySettingsEnabled);
         }
 
 
@@ -141,9 +141,9 @@ namespace Toolbox.Editor
                 ToolboxEditorGui.DrawLayoutLine(lineTickiness);
 
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
-                if (DrawListFoldout(areaDrawerHandlersList, Style.drawerListFoldoutStyle, "Decorator Drawers[Area]"))
+                if (DrawListFoldout(decoratorDrawerHandlersList, Style.drawerListFoldoutStyle, "Decorator Drawers"))
                 {
-                    areaDrawerHandlersList.DoLayoutList();
+                    decoratorDrawerHandlersList.DoLayoutList();
                 }
 
                 if (DrawListFoldout(propertyDrawerHandlersList, Style.drawerListFoldoutStyle, "Property Drawers"))

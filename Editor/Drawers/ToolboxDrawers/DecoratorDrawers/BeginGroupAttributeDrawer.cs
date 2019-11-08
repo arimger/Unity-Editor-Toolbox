@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class BeginGroupAttributeDrawer : ToolboxAreaDrawer<BeginGroupAttribute>
+    public class BeginGroupAttributeDrawer : ToolboxDecoratorDrawer<BeginGroupAttribute>
     {
         public override void OnGuiBegin(BeginGroupAttribute attribute)
         {

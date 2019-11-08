@@ -3,6 +3,6 @@
 namespace UnityEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-    public class EndHorizontalAttribute : ToolboxAreaAttribute
+    public class EndHorizontalAttribute : ToolboxDecoratorAttribute
     { }
 }

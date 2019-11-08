@@ -6,7 +6,7 @@ namespace UnityEngine
     /// Begins horizontal group in inspector. Use <seealso cref="EndHorizontalAttribute"/> on serialized property to end this group.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-    public class BeginHorizontalAttribute : ToolboxAreaAttribute
+    public class BeginHorizontalAttribute : ToolboxDecoratorAttribute
     {
         public BeginHorizontalAttribute(float labelWidth = 35.0f)
         {

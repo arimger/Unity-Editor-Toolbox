@@ -2,7 +2,7 @@
 
 namespace Toolbox.Editor.Drawers
 {
-    public abstract class ToolboxAreaDrawer<T> : ToolboxAreaDrawerBase where T : ToolboxAreaAttribute
+    public abstract class ToolboxDecoratorDrawer<T> : ToolboxDecoratorDrawerBase where T : ToolboxDecoratorAttribute
     {        
         public override sealed void OnGuiBegin()
         {
