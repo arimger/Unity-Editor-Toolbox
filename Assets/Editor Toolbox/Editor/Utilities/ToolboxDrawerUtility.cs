@@ -37,7 +37,6 @@ namespace Toolbox.Editor
             void AddAttributeDrawer<T>(Type drawerType, Type targetAttributeType, Dictionary<Type, T> drawersCollection) where T : ToolboxDrawer
             {
                 if (drawerType == null) return;
-                //create desired drawer instance
                 var drawerInstance = Activator.CreateInstance(drawerType) as T;
 
                 if (drawersCollection.ContainsKey(targetAttributeType))
@@ -51,14 +50,12 @@ namespace Toolbox.Editor
 
             Type GetAttributeTargetType(Type drawerType, Type drawerBaseType)
             {
-                //validate drawer type reference
                 if (drawerType == null)
                 {
                     Debug.LogWarning("One of assigned drawer types in ToolboxEditorSettings is empty.");
                     return null;
                 }
 
-                //iterate over all base type and find final generic type definition
                 while (!drawerType.IsGenericType || drawerType.GetGenericTypeDefinition() != drawerBaseType)
                 {
                     if (drawerType.BaseType == null)
@@ -69,7 +66,6 @@ namespace Toolbox.Editor
                     drawerType = drawerType.BaseType;
                 }
 
-                //use base definition type to get target attribute type
                 return drawerType.IsGenericType ? drawerType.GetGenericArguments().FirstOrDefault() : null;
             }
 

@@ -109,9 +109,9 @@ namespace Toolbox.Editor
             //get only one condition attribute to valdiate state of this property
             conditionAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxConditionAttribute>();
 
-            //get all available area attributes
+            //get all available decorator attributes
             decoratorAttributes = propertyFieldInfo.GetCustomAttributes<ToolboxDecoratorAttribute>().ToArray();
-            //keep area attributes in proper order
+            //keep decorator attributes in proper order
             Array.Sort(decoratorAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
         }
 
@@ -121,7 +121,7 @@ namespace Toolbox.Editor
         /// </summary>
         public void OnGuiLayout()
         {
-            //begin all needed area drawers in proper order
+            //begin all needed decorator drawers in proper order
             if (decoratorAttributes != null)
             {
                 for (var i = 0; i < decoratorAttributes.Length; i++)
@@ -176,7 +176,7 @@ namespace Toolbox.Editor
             }
 
             Finish:
-            //end all needed area drawers in proper order
+            //end all needed decorator drawers in proper order
             if (decoratorAttributes != null)
             {
                 for (var i = decoratorAttributes.Length - 1; i >= 0; i--)

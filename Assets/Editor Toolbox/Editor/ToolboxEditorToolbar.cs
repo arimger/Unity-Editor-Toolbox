@@ -84,8 +84,12 @@ namespace Toolbox.Editor
             //get current toolbar containter using reflection
             var elements = visualTree.GetValue(toolbar, null) 
                 as VisualElement;
-            var container = elements.First() 
+#if UNITY_2019_1_OR_NEWER
+            var container = elements[0];
+#else
+            var container = elements.First()
                 as IMGUIContainer;
+#endif
 
             //create additional gui handler for new elements
             var handler = onGuiHandler.GetValue(container) as Action;
@@ -97,7 +101,11 @@ namespace Toolbox.Editor
         private static void OnGuiHandler()
         {
             const float fromToolsOffsetX = 400.0f;
+#if UNITY_2019_1_OR_NEWER
+            const float fromStripOffsetX = 150.0f;
+#else
             const float fromStripOffsetX = 100.0f;
+#endif
 
             if (buttons.Count == 0) return;
 
@@ -182,15 +190,24 @@ namespace Toolbox.Editor
             };
             internal static readonly GUIStyle commandMidStyle = new GUIStyle("CommandMid")
             {
-                fontStyle = FontStyle.Bold
+                fontSize = 12,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter,
+                imagePosition = ImagePosition.ImageAbove
             };            
             internal static readonly GUIStyle commandLeftStyle = new GUIStyle("CommandLeft")
             {
-                fontStyle = FontStyle.Bold
+                fontSize = 12,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter,
+                imagePosition = ImagePosition.ImageAbove
             };
             internal static readonly GUIStyle commandRightStyle = new GUIStyle("CommandRight")
             {
-                fontStyle = FontStyle.Bold
+                fontSize = 12,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter,
+                imagePosition = ImagePosition.ImageAbove
             };
         }
     }
