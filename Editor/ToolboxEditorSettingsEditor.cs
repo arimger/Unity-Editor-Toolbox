@@ -26,6 +26,8 @@ namespace Toolbox.Editor
 
         private ReorderableList targetTypeDrawerHandlersList;
 
+        private ToolboxEditorSettings currentTarget;
+
 
         private void OnEnable()
         {
@@ -54,6 +56,8 @@ namespace Toolbox.Editor
 
             targetTypeDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("targetTypeDrawerHandlers"));
             targetTypeDrawerHandlersList.HasHeader = false;
+
+            currentTarget = target as ToolboxEditorSettings;
         }
 
         private void OnDisable()
@@ -63,6 +67,24 @@ namespace Toolbox.Editor
             EditorPrefs.SetBool("ToolboxEditorSettings.hierarchySettingsEnabled", hierarchySettingsEnabled);
         }
 
+
+        private bool DrawDrawerList(ReorderableList list, string titleLabel, string assignButtonLabel)
+        {
+            EditorGUILayout.BeginHorizontal();
+
+            var expanded = DrawListFoldout(list, Style.drawerListFoldoutStyle, titleLabel);
+            GUILayout.FlexibleSpace();
+            var pressed = GUILayout.Button(assignButtonLabel, Style.smallButtonStyle);
+ 
+            EditorGUILayout.EndHorizontal();
+
+            if (expanded)
+            {
+                list.DoLayoutList();
+            }
+
+            return pressed;
+        }
 
         private bool DrawListFoldout(ReorderableList list)
         {
@@ -141,24 +163,25 @@ namespace Toolbox.Editor
                 ToolboxEditorGui.DrawLayoutLine(lineTickiness);
 
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
-                if (DrawListFoldout(decoratorDrawerHandlersList, Style.drawerListFoldoutStyle, "Decorator Drawers"))
+
+                if (DrawDrawerList(decoratorDrawerHandlersList, "Decorator Drawers", "Assign all possible"))
                 {
-                    decoratorDrawerHandlersList.DoLayoutList();
+                    currentTarget.SetAllPossibleDecoratorDrawers();
                 }
 
-                if (DrawListFoldout(propertyDrawerHandlersList, Style.drawerListFoldoutStyle, "Property Drawers"))
+                if (DrawDrawerList(propertyDrawerHandlersList, "Property Drawers", "Assign all possible"))
                 {
-                    propertyDrawerHandlersList.DoLayoutList();
+                    currentTarget.SetAllPossiblePropertyDrawers();
                 }
 
-                if (DrawListFoldout(collectionDrawerHandlersList, Style.drawerListFoldoutStyle, "Collection Drawers"))
+                if (DrawDrawerList(collectionDrawerHandlersList, "Collection Drawers", "Assign all possible"))
                 {
-                    collectionDrawerHandlersList.DoLayoutList();
+                    currentTarget.SetAllPossibleCollectionDrawers();
                 }
 
-                if (DrawListFoldout(conditionDrawerHandlersList, Style.drawerListFoldoutStyle, "Condition Drawers"))
+                if (DrawDrawerList(conditionDrawerHandlersList, "Condition Drawers", "Assign all possible"))
                 {
-                    conditionDrawerHandlersList.DoLayoutList();
+                    currentTarget.SetAllPossibleConditionDrawers();
                 }
 
                 EditorGUILayout.Space();
@@ -166,10 +189,11 @@ namespace Toolbox.Editor
 
                 ToolboxEditorGui.DrawLayoutLine(lineTickiness);
 
-                if (DrawListFoldout(targetTypeDrawerHandlersList, Style.drawerListFoldoutStyle, "Target Type Drawers"))
+                if (DrawDrawerList(targetTypeDrawerHandlersList, "Target Type Drawers", "Assign all possible"))
                 {
-                    targetTypeDrawerHandlersList.DoLayoutList();
+                    currentTarget.SetAllPossibleTargetTypeDrawers();
                 }
+
                 EditorGUI.EndDisabledGroup();
 
                 EditorGUILayout.Space();
@@ -194,6 +218,7 @@ namespace Toolbox.Editor
 
         internal static class Style
         {
+            internal static GUIStyle smallButtonStyle;
             internal static GUIStyle smallHeaderStyle;
             internal static GUIStyle settingsFoldoutStyle;
             internal static GUIStyle drawerListFoldoutStyle;
@@ -211,6 +236,7 @@ namespace Toolbox.Editor
 
             static Style()
             {
+                smallButtonStyle = new GUIStyle(EditorStyles.miniButton);              
                 smallHeaderStyle = new GUIStyle(EditorStyles.label)
                 {
                     fontStyle = FontStyle.Bold,

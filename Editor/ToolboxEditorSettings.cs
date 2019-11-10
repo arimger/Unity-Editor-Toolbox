@@ -10,6 +10,12 @@ namespace Toolbox.Editor
 
     public interface IToolboxDrawersSettings
     {
+        void SetAllPossibleDecoratorDrawers();
+        void SetAllPossiblePropertyDrawers();
+        void SetAllPossibleCollectionDrawers();
+        void SetAllPossibleConditionDrawers();
+        void SetAllPossibleTargetTypeDrawers();
+
         void AddDecoratorDrawerHandler(SerializedTypeReference drawerReference);
         void AddPropertyDrawerHandler(SerializedTypeReference drawerReference);
         void AddConditionDrawerHandler(SerializedTypeReference drawerReference);
@@ -101,6 +107,61 @@ namespace Toolbox.Editor
             return customFolders[index];
         }
 
+
+        public void SetAllPossibleDecoratorDrawers()
+        {
+            decoratorDrawerHandlers?.Clear();
+
+            var types = ToolboxDrawerUtility.GetAllPossibleDecoratorDrawers();
+            for (var i = 0; i < types.Count; i++)
+            {
+                AddDecoratorDrawerHandler(new SerializedTypeReference(types[i]));
+            }
+        }
+
+        public void SetAllPossiblePropertyDrawers()
+        {
+            propertyDrawerHandlers?.Clear();
+
+            var types = ToolboxDrawerUtility.GetAllPossiblePropertyDrawers();
+            for (var i = 0; i < types.Count; i++)
+            {
+                AddPropertyDrawerHandler(new SerializedTypeReference(types[i]));
+            }
+        }
+
+        public void SetAllPossibleCollectionDrawers()
+        {
+            collectionDrawerHandlers?.Clear();
+
+            var types = ToolboxDrawerUtility.GetAllPossibleCollectionDrawers();
+            for (var i = 0; i < types.Count; i++)
+            {
+                AddCollectionDrawerHandler(new SerializedTypeReference(types[i]));
+            }
+        }
+
+        public void SetAllPossibleConditionDrawers()
+        {
+            conditionDrawerHandlers?.Clear();
+
+            var types = ToolboxDrawerUtility.GetAllPossibleConditionDrawers();
+            for (var i = 0; i < types.Count; i++)
+            {
+                AddConditionDrawerHandler(new SerializedTypeReference(types[i]));
+            }
+        }
+
+        public void SetAllPossibleTargetTypeDrawers()
+        {
+            targetTypeDrawerHandlers?.Clear();
+
+            var types = ToolboxDrawerUtility.GetAllPossibleTargetTypeDrawers();
+            for (var i = 0; i < types.Count; i++)
+            {
+                AddTargetTypeDrawerHandler(new SerializedTypeReference(types[i]));
+            }
+        }
 
         public void AddDecoratorDrawerHandler(SerializedTypeReference drawerReference)
         {
