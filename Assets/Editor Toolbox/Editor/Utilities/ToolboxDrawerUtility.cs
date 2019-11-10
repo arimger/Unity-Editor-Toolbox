@@ -20,6 +20,13 @@ namespace Toolbox.Editor
 
         #region Fields
 
+        private readonly static Type targetTypeDrawerBase = typeof(ToolboxTargetTypeDrawer);
+        private readonly static Type decoratorDrawerBase = typeof(ToolboxDecoratorDrawer<>);
+        private readonly static Type propertyDrawerBase = typeof(ToolboxPropertyDrawer<>);
+        private readonly static Type collectionDrawerBase = typeof(ToolboxCollectionDrawer<>);
+        private readonly static Type conditionDrawerBase = typeof(ToolboxConditionDrawer<>);
+
+
         private readonly static Dictionary<Type, ToolboxTargetTypeDrawer> targetTypeDrawers = new Dictionary<Type, ToolboxTargetTypeDrawer>();
 
         private readonly static Dictionary<Type, ToolboxDecoratorDrawerBase> decoratorDrawers  = new Dictionary<Type, ToolboxDecoratorDrawerBase>();
@@ -72,28 +79,28 @@ namespace Toolbox.Editor
             for (var i = 0; i < settings.DecoratorDrawersCount; i++)
             {
                 var drawerType = settings.GetDecoratorDrawerTypeAt(i);
-                var targetType = GetAttributeTargetType(settings.GetDecoratorDrawerTypeAt(i), typeof(ToolboxDecoratorDrawer<>));
+                var targetType = GetAttributeTargetType(settings.GetDecoratorDrawerTypeAt(i), decoratorDrawerBase);
                 AddAttributeDrawer(drawerType, targetType, decoratorDrawers);
             }
 
             for (var i = 0; i < settings.PropertyDrawersCount; i++)
             {
                 var drawerType = settings.GetPropertyDrawerTypeAt(i);
-                var targetType = GetAttributeTargetType(settings.GetPropertyDrawerTypeAt(i), typeof(ToolboxPropertyDrawer<>));
+                var targetType = GetAttributeTargetType(settings.GetPropertyDrawerTypeAt(i), propertyDrawerBase);
                 AddAttributeDrawer(drawerType, targetType, propertyDrawers);
             }
 
             for (var i = 0; i < settings.CollectionDrawersCount; i++)
             {
                 var drawerType = settings.GetCollectionDrawerTypeAt(i);
-                var targetType = GetAttributeTargetType(settings.GetCollectionDrawerTypeAt(i), typeof(ToolboxCollectionDrawer<>));
+                var targetType = GetAttributeTargetType(settings.GetCollectionDrawerTypeAt(i), collectionDrawerBase);
                 AddAttributeDrawer(drawerType, targetType, collectionDrawers);
             }
 
             for (var i = 0; i < settings.ConditionDrawersCount; i++)
             {
                 var drawerType = settings.GetConditionDrawerTypeAt(i);
-                var targetType = GetAttributeTargetType(settings.GetConditionDrawerTypeAt(i), typeof(ToolboxConditionDrawer<>));
+                var targetType = GetAttributeTargetType(settings.GetConditionDrawerTypeAt(i),conditionDrawerBase);
                 AddAttributeDrawer(drawerType, targetType, conditionDrawers);
             }
         }
@@ -198,6 +205,31 @@ namespace Toolbox.Editor
             }
 
             return propertyHandler;
+        }
+
+        internal static List<Type> GetAllPossibleTargetTypeDrawers()
+        {
+            return targetTypeDrawerBase.GetAllChildClasses();
+        }
+
+        internal static List<Type> GetAllPossibleDecoratorDrawers()
+        {
+            return decoratorDrawerBase.GetAllChildClasses();
+        }
+
+        internal static List<Type> GetAllPossiblePropertyDrawers()
+        {
+            return propertyDrawerBase.GetAllChildClasses();
+        }
+
+        internal static List<Type> GetAllPossibleCollectionDrawers()
+        {
+            return collectionDrawerBase.GetAllChildClasses();
+        }
+
+        internal static List<Type> GetAllPossibleConditionDrawers()
+        {
+            return conditionDrawerBase.GetAllChildClasses();
         }
 
 
