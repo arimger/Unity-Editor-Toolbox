@@ -90,9 +90,9 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         /// <param name="property"></param>
         /// <param name="attribute"></param>
-        public override void OnGui(SerializedProperty property, InLineEditorAttribute attribute)
+        public override void OnGui(SerializedProperty property, GUIContent label, InLineEditorAttribute attribute)
         {
-            EditorGUILayout.PropertyField(property, property.isExpanded);
+            EditorGUILayout.PropertyField(property, label, property.isExpanded);
 
             //basically multiple values are not supported
             if (property.hasMultipleDifferentValues)

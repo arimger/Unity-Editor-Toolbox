@@ -163,7 +163,7 @@ public class SampleBehaviour : MonoBehaviour
     [HeaderArea("Toolbox Attributes", HeaderStyle.Boxed)]
     [HeaderArea("1", HeaderStyle.Boxed)]
 
-    [ReorderableList(ListStyle.Boxed, elementLabel:"GameObject")]
+    [ReorderableList(ListStyle.Boxed, elementLabel:"GameObject"), Tooltip("Sample List")]
     public GameObject[] list;
 
     [HeaderArea("2", HeaderStyle.Boxed)]

@@ -293,6 +293,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c96bc1945c12e5246b1faac636a63516, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data:
+    path: 
+    icon: {fileID: 0}
+    smallIcon: {fileID: 0}
   var1: 82
   targetTag: Untagged
   progressBar: 25.4
