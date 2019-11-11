@@ -11,14 +11,14 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        public virtual void OnGui(SerializedProperty property)
+        public virtual void OnGui(SerializedProperty property, GUIContent label)
         {
-            EditorGUILayout.PropertyField(property, property.isExpanded);
+            EditorGUILayout.PropertyField(property, label, property.isExpanded);
         }
 
-        public virtual void OnGui(SerializedProperty property, ToolboxAttribute attribute)
+        public virtual void OnGui(SerializedProperty property, GUIContent label, ToolboxAttribute attribute)
         {
-            OnGui(property);    
+            OnGui(property, label);    
         }
 
         public virtual void OnGuiReload()

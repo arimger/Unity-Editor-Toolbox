@@ -68,7 +68,7 @@ namespace Toolbox.Editor
         /// 
         /// </summary>
         /// <returns></returns>
-        public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent title, bool toggleOnLabelClick, GUIStyle foldoutStyle)
+        public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle foldoutStyle)
         {
             const float xPadding = 15.0f;
             const float yPadding = 2.0f;
@@ -81,14 +81,14 @@ namespace Toolbox.Editor
             rect.xMin += xPadding;
             rect.yMin -= yPadding - (rect.height - foldoutStyle.fontSize) / 2;
 
-            return EditorGUI.Foldout(rect, foldout, title, toggleOnLabelClick, foldoutStyle);
+            return EditorGUI.Foldout(rect, foldout, label, toggleOnLabelClick, foldoutStyle);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public static bool DrawLayoutHeaderFoldout(bool foldout, GUIContent title, bool toggleOnLabelClick, GUIStyle foldoutStyle)
+        public static bool DrawLayoutHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle foldoutStyle)
         {
             const float headerHeight = 25.0f;
 
@@ -96,7 +96,7 @@ namespace Toolbox.Editor
             rect.xMin = 0;
             rect.xMax = EditorGUIUtility.currentViewWidth;
 
-            return DrawHeaderFoldout(rect, foldout, title, toggleOnLabelClick, foldoutStyle);
+            return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, foldoutStyle);
         }
 
         /// <summary>

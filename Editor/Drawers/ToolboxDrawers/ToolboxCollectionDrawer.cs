@@ -5,7 +5,7 @@ namespace Toolbox.Editor.Drawers
 {
     public abstract class ToolboxCollectionDrawer<T> : ToolboxPropertyDrawerBase where T : ToolboxCollectionAttribute
     {
-        protected void DrawDefaultCollection(SerializedProperty collection)
+        protected void DrawDefaultCollection(SerializedProperty collection, GUIContent label)
         {
             if (!collection.isArray)
             {
@@ -14,7 +14,7 @@ namespace Toolbox.Editor.Drawers
             }
 
             if (!(collection.isExpanded =
-                EditorGUILayout.Foldout(collection.isExpanded, new GUIContent(collection.displayName), true)))
+                EditorGUILayout.Foldout(collection.isExpanded, label, true)))
             {
                 return;
             }
@@ -43,12 +43,12 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        public override sealed void OnGui(SerializedProperty collection)
+        public override sealed void OnGui(SerializedProperty collection, GUIContent label)
         {
             var targetAttribute = collection.GetAttribute<T>();
             if (targetAttribute != null)
             {
-                OnGui(collection, targetAttribute);
+                OnGui(collection, label, targetAttribute);
                 return;
             }
             else
@@ -56,14 +56,14 @@ namespace Toolbox.Editor.Drawers
                 Debug.LogError("Target attribute not found.");
             }
 
-            DrawDefaultCollection(collection);
+            DrawDefaultCollection(collection, label);
         }
 
-        public override sealed void OnGui(SerializedProperty collection, ToolboxAttribute attribute)
+        public override sealed void OnGui(SerializedProperty collection, GUIContent label, ToolboxAttribute attribute)
         {
             if (attribute is T targetAttribute)
             {
-                OnGui(collection, targetAttribute);
+                OnGui(collection, label, targetAttribute);
                 return;
             }
             else
@@ -71,13 +71,13 @@ namespace Toolbox.Editor.Drawers
                 Debug.LogError("Target attribute not found.");
             }
 
-            DrawDefaultCollection(collection);
+            DrawDefaultCollection(collection, label);
         }
 
 
-        public virtual void OnGui(SerializedProperty collection, T attribute)
+        public virtual void OnGui(SerializedProperty collection, GUIContent label, T attribute)
         {
-            DrawDefaultCollection(collection);
+            DrawDefaultCollection(collection, label);
         }
     }
 }

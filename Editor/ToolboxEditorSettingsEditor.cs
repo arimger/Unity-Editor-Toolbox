@@ -218,18 +218,23 @@ namespace Toolbox.Editor
 
         internal static class Style
         {
-            internal static GUIStyle smallButtonStyle;
-            internal static GUIStyle smallHeaderStyle;
-            internal static GUIStyle settingsFoldoutStyle;
-            internal static GUIStyle drawerListFoldoutStyle;
-            internal static GUIStyle folderListFoldoutStyle;
+            internal const float spacing = 2.0f;
 
-            internal static GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings");
-            internal static GUIContent projectSettingsContent = new GUIContent("Project Settings");
-            internal static GUIContent drawersSettingsContent = new GUIContent("Drawers Settings");
-            internal static GUIContent applyButtonContent = new GUIContent("Apply", "Apply changes");
+            internal readonly static GUIStyle smallButtonStyle;
+            internal readonly static GUIStyle smallHeaderStyle;
+            internal readonly static GUIStyle settingsFoldoutStyle;
+            internal readonly static GUIStyle drawerListFoldoutStyle;
+            internal readonly static GUIStyle folderListFoldoutStyle;
 
-            internal static GUILayoutOption[] buttonOptions = new GUILayoutOption[]
+            internal readonly static GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings", 
+                EditorGUIUtility.IconContent("UnityEditor.HierarchyWindow").image);
+            internal readonly static GUIContent projectSettingsContent = new GUIContent("Project Settings", 
+                EditorGUIUtility.IconContent("d_Project").image);
+            internal readonly static GUIContent drawersSettingsContent = new GUIContent("Drawers Settings", 
+                EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
+            internal readonly static GUIContent applyButtonContent = new GUIContent("Apply", "Apply changes");
+
+            internal readonly static GUILayoutOption[] buttonOptions = new GUILayoutOption[]
             {
                 GUILayout.Width(80)
             };
@@ -245,6 +250,8 @@ namespace Toolbox.Editor
                 settingsFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleLeft,
+                    contentOffset = new Vector2(0, -spacing),
                     fontSize = 11
                 };
                 drawerListFoldoutStyle = new GUIStyle(EditorStyles.foldout)

@@ -34,7 +34,6 @@ namespace Toolbox.Editor
         /// </summary>
         private readonly ToolboxConditionAttribute conditionAttribute;
 
-
         /// <summary>
         /// Type associated to <see cref="property"/>
         /// </summary>
@@ -44,6 +43,10 @@ namespace Toolbox.Editor
         /// </summary>
         private readonly FieldInfo propertyFieldInfo;
 
+        /// <summary>
+        /// Property label conent based on display name and optional tooltip.
+        /// </summary>
+        private readonly GUIContent propertyLabel;
 
         /// <summary>
         /// This flag determines whenever property has custom <see cref="PropertyDrawer"/>.
@@ -70,6 +73,12 @@ namespace Toolbox.Editor
             {
                 return;
             }
+
+            //get associated tooltip text and set proper content
+            propertyLabel = new GUIContent(property.displayName)
+            {
+                tooltip = propertyFieldInfo.GetCustomAttribute<TooltipAttribute>()?.tooltip
+            };
 
             //check if this property has built-in property drawer
             if (!(hasNativePropertyDrawer = property.HasCustomDrawer(propertyType)))
@@ -153,15 +162,15 @@ namespace Toolbox.Editor
             {
                 if (hasToolboxTargetTypeDrawer)
                 {
-                    ToolboxDrawerUtility.GetTargetTypeDrawer(propertyType).OnGui(property);
+                    ToolboxDrawerUtility.GetTargetTypeDrawer(propertyType).OnGui(property, propertyLabel);
                 }
                 else if (property.isArray)
                 {
-                    ToolboxDrawerUtility.GetCollectionDrawer(propertyArrayAttribute)?.OnGui(property, propertyArrayAttribute);
+                    ToolboxDrawerUtility.GetCollectionDrawer(propertyArrayAttribute)?.OnGui(property, propertyLabel, propertyArrayAttribute);
                 }
                 else
                 {
-                    ToolboxDrawerUtility.GetPropertyDrawer(propertySingleAttribute)?.OnGui(property, propertySingleAttribute);
+                    ToolboxDrawerUtility.GetPropertyDrawer(propertySingleAttribute)?.OnGui(property, propertyLabel, propertySingleAttribute);
                 }
             }
             else
@@ -201,7 +210,7 @@ namespace Toolbox.Editor
 
             //draw standard foldout for children-based properties       
             if (!(property.isExpanded =
-                EditorGUILayout.Foldout(property.isExpanded, new GUIContent(property.displayName), true)))
+                EditorGUILayout.Foldout(property.isExpanded, propertyLabel, true)))
             {
                 return;
             }
