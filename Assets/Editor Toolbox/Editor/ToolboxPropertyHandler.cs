@@ -75,10 +75,7 @@ namespace Toolbox.Editor
             }
 
             //get associated tooltip text and set proper content
-            propertyLabel = new GUIContent(property.displayName)
-            {
-                tooltip = propertyFieldInfo.GetCustomAttribute<TooltipAttribute>()?.tooltip
-            };
+            propertyLabel = new GUIContent(property.displayName);
 
             //check if this property has built-in property drawer
             if (!(hasNativePropertyDrawer = property.HasCustomDrawer(propertyType)))
@@ -208,12 +205,19 @@ namespace Toolbox.Editor
                 return;
             }
 
-            //draw standard foldout for children-based properties       
-            if (!(property.isExpanded =
-                EditorGUILayout.Foldout(property.isExpanded, propertyLabel, true)))
+            //draw standard foldout with built-in operations(like prefabs handling)
+            //to re-create native steps:
+            // - get foldout rect
+            // - begin property using EditorGUI.BeginProperty method
+            // - read current drag events
+            // - draw foldout
+            // - close property using EditorGUI.EndProperty method
+            if (!EditorGUILayout.PropertyField(property, false))
             {
                 return;
             }
+
+            HandleDefaultGuiEvents();
 
             var iterateThroughChildren = true;
 
@@ -239,6 +243,17 @@ namespace Toolbox.Editor
 
             //restore old indent level
             EditorGUI.indentLevel--;
+        }
+
+
+        /// <summary>
+        /// Tries to handle built-in events and prevents unexpected situations.
+        /// </summary>
+        private void HandleDefaultGuiEvents()
+        {
+            var currentEvent = Event.current;
+            //use current event if drag was performed otherwise, it will cause an error
+            if (currentEvent.type == EventType.DragPerform && GUI.changed) currentEvent.Use();
         }
     }
 }

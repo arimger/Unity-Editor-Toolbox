@@ -13,11 +13,12 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            if (!(collection.isExpanded =
-                EditorGUILayout.Foldout(collection.isExpanded, label, true)))
+            if (!EditorGUILayout.PropertyField(collection, label, false))
             {
                 return;
             }
+
+            if (GUI.changed) Event.current.Use();
 
             var iterProperty = collection.Copy();
             var lastProperty = iterProperty.GetEndProperty();
