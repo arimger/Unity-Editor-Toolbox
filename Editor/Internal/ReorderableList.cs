@@ -179,6 +179,7 @@ namespace Toolbox.Editor.Internal
                 elementContentRect = elementRect;
                 elementContentRect.xMin += Style.padding;
                 elementContentRect.xMax -= Style.padding;
+
                 if (drawVoidedCallback == null)
                 {
                     DrawStandardNoneElement(elementContentRect, Draggable);
@@ -983,7 +984,7 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public SerializedProperty List
         {
-            get; set;
+            get; private set;
         }
 
 
