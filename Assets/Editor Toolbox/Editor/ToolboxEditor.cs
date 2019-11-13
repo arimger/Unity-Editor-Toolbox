@@ -50,9 +50,9 @@ namespace Toolbox.Editor
             {
                 expanded = false;
 
-                EditorGUILayout.LabelField(editorHeaderText, EditorUtility.headerTextStyle);
+                EditorGUILayout.LabelField(editorHeaderText, ToolboxEditorUtility.headerTextStyle);
 
-                EditorGUI.BeginDisabledGroup(property.type == EditorUtility.defaultScriptPropertyType);
+                EditorGUI.BeginDisabledGroup(property.type == ToolboxEditorUtility.defaultScriptPropertyType);
                 EditorGUILayout.PropertyField(property);
                 EditorGUI.EndDisabledGroup();
 
@@ -63,35 +63,6 @@ namespace Toolbox.Editor
             }
 
             serializedObject.ApplyModifiedProperties();
-        }
-
-
-        /// <summary>
-        /// Additional utility class. Contains useful constant and custom styling fields.
-        /// </summary>
-        internal static class EditorUtility
-        {
-            internal static GUIStyle headerTextStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
-
-            internal const string defaultScriptPropertyPath = "m_Script";
-
-            internal const string defaultScriptPropertyType = "PPtr<MonoScript>";
-
-
-            internal static bool IsDefaultScriptProperty(SerializedProperty property)
-            {
-                return defaultScriptPropertyPath == property.propertyPath;
-            }
-
-            internal static bool IsDefaultScriptPropertyByPath(string propertyPath)
-            {
-                return defaultScriptPropertyPath == propertyPath;
-            }
-
-            internal static bool IsDefaultScriptPropertyByType(string propertyType)
-            {
-                return defaultScriptPropertyType == propertyType;
-            }
         }
     }
 }

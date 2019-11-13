@@ -74,7 +74,7 @@ namespace Toolbox.Editor
                 return;
             }
 
-            //get associated tooltip text and set proper content
+            //set basic content for handled property
             propertyLabel = new GUIContent(property.displayName);
 
             //check if this property has built-in property drawer
@@ -198,7 +198,7 @@ namespace Toolbox.Editor
         /// <param name="property"></param>
         public void OnGuiDefault()
         {
-            //all "single" and all properties with custom drawers should be drawn in standard way
+            //all "single" and all properties with custom native drawers should be drawn in standard way
             if (!property.hasVisibleChildren || hasNativePropertyDrawer)
             {
                 EditorGUILayout.PropertyField(property, property.isExpanded);
