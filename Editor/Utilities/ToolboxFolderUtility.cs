@@ -6,11 +6,22 @@ namespace Toolbox.Editor
 {
     internal static class ToolboxFolderUtility
     {
+        /// <summary>
+        /// All custom folders mapped with own path relative to Asset directory.
+        /// </summary>
         private readonly static Dictionary<string, FolderData> foldersData = new Dictionary<string, FolderData>();
+
+
+        /// <summary>
+        /// Settings provided to handle custom folders.
+        /// </summary>
+        private static IToolboxProjectSettings settings;
 
 
         internal static void InitializeProject(IToolboxProjectSettings settings)
         {
+            ToolboxFolderUtility.settings = settings;
+
             for (var i = 0; i < settings.CustomFoldersCount; i++)
             {
                 var customFolder = settings.GetCustomFolderAt(i);
@@ -36,6 +47,6 @@ namespace Toolbox.Editor
         }
 
 
-        internal static bool ToolboxFoldersAllowed => ToolboxSettingsUtility.Settings.UseToolboxProject;
+        internal static bool ToolboxFoldersAllowed => settings != null ? settings.UseToolboxProject : false;
     }
 }

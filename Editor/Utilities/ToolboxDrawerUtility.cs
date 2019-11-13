@@ -18,14 +18,12 @@ namespace Toolbox.Editor
             Selection.selectionChanged += onEditorReload + ClearHandlers;
         }
 
-        #region Fields
 
         private readonly static Type targetTypeDrawerBase = typeof(ToolboxTargetTypeDrawer);
         private readonly static Type decoratorDrawerBase = typeof(ToolboxDecoratorDrawer<>);
         private readonly static Type propertyDrawerBase = typeof(ToolboxPropertyDrawer<>);
         private readonly static Type collectionDrawerBase = typeof(ToolboxCollectionDrawer<>);
         private readonly static Type conditionDrawerBase = typeof(ToolboxConditionDrawer<>);
-
 
         private readonly static Dictionary<Type, ToolboxTargetTypeDrawer> targetTypeDrawers = new Dictionary<Type, ToolboxTargetTypeDrawer>();
 
@@ -36,7 +34,8 @@ namespace Toolbox.Editor
 
         private static readonly Dictionary<string, ToolboxPropertyHandler> propertyHandlers = new Dictionary<string, ToolboxPropertyHandler>();
 
-        #endregion
+
+        private static IToolboxDrawersSettings settings;
 
 
         private static void CreateAttributeDrawers(IToolboxDrawersSettings settings)
@@ -134,6 +133,8 @@ namespace Toolbox.Editor
 
         internal static void InitializeDrawers(IToolboxDrawersSettings settings)
         {
+            ToolboxDrawerUtility.settings = settings;
+
             CreateAttributeDrawers(settings);
             CreateTargetTypeDrawers(settings);
         }
@@ -233,7 +234,7 @@ namespace Toolbox.Editor
         }
 
 
-        internal static bool ToolboxDrawersAllowed => ToolboxSettingsUtility.Settings.UseToolboxDrawers;
+        internal static bool ToolboxDrawersAllowed => settings != null ? settings.UseToolboxDrawers : false;
 
 
         internal static Action onEditorReload;
