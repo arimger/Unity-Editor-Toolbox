@@ -22,8 +22,9 @@ namespace Toolbox.Editor.Drawers
                 ? new GUIContent(property.enumDisplayNames[property.enumValueIndex])
                 : new GUIContent();
             var id = GUIUtility.GetControlID(FocusType.Keyboard, position);
+
             //draw prefix label and begin true property
-            label = EditorGUI.BeginProperty(position, label, property);
+            label    = EditorGUI.BeginProperty(position, label, property);
             position = EditorGUI.PrefixLabel(position, id, label);
             //draw dropdown button, will be used to activate popup
             if (EditorGUI.DropdownButton(position, buttonLabel, FocusType.Keyboard))
@@ -36,6 +37,14 @@ namespace Toolbox.Editor.Drawers
                 });
             }
             EditorGUI.EndProperty();
+
+            //handle situation when inspector window captures ScrollWheel event
+            if (EditorWindow.focusedWindow != EditorWindow.mouseOverWindow)
+            {
+                //NOTE: unfortunately PopupWidnows are not indpendent and we have to
+                //handle this case inside drawer since this the only way to override events
+                if (Event.current.type == EventType.ScrollWheel) Event.current.Use();
+            }
         }
     }
 }

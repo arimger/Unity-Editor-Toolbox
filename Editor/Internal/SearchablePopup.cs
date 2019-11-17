@@ -21,8 +21,6 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        #region Fields
-
         private readonly Action<int> onSelect;
 
         private readonly SearchList searchList;
@@ -30,12 +28,14 @@ namespace Toolbox.Editor.Internal
 
         private readonly int startIndex;
 
+
         private int scrollIndex = -1;
         private int hoverIndex = -1;
 
         private Vector2 scroll;
 
-        #endregion
+        private Rect toolbarRect;
+        private Rect contentRect;
 
 
         private SearchablePopup(string[] options, int startIndex, Action<int> onSelect)
@@ -56,35 +56,37 @@ namespace Toolbox.Editor.Internal
 
         private void HandleKeyboard()
         {
-            if (Event.current.type == EventType.KeyDown)
+            var currentEvent = Event.current;
+
+            if (currentEvent.type == EventType.KeyDown)
             {
-                if (Event.current.keyCode == KeyCode.DownArrow)
+                if (currentEvent.keyCode == KeyCode.DownArrow)
                 {
                     GUI.FocusControl(null);
                     hoverIndex = Mathf.Min(searchList.ItemsCount - 1, hoverIndex + 1);
                     scrollIndex = hoverIndex;
-                    Event.current.Use();
+                    currentEvent.Use();
                 }
 
-                if (Event.current.keyCode == KeyCode.UpArrow)
+                if (currentEvent.keyCode == KeyCode.UpArrow)
                 {
                     GUI.FocusControl(null);
                     hoverIndex = Mathf.Max(0, hoverIndex - 1);
                     scrollIndex = hoverIndex;
-                    Event.current.Use();
+                    currentEvent.Use();
                 }
 
-                if (Event.current.keyCode == KeyCode.Return)
+                if (currentEvent.keyCode == KeyCode.Return)
                 {
                     GUI.FocusControl(null);
                     if (hoverIndex >= 0 && hoverIndex < searchList.ItemsCount)
                     {
                         MakeSelection(searchList.GetItemAt(hoverIndex).index);
                     }
-                    Event.current.Use();
+                    currentEvent.Use();
                 }
 
-                if (Event.current.keyCode == KeyCode.Escape)
+                if (currentEvent.keyCode == KeyCode.Escape)
                 {
                     GUI.FocusControl(null);
                     editorWindow.Close();
@@ -104,29 +106,32 @@ namespace Toolbox.Editor.Internal
             rect.yMin += Style.spacing;
             rect.yMax -= Style.spacing;
 
-            searchList.Search(searchField.OnGUI(rect, searchList.Filter, Style.searchBoxStyle, Style.cancelButtonStyle, Style.disabledCancelButtonStyle));
+            searchList.Search(searchField.OnGUI(rect, searchList.Filter, Style.searchBoxStyle, Style.enabledCancelButtonStyle, Style.disabledCancelButtonStyle));
         }
 
         private void DrawContent(Rect rect)
         {
+            var currentEvent = Event.current;
+
             var contentRect = new Rect(0, 0, rect.width - Style.scrollbarStyle.fixedWidth, searchList.ItemsCount * Style.height);
             var optionRect = new Rect(0, 0, rect.width, Style.height);
 
             scroll = GUI.BeginScrollView(rect, scroll, contentRect);
+
             for (var i = 0; i < searchList.ItemsCount; i++)
             {
-                if (Event.current.type == EventType.Repaint && scrollIndex == i)
+                if (currentEvent.type == EventType.Repaint && scrollIndex == i)
                 {
                     GUI.ScrollTo(optionRect);
                     scrollIndex = -1;
                 }
-                if (optionRect.Contains(Event.current.mousePosition))
+                if (optionRect.Contains(currentEvent.mousePosition))
                 {
-                    if (Event.current.type == EventType.MouseMove || Event.current.type == EventType.ScrollWheel)
+                    if (currentEvent.type == EventType.MouseMove || currentEvent.type == EventType.ScrollWheel)
                     {
                         hoverIndex = i;
                     }
-                    if (Event.current.type == EventType.MouseDown)
+                    if (currentEvent.type == EventType.MouseDown)
                     {
                         MakeSelection(searchList.GetItemAt(i).index);
                     }
@@ -142,6 +147,7 @@ namespace Toolbox.Editor.Internal
                 optionRect.xMin -= Style.indent;
                 optionRect.y = optionRect.yMax;
             }
+
             GUI.EndScrollView();
         }
 
@@ -158,14 +164,15 @@ namespace Toolbox.Editor.Internal
 
         public override void OnGUI(Rect rect)
         {
-            //toolbar rect based on built-in toolbar style
-            var toolbarRect = new Rect(0, 0, rect.width, Style.toolbarStyle.fixedHeight);
-            //content rect adjusted to toolbar
-            var contentRect = Rect.MinMaxRect(0, toolbarRect.yMax, rect.xMax, rect.yMax);
+            //set toolbar rect based on built-in toolbar style
+            toolbarRect = new Rect(0, 0, rect.width, Style.toolbarStyle.fixedHeight);
+            //set content rect adjusted to toolbar
+            contentRect = Rect.MinMaxRect(0, toolbarRect.yMax, rect.xMax, rect.yMax);
 
             HandleKeyboard();
             DrawToolbar(toolbarRect);
             DrawContent(contentRect);
+            GUI.enabled = false;
         }
 
 
@@ -258,7 +265,7 @@ namespace Toolbox.Editor.Internal
             internal static GUIStyle scrollbarStyle;
             internal static GUIStyle selectionStyle;
             internal static GUIStyle searchBoxStyle;
-            internal static GUIStyle cancelButtonStyle;
+            internal static GUIStyle enabledCancelButtonStyle;
             internal static GUIStyle disabledCancelButtonStyle;
 
             static Style()
@@ -267,7 +274,7 @@ namespace Toolbox.Editor.Internal
                 scrollbarStyle = new GUIStyle(GUI.skin.verticalScrollbar);
                 selectionStyle = new GUIStyle("SelectionRect");
                 searchBoxStyle = new GUIStyle("ToolbarSeachTextField");
-                cancelButtonStyle = new GUIStyle("ToolbarSeachCancelButton");
+                enabledCancelButtonStyle = new GUIStyle("ToolbarSeachCancelButton");
                 disabledCancelButtonStyle = new GUIStyle("ToolbarSeachCancelButtonEmpty");
             }
         }
