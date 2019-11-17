@@ -7,8 +7,9 @@ namespace Toolbox.Editor.Drawers
     {
         public override void OnGuiBegin(BeginGroupAttribute attribute)
         {
-            if (attribute.Label != null)
+            if (!string.IsNullOrEmpty(attribute.Label))
             {
+                //draw group label for whole section
                 EditorGUILayout.BeginHorizontal(Style.headerBackgroundStyle);
                 EditorGUILayout.LabelField(attribute.Label, Style.headerStyle);
                 EditorGUILayout.EndHorizontal();
@@ -17,8 +18,6 @@ namespace Toolbox.Editor.Drawers
             }
 
             EditorGUILayout.BeginVertical(Style.sectionBackgroundStyle);
-            //add additional space between vertical group and first property
-            GUILayout.Space(Style.spacing * 2);
         }
 
 
@@ -35,7 +34,10 @@ namespace Toolbox.Editor.Drawers
             {
                 headerStyle = new GUIStyle(EditorStyles.boldLabel);
                 headerBackgroundStyle = new GUIStyle(GUI.skin.box);
-                sectionBackgroundStyle = new GUIStyle(GUI.skin.box);
+                sectionBackgroundStyle = new GUIStyle(GUI.skin.box)
+                {
+                    padding = new RectOffset(13, 12, 5, 5)
+                };
                 foldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontStyle = FontStyle.Bold

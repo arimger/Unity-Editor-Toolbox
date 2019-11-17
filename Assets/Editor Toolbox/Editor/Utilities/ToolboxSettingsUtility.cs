@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 
 namespace Toolbox.Editor
@@ -14,10 +9,14 @@ namespace Toolbox.Editor
         [InitializeOnLoadMethod]
         internal static void InitializeSettings()
         {
-            var guids = AssetDatabase.FindAssets("t:ToolboxEditorSettings");
+            const string versionFileName = "Version.txt";
+
+            var guids = AssetDatabase.FindAssets("t:" + nameof(ToolboxEditorSettings));
             if (guids == null || guids.Length == 0) return;
-            var path = AssetDatabase.GUIDToAssetPath(guids.First());
-            Settings = AssetDatabase.LoadAssetAtPath(path, typeof(ToolboxEditorSettings)) as ToolboxEditorSettings;
+            var settingsPath = AssetDatabase.GUIDToAssetPath(guids[0]);
+            Settings = AssetDatabase.LoadAssetAtPath<ToolboxEditorSettings>(settingsPath);
+            var versionPath = settingsPath.Replace(Settings.name + ".asset", versionFileName);
+            Version = AssetDatabase.LoadAssetAtPath<TextAsset>(versionPath).text;
 
             if (Settings == null)
             {
@@ -35,11 +34,13 @@ namespace Toolbox.Editor
         {
             var guids = AssetDatabase.FindAssets("ToolboxSettingsUtility");
             if (guids == null || guids.Length == 0) return;
-            var path = AssetDatabase.GUIDToAssetPath(guids.First());
+            var path = AssetDatabase.GUIDToAssetPath(guids[0]);
             AssetDatabase.ImportAsset(path);
         }
 
 
         internal static ToolboxEditorSettings Settings { get; private set; }
+
+        internal static string Version { get; private set; } = "1.0.0";
     }
 }

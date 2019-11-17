@@ -56,15 +56,15 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         private void HandleEditorDrawing(UnityEditor.Editor editor, InLineEditorAttribute attribute)
         {
-            //begin inlined editor by drawing separation line
-            ToolboxEditorGui.DrawLayoutLine();
-
             //draw header if needed
             if (attribute.DrawHeader)
             {
                 editor.DrawHeader();
             }
 
+            //begin editor inside vertical group
+            EditorGUILayout.BeginVertical(Style.inlinedStyle);
+         
             //draw whole inspector and apply all changes 
             editor.serializedObject.Update();
             editor.OnInspectorGUI();
@@ -78,9 +78,8 @@ namespace Toolbox.Editor.Drawers
                     editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, attribute.PreviewHeight), Style.previewStyle);
                 }
             }
-
-            //end inlined editor by drawing separation line
-            ToolboxEditorGui.DrawLayoutLine();
+  
+            EditorGUILayout.EndVertical();
         }
 
 
@@ -127,8 +126,8 @@ namespace Toolbox.Editor.Drawers
             }
 
             if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, new GUIContent(property.objectReferenceValue.GetType().Name + " Inspector Preview"), true, Style.foldoutStyle))
-            {
-                //draw and prewarm inlined editor
+            {                
+                //draw and prewarm inlined editor   
                 HandleEditorPrewarm(editor, attribute);
             }
         }
@@ -148,11 +147,16 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         private static class Style
         {
+            internal static readonly GUIStyle inlinedStyle;
             internal static readonly GUIStyle foldoutStyle;
             internal static readonly GUIStyle previewStyle;
 
             static Style()
             {
+                inlinedStyle = new GUIStyle(EditorStyles.helpBox)
+                {
+                    padding = new RectOffset(13, 12, 8, 8)
+                };
                 foldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontSize = 9,
