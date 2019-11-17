@@ -164,22 +164,24 @@ namespace Toolbox.Editor
 
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
 
-                if (DrawDrawerList(decoratorDrawerHandlersList, "Decorator Drawers", "Assign all possible"))
+                const string assignButtonLabel = "Assign all possible";
+                    
+                if (DrawDrawerList(decoratorDrawerHandlersList, "Decorator Drawers", assignButtonLabel))
                 {
                     currentTarget.SetAllPossibleDecoratorDrawers();
                 }
 
-                if (DrawDrawerList(propertyDrawerHandlersList, "Property Drawers", "Assign all possible"))
+                if (DrawDrawerList(propertyDrawerHandlersList, "Property Drawers", assignButtonLabel))
                 {
                     currentTarget.SetAllPossiblePropertyDrawers();
                 }
 
-                if (DrawDrawerList(collectionDrawerHandlersList, "Collection Drawers", "Assign all possible"))
+                if (DrawDrawerList(collectionDrawerHandlersList, "Collection Drawers", assignButtonLabel))
                 {
                     currentTarget.SetAllPossibleCollectionDrawers();
                 }
 
-                if (DrawDrawerList(conditionDrawerHandlersList, "Condition Drawers", "Assign all possible"))
+                if (DrawDrawerList(conditionDrawerHandlersList, "Condition Drawers", assignButtonLabel))
                 {
                     currentTarget.SetAllPossibleConditionDrawers();
                 }
@@ -189,7 +191,7 @@ namespace Toolbox.Editor
 
                 ToolboxEditorGui.DrawLayoutLine(lineTickiness);
 
-                if (DrawDrawerList(targetTypeDrawerHandlersList, "Target Type Drawers", "Assign all possible"))
+                if (DrawDrawerList(targetTypeDrawerHandlersList, "Target Type Drawers", assignButtonLabel))
                 {
                     currentTarget.SetAllPossibleTargetTypeDrawers();
                 }
@@ -213,6 +215,9 @@ namespace Toolbox.Editor
             {
                 ToolboxSettingsUtility.ReimportSettings();
             }
+
+            GUILayout.FlexibleSpace();
+            GUILayout.Label(ToolboxSettingsUtility.Version, Style.settingsVersionLabelStyle);
         }
 
 
@@ -225,6 +230,7 @@ namespace Toolbox.Editor
             internal readonly static GUIStyle settingsFoldoutStyle;
             internal readonly static GUIStyle drawerListFoldoutStyle;
             internal readonly static GUIStyle folderListFoldoutStyle;
+            internal readonly static GUIStyle settingsVersionLabelStyle;
 
             internal readonly static GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings", 
                 EditorGUIUtility.IconContent("UnityEditor.HierarchyWindow").image);
@@ -263,6 +269,7 @@ namespace Toolbox.Editor
                     fontStyle = FontStyle.Bold,
                     fontSize = 10
                 };
+                settingsVersionLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
             }
         }
     }
