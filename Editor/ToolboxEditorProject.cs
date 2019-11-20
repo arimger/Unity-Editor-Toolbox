@@ -102,22 +102,45 @@ namespace Toolbox.Editor
         }
     }
 
+    public enum FolderDataType
+    {
+        Path,
+        Name
+    }
 
     [System.Serializable]
     public struct FolderData
     {
-        [SerializeField, Directory, Tooltip("Relative path from Assets directory.")]
+        [SerializeField]
+        private FolderDataType type;
+
+        [SerializeField, HideIf(nameof(type), FolderDataType.Name)]
+        private string name;
+        [SerializeField, HideIf(nameof(type), FolderDataType.Path), Directory, Tooltip("Relative path from Assets directory.")]
         private string path;
+
         [SerializeField]
         private Texture icon;
         [SerializeField]
         private Texture smallIcon;
 
 
+        public FolderDataType Type
+        {
+            get => type;
+            set => type = value;
+        }
+
         public string Path
         {
             get => "Assets/" + path;
             set => path = value;
+        }
+
+        public string Name
+        {
+            get => name;
+            set => name = value;
         }
 
         public Texture Icon

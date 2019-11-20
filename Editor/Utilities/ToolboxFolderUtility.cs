@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Toolbox.Editor
 {
@@ -9,7 +10,11 @@ namespace Toolbox.Editor
         /// <summary>
         /// All custom folders mapped with own path relative to Asset directory.
         /// </summary>
-        private readonly static Dictionary<string, FolderData> foldersData = new Dictionary<string, FolderData>();
+        private readonly static Dictionary<string, FolderData> pathBasedFoldersData = new Dictionary<string, FolderData>();
+        /// <summary>
+        /// All custom folders mapped with name.
+        /// </summary>
+        private readonly static Dictionary<string, FolderData> nameBasedFoldersData = new Dictionary<string, FolderData>();
 
 
         /// <summary>
@@ -24,20 +29,29 @@ namespace Toolbox.Editor
 
             for (var i = 0; i < settings.CustomFoldersCount; i++)
             {
-                var customFolder = settings.GetCustomFolderAt(i);
-                foldersData.Add(customFolder.Path, customFolder);
+                var folderData = settings.GetCustomFolderAt(i);
+
+                switch (folderData.Type)
+                {
+                    case FolderDataType.Path: pathBasedFoldersData.Add(folderData.Path, folderData);
+                        break;
+                    case FolderDataType.Name: nameBasedFoldersData.Add(folderData.Name, folderData);
+                        break;
+                }
             }
         }
 
 
         internal static bool IsCustomFolder(string path)
         {
-            return foldersData.ContainsKey(path);
+            return pathBasedFoldersData.ContainsKey(path) ||
+                   nameBasedFoldersData.ContainsKey(Path.GetFileName(path));
         }
 
         internal static bool TryGetFolderData(string path, out FolderData data)
         {
-            return foldersData.TryGetValue(path, out data);
+            return pathBasedFoldersData.TryGetValue(path, out data) ||
+                   nameBasedFoldersData.TryGetValue(Path.GetFileName(path), out data);
         }
 
         internal static FolderData GetFolderData(string path)
