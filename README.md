@@ -19,9 +19,8 @@ Copy and paste `Editor Toolbox` directory into your project (basically into `Ass
 	- [Hierarchy](#hierarchy)
 	- [Project](#project)
 	- [Toolbar](#toolbar)
-- [Tools and Editors](#tools-and-editors)
-	- [Terrain Editor](#terraineditor)
-	
+- [Editor Extras](#editor-extras)
+
 ## Attributes
 
 ### Native Drawers <a name="nativedrawers"></a>
@@ -181,7 +180,7 @@ public double var1;
 
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
 
-Drawers based on classes inheriting from **ToolboxDrawer** and associated **ToolboxAttribute**. A quite powerful custom system that allows you to create really flexible drawers. You can use them without limitations(they are working with sub-classes and as array children). Every ToolboxDrawer is layout-based. For proper work they need at least one settings file located in your project. Predefined one - `Editor Toolbox/EditorSettings.asset`.
+Drawers based on classes inheriting from **ToolboxDrawer** and associated **ToolboxAttribute**. A quite powerful custom system that allows you to create really flexible drawers. You can use them without limitations(they work with sub-classes and as array children). Every ToolboxDrawer is layout-based. For proper work they need at least one settings file located in your project. You can find predefined one here - `Editor Toolbox/EditorSettings.asset`.
 
 &nbsp;
 
@@ -353,27 +352,20 @@ public static class MyEditorUtility
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc10.png)
 
-## Tools and Editors
+## Editor Extras
 
-### Terrain Editor <a name="terraineditor"></a>
+I decieded to move additional editors and tools to Gist.
 
-> Editor Toolbox/Editor/Tools/Editors/TerrainToolEditor.cs
+### Terrain Editor
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc1.png)
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc9.png)
-
+Check it out [HERE](https://gist.github.com/arimger/00842a217ea8ab03d4e1b81f11592cf3)
 
 ---
 
-
 ### Field of View Generator
 
-> Editor Toolbox/Editor/Tools/Wizards/ViewGeneratorWizard.cs
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc3.png)
+Check it out [HERE](https://gist.github.com/arimger/f4ce98e9d3c5b0d4fb33a92e648f8442)
 
 ### Grid Generator
 
-> Editor Toolbox/Editor/Tools/Wizards/GridGeneratorWizard.cs
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc4.png)
+Check it out [HERE](https://gist.github.com/arimger/4c955744bb2e65f56e82117eed2e78cc)

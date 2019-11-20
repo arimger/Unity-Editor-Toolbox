@@ -51,14 +51,14 @@ public class SampleBehaviour : MonoBehaviour
 
     [HideLabel, Help("Use this toggle to enable/disable property.", order = 100)]
     public bool toggle2;
-    [ConditionalDisable("toggle2", true)]
+    [ConditionalDisable(nameof(toggle2), true)]
     public float var7;
 
     [BoxedHeader("9")]
 
-    [InstanceButton(typeof(SampleBehaviour), "ResetVar8", 
-        "Use this button to reset var8 using this instance[in Play mode]", ButtonActivityType.OnPlayMode, order = 100)]
-    [BroadcastButton("ResetVar8", "Use this button to reset var8 using broadcasting", ButtonActivityType.OnEditMode, order = 100)]
+    [InstanceButton(typeof(SampleBehaviour), nameof(ResetVar8), 
+                                        "Use this button to reset var8 using this instance[in Play mode]", ButtonActivityType.OnPlayMode, order = 100)]
+    [BroadcastButton(nameof(ResetVar8), "Use this button to reset var8 using broadcasting[in Edit mode]", ButtonActivityType.OnEditMode, order = 100)]
 
     [AssetPreview]
     public GameObject var8;
@@ -145,7 +145,7 @@ public class SampleBehaviour : MonoBehaviour
 
     [BoxedHeader("19")]
 
-    [Preset("presetValues")]
+    [Preset(nameof(presetValues))]
     public int presetTarget;
 
     private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
