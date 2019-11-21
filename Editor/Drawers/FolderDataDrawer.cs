@@ -31,23 +31,28 @@ namespace Toolbox.Editor.Drawers
 
             //begin property
             label = EditorGUI.BeginProperty(position, label, property);
-            label.image = isPathBased ? Style.pathBasedIcon : Style.nameBasedIcon;
             label.text = string.IsNullOrEmpty(propertyName) ? label.text : propertyName;
-            //set up proper element name
-            //if (!string.IsNullOrEmpty(propertyName))
-            //{
-            //    label.text = "<color=#35354a><size=11>[" + (isPathBased ? "/" : "n") + "]</size></color> " + propertyName;
-            //}
 
             var propertyPosition = new Rect(position.x, position.y, position.width, Style.height);
 
             if (!(property.isExpanded = EditorGUI.Foldout(propertyPosition, property.isExpanded, label, true, Style.folderLabelStyle)))
             {
                 EditorGUI.EndProperty();
-                //adjust position for small icon and draw it in label field
-                var smallIconRect = new Rect(position.xMax - Style.smallIconWidth, position.yMin - Style.spacing, Style.smallIconWidth, Style.smallIconHeight);
 
-                GUI.DrawTexture(smallIconRect, Style.folderTexture);
+                //adjust position for small icon and draw it in label field
+                var typeIconRect = new Rect(position.xMax - Style.smallIconWidth,
+                                            position.yMin - Style.spacing, Style.smallIconWidth, Style.smallIconHeight);
+
+                //draw additional type icon on folder icon
+                GUI.DrawTexture(typeIconRect, Style.folderTexture);
+
+                if (isPathBased)
+                {
+                    typeIconRect.y += Style.spacing;
+                    typeIconRect.x += Style.spacing * 1.5f;
+                    GUI.DrawTexture(typeIconRect, Style.folderTexture);
+                }
+
                 return;
             }
 
@@ -139,9 +144,6 @@ namespace Toolbox.Editor.Drawers
             internal const float smallIconWidth = ToolboxEditorProject.Style.folderIconWidthSmall;
             internal const float smallIconHeight = ToolboxEditorProject.Style.folderIconHeightSmall;
 
-            internal static readonly Texture pathBasedIcon;
-            internal static readonly Texture nameBasedIcon;
-
             internal static readonly Texture2D folderTexture;
 
             internal static readonly GUIStyle folderLabelStyle;
@@ -149,8 +151,6 @@ namespace Toolbox.Editor.Drawers
             static Style()
             {
                 folderTexture = EditorGUIUtility.FindTexture("Folder Icon");
-                pathBasedIcon = EditorGUIUtility.IconContent("winbtn_win_rest_h")?.image;
-                nameBasedIcon = EditorGUIUtility.IconContent("winbtn_win_max_h")?.image;
 
                 folderLabelStyle = new GUIStyle(EditorStyles.foldout)
                 {
