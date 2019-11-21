@@ -8,6 +8,19 @@ namespace Toolbox.Editor
     [CustomPropertyDrawer(typeof(DirectoryAttribute))]
     public class DirectoryAttributeDrawer : PropertyDrawer
     {
+        private bool IsPathValid(string propertyPath, string assetRelativePath)
+        {
+            var projectRelativePath = Application.dataPath + "/";
+
+            if (!string.IsNullOrEmpty(assetRelativePath))
+            {
+                projectRelativePath += assetRelativePath + "/";
+            }
+
+            return Directory.Exists(projectRelativePath + propertyPath);
+        }
+
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             //validate property type
@@ -19,7 +32,7 @@ namespace Toolbox.Editor
             var additionalHeight = 0.0f;
 
             //validate directory path
-            if (!Directory.Exists(Application.dataPath + "/" + property.stringValue))
+            if (!IsPathValid(property.stringValue, Attribute.RelativePath))
             {
                 additionalHeight = Style.boxHeight + Style.spacing;
             }
@@ -39,10 +52,10 @@ namespace Toolbox.Editor
             }
 
             //current stored path validation
-            if (!Directory.Exists(Application.dataPath + "/" + property.stringValue))
+            if (!IsPathValid(property.stringValue, Attribute.RelativePath))
             {
                 var helpBoxRect = new Rect(position.x, position.y, position.width, Style.boxHeight);
-                EditorGUI.HelpBox(helpBoxRect, "Provided directory does not exist in Project.", MessageType.Warning);
+                EditorGUI.HelpBox(helpBoxRect, "Provided directory does not exist.", MessageType.Warning);
                 position.y += Style.boxHeight + Style.spacing + Style.spacing;
             }
 
@@ -50,14 +63,25 @@ namespace Toolbox.Editor
             position.width -= Style.directoryButtonWidth + Style.spacing;
             //draw standard string property field
             EditorGUI.PropertyField(position, property, label);
-            position.x = position.xMax + Style.spacing; ;
+            position.x = position.xMax + Style.spacing;
             position.width = Style.directoryButtonWidth;
             //create additional pick directory button
             if (GUI.Button(position, Style.directoryButtonContent, Style.directoryButtonStyle))
             {
-                property.stringValue = EditorUtility.OpenFolderPanel("Pick directory", "Assets", "").Replace(Application.dataPath + "/", "");
+                var assetRelativePath = Attribute.RelativePath;
+                var projectRelativePath = Application.dataPath + "/";
+
+                if (!string.IsNullOrEmpty(assetRelativePath))
+                {
+                    projectRelativePath += assetRelativePath + "/";
+                }
+
+                property.stringValue = EditorUtility.OpenFolderPanel("Pick directory", "Assets/" + assetRelativePath, "").Replace(projectRelativePath, "");
             }
         }
+
+
+        private DirectoryAttribute Attribute => attribute as DirectoryAttribute;
 
 
         private static class Style

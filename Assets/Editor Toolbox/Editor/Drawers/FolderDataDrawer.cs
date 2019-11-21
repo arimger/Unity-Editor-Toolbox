@@ -71,15 +71,19 @@ namespace Toolbox.Editor.Drawers
             //decide what property should be drawn depenging on folder data type
             if (isPathBased)
             {
-                EditorGUI.PropertyField(propertyPosition, pathProperty, false);          
+                propertyPosition.height = EditorGUI.GetPropertyHeight(pathProperty);
+                EditorGUI.PropertyField(propertyPosition, pathProperty, false);
+                propertyPosition.y += propertyPosition.height + Style.spacing;
+                sumPropertyHeight += propertyPosition.height + Style.spacing;
+                propertyPosition.height = Style.height;
             }
             else
             {
                 EditorGUI.PropertyField(propertyPosition, nameProperty, false);
+                propertyPosition.y += rawPropertyHeight;
+                sumPropertyHeight += rawPropertyHeight;
             }
 
-            propertyPosition.y += rawPropertyHeight;
-            sumPropertyHeight += rawPropertyHeight;
             //draw normal icon property
             EditorGUI.PropertyField(propertyPosition, usualIconProperty, false);
             propertyPosition.y += rawPropertyHeight;
