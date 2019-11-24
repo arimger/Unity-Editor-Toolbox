@@ -7,7 +7,13 @@ TODO
 Unity 2018.x or newer
 
 ## Instalation
-Copy and paste `Editor Toolbox` directory into your project (basically into `Asset` directory or somewhere deeper). 
+
+- Copy and paste `Editor Toolbox` directory into your project (basically into `Asset` directory or somewhere deeper)
+- Find ToolboxEditorSettings file (predefined one is created as Editor Toolbox/EditorSettings.asset)
+	- Enable/disable Hierarchy overlay
+	- Enable/disable Project icons or/and assign own directories
+	- Enable/disable Toolbox drawers or/and assign custom drawers
+- Press "Apply" button
 
 ## Table Of Contents
 
@@ -87,9 +93,21 @@ Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associa
 
 #### TypeConstraintAttribute
 
+```csharp
+ClassExtends(typeof(UnityEngine.Object))]
+public SerializedTypeReference type1;
+[ClassImplements(typeof(System.Collections.ICollection))]
+public SerializedTypeReference type2;
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc14.png)
 
 #### ReadOnlyFieldAttribute
+
+```csharp
+[ReadOnlyField]
+public int var1;
+```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc15.png)
 
@@ -143,6 +161,19 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExampl
 
 #### BroadcastButtonAttribute
 
+```csharp
+//NOTE1: to broadcast messages in Edit mode desired component has to have [ExecuteAlways] or [ExecuteInEditMode] attribute
+//NOTE2: Unity broadcasting will invoke all matching methods on this behaviour
+
+[BroadcastButton(nameof(MyMethod), "Click me to broadcast message", ButtonActivityType.OnEditMode, order = 100)]
+public int var1;
+
+private void MyMethod()
+{
+	Debug.Log("MyMethod is invoked");
+}
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc28.png)
 
 #### InstanceButtonAttribute
@@ -166,6 +197,11 @@ public int presetTarget;
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc33.png)
 
 #### SearchableEnumAttribute
+
+```csharp
+[SearchableEnum]
+public KeyCode enumSearch;
+```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc34.png)
 
@@ -351,6 +387,9 @@ public static class MyEditorUtility
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc10.png)
+
+### Utilities 
+TODO
 
 ## Editor Extras
 
