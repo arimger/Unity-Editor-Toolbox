@@ -11,6 +11,8 @@ namespace Toolbox.Editor
 
         internal const string defaultScriptPropertyType = "PPtr<MonoScript>";
 
+        internal const string defaultObjectPickEventName = "ObjectSelectorUpdated";
+
 
         internal static bool IsDefaultScriptProperty(SerializedProperty property)
         {

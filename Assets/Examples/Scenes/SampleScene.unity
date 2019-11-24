@@ -318,7 +318,7 @@ MonoBehaviour:
   enumFlag2: 198
   var13: {fileID: 0}
   randomValue: -8.382832
-  directory: ToolAssets
+  directory: Editor Toolbox/Editor/Internal
   sceneName: SampleScene
   presetTarget: 3
   enumSearch: 8

@@ -6,11 +6,17 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(FolderData))]
     public class FolderDataDrawer : PropertyDrawer
     {
+        private const string selectorEventName = "ObjectSelectorUpdated";
+
+        private const int usualIconPickedId = 1001;
+        private const int smallIconPickedId = 1002;
+
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            //if expanded - draw foldout + 4 properties + additional icon
+            //if expanded - draw foldout + 2 properties + buttons strip + additional icon 
             return property.isExpanded
-                ? EditorGUI.GetPropertyHeight(property, label) + Style.iconHeight - Style.height
+                ? EditorGUI.GetPropertyHeight(property, label) + Style.iconHeight - Style.height * 2
                 : Style.height;
         }
 
@@ -84,12 +90,43 @@ namespace Toolbox.Editor.Drawers
                 sumPropertyHeight += rawPropertyHeight;
             }
 
-            //draw normal icon property
-            EditorGUI.PropertyField(propertyPosition, usualIconProperty, false);
-            propertyPosition.y += rawPropertyHeight;
-            sumPropertyHeight += rawPropertyHeight;
-            //draw small icon property
-            EditorGUI.PropertyField(propertyPosition, smallIconProperty, false);
+            propertyPosition.y += Style.spacing;
+            propertyPosition.x += Style.iconsPadding;
+            propertyPosition.width = Style.iconWidth;
+
+            //draw normal icon property picker
+            if (GUI.Button(propertyPosition, Style.usualIconPickerContent, Style.usualIconPickerStyle))
+            {
+                var propertyHash = property.GetPropertyKey().GetHashCode();
+                EditorGUIUtility.ShowObjectPicker<Texture>(usualIconProperty.objectReferenceValue, false, null, propertyHash + usualIconPickedId);
+            }
+
+            propertyPosition.x += Style.iconWidth;
+            propertyPosition.width = Style.smallIconWidth;
+
+            //draw small icon property picker
+            if (GUI.Button(propertyPosition, Style.smallIconPickerContent, Style.smallIconPickerStyle))
+            {
+                var propertyHash = property.GetPropertyKey().GetHashCode();
+                EditorGUIUtility.ShowObjectPicker<Texture>(smallIconProperty.objectReferenceValue, false, null, propertyHash + smallIconPickedId);
+            }
+
+            //catch object selection event and assign it to proper property
+            if (Event.current.commandName == selectorEventName)
+            {
+                //get proper action id by removing unique property hash code
+                var controlId = EditorGUIUtility.GetObjectPickerControlID() - property.GetPropertyKey().GetHashCode();
+                switch (controlId)
+                {
+                    case usualIconPickedId:
+                        usualIconProperty.objectReferenceValue = EditorGUIUtility.GetObjectPickerObject();
+                        break;
+                    case smallIconPickedId:
+                        smallIconProperty.objectReferenceValue = EditorGUIUtility.GetObjectPickerObject();
+                        break;
+                }
+            }
+
             position.x += Style.iconsPadding;
 
             //get specific rects for folder icons
@@ -151,6 +188,11 @@ namespace Toolbox.Editor.Drawers
             internal static readonly Texture2D folderTexture;
 
             internal static readonly GUIStyle folderLabelStyle;
+            internal static readonly GUIStyle usualIconPickerStyle;
+            internal static readonly GUIStyle smallIconPickerStyle;
+
+            internal static readonly GUIContent usualIconPickerContent;
+            internal static readonly GUIContent smallIconPickerContent;
 
             static Style()
             {
@@ -160,6 +202,12 @@ namespace Toolbox.Editor.Drawers
                 {
                     padding = new RectOffset(17, 2, 0, 0),                                                         
                 };
+
+                usualIconPickerStyle = new GUIStyle(EditorStyles.miniButtonLeft);
+                smallIconPickerStyle = new GUIStyle(EditorStyles.miniButtonRight);
+
+                usualIconPickerContent = new GUIContent("Select");
+                smallIconPickerContent = EditorGUIUtility.IconContent("winbtn_graph");
             }
         }
     }

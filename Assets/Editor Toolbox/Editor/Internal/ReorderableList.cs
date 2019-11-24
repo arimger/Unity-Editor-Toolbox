@@ -123,7 +123,9 @@ namespace Toolbox.Editor.Internal
         /// <param name="footerRect"></param>
         private void DoList(Rect headerRect, Rect midderRect, Rect footerRect)
         {
-            using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
+            var indentCounter = -EditorGUI.indentLevel;
+
+            using (new EditorGUI.IndentLevelScope(indentCounter))
             {
                 DoListHeader(headerRect);
                 DoListMiddle(midderRect);
@@ -866,7 +868,7 @@ namespace Toolbox.Editor.Internal
             EditorGUI.LabelField(rect, Style.listIsEmptyContent);
         }
 
-#endregion
+        #endregion
 
 
         public void GrabKeyboardFocus()
