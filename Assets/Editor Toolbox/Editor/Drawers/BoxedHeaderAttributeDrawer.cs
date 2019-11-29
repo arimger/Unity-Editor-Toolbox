@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(BoxedHeaderAttribute))]
     public class BoxedHeaderAttributeDrawer : DecoratorDrawer

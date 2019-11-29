@@ -2,6 +2,9 @@
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// Creates additional preview texture for provided object. Can be used only on <see cref="Object"/> proeprties.
+    /// </summary>
     [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false)]
     public class AssetPreviewAttribute : PropertyAttribute
     {

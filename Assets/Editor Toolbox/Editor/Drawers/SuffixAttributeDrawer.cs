@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SuffixAttribute))]
     public class SuffixAttributeDrawer : PropertyDrawer

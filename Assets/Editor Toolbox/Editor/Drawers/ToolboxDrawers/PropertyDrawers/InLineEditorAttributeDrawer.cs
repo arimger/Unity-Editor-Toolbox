@@ -93,21 +93,15 @@ namespace Toolbox.Editor.Drawers
         {
             EditorGUILayout.PropertyField(property, label, property.isExpanded);
 
-            //basically multiple values are not supported
-            if (property.hasMultipleDifferentValues)
-            {
-                return;
-            }
-
             //reference value type validation
             if (property.propertyType != SerializedPropertyType.ObjectReference)
             {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only on reference value properties.");
+                ToolboxLogUtility.LogWrongAttributeUsageWarning(property, attribute, typeof(UnityEngine.Object));
                 return;
             }
 
-            if (property.objectReferenceValue == null)
+            //basically multiple values are not supported yet
+            if (property.hasMultipleDifferentValues || property.objectReferenceValue == null)
             {
                 return;
             }

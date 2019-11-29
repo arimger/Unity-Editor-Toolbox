@@ -4,8 +4,15 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ClampAttribute))]
-    public class ClampAttributeDrawer : PropertyDrawer
+    public class ClampAttributeDrawer : ToolboxNativeDrawerBase
     {
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Float ||
+                   property.propertyType == SerializedPropertyType.Integer;
+        }
+
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return base.GetPropertyHeight(property, label);
@@ -13,13 +20,7 @@ namespace Toolbox.Editor.Drawers
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.Float && property.propertyType != SerializedPropertyType.Integer)
-            {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only number value properties.");
-                EditorGUI.PropertyField(position, property, label, property.isExpanded);
-                return;
-            }
+            base.OnGUI(position, property, label);
 
             var minValue = Attribute.MinValue;
             var maxValue = Attribute.MaxValue;

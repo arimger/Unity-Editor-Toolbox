@@ -25,10 +25,10 @@ namespace Toolbox.Editor.Drawers
         {
             internal static readonly float spacing = 2.5f;
 
-            internal static GUIStyle headerStyle;
-            internal static GUIStyle headerBackgroundStyle;
-            internal static GUIStyle sectionBackgroundStyle;
-            internal static GUIStyle foldoutStyle;
+            internal static readonly GUIStyle headerStyle;
+            internal static readonly GUIStyle headerBackgroundStyle;
+            internal static readonly GUIStyle sectionBackgroundStyle;
+            internal static readonly GUIStyle foldoutStyle;
 
             static Style()
             {

@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ConditionalAttribute))]
-    public abstract class ConditionalAttributeDrawer : PropertyDrawer
+    public abstract class ConditionalAttributeDrawer : ToolboxNativeDrawerBase
     {
         protected bool IsConditionMet(SerializedProperty property)
         {

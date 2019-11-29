@@ -6,11 +6,17 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(TagSelectorAttribute))]
-    public class TagSelectorPropertyDrawer : PropertyDrawer
+    public class TagSelectorPropertyDrawer : ToolboxNativeDrawerBase
     {
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.String;
+        }
+
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return base.GetPropertyHeight(property, label);
@@ -18,13 +24,7 @@ namespace Toolbox.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.String)
-            {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only on string properties.");
-                EditorGUI.PropertyField(position, property, label);
-                return;
-            }
+            base.OnGUI(position, property, label);
 
             EditorGUI.BeginProperty(position, label, property);
             var tags = new List<string>

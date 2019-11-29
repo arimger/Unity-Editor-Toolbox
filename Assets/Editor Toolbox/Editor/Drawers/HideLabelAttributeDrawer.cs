@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(HideLabelAttribute))]
-    public class HideLabelAttributeDrawer : PropertyDrawer
+    public class HideLabelAttributeDrawer : ToolboxNativeDrawerBase
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

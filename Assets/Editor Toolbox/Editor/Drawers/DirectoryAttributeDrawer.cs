@@ -3,12 +3,12 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(DirectoryAttribute))]
-    public class DirectoryAttributeDrawer : PropertyDrawer
+    public class DirectoryAttributeDrawer : ToolboxNativeDrawerBase
     {
-        private bool IsPathValid(string propertyPath, string assetRelativePath)
+        private static bool IsPathValid(string propertyPath, string assetRelativePath)
         {
             var projectRelativePath = Application.dataPath + "/";
 
@@ -18,6 +18,12 @@ namespace Toolbox.Editor
             }
 
             return Directory.Exists(projectRelativePath + propertyPath);
+        }
+
+
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.String;
         }
 
 
@@ -43,13 +49,7 @@ namespace Toolbox.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.String)
-            {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only on string value properties.");
-                EditorGUI.PropertyField(position, property, label, property.isExpanded);
-                return;
-            }
+            base.OnGUI(position, property, label);
 
             //current stored path validation
             if (!IsPathValid(property.stringValue, Attribute.RelativePath))

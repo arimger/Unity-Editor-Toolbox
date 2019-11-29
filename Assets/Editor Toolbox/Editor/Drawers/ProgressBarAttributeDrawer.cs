@@ -1,31 +1,26 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ProgressBarAttribute))]
-    public class ProgressBarAttributeDrawer : PropertyDrawer
+    public class ProgressBarAttributeDrawer : ToolboxNativeDrawerBase
     {
-        private float additionalHeight;
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Float ||
+                   property.propertyType == SerializedPropertyType.Integer;
+        }
 
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return Style.barHeight + additionalHeight;
+            return Style.barHeight;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.Float && property.propertyType != SerializedPropertyType.Integer)
-            {
-                var helpBoxRect = new Rect(position.x, position.y, position.width, position.height / 2);
-                EditorGUI.HelpBox(helpBoxRect, "ProgressBar attribute used in non-int/float value field.", MessageType.Error);
-                additionalHeight = Style.height + Style.spacing;
-                position.height = additionalHeight - Style.spacing;
-                position.y += additionalHeight + Style.spacing;
-                EditorGUI.PropertyField(position, property, label, property.isExpanded);
-                return;
-            }
+            base.OnGUI(position, property, label);
 
             var value = property.propertyType == SerializedPropertyType.Integer ? property.intValue : property.floatValue;
             var minValue = Attribute.MinValue;

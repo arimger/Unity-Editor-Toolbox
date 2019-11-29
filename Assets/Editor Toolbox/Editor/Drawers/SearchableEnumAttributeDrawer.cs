@@ -6,17 +6,17 @@ namespace Toolbox.Editor.Drawers
     using Toolbox.Editor.Internal;
 
     [CustomPropertyDrawer(typeof(SearchableEnumAttribute))]
-    public class SearchableEnumAttributeDrawer : PropertyDrawer
+    public class SearchableEnumAttributeDrawer : ToolboxNativeDrawerBase
     {
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Enum;
+        }
+
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.Enum)
-            {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only on enum value properties.");
-                EditorGUI.PropertyField(position, property);
-                return;
-            }
+            base.OnGUI(position, property, label);
 
             var buttonLabel = property.enumValueIndex >= 0 && property.enumValueIndex < property.enumDisplayNames.Length
                 ? new GUIContent(property.enumDisplayNames[property.enumValueIndex])

@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+//TODO: support for array elements
+
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(EnumFlagAttribute))]
-    public class EnumFlagAttributeDrawer : PropertyDrawer
+    public class EnumFlagAttributeDrawer : ToolboxNativeDrawerBase
     {
         private const float mininumButtonWidth = 80.0f;
         private const float minimumButtonHeight = 16.0f;
@@ -18,7 +20,6 @@ namespace Toolbox.Editor
         private int maxButtonsInRow = 1;
     
         private float minButtonsWidth;
-
         private float additionalHeight;
 
 
@@ -127,6 +128,12 @@ namespace Toolbox.Editor
         }
 
 
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Enum;
+        }
+
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return base.GetPropertyHeight(property, label) + additionalHeight;
@@ -134,15 +141,9 @@ namespace Toolbox.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            additionalHeight = 0;
+            base.OnGUI(position, property, label);
 
-            if (property.propertyType != SerializedPropertyType.Enum)
-            {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only on enum value properties.");
-                EditorGUI.PropertyField(position, property, label);
-                return;
-            }
+            additionalHeight = 0;
 
             switch (Attribute.Style)
             {

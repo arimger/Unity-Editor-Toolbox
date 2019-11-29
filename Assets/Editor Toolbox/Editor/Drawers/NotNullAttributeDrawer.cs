@@ -1,11 +1,22 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(NotNullAttribute))]
-    public class NotNullAttributeDrawer : PropertyDrawer
-    { 
+    public class NotNullAttributeDrawer : ToolboxNativeDrawerBase
+    {
+        /// <summary>
+        /// Checks if provided property has valid type.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.ObjectReference;
+        }
+
+
         /// <summary>
         /// Overall property height, depending on aditional height.
         /// </summary>
@@ -14,7 +25,7 @@ namespace Toolbox.Editor
         /// <returns></returns>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.ObjectReference || property.objectReferenceValue)
+            if (!IsPropertyValid(property) || property.objectReferenceValue)
             {
                 return base.GetPropertyHeight(property, label);
             }
@@ -31,14 +42,7 @@ namespace Toolbox.Editor
         /// <param name="label"></param>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            //validate property type
-            if (property.propertyType != SerializedPropertyType.ObjectReference)
-            {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only on reference value properties.");
-                EditorGUI.PropertyField(position, property, label);
-                return;
-            }
+            base.OnGUI(position, property, label);
 
             //set up proper height for this property field
             position.height = EditorGUI.GetPropertyHeight(property);
@@ -54,7 +58,7 @@ namespace Toolbox.Editor
 
                 //set additional height as help box height + 2x spacing between properties
                 position.y += Style.boxHeight + Style.spacing * 2;
-
+                //set proper warning color 
                 warnColor = Style.backgroundColor;
             }
 
