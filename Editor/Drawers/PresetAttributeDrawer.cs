@@ -7,7 +7,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(PresetAttribute))]
-    public class PresetAttributeDrawer : PropertyDrawer
+    public class PresetAttributeDrawer : ToolboxNativeDrawerBase
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -59,9 +59,9 @@ namespace Toolbox.Editor.Drawers
                             fieldInfo.SetValue(target, values[index]);
 
                             //workaround to call OnValidate during fieldInfo edit
-                            if (target is MonoBehaviour)
+                            if (target is Component)
                             {
-                                (target as MonoBehaviour).SendMessage("OnValidate", SendMessageOptions.DontRequireReceiver);
+                                (target as Component).SendMessage("OnValidate", SendMessageOptions.DontRequireReceiver);
                             }
                         }
 
@@ -81,7 +81,7 @@ namespace Toolbox.Editor.Drawers
             else
             {
                 Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - preset field(" + Attribute.PresetPropertyName + ") has to be a one-dimensional collection(array or list). Property will be drawn in standard way.");
+                                 " - preset field (" + Attribute.PresetPropertyName + ") has to be a one-dimensional collection(array or list). Property will be drawn in standard way.");
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }

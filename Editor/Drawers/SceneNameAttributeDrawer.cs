@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SceneNameAttribute))]
-    public class SceneNameAttributeDrawer : PropertyDrawer
+    public class SceneNameAttributeDrawer : ToolboxNativeDrawerBase
     {
         private static bool SceneExists(string sceneName)
         {
@@ -23,35 +23,36 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        private float additionalHeight;
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.String;
+        }
 
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return base.GetPropertyHeight(property, label) + additionalHeight;
+            if (!SceneExists(property.stringValue))
+            {         
+                //set additional height as help box height + 2x spacing between properties
+                return base.GetPropertyHeight(property, label) + Style.height + Style.spacing * 2;
+            }
+
+            return base.GetPropertyHeight(property, label);
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.String)
-            {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only on string value properties.");
-                EditorGUI.PropertyField(position, property, label);
-                return;
-            }
-
-            additionalHeight = 0;
+            base.OnGUI(position, property, label);
 
             if (!SceneExists(property.stringValue))
             {
                 var helpBoxRect = new Rect(position.x, position.y, position.width, Style.height);
                 EditorGUI.HelpBox(helpBoxRect, "Scene does not exist. Check available Scenes in Build options.", MessageType.Warning);
-                //set additional height as help box height + 2x spacing between properties
-                additionalHeight = Style.height + Style.spacing * 2;
-                position.height -= additionalHeight;
+      
+                //adjust property label height
+                position.height -= Style.height + Style.spacing * 2;
                 //adjust OY position for target property
-                position.y += additionalHeight;
+                position.y += Style.height + Style.spacing * 2;
             }
 
             EditorGUI.PropertyField(position, property, label, property.isExpanded);

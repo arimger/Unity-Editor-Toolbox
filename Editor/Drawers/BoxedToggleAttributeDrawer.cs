@@ -1,11 +1,17 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(BoxedToggleAttribute))]
-    public class BoxedToggleAttributeDrawer : PropertyDrawer
+    public class BoxedToggleAttributeDrawer : ToolboxNativeDrawerBase
     {
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Boolean;
+        }
+
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return Style.height;
@@ -13,13 +19,7 @@ namespace Toolbox.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.Boolean)
-            {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only on boolean value properties.");
-                EditorGUI.PropertyField(position, property, label, property.isExpanded);
-                return;
-            }
+            base.OnGUI(position, property, label);
 
             EditorGUI.LabelField(position, GUIContent.none, GUI.skin.box);
             label.text = string.IsNullOrEmpty(Attribute.Label) ? label.text : Attribute.Label;

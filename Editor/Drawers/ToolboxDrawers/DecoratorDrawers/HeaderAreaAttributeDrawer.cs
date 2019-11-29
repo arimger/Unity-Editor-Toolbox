@@ -21,8 +21,8 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal static GUIStyle boxStyle;
-            internal static GUIStyle labelStyle;
+            internal static readonly GUIStyle boxStyle;
+            internal static readonly GUIStyle labelStyle;
 
             static Style()
             {

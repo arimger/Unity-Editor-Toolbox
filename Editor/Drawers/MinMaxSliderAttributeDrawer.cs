@@ -1,31 +1,25 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]
-    public class MinMaxSliderAttributeDrawer : PropertyDrawer
+    public class MinMaxSliderAttributeDrawer : ToolboxNativeDrawerBase
     {
-        private float additionalHeight;
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Vector2;
+        }
 
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return base.GetPropertyHeight(property, label) + additionalHeight;
+            return base.GetPropertyHeight(property, label);
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.Vector2)
-            {
-                var helpBoxRect = new Rect(position.x, position.y, position.width, position.height / 2);
-                EditorGUI.HelpBox(helpBoxRect, "MinMax Slider attribute used in non-Vector2 value field.", MessageType.Error);
-                additionalHeight = Style.height + Style.spacing;
-                position.height = additionalHeight - Style.spacing;
-                position.y += additionalHeight + Style.spacing;
-                EditorGUI.PropertyField(position, property, label, property.isExpanded);
-                return;
-            }
+            base.OnGUI(position, property, label);
 
             var labelWidth = EditorGUIUtility.labelWidth;
             var fieldWidth = EditorGUIUtility.fieldWidth;

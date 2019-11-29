@@ -1,10 +1,10 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(NewLabelAttribute))]
-    public class NewLabelAttributeDrawer : PropertyDrawer
+    public class NewLabelAttributeDrawer : ToolboxNativeDrawerBase
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

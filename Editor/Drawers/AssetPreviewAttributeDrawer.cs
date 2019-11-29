@@ -1,15 +1,20 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(AssetPreviewAttribute))]
-    public class AssetPreviewAttributeDrawer : PropertyDrawer
+    public class AssetPreviewAttributeDrawer : ToolboxNativeDrawerBase
     {
         /// <summary>
-        /// Needed height for asset preview texture.
+        /// Checks if provided property is valid.
         /// </summary>
-        private float additionalHeight;
+        /// <param name="property"></param>
+        /// <returns></returns>
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.ObjectReference;
+        }
 
 
         /// <summary>
@@ -19,7 +24,15 @@ namespace Toolbox.Editor
         /// <param name="label"></param>
         /// <returns></returns>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
+        {                
+            //set additional height as preview + 2x spacing + 2x frame offset
+            var additionalHeight = Attribute.Height + Style.frameSize * 2 + Style.spacing * 2;
+            if (!Attribute.UseLabel)
+            {
+                //adjust height to old label position
+                additionalHeight -= Style.height;
+            }
+
             return Style.height + additionalHeight;
         }
 
@@ -31,15 +44,7 @@ namespace Toolbox.Editor
         /// <param name="label"></param>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.ObjectReference)
-            {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only on reference value properties.");
-                EditorGUI.PropertyField(position, property, label, property.isExpanded);
-                return;
-            }
-
-            additionalHeight = 0;
+            base.OnGUI(position, property, label);
 
             if (Attribute.UseLabel)
             {
@@ -47,8 +52,6 @@ namespace Toolbox.Editor
             }
             else
             {
-                //set additional height as opposite label
-                additionalHeight -= Style.height;
                 //adjust OY position since we need no label
                 position.y -= Style.height;
             }
@@ -67,7 +70,6 @@ namespace Toolbox.Editor
 
                 Style.textureStyle.normal.background = previewTexture;
                 //set additional height as preview + 2x spacing + 2x frame offset
-                additionalHeight += height + Style.frameSize * 2 + Style.spacing * 2;
                 position.height = height + Style.frameSize;
                 position.width = width + Style.frameSize + indent;
                 position.y += Style.height + Style.spacing;
@@ -99,8 +101,8 @@ namespace Toolbox.Editor
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
             internal static readonly float frameSize = 6.0f;
 
-            internal static GUIStyle textureStyle;
-            internal static GUIStyle backgroundStyle;
+            internal static readonly GUIStyle textureStyle;
+            internal static readonly GUIStyle backgroundStyle;
 
             static Style()
             {

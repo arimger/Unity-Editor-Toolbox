@@ -2,6 +2,9 @@
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// Use this attribute on arrays or generic lists to draw reorderable list in inspector window. 
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class ReorderableListAttribute : ToolboxCollectionAttribute
     {

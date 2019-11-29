@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ConditionalDisableAttribute))]
     public class ConditionalDisableAttributeDrawer : ConditionalAttributeDrawer

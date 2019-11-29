@@ -3,7 +3,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(InstanceButtonAttribute))]
     public class InstanceButtonAttributeDrawer : DecoratorDrawer

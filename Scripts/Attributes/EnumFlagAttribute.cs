@@ -2,6 +2,9 @@
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// Use this attribute on <see cref="Enum"/> fields marked with <see cref="FlagsAttribute"/>.
+    /// </summary>
     [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false)]
     public class EnumFlagAttribute : PropertyAttribute
     {

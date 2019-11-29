@@ -1,11 +1,18 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(RandomAttribute))]
-    public class RandomAttributeDrawer : PropertyDrawer
+    public class RandomAttributeDrawer : ToolboxNativeDrawerBase
     {
+        protected override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Float ||
+                   property.propertyType == SerializedPropertyType.Integer;
+        }
+
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return base.GetPropertyHeight(property, label);
@@ -13,13 +20,7 @@ namespace Toolbox.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.Float && property.propertyType != SerializedPropertyType.Integer)
-            {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - " + attribute.GetType() + " can be used only on float or int value properties.");
-                EditorGUI.PropertyField(position, property, label, property.isExpanded);
-                return;
-            }
+            base.OnGUI(position, property, label);
 
             //adjust field width to additional button
             var fieldRect = new Rect(position.x, position.y, position.width - Style.buttonWidth - Style.spacing, position.height);
@@ -31,13 +32,13 @@ namespace Toolbox.Editor
             if (GUI.Button(buttonRect, Style.buttonContent))
             {
                 var random = Random.Range(Attribute.MinValue, Attribute.MaxValue);
-                if (property.propertyType == SerializedPropertyType.Integer)
+                if (property.propertyType == SerializedPropertyType.Float)
                 {
-                    property.intValue = (int)random;
+                    property.floatValue = random;
                 }
                 else
                 {
-                    property.floatValue = random;
+                    property.intValue = (int)random;
                 }
             }
         }
