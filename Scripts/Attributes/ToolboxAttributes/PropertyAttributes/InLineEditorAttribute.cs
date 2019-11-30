@@ -2,6 +2,9 @@
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// Draw editors associated to <see cref="Object"/> property.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class InLineEditorAttribute : ToolboxPropertyAttribute
     {

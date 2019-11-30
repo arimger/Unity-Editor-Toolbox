@@ -5,10 +5,12 @@ namespace Toolbox.Editor.Drawers
 {
     public class BeginHorizontalAttributeDrawer : ToolboxDecoratorDrawer<BeginHorizontalAttribute>
     {
-        public override void OnGuiBegin(BeginHorizontalAttribute attribute)
+        protected override void OnGuiBeginSafe(BeginHorizontalAttribute attribute)
         {
+            //set new label width for this area
+            EditorGUIUtility.labelWidth = EditorGUIUtility.currentViewWidth * attribute.LabelToWdithRatio;
+            //begin horizontal group
             EditorGUILayout.BeginHorizontal();
-            EditorGUIUtility.labelWidth = attribute.LabelWdith;
         }
     }
 }

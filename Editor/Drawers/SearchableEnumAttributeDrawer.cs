@@ -6,25 +6,17 @@ namespace Toolbox.Editor.Drawers
     using Toolbox.Editor.Internal;
 
     [CustomPropertyDrawer(typeof(SearchableEnumAttribute))]
-    public class SearchableEnumAttributeDrawer : ToolboxNativeDrawerBase
+    public class SearchableEnumAttributeDrawer : ToolboxNativeDrawer
     {
-        protected override bool IsPropertyValid(SerializedProperty property)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            return property.propertyType == SerializedPropertyType.Enum;
-        }
-
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            base.OnGUI(position, property, label);
-
             var buttonLabel = property.enumValueIndex >= 0 && property.enumValueIndex < property.enumDisplayNames.Length
                 ? new GUIContent(property.enumDisplayNames[property.enumValueIndex])
                 : new GUIContent();
             var id = GUIUtility.GetControlID(FocusType.Keyboard, position);
 
             //draw prefix label and begin true property
-            label    = EditorGUI.BeginProperty(position, label, property);
+            label = EditorGUI.BeginProperty(position, label, property);
             position = EditorGUI.PrefixLabel(position, id, label);
             //draw dropdown button, will be used to activate popup
             if (EditorGUI.DropdownButton(position, buttonLabel, FocusType.Keyboard))
@@ -38,6 +30,7 @@ namespace Toolbox.Editor.Drawers
             }
             EditorGUI.EndProperty();
 
+            //TODO: validate focused window
             //handle situation when inspector window captures ScrollWheel event
             if (EditorWindow.focusedWindow != EditorWindow.mouseOverWindow)
             {
@@ -45,6 +38,12 @@ namespace Toolbox.Editor.Drawers
                 //handle this case inside drawer since this the only way to override events
                 if (Event.current.type == EventType.ScrollWheel) Event.current.Use();
             }
+        }
+
+
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Enum;
         }
     }
 }

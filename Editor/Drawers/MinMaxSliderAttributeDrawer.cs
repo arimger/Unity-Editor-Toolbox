@@ -4,23 +4,16 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]
-    public class MinMaxSliderAttributeDrawer : ToolboxNativeDrawerBase
+    public class MinMaxSliderAttributeDrawer : ToolboxNativeDrawer
     {
-        protected override bool IsPropertyValid(SerializedProperty property)
+        /// <summary>
+        /// Draws validated property.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            return property.propertyType == SerializedPropertyType.Vector2;
-        }
-
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return base.GetPropertyHeight(property, label);
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            base.OnGUI(position, property, label);
-
             var labelWidth = EditorGUIUtility.labelWidth;
             var fieldWidth = EditorGUIUtility.fieldWidth;
 
@@ -53,6 +46,17 @@ namespace Toolbox.Editor.Drawers
             {
                 property.vector2Value = new Vector2(xValue, yValue);
             }
+        }
+
+
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Vector2;
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeight(property, label);
         }
 
 

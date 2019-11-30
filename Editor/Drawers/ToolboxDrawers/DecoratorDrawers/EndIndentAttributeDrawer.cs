@@ -5,7 +5,7 @@ namespace Toolbox.Editor.Drawers
 {
     public class EndIndentAttributeDrawer : ToolboxDecoratorDrawer<EndIndentAttribute>
     {
-        public override void OnGuiEnd(EndIndentAttribute attribute)
+        protected override void OnGuiEndSafe(EndIndentAttribute attribute)
         {
             EditorGUI.indentLevel -= attribute.IndentToSubtract;
         }

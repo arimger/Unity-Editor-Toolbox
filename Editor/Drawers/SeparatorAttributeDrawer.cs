@@ -19,6 +19,7 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.DrawRect(rect, lineColor);
         }
 
+
         public override float GetHeight()
         {
             return Attribute.Thickness + Attribute.Padding;

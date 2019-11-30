@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ConditionalAttribute))]
-    public abstract class ConditionalAttributeDrawer : ToolboxNativeDrawerBase
+    public abstract class ConditionalAttributeDrawer : ToolboxNativeDrawer
     {
         protected bool IsConditionMet(SerializedProperty property)
         {

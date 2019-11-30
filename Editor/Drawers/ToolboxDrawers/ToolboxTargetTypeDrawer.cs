@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
@@ -7,6 +9,6 @@ namespace Toolbox.Editor.Drawers
     {
         public abstract void OnGui(SerializedProperty property, GUIContent label);
 
-        public abstract System.Type GetTargetType();
+        public abstract Type GetTargetType();
     }
 }

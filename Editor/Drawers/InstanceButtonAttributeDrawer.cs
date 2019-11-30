@@ -51,7 +51,7 @@ namespace Toolbox.Editor.Drawers
                         var targetComponent = target.GetComponent(Attribute.InstanceType);
                         if (targetComponent == null)
                         {
-                            Debug.LogWarning("ButtonAttribute - " + Attribute.InstanceType + " component not found in selected GameObject(" + target.name + ").");
+                            Debug.LogWarning(GetType().Name + " - " + Attribute.InstanceType + " component not found in selected GameObject(" + target.name + ").");
                             continue;
                         }
 
@@ -60,7 +60,7 @@ namespace Toolbox.Editor.Drawers
                 }
                 else
                 {
-                    Debug.LogWarning("ButtonAttribute - " + Attribute.MethodName + " method not found inside " + Attribute.InstanceType + " type.");
+                    Debug.LogWarning(GetType().Name + " - " + Attribute.MethodName + " method not found inside " + Attribute.InstanceType + " type.");
                 }
             }
             EditorGUI.EndDisabledGroup();
@@ -81,7 +81,7 @@ namespace Toolbox.Editor.Drawers
             internal static readonly float height = EditorGUIUtility.singleLineHeight * 1.25f;
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
 
-            internal static GUIStyle buttonStyle;
+            internal static readonly GUIStyle buttonStyle;
 
             static Style()
             {

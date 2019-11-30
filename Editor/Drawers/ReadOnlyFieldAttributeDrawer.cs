@@ -8,18 +8,19 @@ namespace Toolbox.Editor.Drawers
     /// <see cref="ToolboxConditionAttribute"/>s are more flexible and can work with any additional drawer.
     /// </summary>
     [CustomPropertyDrawer(typeof(ReadOnlyFieldAttribute))]
-    public class ReadOnlyFieldDrawer : ToolboxNativeDrawerBase
+    public class ReadOnlyFieldDrawer : ToolboxNativeDrawer
     {
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return EditorGUI.GetPropertyHeight(property, label, true);
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginDisabledGroup(true);
             EditorGUI.PropertyField(position, property, label, true);
             EditorGUI.EndDisabledGroup();
+        }
+
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label, true);
         }
     }
 }

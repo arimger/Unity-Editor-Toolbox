@@ -5,7 +5,7 @@ namespace Toolbox.Editor.Drawers
 {
     public class HideAttributeDrawer : ToolboxConditionDrawer<HideAttribute>
     {
-        public override PropertyCondition OnGuiValidate(SerializedProperty property, HideAttribute attribute)
+        protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, HideAttribute attribute)
         {
             return PropertyCondition.NonValid;
         }

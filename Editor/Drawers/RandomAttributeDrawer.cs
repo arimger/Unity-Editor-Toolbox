@@ -4,24 +4,10 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(RandomAttribute))]
-    public class RandomAttributeDrawer : ToolboxNativeDrawerBase
+    public class RandomAttributeDrawer : ToolboxNativeDrawer
     {
-        protected override bool IsPropertyValid(SerializedProperty property)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            return property.propertyType == SerializedPropertyType.Float ||
-                   property.propertyType == SerializedPropertyType.Integer;
-        }
-
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return base.GetPropertyHeight(property, label);
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            base.OnGUI(position, property, label);
-
             //adjust field width to additional button
             var fieldRect = new Rect(position.x, position.y, position.width - Style.buttonWidth - Style.spacing, position.height);
             //set button rect aligned to field rect
@@ -41,6 +27,18 @@ namespace Toolbox.Editor.Drawers
                     property.intValue = (int)random;
                 }
             }
+        }
+
+
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Float ||
+                   property.propertyType == SerializedPropertyType.Integer;
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeight(property, label);
         }
 
 

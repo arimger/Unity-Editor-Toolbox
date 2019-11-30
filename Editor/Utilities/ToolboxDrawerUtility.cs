@@ -40,7 +40,7 @@ namespace Toolbox.Editor
 
         private static void CreateAttributeDrawers(IToolboxDrawersSettings settings)
         {
-            void AddAttributeDrawer<T>(Type drawerType, Type targetAttributeType, Dictionary<Type, T> drawersCollection) where T : ToolboxDrawer
+            void AddAttributeDrawer<T>(Type drawerType, Type targetAttributeType, Dictionary<Type, T> drawersCollection) where T : ToolboxAttributeDrawer
             {
                 if (drawerType == null) return;
                 var drawerInstance = Activator.CreateInstance(drawerType) as T;

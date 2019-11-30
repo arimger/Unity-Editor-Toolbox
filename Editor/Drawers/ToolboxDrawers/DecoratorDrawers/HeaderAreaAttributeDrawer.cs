@@ -5,7 +5,7 @@ namespace Toolbox.Editor.Drawers
 {
     public class HeaderAreaAttributeDrawer : ToolboxDecoratorDrawer<HeaderAreaAttribute>
     {
-        public override void OnGuiBegin(HeaderAreaAttribute attribute)
+        protected override void OnGuiBeginSafe(HeaderAreaAttribute attribute)
         {
             if (attribute.Style == HeaderStyle.Boxed)
             {

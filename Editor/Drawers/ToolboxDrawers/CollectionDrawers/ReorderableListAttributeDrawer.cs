@@ -22,7 +22,7 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         /// <param name="property">Property to draw.</param>
         /// <param name="attribute"></param>
-        public override void OnGui(SerializedProperty property, GUIContent label, ReorderableListAttribute attribute)
+        protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReorderableListAttribute attribute)
         {
             var key = property.GetPropertyKey();
 

@@ -4,11 +4,17 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(HideLabelAttribute))]
-    public class HideLabelAttributeDrawer : ToolboxNativeDrawerBase
+    public class HideLabelAttributeDrawer : ToolboxNativeDrawer
     {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.PropertyField(position, property, GUIContent.none, property.isExpanded);
+        }
+
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label);
         }
     }
 }

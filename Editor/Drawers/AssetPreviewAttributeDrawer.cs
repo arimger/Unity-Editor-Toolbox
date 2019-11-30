@@ -4,48 +4,16 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(AssetPreviewAttribute))]
-    public class AssetPreviewAttributeDrawer : ToolboxNativeDrawerBase
+    public class AssetPreviewAttributeDrawer : ToolboxNativeDrawer
     {
-        /// <summary>
-        /// Checks if provided property is valid.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        protected override bool IsPropertyValid(SerializedProperty property)
-        {
-            return property.propertyType == SerializedPropertyType.ObjectReference;
-        }
-
-
-        /// <summary>
-        /// Overall property height, depending on label visibility + preview height.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
-        /// <returns></returns>
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {                
-            //set additional height as preview + 2x spacing + 2x frame offset
-            var additionalHeight = Attribute.Height + Style.frameSize * 2 + Style.spacing * 2;
-            if (!Attribute.UseLabel)
-            {
-                //adjust height to old label position
-                additionalHeight -= Style.height;
-            }
-
-            return Style.height + additionalHeight;
-        }
-
         /// <summary>
         /// Creates optional property label and asset preview if it is possible.
         /// </summary>
         /// <param name="position"></param>
         /// <param name="property"></param>
         /// <param name="label"></param>
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            base.OnGUI(position, property, label);
-
             if (Attribute.UseLabel)
             {
                 EditorGUI.PropertyField(position, property, label, true);
@@ -83,6 +51,42 @@ namespace Toolbox.Editor.Drawers
                 //draw preview texture
                 EditorGUI.LabelField(position, GUIContent.none, Style.textureStyle);
             }
+        }
+
+
+        /// <summary>
+        /// Checks if provided property is valid.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.ObjectReference;
+        }
+
+        /// <summary>
+        /// Overall property height, depending on label visibility + preview height.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            //return native height 
+            if (!IsPropertyValid(property) || property.objectReferenceValue == null)
+            {
+                return Style.height;
+            }
+
+            //set additional height as preview + 2x spacing + 2x frame offset
+            var additionalHeight = Attribute.Height + Style.frameSize * 2 + Style.spacing * 2;
+            if (!Attribute.UseLabel)
+            {
+                //adjust height to old label position
+                additionalHeight -= Style.height;
+            }
+
+            return Style.height + additionalHeight;
         }
 
 

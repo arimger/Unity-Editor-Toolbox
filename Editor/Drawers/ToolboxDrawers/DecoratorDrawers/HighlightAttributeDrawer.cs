@@ -5,14 +5,14 @@ namespace Toolbox.Editor.Drawers
 {
     public class HighlightAttributeDrawer : ToolboxDecoratorDrawer<HighlightAttribute>
     {
-        public override void OnGuiBegin(HighlightAttribute attribute)
+        protected override void OnGuiBeginSafe(HighlightAttribute attribute)
         {
             Style.SetHighlightColor(attribute.Color);
 
             EditorGUILayout.BeginVertical(Style.highlightStyle);
         }
 
-        public override void OnGuiEnd(HighlightAttribute attribute)
+        protected override void OnGuiEndSafe(HighlightAttribute attribute)
         {
             EditorGUILayout.EndVertical();
         }

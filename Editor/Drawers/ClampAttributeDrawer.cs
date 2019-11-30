@@ -4,30 +4,16 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ClampAttribute))]
-    public class ClampAttributeDrawer : ToolboxNativeDrawerBase
+    public class ClampAttributeDrawer : ToolboxNativeDrawer
     {
-        protected override bool IsPropertyValid(SerializedProperty property)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            return property.propertyType == SerializedPropertyType.Float ||
-                   property.propertyType == SerializedPropertyType.Integer;
-        }
-
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return base.GetPropertyHeight(property, label);
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            base.OnGUI(position, property, label);
-
             var minValue = Attribute.MinValue;
             var maxValue = Attribute.MaxValue;
 
             if (property.propertyType == SerializedPropertyType.Float)
             {
-                property.floatValue = Mathf.Clamp(property.floatValue, minValue, maxValue);           
+                property.floatValue = Mathf.Clamp(property.floatValue, minValue, maxValue);
             }
             else
             {
@@ -35,6 +21,18 @@ namespace Toolbox.Editor.Drawers
             }
 
             EditorGUI.PropertyField(position, property, label, property.isExpanded);
+        }
+
+
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Float ||
+                   property.propertyType == SerializedPropertyType.Integer;
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeight(property, label);
         }
 
 

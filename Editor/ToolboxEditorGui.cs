@@ -1,6 +1,4 @@
-﻿using System;
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 
 namespace Toolbox.Editor
@@ -39,7 +37,7 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="texture"></param>
         /// <param name=""></param>
-        public static void DrawLayoutAssetPreview(UnityEngine.Object asset, float width = 64, float height = 64)
+        public static void DrawLayoutAssetPreview(Object asset, float width = 64, float height = 64)
         {
             var previewTexture = AssetPreview.GetAssetPreview(asset);
 
@@ -62,6 +60,36 @@ namespace Toolbox.Editor
             EditorGUILayout.EndHorizontal();
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void DrawEmptyProperty(Rect position, SerializedProperty property, GUIContent label = null)
+        {
+            const float iconHeight = 20.0f;
+            const float iconWidth = 20.0f;
+
+            position.width = iconWidth;
+            position.height = iconHeight;
+
+            EditorGUI.LabelField(position, Style.warningContent);
+
+            position.x += iconWidth;
+            position.width = EditorGUIUtility.currentViewWidth - iconWidth;
+            position.height = EditorGUIUtility.singleLineHeight;
+
+            var content = label ?? new GUIContent(property.displayName);
+
+            EditorGUI.LabelField(position, content);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void DrawLayoutEmptyProperty(SerializedProperty property, GUIContent label = null)
+        {
+            DrawEmptyProperty(GUILayoutUtility.GetRect(1, Style.height), property, label);
         }
 
         /// <summary>
@@ -201,11 +229,15 @@ namespace Toolbox.Editor
 
             internal static readonly Color standardLineColor = new Color(0.3f, 0.3f, 0.3f);
 
-            internal static GUIStyle boxStyle;
+            internal static readonly GUIStyle boxStyle;
+
+            internal static readonly GUIContent warningContent;
 
             static Style()
             {
                 boxStyle = new GUIStyle(GUI.skin.box);
+
+                warningContent = EditorGUIUtility.IconContent("console.warnicon.sml");
             }
         }
     }
@@ -221,16 +253,73 @@ namespace Toolbox.Editor
         public static void DrawToolboxProperty(SerializedProperty property, Rect position)
         {
             //TODO:
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
-        /// Draws property using additional <see cref="PropertyDrawer"/>s and <see cref="Drawers.ToolboxDrawer"/>s.
+        /// Draws property using additional <see cref="PropertyDrawer"/>s and <see cref="Drawers.ToolboxAttributeDrawer"/>s.
         /// </summary>
         /// <param name="property"></param>
         public static void DrawLayoutToolboxProperty(SerializedProperty property)
         {
             ToolboxDrawerUtility.GetPropertyHandler(property).OnGuiLayout();
+        }
+
+        /// <summary>
+        /// Draws property in default way.
+        /// </summary>
+        /// <param name="property"></param>
+        public static void DrawLayoutDefaultProperty(SerializedProperty property)
+        {
+            DrawLayoutDefaultProperty(property, null);
+        }
+
+        /// <summary>
+        /// Draws property in default way.
+        /// </summary>
+        /// <param name="property"></param>
+        public static void DrawLayoutDefaultProperty(SerializedProperty property, GUIContent label)
+        {
+            //draw standard foldout with built-in operations(like prefabs handling)
+            //to re-create native steps:
+            // - get foldout rect
+            // - begin property using EditorGUI.BeginProperty method
+            // - read current drag events
+            // - draw foldout
+            // - close property using EditorGUI.EndProperty method
+            if (!EditorGUILayout.PropertyField(property, label, false))
+            {
+                return;
+            }
+
+            var currentEvent = Event.current;
+            //use current event if drag was performed otherwise, it will cause an error
+            if (currentEvent.type == EventType.DragPerform && GUI.changed) currentEvent.Use();
+
+            var iterateThroughChildren = true;
+
+            //handle property references
+            var iterProperty = property.Copy();
+            var lastProperty = iterProperty.GetEndProperty();
+
+            EditorGUI.indentLevel++;
+
+            //iterate over all children(but only one level depth)
+            while (iterProperty.NextVisible(iterateThroughChildren))
+            {
+                if (SerializedProperty.EqualContents(iterProperty, lastProperty))
+                {
+                    break;
+                }
+
+                iterateThroughChildren = false;
+
+                //handle current property using Toolbox drawers
+                DrawLayoutToolboxProperty(iterProperty.Copy());
+            }
+
+            //restore old indent level
+            EditorGUI.indentLevel--;
         }
     }
 }

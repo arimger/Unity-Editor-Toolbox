@@ -6,8 +6,14 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(DirectoryAttribute))]
-    public class DirectoryAttributeDrawer : ToolboxNativeDrawerBase
+    public class DirectoryAttributeDrawer : ToolboxNativeDrawer
     {
+        /// <summary>
+        /// Checks if provided path exist. Depends on relative path and <see cref="Application.dataPath"/>.
+        /// </summary>
+        /// <param name="propertyPath"></param>
+        /// <param name="assetRelativePath"></param>
+        /// <returns></returns>
         private static bool IsPathValid(string propertyPath, string assetRelativePath)
         {
             var projectRelativePath = Application.dataPath + "/";
@@ -21,36 +27,14 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        protected override bool IsPropertyValid(SerializedProperty property)
+        /// <summary>
+        /// Draws validated property.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            return property.propertyType == SerializedPropertyType.String;
-        }
-
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            //validate property type
-            if (property.propertyType != SerializedPropertyType.String)
-            {
-                return base.GetPropertyHeight(property, label);
-            }
-
-            var additionalHeight = 0.0f;
-
-            //validate directory path
-            if (!IsPathValid(property.stringValue, Attribute.RelativePath))
-            {
-                additionalHeight = Style.boxHeight + Style.spacing;
-            }
-
-            //return proper height
-            return base.GetPropertyHeight(property, label) + additionalHeight;
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            base.OnGUI(position, property, label);
-
             //current stored path validation
             if (!IsPathValid(property.stringValue, Attribute.RelativePath))
             {
@@ -81,6 +65,27 @@ namespace Toolbox.Editor.Drawers
         }
 
 
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.String;
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            //validate property type and serialized path
+            if (!IsPropertyValid(property) || IsPathValid(property.stringValue, Attribute.RelativePath))
+            {
+                return base.GetPropertyHeight(property, label);
+            }
+
+            //return adjusted height
+            return base.GetPropertyHeight(property, label) + Style.boxHeight + Style.spacing;
+        }
+
+
+        /// <summary>
+        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="DirectoryAttribute"/>.
+        /// </summary>
         private DirectoryAttribute Attribute => attribute as DirectoryAttribute;
 
 

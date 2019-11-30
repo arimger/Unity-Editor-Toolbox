@@ -8,11 +8,11 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
     public class BeginHorizontalAttribute : ToolboxDecoratorAttribute
     {
-        public BeginHorizontalAttribute(float labelWidth = 35.0f)
+        public BeginHorizontalAttribute(float labelToWdithRatio = 0.1f)
         {
-            LabelWdith = labelWidth;
+            LabelToWdithRatio = labelToWdithRatio;
         }
 
-        public float LabelWdith { get; private set; }
+        public float LabelToWdithRatio { get; private set; }
     }
 }

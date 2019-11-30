@@ -4,52 +4,22 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(NotNullAttribute))]
-    public class NotNullAttributeDrawer : ToolboxNativeDrawerBase
+    public class NotNullAttributeDrawer : ToolboxNativeDrawer
     {
-        /// <summary>
-        /// Checks if provided property has valid type.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        protected override bool IsPropertyValid(SerializedProperty property)
-        {
-            return property.propertyType == SerializedPropertyType.ObjectReference;
-        }
-
-
-        /// <summary>
-        /// Overall property height, depending on aditional height.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
-        /// <returns></returns>
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            if (!IsPropertyValid(property) || property.objectReferenceValue)
-            {
-                return base.GetPropertyHeight(property, label);
-            }
-
-            //set additional height as help box height + 2x spacing between properties
-            return base.GetPropertyHeight(property, label) + Style.boxHeight + Style.spacing * 2;
-        }
-
         /// <summary>
         /// Creates optional HelpBox if reference value is null and draws standard property label.
         /// </summary>
         /// <param name="position"></param>
         /// <param name="property"></param>
         /// <param name="label"></param>
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            base.OnGUI(position, property, label);
-
             //set up proper height for this property field
             position.height = EditorGUI.GetPropertyHeight(property);
 
             var warnColor = GUI.backgroundColor;
             var cachedColor = GUI.backgroundColor;
-      
+
             if (property.objectReferenceValue == null)
             {
                 var helpBoxRect = new Rect(position.x, position.y, position.width, Style.boxHeight);
@@ -66,6 +36,34 @@ namespace Toolbox.Editor.Drawers
             GUI.backgroundColor = warnColor;
             EditorGUI.PropertyField(position, property, label, property.isExpanded);
             GUI.backgroundColor = cachedColor;
+        }
+
+
+        /// <summary>
+        /// Checks if provided property has valid type.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.ObjectReference;
+        }
+
+        /// <summary>
+        /// Overall property height, depending on aditional height.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            if (!IsPropertyValid(property) || property.objectReferenceValue)
+            {
+                return base.GetPropertyHeight(property, label);
+            }
+
+            //set additional height as help box height + 2x spacing between properties
+            return base.GetPropertyHeight(property, label) + Style.boxHeight + Style.spacing * 2;
         }
 
 

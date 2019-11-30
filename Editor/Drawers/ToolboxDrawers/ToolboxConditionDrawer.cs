@@ -5,39 +5,31 @@ namespace Toolbox.Editor.Drawers
 {
     public abstract class ToolboxConditionDrawer<T> : ToolboxConditionDrawerBase where T : ToolboxConditionAttribute
     {
+        protected virtual PropertyCondition OnGuiValidateSafe(SerializedProperty property, T attribute)
+        {
+            return PropertyCondition.Valid;
+        }
+
+
         public override sealed PropertyCondition OnGuiValidate(SerializedProperty property)
         {
-            var targetAttribute = property.GetAttribute<T>();
-            if (targetAttribute != null)
-            {
-                return OnGuiValidate(property, targetAttribute);
-            }
-            else
-            {
-                Debug.LogError("Target attribute not found.");
-            }
-
-            return base.OnGuiValidate(property);
+            return OnGuiValidate(property, property.GetAttribute<T>());
         }
 
         public override sealed PropertyCondition OnGuiValidate(SerializedProperty property, ToolboxAttribute attribute)
         {
-            if (attribute is T targetAttribute)
-            {
-                return OnGuiValidate(property, targetAttribute);
-            }
-            else
-            {
-                Debug.LogError("Target attribute not found.");
-            }
-
-            return base.OnGuiValidate(property, attribute);
+            return OnGuiValidate(property, attribute as T);         
         }
 
 
-        public virtual PropertyCondition OnGuiValidate(SerializedProperty property, T attribute)
+        public PropertyCondition OnGuiValidate(SerializedProperty property, T attribute)
         {
-            return base.OnGuiValidate(property, attribute);
+            if (attribute == null)
+            {
+                throw new AttributeArgumentException(typeof(T));
+            }
+
+            return OnGuiValidateSafe(property, attribute);
         }
     }
 }

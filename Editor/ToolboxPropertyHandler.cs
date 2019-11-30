@@ -66,7 +66,11 @@ namespace Toolbox.Editor
         {
             this.property = property;
 
-            //get field info associated with this property
+            //here starts preparation all needed data for this handler
+            //first we will retrieve all native data like field info, custom native drawer, etc.
+            //next we will retrieve (if possible) all Toolbox related data - ToolboxAttributes
+
+            //get field info associated with this property, this property is needed for custom attributes
             propertyFieldInfo = property.GetFieldInfo(out propertyType);
 
             if (propertyFieldInfo == null)
@@ -123,10 +127,14 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Draw property using Unity's layouting system and cached <see cref="ToolboxDrawer"/>s.
+        /// Draw property using Unity's layouting system and cached <see cref="ToolboxAttributeDrawer"/>s.
         /// </summary>
         public void OnGuiLayout()
         {
+            //depending on previously gained data we can provide more action
+            //using custom attributes and information about native drawers
+            //we can use associated ToolboxDrawers or/and draw property in the default way
+
             //begin all needed decorator drawers in proper order
             if (decoratorAttributes != null)
             {
@@ -145,6 +153,7 @@ namespace Toolbox.Editor
 
             if (conditionState == PropertyCondition.NonValid)
             {
+                // :)
                 goto Finish;
             }
 
@@ -193,67 +202,20 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws property in default way, without additional <see cref="ToolboxDrawer"/>s.
+        /// Draws property in default way, without additional <see cref="ToolboxAttributeDrawer"/>s.
         /// </summary>
         /// <param name="property"></param>
         public void OnGuiDefault()
         {
-            //all "single" and all properties with custom native drawers should be drawn in standard way
+            //all "single" properties and all properties with custom native drawers should be drawn in standard way
             if (!property.hasVisibleChildren || hasNativePropertyDrawer)
             {
                 EditorGUILayout.PropertyField(property, property.isExpanded);
                 return;
             }
 
-            //draw standard foldout with built-in operations(like prefabs handling)
-            //to re-create native steps:
-            // - get foldout rect
-            // - begin property using EditorGUI.BeginProperty method
-            // - read current drag events
-            // - draw foldout
-            // - close property using EditorGUI.EndProperty method
-            if (!EditorGUILayout.PropertyField(property, false))
-            {
-                return;
-            }
-
-            HandleDefaultGuiEvents();
-
-            var iterateThroughChildren = true;
-
-            //handle property references
-            var iterProperty = property.Copy();
-            var lastProperty = iterProperty.GetEndProperty();
-
-            EditorGUI.indentLevel++;
-
-            //iterate over all children(but only one level depth)
-            while (iterProperty.NextVisible(iterateThroughChildren))
-            {
-                if (SerializedProperty.EqualContents(iterProperty, lastProperty))
-                {
-                    break;
-                }
-
-                iterateThroughChildren = false;
-
-                //handle current property using Toolbox drawers
-                ToolboxEditorGui.DrawLayoutToolboxProperty(iterProperty.Copy());
-            }
-
-            //restore old indent level
-            EditorGUI.indentLevel--;
-        }
-
-
-        /// <summary>
-        /// Tries to handle built-in events and prevents unexpected situations.
-        /// </summary>
-        private void HandleDefaultGuiEvents()
-        {
-            var currentEvent = Event.current;
-            //use current event if drag was performed otherwise, it will cause an error
-            if (currentEvent.type == EventType.DragPerform && GUI.changed) currentEvent.Use();
+            //handles property in default native way but supports ToolboxDrawers in children
+            ToolboxEditorGui.DrawLayoutDefaultProperty(property);
         }
     }
 }

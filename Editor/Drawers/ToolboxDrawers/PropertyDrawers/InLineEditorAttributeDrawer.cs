@@ -89,16 +89,9 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         /// <param name="property"></param>
         /// <param name="attribute"></param>
-        public override void OnGui(SerializedProperty property, GUIContent label, InLineEditorAttribute attribute)
+        protected override void OnGuiSafe(SerializedProperty property, GUIContent label, InLineEditorAttribute attribute)
         {
             EditorGUILayout.PropertyField(property, label, property.isExpanded);
-
-            //reference value type validation
-            if (property.propertyType != SerializedPropertyType.ObjectReference)
-            {
-                ToolboxLogUtility.LogWrongAttributeUsageWarning(property, attribute, typeof(UnityEngine.Object));
-                return;
-            }
 
             //basically multiple values are not supported yet
             if (property.hasMultipleDifferentValues || property.objectReferenceValue == null)
@@ -126,6 +119,7 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
+
         /// <summary>
         /// Handles data clearing between editors.
         /// </summary>
@@ -133,6 +127,16 @@ namespace Toolbox.Editor.Drawers
         {
             //clear all obsolete editors
             editorInstances.Clear();
+        }
+
+        /// <summary>
+        /// Checks if provided property can by handled by this drawer.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.ObjectReference;
         }
 
 
