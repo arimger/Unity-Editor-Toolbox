@@ -10,7 +10,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(EnumFlagAttribute))]
-    public class EnumFlagAttributeDrawer : ToolboxNativeDrawerBase
+    public class EnumFlagAttributeDrawer : ToolboxNativeDrawer
     {
         private const float mininumButtonWidth = 80.0f;
         private const float minimumButtonHeight = 16.0f;
@@ -25,6 +25,7 @@ namespace Toolbox.Editor.Drawers
 
         private void HandlePopupStyle(Rect position, SerializedProperty property, GUIContent label)
         {
+            //get exact enum value through field info
             var enumValue = fieldInfo.GetValue(property.serializedObject.targetObject) as Enum;
 
             EditorGUI.BeginProperty(position, label, property);
@@ -128,21 +129,8 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        protected override bool IsPropertyValid(SerializedProperty property)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            return property.propertyType == SerializedPropertyType.Enum;
-        }
-
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return base.GetPropertyHeight(property, label) + additionalHeight;
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            base.OnGUI(position, property, label);
-
             additionalHeight = 0;
 
             switch (Attribute.Style)
@@ -160,6 +148,17 @@ namespace Toolbox.Editor.Drawers
         }
 
 
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Enum;
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeight(property, label) + additionalHeight;
+        }
+
+ 
         private EnumFlagAttribute Attribute => attribute as EnumFlagAttribute;
 
 

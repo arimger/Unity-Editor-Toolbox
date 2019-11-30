@@ -53,6 +53,8 @@ namespace Toolbox.Editor.Internal
             var headerRect = GUILayoutUtility.GetRect(0, HeaderHeight, GUILayout.ExpandWidth(true));
             var middleRect = GUILayoutUtility.GetRect(0, MiddleHeight, GUILayout.ExpandWidth(true));
             var footerRect = GUILayoutUtility.GetRect(0, FooterHeight, GUILayout.ExpandWidth(true));
+
+            throw new NotImplementedException();
         }
 
 

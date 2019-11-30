@@ -2,22 +2,10 @@
 
 namespace Toolbox.Editor.Drawers
 {
-    public abstract  class ToolboxDecoratorDrawerBase : ToolboxDrawer
+    public abstract  class ToolboxDecoratorDrawerBase : ToolboxAttributeDrawer
     {
-        public virtual void OnGuiBegin()
-        { }
+        public abstract void OnGuiBegin(ToolboxAttribute attribute);
 
-        public virtual void OnGuiBegin(ToolboxAttribute attribute)
-        {
-            OnGuiBegin();
-        }
-
-        public virtual void OnGuiEnd()
-        { }
-
-        public virtual void OnGuiEnd(ToolboxAttribute attribute)
-        {
-            OnGuiEnd();
-        }
+        public abstract void OnGuiEnd(ToolboxAttribute attribute);
     }
 }

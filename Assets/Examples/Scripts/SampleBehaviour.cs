@@ -232,6 +232,13 @@ public class SampleBehaviour : MonoBehaviour
     [Highlight(0, 1, 0)]
     public GameObject var28;
 
+    [HeaderArea("7", HeaderStyle.Boxed)]
+
+    [BeginHorizontal]
+    public int var29;
+    public int var30;
+    [EndHorizontal]
+    public int var31;
 
     private void Start()
     {

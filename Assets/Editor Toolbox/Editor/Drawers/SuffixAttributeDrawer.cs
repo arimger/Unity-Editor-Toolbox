@@ -4,9 +4,15 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SuffixAttribute))]
-    public class SuffixAttributeDrawer : PropertyDrawer
+    public class SuffixAttributeDrawer : ToolboxNativeDrawer
     {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        /// <summary>
+        /// Draws validated property.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var propertyLabel = new GUIContent(property.displayName);
             //set up needed fields
@@ -21,6 +27,18 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.LabelField(suffixRect, suffixLabel, suffixStyle);
             //draw standard property field
             EditorGUI.PropertyField(position, property, propertyLabel, property.isExpanded);
+        }
+
+
+        /// <summary>
+        /// Returns current height needed by this drawer.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label);
         }
 
 

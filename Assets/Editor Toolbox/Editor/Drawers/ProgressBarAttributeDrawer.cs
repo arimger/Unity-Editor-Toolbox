@@ -4,24 +4,16 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ProgressBarAttribute))]
-    public class ProgressBarAttributeDrawer : ToolboxNativeDrawerBase
+    public class ProgressBarAttributeDrawer : ToolboxNativeDrawer
     {
-        protected override bool IsPropertyValid(SerializedProperty property)
+        /// <summary>
+        /// Draws validated property.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            return property.propertyType == SerializedPropertyType.Float ||
-                   property.propertyType == SerializedPropertyType.Integer;
-        }
-
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return Style.barHeight;
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            base.OnGUI(position, property, label);
-
             var value = property.propertyType == SerializedPropertyType.Integer ? property.intValue : property.floatValue;
             var minValue = Attribute.MinValue;
             var maxValue = Attribute.MaxValue;
@@ -37,6 +29,18 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.DrawRect(fillRect, Style.progressBarColor);
             position.y -= Style.barHeight / 4;
             EditorGUI.DropShadowLabel(position, barText);
+        }
+
+
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.Float ||
+                   property.propertyType == SerializedPropertyType.Integer;
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return Style.barHeight;
         }
 
 

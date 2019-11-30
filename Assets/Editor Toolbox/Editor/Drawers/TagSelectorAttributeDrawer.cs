@@ -9,23 +9,10 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(TagSelectorAttribute))]
-    public class TagSelectorPropertyDrawer : ToolboxNativeDrawerBase
+    public class TagSelectorPropertyDrawer : ToolboxNativeDrawer
     {
-        protected override bool IsPropertyValid(SerializedProperty property)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            return property.propertyType == SerializedPropertyType.String;
-        }
-
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return base.GetPropertyHeight(property, label);
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            base.OnGUI(position, property, label);
-
             EditorGUI.BeginProperty(position, label, property);
             var tags = new List<string>
             {
@@ -55,6 +42,17 @@ namespace Toolbox.Editor.Drawers
             property.stringValue = index >= 1 ? tags[index] : "";
 
             EditorGUI.EndProperty();
+        }
+
+
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.String;
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeight(property, label);
         }
 
 

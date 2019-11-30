@@ -7,14 +7,9 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(PresetAttribute))]
-    public class PresetAttributeDrawer : ToolboxNativeDrawerBase
+    public class PresetAttributeDrawer : ToolboxNativeDrawer
     {
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return base.GetPropertyHeight(property, label);
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var presetTarget = property.serializedObject.targetObject;
             var presetTargets = property.serializedObject.targetObjects;
@@ -85,6 +80,12 @@ namespace Toolbox.Editor.Drawers
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
+        }
+
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeight(property, label);
         }
 
 

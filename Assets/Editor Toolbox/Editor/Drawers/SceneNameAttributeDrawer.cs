@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SceneNameAttribute))]
-    public class SceneNameAttributeDrawer : ToolboxNativeDrawerBase
+    public class SceneNameAttributeDrawer : ToolboxNativeDrawer
     {
         private static bool SceneExists(string sceneName)
         {
@@ -23,11 +23,29 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        protected override bool IsPropertyValid(SerializedProperty property)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
+        {
+            const string warningMessage = "Scene does not exist. Check available Scenes in Build options.";
+
+            if (!SceneExists(property.stringValue))
+            {
+                var helpBoxRect = new Rect(position.x, position.y, position.width, Style.height);
+                EditorGUI.HelpBox(helpBoxRect, warningMessage, MessageType.Warning);
+
+                //adjust property label height
+                position.height -= Style.height + Style.spacing * 2;
+                //adjust OY position for target property
+                position.y += Style.height + Style.spacing * 2;
+            }
+
+            EditorGUI.PropertyField(position, property, label, property.isExpanded);
+        }
+
+
+        public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.String;
         }
-
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -38,24 +56,6 @@ namespace Toolbox.Editor.Drawers
             }
 
             return base.GetPropertyHeight(property, label);
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            base.OnGUI(position, property, label);
-
-            if (!SceneExists(property.stringValue))
-            {
-                var helpBoxRect = new Rect(position.x, position.y, position.width, Style.height);
-                EditorGUI.HelpBox(helpBoxRect, "Scene does not exist. Check available Scenes in Build options.", MessageType.Warning);
-      
-                //adjust property label height
-                position.height -= Style.height + Style.spacing * 2;
-                //adjust OY position for target property
-                position.y += Style.height + Style.spacing * 2;
-            }
-
-            EditorGUI.PropertyField(position, property, label, property.isExpanded);
         }
 
 

@@ -5,7 +5,7 @@ namespace Toolbox.Editor.Drawers
 {
     public class BeginGroupAttributeDrawer : ToolboxDecoratorDrawer<BeginGroupAttribute>
     {
-        public override void OnGuiBegin(BeginGroupAttribute attribute)
+        protected override void OnGuiBeginSafe(BeginGroupAttribute attribute)
         {
             if (!string.IsNullOrEmpty(attribute.Label))
             {

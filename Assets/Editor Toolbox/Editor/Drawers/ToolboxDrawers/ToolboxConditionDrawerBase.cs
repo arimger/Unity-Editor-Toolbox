@@ -10,16 +10,10 @@ namespace Toolbox.Editor.Drawers
         Disabled
     }
 
-    public abstract class ToolboxConditionDrawerBase : ToolboxDrawer
+    public abstract class ToolboxConditionDrawerBase : ToolboxAttributeDrawer
     {
-        public virtual PropertyCondition OnGuiValidate(SerializedProperty property)
-        {
-            return PropertyCondition.Valid;
-        }
+        public abstract PropertyCondition OnGuiValidate(SerializedProperty property);
 
-        public virtual PropertyCondition OnGuiValidate(SerializedProperty property, ToolboxAttribute attribute)
-        {
-            return OnGuiValidate(property);
-        }
+        public abstract PropertyCondition OnGuiValidate(SerializedProperty property, ToolboxAttribute attribute);
     }
 }

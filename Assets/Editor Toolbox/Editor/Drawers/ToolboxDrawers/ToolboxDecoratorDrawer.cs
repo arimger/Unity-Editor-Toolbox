@@ -4,55 +4,42 @@ namespace Toolbox.Editor.Drawers
 {
     public abstract class ToolboxDecoratorDrawer<T> : ToolboxDecoratorDrawerBase where T : ToolboxDecoratorAttribute
     {        
-        public override sealed void OnGuiBegin()
-        {
-            base.OnGuiBegin();
-        }
+        protected virtual void OnGuiBeginSafe(T attribute)
+        { }
+
+        protected virtual void OnGuiEndSafe(T attribute)
+        { }
+
 
         public override sealed void OnGuiBegin(ToolboxAttribute attribute)
         {
-            if (attribute is T targetAttribute)
-            {
-                OnGuiBegin(targetAttribute);
-                return;
-            }
-            else
-            {
-                Debug.LogError("Target attribute not found.");
-            }
-
-            base.OnGuiBegin();
-        }
-
-        public override sealed void OnGuiEnd()
-        {
-            base.OnGuiEnd();
+            OnGuiBegin(attribute as T);
         }
 
         public override sealed void OnGuiEnd(ToolboxAttribute attribute)
         {
-            if (attribute is T targetAttribute)
-            {
-                OnGuiEnd(targetAttribute);
-                return;
-            }
-            else
-            {
-                Debug.LogError("Target attribute not found.");
-            }
-
-            base.OnGuiEnd();
+            OnGuiEnd(attribute as T);
         }
 
 
-        public virtual void OnGuiBegin(T attribute)
+        public void OnGuiBegin(T attribute)
         {
-            base.OnGuiBegin();
+            if (attribute == null)
+            {
+                throw new AttributeArgumentException(typeof(T));
+            }
+
+            OnGuiBeginSafe(attribute);
         }
 
-        public virtual void OnGuiEnd(T attribute)
+        public void OnGuiEnd(T attribute)
         {
-            base.OnGuiEnd();
+            if (attribute == null)
+            {
+                throw new AttributeArgumentException(typeof(T));
+            }
+
+            OnGuiEndSafe(attribute);
         }
     }
 }

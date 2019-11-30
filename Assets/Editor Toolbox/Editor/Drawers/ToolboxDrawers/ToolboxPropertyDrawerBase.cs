@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
-    public abstract class ToolboxPropertyDrawerBase : ToolboxDrawer
+    public abstract class ToolboxPropertyDrawerBase : ToolboxAttributeDrawer
     {
         public ToolboxPropertyDrawerBase()
         {
@@ -11,17 +11,58 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        public virtual void OnGui(SerializedProperty property, GUIContent label)
-        {
-            EditorGUILayout.PropertyField(property, label, property.isExpanded);
-        }
+        public abstract bool IsPropertyValid(SerializedProperty property);
 
-        public virtual void OnGui(SerializedProperty property, GUIContent label, ToolboxAttribute attribute)
-        {
-            OnGui(property, label);    
-        }
+        public abstract void OnGui(SerializedProperty property, GUIContent label);
+
+        public abstract void OnGui(SerializedProperty property, GUIContent label, ToolboxAttribute attribute);
+ 
 
         public virtual void OnGuiReload()
         { }
+    }
+
+    public abstract class ToolboxPropertyDrawerBase<T> : ToolboxPropertyDrawerBase where T : ToolboxAttribute
+    {
+        protected virtual void OnGuiSafe(SerializedProperty property, GUIContent label, T attribute)
+        {
+            ToolboxEditorGui.DrawLayoutDefaultProperty(property);
+        }
+
+
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return true;
+        }
+
+        public override sealed void OnGui(SerializedProperty property, GUIContent label)
+        {
+            OnGui(property, label, property.GetAttribute<T>());
+        }
+
+        public override sealed void OnGui(SerializedProperty property, GUIContent label, ToolboxAttribute attribute)
+        {
+            OnGui(property, label, attribute as T);
+        }
+
+
+        public void OnGui(SerializedProperty property, GUIContent label, T attribute)
+        {
+            if (attribute == null)
+            {
+                throw new AttributeArgumentException(typeof(T));
+            }
+
+            if (IsPropertyValid(property))
+            {
+                OnGuiSafe(property, label, attribute);
+            }
+            else
+            {
+                var warningContent = new GUIContent(property.displayName + " has invalid property drawer");
+                ToolboxEditorLog.WrongAttributeUsageWarning(property, attribute);
+                ToolboxEditorGui.DrawLayoutEmptyProperty(property, warningContent);
+            }
+        }
     }
 }

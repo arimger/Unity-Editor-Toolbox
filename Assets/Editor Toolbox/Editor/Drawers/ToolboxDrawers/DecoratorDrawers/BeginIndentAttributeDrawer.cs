@@ -5,7 +5,7 @@ namespace Toolbox.Editor.Drawers
 {
     public class BeginIndentAttributeDrawer : ToolboxDecoratorDrawer<BeginIndentAttribute>
     {
-        public override void OnGuiBegin(BeginIndentAttribute attribute)
+        protected override void OnGuiBeginSafe(BeginIndentAttribute attribute)
         {
             EditorGUI.indentLevel += attribute.IndentToAdd;
         }

@@ -9,18 +9,8 @@ namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SerializedTypeReference))]
     [CustomPropertyDrawer(typeof(ClassTypeConstraintAttribute), true)]
-    public sealed class SerializedTypeReferenceDrawer : ToolboxNativeDrawerBase
+    public sealed class SerializedTypeReferenceDrawer : ToolboxNativeDrawer
     {
-        /// <summary>
-        /// Get <see cref="Type"/> from name or null if does not exist.
-        /// </summary>
-        /// <param name="typeName"></param>
-        /// <returns></returns>
-        private static Type ResolveType(string typeName)
-        {
-            return !string.IsNullOrEmpty(typeName) ? Type.GetType(typeName) : null;
-        }
-
         /// <summary>
         /// Creates formatted type name depending on <see cref="ClassGrouping"/> value.
         /// </summary>
@@ -67,37 +57,13 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Checks if provided property has valid type.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        protected override bool IsPropertyValid(SerializedProperty property)
-        {
-            return property.type == nameof(SerializedTypeReference);
-        }
-
-
-        /// <summary>
-        /// Return current propety height.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
-        /// <returns></returns>
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return EditorStyles.popup.CalcHeight(GUIContent.none, 0);
-        }
-
-        /// <summary>
         /// Draws property using provided <see cref="Rect"/>.
         /// </summary>
         /// <param name="position"></param>
         /// <param name="property"></param>
         /// <param name="label"></param>
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            base.OnGUI(position, property, label);
-
             var refAttribute = Attribute;
             var refProperty = property.FindPropertyRelative("classReference");
 
@@ -108,7 +74,7 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            var refType = ResolveType(refProperty.stringValue);
+            var refType = !string.IsNullOrEmpty(refProperty.stringValue) ? Type.GetType(refProperty.stringValue) : null;
             var refTypes = new List<Type>();
             var refLabels = new List<string>() { "<None>" };
             var index = -1;
@@ -140,7 +106,29 @@ namespace Toolbox.Editor.Drawers
             index = EditorGUI.Popup(position, label.text, index + 1, refLabels.ToArray());
             //get correct class reference, index = 0 is reserved to <None> type
             refProperty.stringValue = index >= 1 ? SerializedTypeReference.GetClassReference(refTypes[index - 1]) : "";
-            EditorGUI.EndProperty();     
+            EditorGUI.EndProperty();
+        }
+
+
+        /// <summary>
+        /// Checks if provided property has valid type.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.type == nameof(SerializedTypeReference);
+        }
+
+        /// <summary>
+        /// Return current propety height.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorStyles.popup.CalcHeight(GUIContent.none, 0);
         }
 
 

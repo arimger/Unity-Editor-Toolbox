@@ -4,9 +4,9 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(IndentAttribute))]
-    public class IndentAttributeDrawer : ToolboxNativeDrawerBase
+    public class IndentAttributeDrawer : ToolboxNativeDrawer
     {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.indentLevel += Attribute.IndentLevelChange;
             EditorGUI.PropertyField(position, property, property.isExpanded);
