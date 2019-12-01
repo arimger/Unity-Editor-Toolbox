@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -8,8 +8,12 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(SearchableEnumAttribute))]
     public class SearchableEnumAttributeDrawer : ToolboxNativeDrawer
     {
+        private static EditorWindow lastSearchableWindow;
+
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
+            //prepare pick button label
             var buttonLabel = property.enumValueIndex >= 0 && property.enumValueIndex < property.enumDisplayNames.Length
                 ? new GUIContent(property.enumDisplayNames[property.enumValueIndex])
                 : new GUIContent();
@@ -21,18 +25,25 @@ namespace Toolbox.Editor.Drawers
             //draw dropdown button, will be used to activate popup
             if (EditorGUI.DropdownButton(position, buttonLabel, FocusType.Keyboard))
             {
-                SearchablePopup.Show(position, property.enumValueIndex, property.enumDisplayNames, (i) =>
+                try
                 {
-                    property.serializedObject.Update();
-                    property.enumValueIndex = i;
-                    property.serializedObject.ApplyModifiedProperties();
-                });
+                    SearchablePopup.Show(position, property.enumValueIndex, property.enumDisplayNames, (i) =>
+                    {
+                        property.serializedObject.Update();
+                        property.enumValueIndex = i;
+                        property.serializedObject.ApplyModifiedProperties();
+                    });
+                }
+                catch (ExitGUIException)
+                {
+                    lastSearchableWindow = EditorWindow.focusedWindow;
+                    throw;
+                }
             }
             EditorGUI.EndProperty();
 
-            //TODO: validate focused window
             //handle situation when inspector window captures ScrollWheel event
-            if (EditorWindow.focusedWindow != EditorWindow.mouseOverWindow)
+            if (lastSearchableWindow && lastSearchableWindow != EditorWindow.mouseOverWindow)
             {
                 //NOTE: unfortunately PopupWidnows are not indpendent and we have to
                 //handle this case inside drawer since this the only way to override events
