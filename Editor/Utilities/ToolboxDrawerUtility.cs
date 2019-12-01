@@ -35,6 +35,9 @@ namespace Toolbox.Editor
         private static readonly Dictionary<string, ToolboxPropertyHandler> propertyHandlers = new Dictionary<string, ToolboxPropertyHandler>();
 
 
+        /// <summary>
+        /// Settings provided to handle custom drawers.
+        /// </summary>
         private static IToolboxDrawersSettings settings;
 
 
@@ -121,16 +124,27 @@ namespace Toolbox.Editor
         }
 
 
+        /// <summary>
+        /// Clears all currently stored <see cref="ToolboxPropertyHandler"/>s.
+        /// This method is always called through <see cref="onEditorReload"/> event.
+        /// </summary>
         internal static void ClearHandlers()
         {
             propertyHandlers.Clear();
         }
 
+        /// <summary>
+        /// Initialize all possible drawers. Not implemented yet.
+        /// </summary>
         internal static void InitializeDrawers()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Initializes all assigned drawers using provided settings reference.
+        /// </summary>
+        /// <param name="settings"></param>
         internal static void InitializeDrawers(IToolboxDrawersSettings settings)
         {
             ToolboxDrawerUtility.settings = settings;
@@ -140,6 +154,11 @@ namespace Toolbox.Editor
         }
 
 
+        /// <summary>
+        /// Checks if provided type has <see cref="ToolboxTargetTypeDrawer"/>.
+        /// </summary>
+        /// <param name="propertyType"></param>
+        /// <returns></returns>
         internal static bool HasTargetTypeDrawer(Type propertyType)
         {
             return targetTypeDrawers.ContainsKey(propertyType);
@@ -237,6 +256,9 @@ namespace Toolbox.Editor
         internal static bool ToolboxDrawersAllowed => settings != null ? settings.UseToolboxDrawers : false;
 
 
+        /// <summary>
+        /// Action called every time when the inspector window is fully rebuilt.
+        /// </summary>
         internal static Action onEditorReload;
     }
 }

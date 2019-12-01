@@ -94,7 +94,7 @@ namespace Toolbox.Editor.Drawers
             EditorGUILayout.PropertyField(property, label, property.isExpanded);
 
             //basically multiple values are not supported yet
-            if (property.hasMultipleDifferentValues || property.objectReferenceValue == null)
+            if (property.objectReferenceValue == null)
             {
                 return;
             }

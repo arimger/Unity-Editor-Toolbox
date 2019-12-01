@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Toolbox.Editor.Drawers
+﻿namespace Toolbox.Editor.Drawers
 {
     /// <summary>
     /// Base class for all drawers used in custom property drawing process. 
@@ -12,12 +10,5 @@ namespace Toolbox.Editor.Drawers
     /// Base class for all drawers based on custom attributes. 
     /// </summary>
     public abstract class ToolboxAttributeDrawer : ToolboxDrawer
-    {
-        protected class AttributeArgumentException : ArgumentException
-        {
-            public AttributeArgumentException(Type targetAttributeType) 
-                : base("Invalid drawer attribute, " + targetAttributeType.Name + " expected.", "attribute")
-            { }
-        }
-    }
+    { }
 }

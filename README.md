@@ -94,7 +94,7 @@ Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associa
 #### TypeConstraintAttribute
 
 ```csharp
-ClassExtends(typeof(UnityEngine.Object))]
+[ClassExtends(typeof(UnityEngine.Object))]
 public SerializedTypeReference type1;
 [ClassImplements(typeof(System.Collections.ICollection))]
 public SerializedTypeReference type2;
@@ -240,6 +240,13 @@ public int var2;
 public int var3;
 [EndGroup]
 public int var4;
+```
+```csharp
+[BeginHorizontal]
+public int var1;
+public int var2;
+[EndHorizontal]
+public int var3;
 ```
 ```csharp
 [BeginIndent]
