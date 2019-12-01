@@ -8,7 +8,7 @@ namespace Toolbox.Editor
     public static partial class ToolboxEditorGui
     {        
         /// <summary>
-        /// Creates inspector line.
+        /// Creates inspector horizontal line.
         /// </summary>
         /// <param name="color"></param>
         /// <param name="thickness"></param>
@@ -22,7 +22,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Creates inspector line using <see cref="GUILayout"/> class.
+        /// Creates inspector horizontal line using <see cref="GUILayout"/> class.
         /// </summary>
         /// <param name="color"></param>
         /// <param name="thickness"></param>
@@ -320,6 +320,26 @@ namespace Toolbox.Editor
 
             //restore old indent level
             EditorGUI.indentLevel--;
+        }
+
+        /// <summary>
+        /// Draws property in native-default way.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        public static void DrawLayoutNativeProperty(SerializedProperty property)
+        {
+            DrawLayoutNativeProperty(property, null);
+        }
+
+        /// <summary>
+        /// Draws property in native-default way.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        public static void DrawLayoutNativeProperty(SerializedProperty property, GUIContent label)
+        {
+            EditorGUILayout.PropertyField(property, label, property.isExpanded);
         }
     }
 }

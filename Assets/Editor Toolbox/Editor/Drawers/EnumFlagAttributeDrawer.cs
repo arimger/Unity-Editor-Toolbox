@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-//TODO: support for array elements
-
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(EnumFlagAttribute))]
@@ -25,9 +23,10 @@ namespace Toolbox.Editor.Drawers
 
         private void HandlePopupStyle(Rect position, SerializedProperty property, GUIContent label)
         {
-            //get exact enum value through field info
-            var enumValue = fieldInfo.GetValue(property.serializedObject.targetObject) as Enum;
+            //get field info value from this property, works even property is an array element
+            var enumValue = property.GetProperValue(fieldInfo) as Enum;
 
+            //begin popup property
             EditorGUI.BeginProperty(position, label, property);
             EditorGUI.BeginChangeCheck();
             enumValue = EditorGUI.EnumFlagsField(position, label, enumValue);
@@ -48,8 +47,9 @@ namespace Toolbox.Editor.Drawers
             var buttonPosition = EditorGUI.PrefixLabel(position, label);
             EditorGUI.BeginChangeCheck();
 
-            var enumValues = Enum.GetValues(fieldInfo.FieldType);
-            var enumNames = Enum.GetNames(fieldInfo.FieldType);
+            var propertyType = property.GetProperType(fieldInfo);
+            var enumValues = Enum.GetValues(propertyType);
+            var enumNames = Enum.GetNames(propertyType);
             var enumSum = 0;
             //get all proper enum values except 0(nothing) and ~0(everything)
             for (var i = 0; i < enumValues.Length; i++)

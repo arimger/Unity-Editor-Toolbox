@@ -62,13 +62,17 @@ namespace Toolbox.Editor
         private readonly bool hasToolboxTargetTypeDrawer;
 
 
+        /// <summary>
+        /// Constructor prepares all property-related data for custom drawing.
+        /// </summary>
+        /// <param name="property"></param>
         public ToolboxPropertyHandler(SerializedProperty property)
         {
             this.property = property;
 
-            //here starts preparation all needed data for this handler
-            //first we will retrieve all native data like field info, custom native drawer, etc.
-            //next we will retrieve (if possible) all Toolbox related data - ToolboxAttributes
+            //here starts preparation of all needed data for this handler
+            //first of all we have to retrieve native data like field info, custom native drawer, etc.
+            //nafter this we have to retrieve (if possible) all Toolbox-related data - ToolboxAttributes
 
             //get field info associated with this property, this property is needed for custom attributes
             propertyFieldInfo = property.GetFieldInfo(out propertyType);
@@ -168,14 +172,17 @@ namespace Toolbox.Editor
             {
                 if (hasToolboxTargetTypeDrawer)
                 {
+                    //draw property based on associated type drawer
                     ToolboxDrawerUtility.GetTargetTypeDrawer(propertyType).OnGui(property, propertyLabel);
                 }
                 else if (property.isArray)
                 {
+                    //draw array property by its collection drawer
                     ToolboxDrawerUtility.GetCollectionDrawer(propertyArrayAttribute)?.OnGui(property, propertyLabel, propertyArrayAttribute);
                 }
                 else
                 {
+                    //draw single property by its property drawer
                     ToolboxDrawerUtility.GetPropertyDrawer(propertySingleAttribute)?.OnGui(property, propertyLabel, propertySingleAttribute);
                 }
             }
@@ -210,7 +217,7 @@ namespace Toolbox.Editor
             //all "single" properties and all properties with custom native drawers should be drawn in standard way
             if (!property.hasVisibleChildren || hasNativePropertyDrawer)
             {
-                EditorGUILayout.PropertyField(property, property.isExpanded);
+                ToolboxEditorGui.DrawLayoutNativeProperty(property);
                 return;
             }
 

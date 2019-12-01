@@ -4,6 +4,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEditor;
 
+//TODO: array elements support
+
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(PresetAttribute))]
@@ -25,8 +27,9 @@ namespace Toolbox.Editor.Drawers
             var presetObject = presetValues.GetValue(presetTarget);
             if (presetObject is IList)
             {
+                var propertyType = property.GetProperType(fieldInfo);
                 //check if types match between property and provided preset
-                if (fieldInfo.FieldType == (presetValues.FieldType.IsGenericType ? presetValues.FieldType.GetGenericArguments()[0] : presetValues.FieldType.GetElementType()))
+                if (propertyType == (presetValues.FieldType.IsGenericType ? presetValues.FieldType.GetGenericArguments()[0] : presetValues.FieldType.GetElementType()))
                 {
                     var list = presetObject as IList;
                     var values = new object[list.Count];

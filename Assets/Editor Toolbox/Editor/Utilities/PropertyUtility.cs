@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Reflection;
 
 using UnityEditor;
@@ -63,6 +64,11 @@ namespace Toolbox.Editor
             return property.serializedObject.targetObject;
         }
 
+        /// <summary>
+        /// Gets array property from its child element.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         public static SerializedProperty GetArrayProperty(this SerializedProperty element)
         {
             var path = element.propertyPath.Replace("Array.data[", "[");
@@ -124,9 +130,60 @@ namespace Toolbox.Editor
             return result as FieldInfo;
         }
 
+        /// <summary>
+        /// Creates unique key for this property.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
         internal static string GetPropertyKey(this SerializedProperty property)
         {
             return property.serializedObject.GetHashCode() + "-" + property.propertyPath;
+        }
+
+        /// <summary>
+        /// Returns proper <see cref="FieldInfo"/> value for this property, even if property is an array element.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="fieldInfo"></param>
+        /// <returns></returns>
+        internal static object GetProperValue(this SerializedProperty property, FieldInfo fieldInfo)
+        {
+            if (typeof(IList).IsAssignableFrom(fieldInfo.FieldType))
+            {
+                const int indexPosition = 2;
+                var indexChar = property.propertyPath[property.propertyPath.Length - indexPosition];
+                var index = indexChar - '0';
+                var list = fieldInfo.GetValue(property.serializedObject.targetObject) as IList;
+
+                return list[index];
+            }
+            else
+            {
+                return fieldInfo.GetValue(property.serializedObject.targetObject);
+            }
+        }
+
+        /// <summary>
+        /// Returns proper <see cref="Type"/> for this property, even if property is an array element.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="fieldInfo"></param>
+        /// <returns></returns>
+        internal static Type GetProperType(this SerializedProperty property, FieldInfo fieldInfo)
+        {
+            if (typeof(IList).IsAssignableFrom(fieldInfo.FieldType))
+            {
+                const int indexPosition = 2;
+                var indexChar = property.propertyPath[property.propertyPath.Length - indexPosition];
+                var index = indexChar - '0';
+                var list = fieldInfo.GetValue(property.serializedObject.targetObject) as IList;
+        
+                return list[0].GetType();
+            }
+            else
+            {
+                return fieldInfo.FieldType;
+            }
         }
 
         internal static bool HasCustomDrawer(this SerializedProperty property, Type drawerType)

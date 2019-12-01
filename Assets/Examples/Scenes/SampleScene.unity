@@ -338,7 +338,7 @@ MonoBehaviour:
   var22: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
   var23: {fileID: 2800000, guid: 944a8e7523b24474383ee2dc61c3bbf1, type: 3}
   var24: {fileID: 8300000, guid: e83fc6426e5f2e0448cc3e51102509aa, type: 3}
-  var25: {fileID: 4300030, guid: 961e58de9bf26d746b3007a805cddb17, type: 3}
+  var25: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   var26: {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
   vars1: 01000000020000000300000004000000
   var27:

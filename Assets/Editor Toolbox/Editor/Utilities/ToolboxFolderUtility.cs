@@ -42,18 +42,34 @@ namespace Toolbox.Editor
         }
 
 
+        /// <summary>
+        /// Checks if provided path has associated custom <see cref="FolderData"/>.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         internal static bool IsCustomFolder(string path)
         {
             return pathBasedFoldersData.ContainsKey(path) ||
                    nameBasedFoldersData.ContainsKey(Path.GetFileName(path));
         }
 
+        /// <summary>
+        /// Tries to retrieve custom <see cref="FolderData"/> for provided path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         internal static bool TryGetFolderData(string path, out FolderData data)
         {
             return pathBasedFoldersData.TryGetValue(path, out data) ||
                    nameBasedFoldersData.TryGetValue(Path.GetFileName(path), out data);
         }
 
+        /// <summary>
+        /// Returns custom <see cref="FolderData"/> associated to provided path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         internal static FolderData GetFolderData(string path)
         {
             TryGetFolderData(path, out FolderData data);
