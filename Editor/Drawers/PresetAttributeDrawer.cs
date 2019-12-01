@@ -4,8 +4,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEditor;
 
-//TODO: array elements support
-
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(PresetAttribute))]
@@ -14,8 +12,8 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var presetTarget = property.serializedObject.targetObject;
-            var presetTargets = property.serializedObject.targetObjects;
             var presetValues = ReflectionUtility.GetField(presetTarget, Attribute.PresetPropertyName);
+
             if (presetValues == null)
             {
                 Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
@@ -34,13 +32,14 @@ namespace Toolbox.Editor.Drawers
                     var list = presetObject as IList;
                     var values = new object[list.Count];
                     var options = new string[list.Count];
+
                     for (var i = 0; i < list.Count; i++)
                     {
                         values[i] = list[i];
                         options[i] = list[i]?.ToString();
                     }
 
-                    var index = Array.IndexOf(values, fieldInfo.GetValue(presetTarget));
+                    var index = Array.IndexOf(values, property.GetProperValue(fieldInfo));
 
                     EditorGUI.BeginProperty(position, label, property);
                     EditorGUI.BeginChangeCheck();
@@ -48,21 +47,12 @@ namespace Toolbox.Editor.Drawers
                     index = EditorGUI.Popup(position, label.text, index, options);
                     //validate index value
                     index = Mathf.Clamp(index, 0, list.Count - 1);
+
                     if (EditorGUI.EndChangeCheck())
                     {
-                        //udpate property value using fieldInfo field
-                        property.serializedObject.Update();
-                        foreach (var target in presetTargets)
-                        {
-                            fieldInfo.SetValue(target, values[index]);
-
-                            //workaround to call OnValidate during fieldInfo edit
-                            if (target is Component)
-                            {
-                                (target as Component).SendMessage("OnValidate", SendMessageOptions.DontRequireReceiver);
-                            }
-                        }
-
+                        //udpate property value
+                        property.serializedObject.Update(); 
+                        property.SetProperValue(fieldInfo, values[index]);
                         property.serializedObject.ApplyModifiedProperties();
                         property.serializedObject.SetIsDifferentCacheDirty();
                     }

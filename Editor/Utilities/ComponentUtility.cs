@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 using UnityEditor;
 using UnityEngine;
@@ -58,11 +59,25 @@ namespace Toolbox.Editor
             copiedComponents.Clear();
         }
 
-
         [MenuItem("CONTEXT/Component/Paste Components", true)]
         private static bool ValidatePaste()
         {
             return Selection.gameObjects.Length > 0 && copiedComponents.Count > 0;
+        }
+
+
+        public static void SimulateOnValidate(UnityEngine.Object target)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            var methodInfo = target.GetType().GetMethod("OnValidate", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (methodInfo != null)
+            {
+                methodInfo.Invoke(target, null);
+            }
         }
     }
 }

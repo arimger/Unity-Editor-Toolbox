@@ -22,6 +22,9 @@ namespace Toolbox.Editor
         }
 
 
+        /// <summary>
+        /// Native utility class used to handle <see cref="SerializedProperty"/> data.
+        /// </summary>
         private static Type builtInPropertyUtilityType;
 
         private static MethodInfo getDrawerTypeForTypeMethod;
@@ -46,6 +49,18 @@ namespace Toolbox.Editor
             }
 
             return false;
+        }
+
+        private static bool IsSerializableArrayField(FieldInfo fieldInfo)
+        {
+            return typeof(IList).IsAssignableFrom(fieldInfo.FieldType);
+        }
+
+        private static int GetPropertyElementIndex(SerializedProperty element)
+        {
+            const int indexPosition = 2;
+            var indexChar = element.propertyPath[element.propertyPath.Length - indexPosition];
+            return indexChar - '0';
         }
 
 
@@ -148,11 +163,14 @@ namespace Toolbox.Editor
         /// <returns></returns>
         internal static object GetProperValue(this SerializedProperty property, FieldInfo fieldInfo)
         {
-            if (typeof(IList).IsAssignableFrom(fieldInfo.FieldType))
+            if (fieldInfo == null)
             {
-                const int indexPosition = 2;
-                var indexChar = property.propertyPath[property.propertyPath.Length - indexPosition];
-                var index = indexChar - '0';
+                throw new ArgumentNullException(nameof(fieldInfo));
+            }
+
+            if (IsSerializableArrayField(fieldInfo))
+            {
+                var index = GetPropertyElementIndex(property);
                 var list = fieldInfo.GetValue(property.serializedObject.targetObject) as IList;
 
                 return list[index];
@@ -164,6 +182,42 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
+        /// Sets value for property's field info in proper way. It does not matter if property is array element or single on.
+        /// Method handles OnValidate call and multiple target objects but it's quite slow.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="fieldInfo"></param>
+        internal static void SetProperValue(this SerializedProperty property, FieldInfo fieldInfo, object value)
+        {
+            if (fieldInfo == null)
+            {
+                throw new ArgumentNullException(nameof(fieldInfo));
+            }
+
+            var targets = property.serializedObject.targetObjects;
+
+            for (var i = 0; i < targets.Length; i++)
+            {
+                var target = targets[i];
+
+                if (IsSerializableArrayField(fieldInfo))
+                {
+                    var index = GetPropertyElementIndex(property);
+                    var list = fieldInfo.GetValue(target) as IList;
+
+                    list[index] = value;
+                    fieldInfo.SetValue(target, list);
+                }
+                else
+                {
+                    fieldInfo.SetValue(target, value);
+                }
+
+                ComponentUtility.SimulateOnValidate(target);
+            }    
+        }
+
+        /// <summary>
         /// Returns proper <see cref="Type"/> for this property, even if property is an array element.
         /// </summary>
         /// <param name="property"></param>
@@ -171,11 +225,14 @@ namespace Toolbox.Editor
         /// <returns></returns>
         internal static Type GetProperType(this SerializedProperty property, FieldInfo fieldInfo)
         {
-            if (typeof(IList).IsAssignableFrom(fieldInfo.FieldType))
+            if (fieldInfo == null)
             {
-                const int indexPosition = 2;
-                var indexChar = property.propertyPath[property.propertyPath.Length - indexPosition];
-                var index = indexChar - '0';
+                throw new ArgumentNullException(nameof(fieldInfo));
+            }
+
+            if (IsSerializableArrayField(fieldInfo))
+            {
+                var index = GetPropertyElementIndex(property);
                 var list = fieldInfo.GetValue(property.serializedObject.targetObject) as IList;
         
                 return list[0].GetType();
