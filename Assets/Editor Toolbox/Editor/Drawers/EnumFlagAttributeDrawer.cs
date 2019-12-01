@@ -23,7 +23,7 @@ namespace Toolbox.Editor.Drawers
 
         private void HandlePopupStyle(Rect position, SerializedProperty property, GUIContent label)
         {
-            //get field info value from this property, works even property is an array element
+            //get field info value from this property, works even on array elements
             var enumValue = property.GetProperValue(fieldInfo) as Enum;
 
             //begin popup property
