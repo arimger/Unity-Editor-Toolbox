@@ -199,6 +199,7 @@ namespace Toolbox.Editor
             for (var i = 0; i < targets.Length; i++)
             {
                 var target = targets[i];
+                Undo.RecordObject(target, "Set " + fieldInfo.Name);
 
                 if (IsSerializableArrayField(fieldInfo))
                 {
