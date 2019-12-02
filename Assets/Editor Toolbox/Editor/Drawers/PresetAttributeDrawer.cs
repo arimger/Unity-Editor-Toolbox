@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-
+using System.Reflection;
 using UnityEngine;
 using UnityEditor;
 
@@ -11,9 +11,9 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            var presetTarget = property.serializedObject.targetObject;
-            var presetValues = ReflectionUtility.GetField(presetTarget, Attribute.PresetPropertyName);
-
+            var targetObject = property.GetDeclaringObject();
+            var presetValues = targetObject.GetType().GetField(Attribute.PresetPropertyName, ReflectionUtility.allPossibleFieldsBinding);
+          
             if (presetValues == null)
             {
                 Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
@@ -22,12 +22,14 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            var presetObject = presetValues.GetValue(presetTarget);
+            var presetObject = presetValues.GetValue(targetObject);
             if (presetObject is IList)
             {
-                var propertyType = property.GetProperType(fieldInfo);
+                var propertyType = property.GetProperType(fieldInfo, targetObject);
                 //check if types match between property and provided preset
-                if (propertyType == (presetValues.FieldType.IsGenericType ? presetValues.FieldType.GetGenericArguments()[0] : presetValues.FieldType.GetElementType()))
+                if (propertyType == (presetValues.FieldType.IsGenericType 
+                                   ? presetValues.FieldType.GetGenericArguments()[0] 
+                                   : presetValues.FieldType.GetElementType()))
                 {
                     var list = presetObject as IList;
                     var values = new object[list.Count];
@@ -39,7 +41,7 @@ namespace Toolbox.Editor.Drawers
                         options[i] = list[i]?.ToString();
                     }
 
-                    var index = Array.IndexOf(values, property.GetProperValue(fieldInfo));
+                    var index = Array.IndexOf(values, property.GetProperValue(fieldInfo, targetObject));
 
                     EditorGUI.BeginProperty(position, label, property);
                     EditorGUI.BeginChangeCheck();

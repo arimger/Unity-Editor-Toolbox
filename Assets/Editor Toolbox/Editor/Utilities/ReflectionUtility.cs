@@ -8,6 +8,10 @@ namespace Toolbox.Editor
 {
     public static class ReflectionUtility
     {
+        public const BindingFlags allPossibleFieldsBinding =
+            BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly;
+
+
         public static IEnumerable<FieldInfo> GetAllFields(object target, Func<FieldInfo, bool> predicate)
         {
             var types = new List<Type>()
@@ -23,7 +27,7 @@ namespace Toolbox.Editor
             for (int i = types.Count - 1; i >= 0; i--)
             {
                 var fieldInfos = types[i]
-                    .GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
+                    .GetFields(allPossibleFieldsBinding)
                     .Where(predicate);
 
                 foreach (var fieldInfo in fieldInfos)
@@ -48,7 +52,7 @@ namespace Toolbox.Editor
             for (int i = types.Count - 1; i >= 0; i--)
             {
                 var propertyInfos = types[i]
-                    .GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
+                    .GetProperties(allPossibleFieldsBinding)
                     .Where(predicate);
 
                 foreach (var propertyInfo in propertyInfos)

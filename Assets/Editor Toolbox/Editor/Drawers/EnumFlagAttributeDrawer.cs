@@ -21,10 +21,10 @@ namespace Toolbox.Editor.Drawers
         private float additionalHeight;
 
 
-        private void HandlePopupStyle(Rect position, SerializedProperty property, GUIContent label)
+        private void HandlePopupStyle(Rect position, SerializedProperty property, GUIContent label, object targetObject)
         {
             //get field info value from this property, works even on array elements
-            var enumValue = property.GetProperValue(fieldInfo) as Enum;
+            var enumValue = property.GetProperValue(fieldInfo, targetObject) as Enum;
 
             //begin popup property
             EditorGUI.BeginProperty(position, label, property);
@@ -37,7 +37,7 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.EndProperty();
         }
 
-        private void HandleButtonStyle(Rect position, SerializedProperty property, GUIContent label)
+        private void HandleButtonStyle(Rect position, SerializedProperty property, GUIContent label, object targetObject)
         {
             //collection of indexes used to store all needed enums
             var buttonsToDisplay = new List<int>();
@@ -47,7 +47,7 @@ namespace Toolbox.Editor.Drawers
             var buttonPosition = EditorGUI.PrefixLabel(position, label);
             EditorGUI.BeginChangeCheck();
 
-            var propertyType = property.GetProperType(fieldInfo);
+            var propertyType = property.GetProperType(fieldInfo, targetObject);
             var enumValues = Enum.GetValues(propertyType);
             var enumNames = Enum.GetNames(propertyType);
             var enumSum = 0;
@@ -136,13 +136,13 @@ namespace Toolbox.Editor.Drawers
             switch (Attribute.Style)
             {
                 case EnumStyle.Popup:
-                    HandlePopupStyle(position, property, label);
+                    HandlePopupStyle(position, property, label, property.GetDeclaringObject());
                     return;
                 case EnumStyle.Button:
-                    HandleButtonStyle(position, property, label);
+                    HandleButtonStyle(position, property, label, property.GetDeclaringObject());
                     return;
                 default:
-                    HandlePopupStyle(position, property, label);
+                    HandlePopupStyle(position, property, label, property.GetDeclaringObject());
                     return;
             }
         }
