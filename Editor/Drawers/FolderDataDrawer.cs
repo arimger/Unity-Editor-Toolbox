@@ -13,11 +13,33 @@ namespace Toolbox.Editor.Drawers
 
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
+        {            
             //if expanded - draw foldout + 2 properties + buttons strip + additional icon 
-            return property.isExpanded
-                ? EditorGUI.GetPropertyHeight(property, label) + Style.iconHeight - Style.height * 2
-                : Style.height;
+            if (property.isExpanded)
+            {
+                var height = Style.height;
+                var typeProperty = property.FindPropertyRelative("type");
+                var nameProperty = property.FindPropertyRelative("name");
+                var pathProperty = property.FindPropertyRelative("path");
+
+                //check if type is path-based or name-based
+                if (typeProperty.intValue == 0)
+                {
+                    height += EditorGUI.GetPropertyHeight(pathProperty);
+                }
+                else
+                {
+                    height += EditorGUI.GetPropertyHeight(nameProperty);
+                }
+
+                height += Style.spacing * 4;
+                height += Style.height;
+                height += Style.height;
+                height += Style.iconHeight;
+                return height;
+            }
+
+            return Style.height;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -74,7 +96,7 @@ namespace Toolbox.Editor.Drawers
             propertyPosition.y += rawPropertyHeight;
             sumPropertyHeight += rawPropertyHeight;
 
-            //decide what property should be drawn depenging on folder data type
+            //decide what property should be drawn depending on folder data type
             if (isPathBased)
             {
                 propertyPosition.height = EditorGUI.GetPropertyHeight(pathProperty);
