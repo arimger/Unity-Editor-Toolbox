@@ -11,7 +11,7 @@ namespace Toolbox.Editor
             EditorApplication.hierarchyWindowItemOnGUI += OnItemCallback;
         }
 
-        
+
         /// <summary>
         /// Delegate used in label element drawing process.
         /// </summary>
@@ -25,7 +25,7 @@ namespace Toolbox.Editor
         /// Collection of all wanted hierarchy elements drawers.
         /// </summary>
         private static readonly DrawElementCallback[] drawElementCallbacks = new DrawElementCallback[]
-        {       
+        {
             DrawIcon,
             DrawToggle,
             DrawTag,
@@ -48,8 +48,26 @@ namespace Toolbox.Editor
             var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             if (gameObject)
             {
-                DrawItemLabel(gameObject, rect);
+                if (gameObject.transform.parent != null || gameObject.transform.GetSiblingIndex() > 0)
+                {
+                    DrawDefaultItemLabel(gameObject, rect);
+                }
+                else
+                {
+                    DrawPrimeItemLabel(gameObject, rect);
+                }
             }
+        }
+
+        /// <summary>
+        /// Draws label in default way but additionaly handles content for whole overlay.
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="rect"></param>
+        private static void DrawPrimeItemLabel(GameObject gameObject, Rect rect)
+        {
+            //TODO:
+            DrawDefaultItemLabel(gameObject, rect);
         }
 
         /// <summary>
@@ -58,38 +76,31 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="rect"></param>
-        private static void DrawItemLabel(GameObject gameObject, Rect rect)
+        private static void DrawDefaultItemLabel(GameObject gameObject, Rect rect)
         {
-            //validate callbacks count
-            if (drawElementCallbacks.Length == 0)
-            {
-                return;
-            }
-            
             var contRect = rect;
 
-            //draw vertical separation line
             EditorGUI.DrawRect(new Rect(contRect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
-            //draw first callback element in proper rect
-            //we have to adjust given rect to our purpose
-            contRect = new Rect(contRect.xMax - Style.maxWidth, rect.y, Style.maxWidth, contRect.height);
-            contRect = drawElementCallbacks[0](gameObject, contRect);
-  
-            //draw vertical separation line
-            EditorGUI.DrawRect(new Rect(contRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
-
-            //draw each needed element content stored in callbacks collection
-            for (var i = 1; i < drawElementCallbacks.Length; i++)
+            if (drawElementCallbacks.Length > 0)
             {
-                contRect =  new Rect(contRect.xMin - Style.maxWidth, rect.y, Style.maxWidth, rect.height);
-                contRect = drawElementCallbacks[i](gameObject, contRect);
+                //draw first callback element in proper rect
+                //we have to adjust given rect to our purpose
+                contRect = new Rect(contRect.xMax - Style.maxWidth, rect.y, Style.maxWidth, contRect.height);
+                contRect = drawElementCallbacks[0](gameObject, contRect);
 
-                //draw vertical separation line
                 EditorGUI.DrawRect(new Rect(contRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
+
+                //draw each needed element content stored in callbacks collection
+                for (var i = 1; i < drawElementCallbacks.Length; i++)
+                {
+                    contRect = new Rect(contRect.xMin - Style.maxWidth, rect.y, Style.maxWidth, rect.height);
+                    contRect = drawElementCallbacks[i](gameObject, contRect);
+
+                    EditorGUI.DrawRect(new Rect(contRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
+                }
             }
 
-            //draw horizontal separation line
             EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
         }
 
@@ -106,7 +117,7 @@ namespace Toolbox.Editor
             var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
             var contentIcon = content.image;
             var contentRect = rect;
-   
+
             contentRect.width = Style.iconWidth;
             //contentRect.height = Style.iconHeight;
 #if UNITY_2018_1_OR_NEWER
@@ -211,18 +222,18 @@ namespace Toolbox.Editor
             /// 
             /// Custom label styles
             ///
- 
+
             internal static readonly GUIStyle toggleStyle;
             internal static readonly GUIStyle tagLabelStyle;
             internal static readonly GUIStyle layerLabelStyle;
             internal static readonly GUIStyle backgroundStyle;
-       
+
             static Style()
             {
                 //set tag label style based on mini label
                 tagLabelStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
-                    fontSize = 8                   
+                    fontSize = 8
                 };
                 tagLabelStyle.normal.textColor = new Color(0.35f, 0.35f, 0.35f);
 

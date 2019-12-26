@@ -27,6 +27,8 @@ namespace Toolbox.Editor
         {
             ToolboxFolderUtility.settings = settings;
 
+            pathBasedFoldersData.Clear();
+            nameBasedFoldersData.Clear();
             for (var i = 0; i < settings.CustomFoldersCount; i++)
             {
                 var folderData = settings.GetCustomFolderAt(i);

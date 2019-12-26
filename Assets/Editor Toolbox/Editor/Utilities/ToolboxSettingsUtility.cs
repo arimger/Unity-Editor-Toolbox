@@ -3,34 +3,51 @@ using UnityEditor;
 
 namespace Toolbox.Editor
 {
+    using Editor = UnityEditor.Editor;
+
     [InitializeOnLoad]
     internal static class ToolboxSettingsUtility
     {
+        private const string settingsType = nameof(ToolboxEditorSettings);
+
+        private static string settingsGuid;
+        private static string settingsPath;
+
+        private static Editor globalSettingsEditor;
+
+
         [InitializeOnLoadMethod]
         internal static void InitializeSettings()
         {
-            const string settingsFileExt = ".asset";
-            const string versionFileName = "Version.txt";
+            var guids = AssetDatabase.FindAssets("t:" + settingsType);
 
-            //find all possible settings files in whole project solution
-            var guids = AssetDatabase.FindAssets("t:" + nameof(ToolboxEditorSettings));
+            InitializeSettings(guids.Length > 0 ? guids[0] : null);
+        }
 
-            if (guids == null || guids.Length == 0) return;
+        internal static void InitializeSettings(ToolboxEditorSettings settings)
+        {
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(settings, out string guid, out long id);
 
-            //try to get proper path for first settings file
-            var settingsFilePath = AssetDatabase.GUIDToAssetPath(guids[0]);
-            Settings = AssetDatabase.LoadAssetAtPath<ToolboxEditorSettings>(settingsFilePath);
+            InitializeSettings(guid);
+        }
 
-            if (Settings == null)
+        internal static void InitializeSettings(string assetGuid)
+        {
+            const string warningMessage = settingsType +
+                " asset file not found. Cannot initialize Toolbox core functionalities. " +
+                "You can create new settings file using CreateAsset menu -> Create -> Toolbox Editor -> Settings.";
+
+            settingsGuid = assetGuid;
+            settingsPath = AssetDatabase.GUIDToAssetPath(assetGuid);
+            //try to get proper settings asset from provided guid
+            var settings = AssetDatabase.LoadAssetAtPath<ToolboxEditorSettings>(settingsPath);
+            if (settings == null)
             {
-                Debug.LogWarning("ToolboxEditorSettings not found. Cannot initialize Toolbox core functionalities. " +
-                                 "You can create new settings file using CreateAsset menu -> Create -> Toolbox Editor -> Settings.");
+                Debug.LogWarning(warningMessage);
                 return;
             }
 
-            //try to get version file path, it should be in same location as settings file
-            var versionFilePath = settingsFilePath.Replace(Settings.name + settingsFileExt, versionFileName);
-            Version = AssetDatabase.LoadAssetAtPath<TextAsset>(versionFilePath)?.text;
+            Settings = settings;
 
             //initialize core functionalities
             ToolboxDrawerUtility.InitializeDrawers(Settings);
@@ -48,8 +65,67 @@ namespace Toolbox.Editor
         }
 
 
-        internal static ToolboxEditorSettings Settings { get; private set; }
+        [SettingsProvider]
+        internal static SettingsProvider SettingsProvider()
+        {
+            var provider = new SettingsProvider("Project/Editor Toolbox", SettingsScope.Project)
+            {
+                guiHandler = (searchContext) =>
+                {
+                    if (globalSettingsEditor == null || globalSettingsEditor.serializedObject.targetObject == null)
+                    {
+                        EditorGUILayout.Space();
+                        EditorGUILayout.LabelField("Cannot find " + settingsType + " file located in this Project");
+                        EditorGUILayout.Space();
 
-        internal static string Version { get; private set; }
+                        //tries to find settings file in Project 
+                        if (GUILayout.Button("Try to find settings file"))
+                        {                          
+                            ReimportSettings();
+                        }
+
+                        //creates new settings file as asset located in default path
+                        if (GUILayout.Button("Create settings new file"))
+                        {
+                            var settingsInstance = ScriptableObject.CreateInstance(settingsType);
+                            var path = "Assets/" + settingsType + ".asset";
+
+                            AssetDatabase.CreateAsset(settingsInstance, path);
+                            AssetDatabase.SaveAssets();
+                            AssetDatabase.Refresh();
+
+                            Debug.Log("Created settings file at - " + path);
+
+                            ReimportSettings();
+                        }
+
+                        return;
+                    }
+
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("Settings file location - " + settingsPath);
+                    EditorGUILayout.Space();
+
+                    globalSettingsEditor.serializedObject.Update();
+                    globalSettingsEditor.OnInspectorGUI();
+                    globalSettingsEditor.serializedObject.ApplyModifiedProperties();
+                },
+                //initialize editor for currently cached settings file 
+                activateHandler = (searchContext, elements) =>
+                {
+                    globalSettingsEditor = Editor.CreateEditor(Settings);
+                },
+                //destroy obsolete settings editor
+                deactivateHandler = () =>
+                {
+                    Object.DestroyImmediate(globalSettingsEditor);
+                }
+            };
+
+            return provider;
+        }
+
+
+        internal static ToolboxEditorSettings Settings { get; private set; }
     }
 }

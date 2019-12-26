@@ -78,6 +78,7 @@ namespace Toolbox.Editor
                 return drawerType.IsGenericType ? drawerType.GetGenericArguments().FirstOrDefault() : null;
             }
 
+            decoratorDrawers.Clear();
             for (var i = 0; i < settings.DecoratorDrawersCount; i++)
             {
                 var drawerType = settings.GetDecoratorDrawerTypeAt(i);
@@ -85,6 +86,7 @@ namespace Toolbox.Editor
                 AddAttributeDrawer(drawerType, targetType, decoratorDrawers);
             }
 
+            propertyDrawers.Clear();
             for (var i = 0; i < settings.PropertyDrawersCount; i++)
             {
                 var drawerType = settings.GetPropertyDrawerTypeAt(i);
@@ -92,6 +94,7 @@ namespace Toolbox.Editor
                 AddAttributeDrawer(drawerType, targetType, propertyDrawers);
             }
 
+            collectionDrawers.Clear();
             for (var i = 0; i < settings.CollectionDrawersCount; i++)
             {
                 var drawerType = settings.GetCollectionDrawerTypeAt(i);
@@ -99,6 +102,7 @@ namespace Toolbox.Editor
                 AddAttributeDrawer(drawerType, targetType, collectionDrawers);
             }
 
+            conditionDrawers.Clear();
             for (var i = 0; i < settings.ConditionDrawersCount; i++)
             {
                 var drawerType = settings.GetConditionDrawerTypeAt(i);
@@ -109,6 +113,7 @@ namespace Toolbox.Editor
 
         private static void CreateTargetTypeDrawers(IToolboxDrawersSettings settings)
         {
+            targetTypeDrawers.Clear();
             for (var i = 0; i < settings.TargetTypeDrawersCount; i++)
             {
                 var drawerType = settings.GetTargetTypeDrawerTypeAt(i);

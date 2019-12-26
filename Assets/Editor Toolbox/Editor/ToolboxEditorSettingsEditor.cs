@@ -106,16 +106,22 @@ namespace Toolbox.Editor
         {
             const float lineTickiness = 1.0f;
 
-            EditorGUILayout.HelpBox("To approve all changes press the \"Apply\" button.", MessageType.Info);
-
             serializedObject.Update();
 
+            //handle hierarchy settings section
             if (hierarchySettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.settingsFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
 
+                EditorGUI.BeginChangeCheck();
+                //draw associated toggle property field
                 EditorGUILayout.PropertyField(useToolboxHierarchyProperty);
+                //force hierarchy repaint if toggle was clicked
+                if (EditorGUI.EndChangeCheck())
+                {
+                    EditorApplication.RepaintHierarchyWindow();
+                }
 
                 EditorGUILayout.Space();
                 EditorGUI.indentLevel--;
@@ -125,21 +131,26 @@ namespace Toolbox.Editor
                 GUILayout.Space(-lineTickiness);
             }
 
+            //handle project settings section (focused on customized folder icons)
             if (projectSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.settingsFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
 
+                //draw associated toggle property
                 EditorGUILayout.PropertyField(useToolboxFoldersProperty);
 
                 EditorGUILayout.Space();
                 ToolboxEditorGui.DrawLayoutLine(lineTickiness);
 
                 EditorGUI.BeginDisabledGroup(!useToolboxFoldersProperty.boolValue);
+                
+                //draw custom icons list
                 if (DrawListFoldout(customFoldersList, Style.folderListFoldoutStyle))
                 {
                     customFoldersList.DoLayoutList();
                 }
+
                 EditorGUI.EndDisabledGroup();
 
                 EditorGUILayout.Space();
@@ -211,13 +222,18 @@ namespace Toolbox.Editor
             EditorGUILayout.Space();
             EditorGUILayout.Space();
 
+            EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button(Style.applyButtonContent, Style.buttonOptions))
             {
                 ToolboxSettingsUtility.ReimportSettings();
             }
 
+            //EditorGUILayout.HelpBox("To approve all changes press the \"Apply\" button.", MessageType.Info);
+            EditorGUILayout.EndHorizontal();
+
             GUILayout.FlexibleSpace();
-            GUILayout.Label(ToolboxSettingsUtility.Version, Style.settingsVersionLabelStyle);
+            //draw current Toolbox version
+            GUILayout.Label(ToolboxKitUtility.Version, Style.settingsVersionLabelStyle);
         }
 
 
@@ -238,7 +254,7 @@ namespace Toolbox.Editor
                 EditorGUIUtility.IconContent("d_Project").image);
             internal readonly static GUIContent drawersSettingsContent = new GUIContent("Drawers Settings", 
                 EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
-            internal readonly static GUIContent applyButtonContent = new GUIContent("Apply", "Apply changes");
+            internal readonly static GUIContent applyButtonContent = new GUIContent("Apply", "Apply all reference-based changes");
 
             internal readonly static GUILayoutOption[] buttonOptions = new GUILayoutOption[]
             {
