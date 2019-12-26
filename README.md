@@ -9,11 +9,11 @@ Unity 2018.x or newer
 ## Instalation
 
 - Copy and paste `Editor Toolbox` directory into your project (basically into `Asset` directory or somewhere deeper)
-- Find ToolboxEditorSettings file (predefined one is created as Editor Toolbox/EditorSettings.asset)
+- Find ToolboxEditorSettings file (predefined one is created as Editor Toolbox/EditorSettings.asset) or use Edit/Project Settings/Editor Toolbox window
 	- Enable/disable Hierarchy overlay
 	- Enable/disable Project icons or/and assign own directories
 	- Enable/disable Toolbox drawers or/and assign custom drawers
-- Press "Apply" button
+- Press "Reload references" button
 
 ## Table Of Contents
 
@@ -26,6 +26,10 @@ Unity 2018.x or newer
 	- [Project](#project)
 	- [Toolbar](#toolbar)
 - [Editor Extras](#editor-extras)
+
+## Settings
+
+TODO
 
 ## Attributes
 

@@ -68,16 +68,26 @@ namespace Toolbox.Editor
         }
 
 
+        /// <summary>
+        /// Draws provided <see cref="ReorderableList"/> as list of drawers.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="titleLabel"></param>
+        /// <param name="assignButtonLabel"></param>
+        /// <returns></returns>
         private bool DrawDrawerList(ReorderableList list, string titleLabel, string assignButtonLabel)
         {
-            EditorGUILayout.BeginHorizontal();
-
+            GUILayout.BeginHorizontal();
+            //draw foldout for whole reorderable list
             var expanded = DrawListFoldout(list, Style.drawerListFoldoutStyle, titleLabel);
+            //adjust space between contents in group
             GUILayout.FlexibleSpace();
-            var pressed = GUILayout.Button(assignButtonLabel, Style.smallButtonStyle);
- 
-            EditorGUILayout.EndHorizontal();
+            //create "Assign all" button
+            var pressed =
+            GUILayout.Button(assignButtonLabel, Style.smallButtonStyle);
+            GUILayout.EndHorizontal();
 
+            //draw reorderable list if expanded
             if (expanded)
             {
                 list.DoLayoutList();
@@ -102,6 +112,9 @@ namespace Toolbox.Editor
         }
 
 
+        /// <summary>
+        /// Draws all needed inspector controls.
+        /// </summary>
         public override void OnInspectorGUI()
         {
             const float lineTickiness = 1.0f;
@@ -161,6 +174,7 @@ namespace Toolbox.Editor
                 GUILayout.Space(-lineTickiness);
             }
 
+            //handle drawers settings section
             if (drawersSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(drawersSettingsEnabled, Style.drawersSettingsContent, true, Style.settingsFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
@@ -254,11 +268,11 @@ namespace Toolbox.Editor
                 EditorGUIUtility.IconContent("d_Project").image);
             internal readonly static GUIContent drawersSettingsContent = new GUIContent("Drawers Settings", 
                 EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
-            internal readonly static GUIContent applyButtonContent = new GUIContent("Apply", "Apply all reference-based changes");
+            internal readonly static GUIContent applyButtonContent = new GUIContent("Reload references", "Apply all reference-based changes");
 
             internal readonly static GUILayoutOption[] buttonOptions = new GUILayoutOption[]
             {
-                GUILayout.Width(80)
+                GUILayout.Width(120)
             };
 
             static Style()

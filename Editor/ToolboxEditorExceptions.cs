@@ -9,15 +9,6 @@ namespace Toolbox.Editor
         { }
     }
 
-    [Obsolete]
-    internal class WrongAttributeUsageException : Exception
-    {
-        public WrongAttributeUsageException(UnityEditor.SerializedProperty property, Attribute attribute) 
-            : base(property.name + " property in " + property.serializedObject.targetObject +
-                   " - " + attribute.GetType() + " cannot be used on this property.")
-        { }
-    }
-
     internal class DrawerAttributeArgumentException : ArgumentException
     {
         public DrawerAttributeArgumentException(Type targetAttributeType)

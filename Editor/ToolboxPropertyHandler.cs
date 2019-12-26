@@ -72,7 +72,7 @@ namespace Toolbox.Editor
 
             //here starts preparation of all needed data for this handler
             //first of all we have to retrieve native data like field info, custom native drawer, etc.
-            //nafter this we have to retrieve (if possible) all Toolbox-related data - ToolboxAttributes
+            //after this we have to retrieve (if possible) all Toolbox-related data - ToolboxAttributes
 
             //get field info associated with this property, this property is needed for custom attributes
             propertyFieldInfo = property.GetFieldInfo(out propertyType);
@@ -122,9 +122,9 @@ namespace Toolbox.Editor
 
             //get only one condition attribute to valdiate state of this property
             conditionAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxConditionAttribute>();
-
             //get all available decorator attributes
-            decoratorAttributes = propertyFieldInfo.GetCustomAttributes<ToolboxDecoratorAttribute>().ToArray();
+            decoratorAttributes = propertyFieldInfo.GetCustomAttributes<ToolboxDecoratorAttribute>()
+                .ToArray();
             //keep decorator attributes in proper order
             Array.Sort(decoratorAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
         }

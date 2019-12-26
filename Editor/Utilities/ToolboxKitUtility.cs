@@ -16,6 +16,7 @@ namespace Toolbox.Editor
             //TODO:
             var directories = Directory.GetDirectories(Application.dataPath, toolkitName, SearchOption.AllDirectories);
             if (directories == null || directories.Length == 0) return;
+
             var toolkitDirectoryPath = directories[0].Replace('\\', '/').Replace(Application.dataPath, "Assets");
             var toolkitVersionAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(toolkitDirectoryPath + "/Version.txt");
             if (toolkitVersionAsset)
