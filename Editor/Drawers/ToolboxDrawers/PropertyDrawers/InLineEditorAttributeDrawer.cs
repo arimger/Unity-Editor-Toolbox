@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -9,20 +8,48 @@ using UnityEditorInternal;
 
 namespace Toolbox.Editor.Drawers
 {
+    using Editor = UnityEditor.Editor;
+
     public class InLineEditorAttributeDrawer : ToolboxPropertyDrawer<InLineEditorAttribute>
     {
         /// <summary>
-        /// Collection of all stored <see cref="UnityEditor.Editor"/> instances.
+        /// Collection of all stored <see cref="Editor"/> instances.
         /// </summary>
-        private static Dictionary<string, UnityEditor.Editor> editorInstances = new Dictionary<string, UnityEditor.Editor>();
+        private static Dictionary<string, Editor> editorInstances = new Dictionary<string, Editor>();
 
 
         /// <summary>
-        /// Draws inlined version of <see cref="UnityEditor.Editor"></see> and handles all unexpected situations.
+        /// Clears and destroys particular editor by provided key.
+        /// </summary>
+        /// <param name="key"></param>
+        private void ClearEditor(string key)
+        {
+            //destroy obsolete editor by provided key
+            Object.DestroyImmediate(editorInstances[key]);
+            //clear obsolete editor from cached instances
+            editorInstances.Remove(key);
+        }
+
+        /// <summary>
+        /// Clears and destroys all available editor instances in <see cref="editorInstances"/>.
+        /// </summary>
+        private void ClearEditors()
+        {
+            //destroy all obsolete editors
+            foreach (var editor in editorInstances.Values)
+            {
+                Object.DestroyImmediate(editor);
+            }
+            //clear all obsolete editors
+            editorInstances.Clear();
+        }
+
+        /// <summary>
+        /// Draws inlined version of <see cref="Editor"></see> and handles all unexpected situations.
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
-        private void HandleEditorPrewarm(UnityEditor.Editor editor, InLineEditorAttribute attribute)
+        private void HandleEditorPrewarm(Editor editor, InLineEditorAttribute attribute)
         {
             if (!attribute.DrawHeader)
             {
@@ -54,7 +81,7 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
-        private void HandleEditorDrawing(UnityEditor.Editor editor, InLineEditorAttribute attribute)
+        private void HandleEditorDrawing(Editor editor, InLineEditorAttribute attribute)
         {
             //draw header if needed
             if (attribute.DrawHeader)
@@ -84,32 +111,32 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Handles property drawing process and tries to create inlined version of <see cref="UnityEditor.Editor"/>
+        /// Handles property drawing process and tries to create inlined version of <see cref="Editor"/>
         /// for <see cref="UnityEngine.Object"/> associated to this property.
         /// </summary>
         /// <param name="property"></param>
         /// <param name="attribute"></param>
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, InLineEditorAttribute attribute)
         {
-            EditorGUILayout.PropertyField(property, label, property.isExpanded);
+            var key = property.GetPropertyKey();
 
-            //basically multiple values are not supported yet
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(property, label, property.isExpanded);
+            if (EditorGUI.EndChangeCheck())
+            {
+                ClearEditor(key);
+                return;
+            }
+
             if (property.objectReferenceValue == null)
             {
                 return;
             }
 
-            var key = property.GetPropertyKey();
             //get (or create) editor for this property
-            if (!editorInstances.TryGetValue(key, out UnityEditor.Editor editor))
+            if (!editorInstances.TryGetValue(key, out Editor editor))
             {
-                editorInstances[key] = editor = UnityEditor.Editor.CreateEditor(property.objectReferenceValue);
-            }
-            //if reference values does not match we have to reset editor
-            else if (editor.target != property.objectReferenceValue)
-            {
-                editorInstances.Remove(key);
-                return;
+                editorInstances[key] = editor = Editor.CreateEditor(property.objectReferenceValue);
             }
 
             if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, new GUIContent(property.objectReferenceValue.GetType().Name + " Inspector Preview"), true, Style.foldoutStyle))
@@ -125,8 +152,7 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         public override void OnGuiReload()
         {
-            //clear all obsolete editors
-            editorInstances.Clear();
+            ClearEditors();
         }
 
         /// <summary>
