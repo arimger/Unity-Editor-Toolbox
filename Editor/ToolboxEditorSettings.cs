@@ -16,16 +16,16 @@ namespace Toolbox.Editor
         void SetAllPossibleConditionDrawers();
         void SetAllPossibleTargetTypeDrawers();
 
-        void AddDecoratorDrawerHandler(SerializedTypeReference drawerReference);
-        void AddPropertyDrawerHandler(SerializedTypeReference drawerReference);
-        void AddConditionDrawerHandler(SerializedTypeReference drawerReference);
-        void AddCollectionDrawerHandler(SerializedTypeReference drawerReference);
-        void AddTargetTypeDrawerHandler(SerializedTypeReference drawerReference);
-        void RemoveDecoratorDrawerHandler(SerializedTypeReference drawerReference);
-        void RemovePropertyDrawerHandler(SerializedTypeReference drawerReference);
-        void RemoveConditionDrawerHandler(SerializedTypeReference drawerReference);
-        void RemoveCollectionDrawerHandler(SerializedTypeReference drawerReference);
-        void RemoveTargetTypeDrawerHandler(SerializedTypeReference drawerReference);
+        void AddDecoratorDrawerHandler(SerializedType drawerReference);
+        void AddPropertyDrawerHandler(SerializedType drawerReference);
+        void AddConditionDrawerHandler(SerializedType drawerReference);
+        void AddCollectionDrawerHandler(SerializedType drawerReference);
+        void AddTargetTypeDrawerHandler(SerializedType drawerReference);
+        void RemoveDecoratorDrawerHandler(SerializedType drawerReference);
+        void RemovePropertyDrawerHandler(SerializedType drawerReference);
+        void RemoveConditionDrawerHandler(SerializedType drawerReference);
+        void RemoveCollectionDrawerHandler(SerializedType drawerReference);
+        void RemoveTargetTypeDrawerHandler(SerializedType drawerReference);
 
         Type GetDecoratorDrawerTypeAt(int index);
         Type GetPropertyDrawerTypeAt(int index);
@@ -75,20 +75,20 @@ namespace Toolbox.Editor
 
         [HideIf("useToolboxDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxDecoratorDrawer<>))]
-        private List<SerializedTypeReference> decoratorDrawerHandlers;
+        private List<SerializedType> decoratorDrawerHandlers;
         [HideIf("useToolboxDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxPropertyDrawer<>))]
-        private List<SerializedTypeReference> propertyDrawerHandlers;
+        private List<SerializedType> propertyDrawerHandlers;
         [HideIf("useToolboxDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxCollectionDrawer<>))]
-        private List<SerializedTypeReference> collectionDrawerHandlers;
+        private List<SerializedType> collectionDrawerHandlers;
         [HideIf("useToolboxDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxConditionDrawer<>))]
-        private List<SerializedTypeReference> conditionDrawerHandlers;
+        private List<SerializedType> conditionDrawerHandlers;
 
         [HideIf("useToolboxDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxTargetTypeDrawer))]
-        private List<SerializedTypeReference> targetTypeDrawerHandlers;
+        private List<SerializedType> targetTypeDrawerHandlers;
 
 
         public void AddCustomFolder(FolderData path)
@@ -115,7 +115,7 @@ namespace Toolbox.Editor
             var types = ToolboxDrawerUtility.GetAllPossibleDecoratorDrawers();
             for (var i = 0; i < types.Count; i++)
             {
-                AddDecoratorDrawerHandler(new SerializedTypeReference(types[i]));
+                AddDecoratorDrawerHandler(new SerializedType(types[i]));
             }
         }
 
@@ -126,7 +126,7 @@ namespace Toolbox.Editor
             var types = ToolboxDrawerUtility.GetAllPossiblePropertyDrawers();
             for (var i = 0; i < types.Count; i++)
             {
-                AddPropertyDrawerHandler(new SerializedTypeReference(types[i]));
+                AddPropertyDrawerHandler(new SerializedType(types[i]));
             }
         }
 
@@ -137,7 +137,7 @@ namespace Toolbox.Editor
             var types = ToolboxDrawerUtility.GetAllPossibleCollectionDrawers();
             for (var i = 0; i < types.Count; i++)
             {
-                AddCollectionDrawerHandler(new SerializedTypeReference(types[i]));
+                AddCollectionDrawerHandler(new SerializedType(types[i]));
             }
         }
 
@@ -148,7 +148,7 @@ namespace Toolbox.Editor
             var types = ToolboxDrawerUtility.GetAllPossibleConditionDrawers();
             for (var i = 0; i < types.Count; i++)
             {
-                AddConditionDrawerHandler(new SerializedTypeReference(types[i]));
+                AddConditionDrawerHandler(new SerializedType(types[i]));
             }
         }
 
@@ -159,61 +159,61 @@ namespace Toolbox.Editor
             var types = ToolboxDrawerUtility.GetAllPossibleTargetTypeDrawers();
             for (var i = 0; i < types.Count; i++)
             {
-                AddTargetTypeDrawerHandler(new SerializedTypeReference(types[i]));
+                AddTargetTypeDrawerHandler(new SerializedType(types[i]));
             }
         }
 
-        public void AddDecoratorDrawerHandler(SerializedTypeReference drawerReference)
+        public void AddDecoratorDrawerHandler(SerializedType drawerReference)
         {
-            if (decoratorDrawerHandlers == null) decoratorDrawerHandlers = new List<SerializedTypeReference>();
+            if (decoratorDrawerHandlers == null) decoratorDrawerHandlers = new List<SerializedType>();
             decoratorDrawerHandlers.Add(drawerReference);
         }
 
-        public void AddPropertyDrawerHandler(SerializedTypeReference drawerReference)
+        public void AddPropertyDrawerHandler(SerializedType drawerReference)
         {
-            if (propertyDrawerHandlers == null) propertyDrawerHandlers = new List<SerializedTypeReference>();
+            if (propertyDrawerHandlers == null) propertyDrawerHandlers = new List<SerializedType>();
             propertyDrawerHandlers.Add(drawerReference);
         }
 
-        public void AddConditionDrawerHandler(SerializedTypeReference drawerReference)
+        public void AddConditionDrawerHandler(SerializedType drawerReference)
         {
-            if (conditionDrawerHandlers == null) conditionDrawerHandlers = new List<SerializedTypeReference>();
+            if (conditionDrawerHandlers == null) conditionDrawerHandlers = new List<SerializedType>();
             conditionDrawerHandlers.Add(drawerReference);
         }
 
-        public void AddCollectionDrawerHandler(SerializedTypeReference drawerReference)
+        public void AddCollectionDrawerHandler(SerializedType drawerReference)
         {
-            if (conditionDrawerHandlers == null) collectionDrawerHandlers = new List<SerializedTypeReference>();
+            if (conditionDrawerHandlers == null) collectionDrawerHandlers = new List<SerializedType>();
             collectionDrawerHandlers.Add(drawerReference);
         }
 
-        public void AddTargetTypeDrawerHandler(SerializedTypeReference drawerReference)
+        public void AddTargetTypeDrawerHandler(SerializedType drawerReference)
         {
-            if (targetTypeDrawerHandlers == null) targetTypeDrawerHandlers = new List<SerializedTypeReference>();
+            if (targetTypeDrawerHandlers == null) targetTypeDrawerHandlers = new List<SerializedType>();
             targetTypeDrawerHandlers.Add(drawerReference);
         }
 
-        public void RemoveDecoratorDrawerHandler(SerializedTypeReference drawerReference)
+        public void RemoveDecoratorDrawerHandler(SerializedType drawerReference)
         {
             decoratorDrawerHandlers?.Remove(drawerReference);
         }
 
-        public void RemovePropertyDrawerHandler(SerializedTypeReference drawerReference)
+        public void RemovePropertyDrawerHandler(SerializedType drawerReference)
         {
             propertyDrawerHandlers?.Remove(drawerReference);
         }
 
-        public void RemoveConditionDrawerHandler(SerializedTypeReference drawerReference)
+        public void RemoveConditionDrawerHandler(SerializedType drawerReference)
         {
             conditionDrawerHandlers?.Remove(drawerReference);
         }
 
-        public void RemoveCollectionDrawerHandler(SerializedTypeReference drawerReference)
+        public void RemoveCollectionDrawerHandler(SerializedType drawerReference)
         {
             collectionDrawerHandlers?.Remove(drawerReference);
         }
 
-        public void RemoveTargetTypeDrawerHandler(SerializedTypeReference drawerReference)
+        public void RemoveTargetTypeDrawerHandler(SerializedType drawerReference)
         {
             targetTypeDrawerHandlers?.Remove(drawerReference);
         }

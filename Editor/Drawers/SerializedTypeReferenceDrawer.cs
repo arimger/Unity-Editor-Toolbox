@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    [CustomPropertyDrawer(typeof(SerializedTypeReference))]
+    [CustomPropertyDrawer(typeof(SerializedType))]
     [CustomPropertyDrawer(typeof(ClassTypeConstraintAttribute), true)]
     public sealed class SerializedTypeReferenceDrawer : ToolboxNativeDrawer
     {
@@ -105,7 +105,7 @@ namespace Toolbox.Editor.Drawers
             label = property.name != "data" ? label : GUIContent.none;
             index = EditorGUI.Popup(position, label.text, index + 1, refLabels.ToArray());
             //get correct class reference, index = 0 is reserved to <None> type
-            refProperty.stringValue = index >= 1 ? SerializedTypeReference.GetClassReference(refTypes[index - 1]) : "";
+            refProperty.stringValue = index >= 1 ? SerializedType.GetClassReference(refTypes[index - 1]) : "";
             EditorGUI.EndProperty();
         }
 
@@ -117,7 +117,7 @@ namespace Toolbox.Editor.Drawers
         /// <returns></returns>
         public override bool IsPropertyValid(SerializedProperty property)
         {
-            return property.type == nameof(SerializedTypeReference);
+            return property.type == nameof(SerializedType);
         }
 
         /// <summary>

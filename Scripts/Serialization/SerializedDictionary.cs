@@ -1,9 +1,11 @@
-﻿//An idea orginally provided here - https://forum.unity.com/threads/finally-a-serializable-dictionary-for-unity-extracted-from-system-collections-generic.335797/
+﻿//An idea orginally provided here - https://forum.unity.com/threads/finally-a-serializable-dictionary-for-unity-extracted-from-system-collections-generic.335797/, 2019
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
+//TODO: needs reimplementation
 
 namespace UnityEngine
 {

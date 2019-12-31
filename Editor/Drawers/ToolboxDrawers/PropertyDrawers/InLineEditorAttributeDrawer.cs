@@ -59,7 +59,7 @@ namespace Toolbox.Editor.Drawers
                     InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
 #if !UNITY_2019_1_OR_NEWER
                     const string isVisibleFieldName = "m_IsVisible";
-                    //in older versions editor's foldouts are based on m_IsVisible field and Awake() method
+                    //NOTE: in older versions editor's foldouts are based on m_IsVisible field and Awake() method
                     var isVisible = editor.GetType().GetField(isVisibleFieldName,
                         BindingFlags.Instance | BindingFlags.NonPublic);
                     if (isVisible != null)
