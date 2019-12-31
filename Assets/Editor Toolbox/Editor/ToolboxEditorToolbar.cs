@@ -1,4 +1,4 @@
-﻿//Custom reimplementation of an idea orginally provided here - https://github.com/marijnz/unity-toolbar-extender
+﻿//Custom reimplementation of an idea orginally provided here - https://github.com/marijnz/unity-toolbar-extender, 2019
 
 using System;
 using System.Linq;
@@ -15,6 +15,8 @@ using UnityEngine.UIElements;
 #else
 using UnityEngine.Experimental.UIElements;
 #endif
+
+//NOTE: since everything in this class is reflection-based it is a little bit "hacky"
 
 namespace Toolbox.Editor
 {
@@ -43,7 +45,6 @@ namespace Toolbox.Editor
 
     /// <summary>
     /// Toolbar extension which provides new funtionalites into classic Unity's scene toolbar.
-    /// Since everything in this class is reflection-based it is a little bit "hacky".
     /// </summary>
     [InitializeOnLoad]
     public static class ToolboxEditorToolbar
@@ -173,6 +174,11 @@ namespace Toolbox.Editor
         {
             buttons.Remove(button);
             buttons.Sort((a, b) => a.Order.CompareTo(b.Order));
+        }
+
+        public static void RemoveToolbarButtons()
+        {
+            buttons.Clear();
         }
 
 

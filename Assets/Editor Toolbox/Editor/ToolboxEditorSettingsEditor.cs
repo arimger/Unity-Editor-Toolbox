@@ -40,22 +40,12 @@ namespace Toolbox.Editor
             useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
 
             customFoldersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("customFolders"));
-            customFoldersList.HasHeader = false;
 
             decoratorDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("decoratorDrawerHandlers"));
-            decoratorDrawerHandlersList.HasHeader = false;
-
             propertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("propertyDrawerHandlers"));
-            propertyDrawerHandlersList.HasHeader = false;
-
             conditionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("conditionDrawerHandlers"));
-            conditionDrawerHandlersList.HasHeader = false;
-  
             collectionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("collectionDrawerHandlers"));
-            collectionDrawerHandlersList.HasHeader = false;
-
             targetTypeDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("targetTypeDrawerHandlers"));
-            targetTypeDrawerHandlersList.HasHeader = false;
 
             currentTarget = target as ToolboxEditorSettings;
         }
@@ -108,6 +98,7 @@ namespace Toolbox.Editor
 
         private bool DrawListFoldout(ReorderableList list, GUIStyle style, string label)
         {
+            list.HasHeader = false;
             return list.List.isExpanded = EditorGUILayout.Foldout(list.List.isExpanded, label, true, style);
         }
 
@@ -237,12 +228,12 @@ namespace Toolbox.Editor
             EditorGUILayout.Space();
 
             EditorGUILayout.BeginHorizontal();
+
             if (GUILayout.Button(Style.applyButtonContent, Style.buttonOptions))
             {
                 ToolboxSettingsUtility.ReimportSettings();
             }
 
-            //EditorGUILayout.HelpBox("To approve all changes press the \"Apply\" button.", MessageType.Info);
             EditorGUILayout.EndHorizontal();
 
             GUILayout.FlexibleSpace();
@@ -253,7 +244,7 @@ namespace Toolbox.Editor
 
         internal static class Style
         {
-            internal const float spacing = 2.0f;
+            internal readonly static float spacing = EditorGUIUtility.standardVerticalSpacing;
 
             internal readonly static GUIStyle smallButtonStyle;
             internal readonly static GUIStyle smallHeaderStyle;

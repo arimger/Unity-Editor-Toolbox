@@ -56,18 +56,13 @@ public static class SampleToolbar
     /// <param name="mode"></param>
     private static void SceneOpenedCallback(Scene scene, OpenSceneMode mode)
     {
+        ToolboxEditorToolbar.RemoveToolbarButtons();
+
         if (scene.name == mySampleSceneName)
         {
             foreach (var button in myCustomButtons)
             {
                 ToolboxEditorToolbar.AddToolbarButton(button);
-            }
-        }
-        else
-        {
-            foreach (var button in myCustomButtons)
-            {
-                ToolboxEditorToolbar.RemoveToolbarButton(button);
             }
         }
     }

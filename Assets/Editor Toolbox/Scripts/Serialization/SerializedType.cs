@@ -6,7 +6,7 @@ namespace UnityEngine
     /// Reference to a class <see cref="System.Type"/> with support for Unity serialization.
     /// </summary>
     [Serializable]
-    public sealed class SerializedTypeReference : ISerializationCallbackReceiver
+    public sealed class SerializedType : ISerializationCallbackReceiver
     {
         public static string GetClassReference(Type type)
         {
@@ -17,16 +17,16 @@ namespace UnityEngine
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SerializedTypeReference"/> class.
+        /// Initializes a new instance of the <see cref="SerializedType"/> class.
         /// </summary>
-        public SerializedTypeReference()
+        public SerializedType()
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SerializedTypeReference"/> class.
+        /// Initializes a new instance of the <see cref="SerializedType"/> class.
         /// </summary>
         /// <param name="assemblyQualifiedClassName">Assembly qualified class name.</param>
-        public SerializedTypeReference(string assemblyQualifiedClassName)
+        public SerializedType(string assemblyQualifiedClassName)
         {
             Type = !string.IsNullOrEmpty(assemblyQualifiedClassName)
                 ? Type.GetType(assemblyQualifiedClassName)
@@ -34,13 +34,13 @@ namespace UnityEngine
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SerializedTypeReference"/> class.
+        /// Initializes a new instance of the <see cref="SerializedType"/> class.
         /// </summary>
         /// <param name="type">Class type.</param>
         /// <exception cref="System.ArgumentException">
         /// If <paramref name="type"/> is not a class type.
         /// </exception>
-        public SerializedTypeReference(Type type)
+        public SerializedType(Type type)
         {
             Type = type;
         }
@@ -79,7 +79,7 @@ namespace UnityEngine
         /// <summary>
         /// Gets or sets type of class reference.
         /// </summary>
-        /// <exception cref="System.ArgumentException">
+        /// <exception cref="ArgumentException">
         /// If <paramref name="value"/> is not a class type.
         /// </exception>
         public Type Type
@@ -98,11 +98,11 @@ namespace UnityEngine
         }
 
 
-        public static implicit operator string(SerializedTypeReference typeReference) => typeReference.classReference;
+        public static implicit operator string(SerializedType typeReference) => typeReference.classReference;
 
-        public static implicit operator Type(SerializedTypeReference typeReference) => typeReference.Type;
+        public static implicit operator Type(SerializedType typeReference) => typeReference.Type;
 
-        public static implicit operator SerializedTypeReference(Type type) => new SerializedTypeReference(type);
+        public static implicit operator SerializedType(Type type) => new SerializedType(type);
 
         public override string ToString() => Type != null ? Type.FullName : $"(None)";
     }

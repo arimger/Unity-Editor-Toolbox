@@ -86,9 +86,9 @@ public class SampleBehaviour : MonoBehaviour
     [BoxedHeader("11")]
 
     [ClassExtends(typeof(Object))]
-    public SerializedTypeReference type1;
+    public SerializedType type1;
     [ClassImplements(typeof(System.Collections.ICollection))]
-    public SerializedTypeReference type2;
+    public SerializedType type2;
 
     [BoxedHeader("12")]
 

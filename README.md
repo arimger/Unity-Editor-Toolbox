@@ -400,7 +400,10 @@ public static class MyEditorUtility
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc10.png)
 
 ### Utilities 
-TODO
+
+Copy and paste all components from/to particular GameObject.
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc13.png)
 
 ## Editor Extras
 

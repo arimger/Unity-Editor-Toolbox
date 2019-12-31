@@ -65,10 +65,11 @@ namespace Toolbox.Editor
 
             if (icon == null) return;
 
+            //finally, draw retrieved icon
             GUI.DrawTexture(rect, icon, ScaleMode.ScaleToFit, true);
         }
 
-
+        //TODO: refactor needed
         internal static class Style
         {
             internal const float spacing = 2.0f;

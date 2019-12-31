@@ -35,7 +35,7 @@ namespace UnityEngine
 
     /// <summary>
     /// Base class for class selection constraints that can be applied when selecting
-    /// a <see cref="SerializedTypeReference"/> with the Unity inspector.
+    /// a <see cref="SerializedType"/> with the Unity inspector.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public abstract class ClassTypeConstraintAttribute : PropertyAttribute
@@ -126,7 +126,7 @@ namespace UnityEngine
 
     /// <summary>
     /// Constraint that allows selection of classes that extend a specific class when
-    /// selecting a <see cref="SerializedTypeReference"/> with the Unity inspector.
+    /// selecting a <see cref="SerializedType"/> with the Unity inspector.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public sealed class ClassExtendsAttribute : ClassTypeConstraintAttribute
@@ -161,7 +161,7 @@ namespace UnityEngine
 
     /// <summary>
     /// Constraint that allows selection of classes that implement a specific interface
-    /// when selecting a <see cref="SerializedTypeReference"/> with the Unity inspector.
+    /// when selecting a <see cref="SerializedType"/> with the Unity inspector.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public sealed class ClassImplementsAttribute : ClassTypeConstraintAttribute

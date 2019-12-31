@@ -5,6 +5,9 @@ namespace Toolbox.Editor
 {
     using Toolbox.Editor.Internal;
 
+    /// <summary>
+    /// This class contains all useful and ready to use editor controls.
+    /// </summary>
     public static partial class ToolboxEditorGui
     {        
         /// <summary>
@@ -60,36 +63,6 @@ namespace Toolbox.Editor
             EditorGUILayout.EndHorizontal();
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static void DrawEmptyProperty(Rect position, SerializedProperty property, GUIContent label = null)
-        {
-            const float iconHeight = 20.0f;
-            const float iconWidth = 20.0f;
-
-            position.width = iconWidth;
-            position.height = iconHeight;
-
-            EditorGUI.LabelField(position, Style.warningContent);
-
-            position.x += iconWidth;
-            position.width = EditorGUIUtility.currentViewWidth - iconWidth;
-            position.height = EditorGUIUtility.singleLineHeight;
-
-            var content = label ?? new GUIContent(property.displayName);
-
-            EditorGUI.LabelField(position, content);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static void DrawLayoutEmptyProperty(SerializedProperty property, GUIContent label = null)
-        {
-            DrawEmptyProperty(GUILayoutUtility.GetRect(1, Style.height), property, label);
         }
 
         /// <summary>
@@ -250,7 +223,7 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <param name="position"></param>
-        public static void DrawToolboxProperty(SerializedProperty property, Rect position)
+        public static void DrawToolboxProperty(Rect position, SerializedProperty property)
         {
             //TODO:
             throw new System.NotImplementedException();
@@ -266,7 +239,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws property in default way.
+        /// Draws property in default way but children will support Toolbox drawers.
         /// </summary>
         /// <param name="property"></param>
         public static void DrawLayoutDefaultProperty(SerializedProperty property)
@@ -275,7 +248,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws property in default way.
+        /// Draws property in default way but children will support Toolbox drawers.
         /// </summary>
         /// <param name="property"></param>
         public static void DrawLayoutDefaultProperty(SerializedProperty property, GUIContent label)
@@ -340,6 +313,36 @@ namespace Toolbox.Editor
         public static void DrawLayoutNativeProperty(SerializedProperty property, GUIContent label)
         {
             EditorGUILayout.PropertyField(property, label, property.isExpanded);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void DrawEmptyProperty(Rect position, SerializedProperty property, GUIContent label = null)
+        {
+            const float iconHeight = 20.0f;
+            const float iconWidth = 20.0f;
+
+            position.width = iconWidth;
+            position.height = iconHeight;
+
+            EditorGUI.LabelField(position, Style.warningContent);
+
+            position.x += iconWidth;
+            position.width = EditorGUIUtility.currentViewWidth - iconWidth;
+            position.height = EditorGUIUtility.singleLineHeight;
+
+            var content = label ?? new GUIContent(property.displayName);
+
+            EditorGUI.LabelField(position, content);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void DrawLayoutEmptyProperty(SerializedProperty property, GUIContent label = null)
+        {
+            DrawEmptyProperty(GUILayoutUtility.GetRect(1, Style.height), property, label);
         }
     }
 }

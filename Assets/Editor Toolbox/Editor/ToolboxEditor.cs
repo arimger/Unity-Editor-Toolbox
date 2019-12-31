@@ -26,7 +26,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Handles desired property display process using <see cref="ToolboxDrawer"/>s.
+        /// Handles desired property display process using <see cref="Drawers.ToolboxDrawer"/>s.
         /// </summary>
         /// <param name="property">Property to display.</param>
         public virtual void DrawCustomProperty(SerializedProperty property)
@@ -35,7 +35,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws custom inspector using <see cref="ToolboxDrawer"/>s.
+        /// Draws custom inspector using <see cref="Drawers.ToolboxDrawer"/>s.
         /// </summary>
         public virtual void DrawCustomInspector()
         {

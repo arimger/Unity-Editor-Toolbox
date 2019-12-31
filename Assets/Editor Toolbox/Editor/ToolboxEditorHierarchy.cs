@@ -66,7 +66,7 @@ namespace Toolbox.Editor
         /// <param name="rect"></param>
         private static void DrawPrimeItemLabel(GameObject gameObject, Rect rect)
         {
-            //TODO:
+            //NOTE: prime item can be used to draw single options for whole hierarchy
             DrawDefaultItemLabel(gameObject, rect);
         }
 
@@ -82,6 +82,7 @@ namespace Toolbox.Editor
 
             EditorGUI.DrawRect(new Rect(contRect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
+            //determine if there is anything to draw
             if (drawElementCallbacks.Length > 0)
             {
                 //draw first callback element in proper rect
@@ -183,7 +184,7 @@ namespace Toolbox.Editor
             }
 
             var value = GUI.Toggle(new Rect(rect.x + Style.padding, rect.y, rect.width, rect.height), gameObject.activeSelf, GUIContent.none);
-            //NOTE: using EditorGUI.Toggle will cause bug and deselect all hierarchy toggles when will you pick multiselected property in inspector
+            //NOTE: using EditorGUI.Toggle will cause bug and deselect all hierarchy toggles when you will pick multi-selected property in inspector
             if (rect.Contains(Event.current.mousePosition))
             {
                 if (value != gameObject.activeSelf)

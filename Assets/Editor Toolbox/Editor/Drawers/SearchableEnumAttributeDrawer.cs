@@ -46,7 +46,7 @@ namespace Toolbox.Editor.Drawers
             if (lastSearchableWindow && lastSearchableWindow != EditorWindow.mouseOverWindow)
             {
                 //NOTE: unfortunately PopupWidnows are not indpendent and we have to
-                //handle this case inside drawer since this the only way to override events
+                //handle this case inside drawer since this is the only way to override window events
                 if (Event.current.type == EventType.ScrollWheel) Event.current.Use();
             }
         }
