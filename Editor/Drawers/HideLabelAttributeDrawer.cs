@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(HideLabelAttribute))]
-    public class HideLabelAttributeDrawer : ToolboxNativeDrawer
+    public class HideLabelAttributeDrawer : ToolboxNativePropertyDrawer
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {

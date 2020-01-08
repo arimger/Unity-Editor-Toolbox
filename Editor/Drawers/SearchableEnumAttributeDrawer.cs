@@ -6,7 +6,7 @@ namespace Toolbox.Editor.Drawers
     using Toolbox.Editor.Internal;
 
     [CustomPropertyDrawer(typeof(SearchableEnumAttribute))]
-    public class SearchableEnumAttributeDrawer : ToolboxNativeDrawer
+    public class SearchableEnumAttributeDrawer : ToolboxNativePropertyDrawer
     {
         private static EditorWindow lastSearchableWindow;
 

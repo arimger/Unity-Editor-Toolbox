@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(Vector3RangeAttribute))]
-    public class Vector3RangeAttributeDrawer : ToolboxNativeDrawer
+    public class Vector3RangeAttributeDrawer : ToolboxNativePropertyDrawer
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {

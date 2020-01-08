@@ -1,39 +1,29 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ConditionalAttribute))]
-    public abstract class ConditionalAttributeDrawer : ToolboxNativeDrawer
+    public abstract class ConditionalAttributeDrawer : ToolboxNativePropertyDrawer
     {
         protected bool IsConditionMet(SerializedProperty property)
         {
-            if (!string.IsNullOrEmpty(PropertyToCheck))
+            var conditionProperty = property.GetSibiling(PropertyToCheck);
+            if (conditionProperty != null)
             {
-                var conditionProperty = property.GetSibiling(PropertyToCheck);
-                if (conditionProperty != null)
+                if (conditionProperty.propertyType == SerializedPropertyType.Boolean)
                 {
-                    if (conditionProperty.propertyType == SerializedPropertyType.Boolean)
-                    {
-                        var compareValue = CompareValue != null && CompareValue is bool ? (bool)CompareValue : true;
-                        return conditionProperty.boolValue == compareValue;
-                    }
-                    else
-                    {
-                        Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                         " - " + PropertyToCheck + " has to be boolean value property.");
-                    }
+                    var compareValue = CompareValue != null && CompareValue is bool ? (bool)CompareValue : true;
+                    return conditionProperty.boolValue == compareValue;
                 }
                 else
                 {
-                    Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                     " - " + PropertyToCheck + " does not exists.");
+                    LogWarning(property, attribute, PropertyToCheck + " has to be boolean value property.");
                 }
             }
             else
             {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - propertyToCheck argument is null or empty.");
+                LogWarning(property, attribute, PropertyToCheck + " does not exists.");
             }
 
             return true;

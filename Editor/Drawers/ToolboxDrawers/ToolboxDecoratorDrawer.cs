@@ -26,7 +26,7 @@ namespace Toolbox.Editor.Drawers
         {
             if (attribute == null)
             {
-                throw new DrawerAttributeArgumentException(typeof(T));
+                return;
             }
 
             OnGuiBeginSafe(attribute);
@@ -36,7 +36,7 @@ namespace Toolbox.Editor.Drawers
         {
             if (attribute == null)
             {
-                throw new DrawerAttributeArgumentException(typeof(T));
+                return;
             }
 
             OnGuiEndSafe(attribute);

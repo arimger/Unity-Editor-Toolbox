@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SeparatorAttribute))]
-    public class SeparatorAttributeDrawer : DecoratorDrawer
+    public class SeparatorAttributeDrawer : ToolboxNativeDecoratorDrawer
     {
         private readonly static Color lineColor = new Color(0.3f, 0.3f, 0.3f);
 

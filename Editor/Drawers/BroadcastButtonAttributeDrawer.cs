@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(BroadcastButtonAttribute))]
-    public class BroadcastButtonAttributeDrawer : DecoratorDrawer
+    public class BroadcastButtonAttributeDrawer : ToolboxNativeDecoratorDrawer
     {
         public override float GetHeight()
         {

@@ -8,7 +8,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(EnumFlagAttribute))]
-    public class EnumFlagAttributeDrawer : ToolboxNativeDrawer
+    public class EnumFlagAttributeDrawer : ToolboxNativePropertyDrawer
     {
         private const float mininumButtonWidth = 80.0f;
         private const float minimumButtonHeight = 16.0f;

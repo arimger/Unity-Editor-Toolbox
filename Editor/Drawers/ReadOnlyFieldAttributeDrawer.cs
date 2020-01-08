@@ -8,7 +8,7 @@ namespace Toolbox.Editor.Drawers
     /// <see cref="ToolboxConditionAttribute"/>s are more flexible and can work with any additional drawer.
     /// </summary>
     [CustomPropertyDrawer(typeof(ReadOnlyFieldAttribute))]
-    public class ReadOnlyFieldDrawer : ToolboxNativeDrawer
+    public class ReadOnlyFieldDrawer : ToolboxNativePropertyDrawer
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {

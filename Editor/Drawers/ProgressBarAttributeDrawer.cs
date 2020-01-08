@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ProgressBarAttribute))]
-    public class ProgressBarAttributeDrawer : ToolboxNativeDrawer
+    public class ProgressBarAttributeDrawer : ToolboxNativePropertyDrawer
     {
         /// <summary>
         /// Draws validated property.

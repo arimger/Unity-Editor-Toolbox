@@ -3,7 +3,10 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    public abstract class ToolboxNativeDrawer : PropertyDrawer
+    /// <summary>
+    /// Base class for Toolbox drawers based on native <see cref="PropertyDrawer"/> implementation. 
+    /// </summary>
+    public abstract class ToolboxNativePropertyDrawer : PropertyDrawer
     {
         /// <summary>
         /// Safe GUI method. Provided property is previously validate by <see cref="IsPropertyValid(SerializedProperty)"/> method.
@@ -46,6 +49,18 @@ namespace Toolbox.Editor.Drawers
         public virtual bool IsPropertyValid(SerializedProperty property)
         {
             return true;
+        }
+
+
+
+        /// <summary>
+        /// Logs to debug console message relative to given property and attribute.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="message"></param>
+        protected static void LogWarning(SerializedProperty property, PropertyAttribute attribute, string message)
+        {
+            Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject.GetType() + "[" + attribute.GetType().Name + "]" + ": " + message);
         }
     }
 }

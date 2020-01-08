@@ -9,7 +9,7 @@ namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SerializedType))]
     [CustomPropertyDrawer(typeof(ClassTypeConstraintAttribute), true)]
-    public sealed class SerializedTypeReferenceDrawer : ToolboxNativeDrawer
+    public sealed class SerializedTypeDrawer : ToolboxNativePropertyDrawer
     {
         /// <summary>
         /// Creates formatted type name depending on <see cref="ClassGrouping"/> value.

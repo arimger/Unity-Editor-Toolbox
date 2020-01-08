@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ClampAttribute))]
-    public class ClampAttributeDrawer : ToolboxNativeDrawer
+    public class ClampAttributeDrawer : ToolboxNativePropertyDrawer
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {

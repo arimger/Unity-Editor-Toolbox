@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(BoxedToggleAttribute))]
-    public class BoxedToggleAttributeDrawer : ToolboxNativeDrawer
+    public class BoxedToggleAttributeDrawer : ToolboxNativePropertyDrawer
     {   
         /// <summary>
         /// Draws validated property.

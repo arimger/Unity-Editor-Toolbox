@@ -6,7 +6,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(DirectoryAttribute))]
-    public class DirectoryAttributeDrawer : ToolboxNativeDrawer
+    public class DirectoryAttributeDrawer : ToolboxNativePropertyDrawer
     {
         /// <summary>
         /// Checks if provided path exist. Depends on relative path and <see cref="Application.dataPath"/>.

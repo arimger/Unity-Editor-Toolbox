@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(TagSelectorAttribute))]
-    public class TagSelectorPropertyDrawer : ToolboxNativeDrawer
+    public class TagSelectorPropertyDrawer : ToolboxNativePropertyDrawer
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {

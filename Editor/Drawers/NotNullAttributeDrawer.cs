@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(NotNullAttribute))]
-    public class NotNullAttributeDrawer : ToolboxNativeDrawer
+    public class NotNullAttributeDrawer : ToolboxNativePropertyDrawer
     {
         /// <summary>
         /// Creates optional HelpBox if reference value is null and draws standard property label.
