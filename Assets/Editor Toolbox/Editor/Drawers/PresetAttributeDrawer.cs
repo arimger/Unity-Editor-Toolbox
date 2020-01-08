@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
-using System.Reflection;
+
 using UnityEngine;
 using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(PresetAttribute))]
-    public class PresetAttributeDrawer : ToolboxNativeDrawer
+    public class PresetAttributeDrawer : ToolboxNativePropertyDrawer
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -16,8 +16,7 @@ namespace Toolbox.Editor.Drawers
           
             if (presetValues == null)
             {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - Cannot find relative preset field " + Attribute.PresetPropertyName + ". Property will be drawn in standard way.");
+                LogWarning(property, attribute, "Cannot find relative preset field " + Attribute.PresetPropertyName + ".Property will be drawn in standard way.");
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
@@ -62,16 +61,14 @@ namespace Toolbox.Editor.Drawers
                 }
                 else
                 {
-                    Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                     " - type mismatch between serialized property and provided preset field. Property will be drawn in standard way.");
+                    LogWarning(property, attribute, "Type mismatch between serialized property and provided preset field. Property will be drawn in standard way.");
                     EditorGUI.PropertyField(position, property, label);
                     return;
                 }
             }
             else
             {
-                Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject +
-                                 " - preset field (" + Attribute.PresetPropertyName + ") has to be a one-dimensional collection(array or list). Property will be drawn in standard way.");
+                LogWarning(property, attribute, "Preset field (" + Attribute.PresetPropertyName + ") has to be a one-dimensional collection(array or list). Property will be drawn in standard way.");
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }

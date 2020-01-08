@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(InstanceButtonAttribute))]
-    public class InstanceButtonAttributeDrawer : DecoratorDrawer
+    public class InstanceButtonAttributeDrawer : ToolboxNativeDecoratorDrawer
     {
         public override float GetHeight()
         {
@@ -17,8 +17,9 @@ namespace Toolbox.Editor.Drawers
         {
             position.height = Style.height;
 
+            var attribute = Attribute;
             var disable = false;
-            switch (Attribute.Type)
+            switch (attribute.Type)
             {
                 case ButtonActivityType.Everything:
                     break;
@@ -34,10 +35,9 @@ namespace Toolbox.Editor.Drawers
             }
 
             EditorGUI.BeginDisabledGroup(disable);
-            if (GUI.Button(position, string.IsNullOrEmpty(Attribute.Label) ? Attribute.MethodName : Attribute.Label))
+            if (GUI.Button(position, string.IsNullOrEmpty(attribute.Label) ? attribute.MethodName : attribute.Label))
             {
-
-                var method = Attribute.InstanceType.GetMethod(Attribute.MethodName,
+                var method = attribute.InstanceType.GetMethod(attribute.MethodName,
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
                 if (method != null)
                 {
@@ -48,10 +48,10 @@ namespace Toolbox.Editor.Drawers
                             continue;
                         }
 
-                        var targetComponent = target.GetComponent(Attribute.InstanceType);
+                        var targetComponent = target.GetComponent(attribute.InstanceType);
                         if (targetComponent == null)
-                        {
-                            Debug.LogWarning(GetType().Name + " - " + Attribute.InstanceType + " component not found in selected GameObject(" + target.name + ").");
+                        {                          
+                            LogWarning(attribute.InstanceType + " component not found in selected GameObject(" + target.name + ").");
                             continue;
                         }
 
@@ -60,10 +60,20 @@ namespace Toolbox.Editor.Drawers
                 }
                 else
                 {
-                    Debug.LogWarning(GetType().Name + " - " + Attribute.MethodName + " method not found inside " + Attribute.InstanceType + " type.");
+                    LogWarning(attribute.MethodName + " method not found inside " + attribute.InstanceType + " type.");
                 }
             }
             EditorGUI.EndDisabledGroup();
+        }
+
+
+        /// <summary>
+        /// Logs warning message to debug console and associates it to a given attribute.
+        /// </summary>
+        /// <param name="message"></param>
+        private void LogWarning(string message)
+        {
+            Debug.LogWarning(attribute.GetType().Name + ": " + message);
         }
 
 

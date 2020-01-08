@@ -50,7 +50,7 @@ namespace Toolbox.Editor.Drawers
         {
             if (attribute == null)
             {
-                throw new DrawerAttributeArgumentException(typeof(T));
+                return;
             }
 
             if (IsPropertyValid(property))

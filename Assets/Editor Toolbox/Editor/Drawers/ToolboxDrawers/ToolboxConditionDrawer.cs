@@ -26,7 +26,7 @@ namespace Toolbox.Editor.Drawers
         {
             if (attribute == null)
             {
-                throw new DrawerAttributeArgumentException(typeof(T));
+                return PropertyCondition.Valid;
             }
 
             return OnGuiValidateSafe(property, attribute);

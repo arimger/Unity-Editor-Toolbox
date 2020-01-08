@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(BoxedHeaderAttribute))]
-    public class BoxedHeaderAttributeDrawer : DecoratorDrawer
+    public class BoxedHeaderAttributeDrawer : ToolboxNativeDecoratorDrawer
     {
         public override float GetHeight()
         {

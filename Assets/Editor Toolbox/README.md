@@ -99,9 +99,9 @@ Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associa
 
 ```csharp
 [ClassExtends(typeof(UnityEngine.Object))]
-public SerializedTypeReference type1;
+public SerializedType type1;
 [ClassImplements(typeof(System.Collections.ICollection))]
-public SerializedTypeReference type2;
+public SerializedType type2;
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc14.png)
@@ -409,7 +409,7 @@ Copy and paste all components from/to particular GameObject.
 
 I decieded to move additional editors and tools to Gist.
 
-### Terrain Editor
+### Prefab/GameObject Painter
 
 Check it out [HERE](https://gist.github.com/arimger/00842a217ea8ab03d4e1b81f11592cf3)
 

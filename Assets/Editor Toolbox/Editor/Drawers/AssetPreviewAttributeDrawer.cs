@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(AssetPreviewAttribute))]
-    public class AssetPreviewAttributeDrawer : ToolboxNativeDrawer
+    public class AssetPreviewAttributeDrawer : ToolboxNativePropertyDrawer
     {
         /// <summary>
         /// Creates optional property label and asset preview if it is possible.

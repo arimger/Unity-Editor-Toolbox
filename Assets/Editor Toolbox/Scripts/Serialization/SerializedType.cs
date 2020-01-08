@@ -46,8 +46,6 @@ namespace UnityEngine
         }
 
 
-        #region ISerializationCallbackReceiver Members
-
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
             if (!string.IsNullOrEmpty(classReference))
@@ -56,7 +54,9 @@ namespace UnityEngine
 
                 if (type == null)
                 {
+#if UNITY_EDITOR
                     Debug.LogWarning($"'{classReference}' was referenced but class type was not found.");
+#endif
                 }
             }
             else
@@ -67,8 +67,6 @@ namespace UnityEngine
 
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         { }
-
-        #endregion
 
 
         [SerializeField]

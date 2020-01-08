@@ -33,17 +33,13 @@ namespace Toolbox.Editor
 
         internal static void InitializeSettings(string assetGuid)
         {
-            const string warningMessage = settingsType +
-                " asset file not found. Cannot initialize Toolbox core functionalities. " +
-                "You can create new settings file using CreateAsset menu -> Create -> Toolbox Editor -> Settings.";
-
             settingsGuid = assetGuid;
             settingsPath = AssetDatabase.GUIDToAssetPath(assetGuid);
             //try to get proper settings asset from provided guid
             var settings = AssetDatabase.LoadAssetAtPath<ToolboxEditorSettings>(settingsPath);
             if (settings == null)
             {
-                Debug.LogWarning(warningMessage);
+                ToolboxEditorLog.KitInitializationWarning(settingsType);
                 return;
             }
 

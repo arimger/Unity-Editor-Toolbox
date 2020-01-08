@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SuffixAttribute))]
-    public class SuffixAttributeDrawer : ToolboxNativeDrawer
+    public class SuffixAttributeDrawer : ToolboxNativePropertyDrawer
     {
         /// <summary>
         /// Draws validated property.

@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]
-    public class MinMaxSliderAttributeDrawer : ToolboxNativeDrawer
+    public class MinMaxSliderAttributeDrawer : ToolboxNativePropertyDrawer
     {
         /// <summary>
         /// Draws validated property.

@@ -11,7 +11,7 @@ namespace Toolbox.Editor.Drawers
             var propertyToCheck = property.serializedObject.FindProperty(attribute.ComparedPropertyName);
             if (propertyToCheck == null)
             {
-                Debug.LogError(GetType().Name + " - property " + attribute.ComparedPropertyName + " not found.");
+                ToolboxEditorLog.PropertyNotFoundWarning(property, attribute.ComparedPropertyName);
                 return true;
             }
 
@@ -28,7 +28,7 @@ namespace Toolbox.Editor.Drawers
                 case SerializedPropertyType.Enum:
                     return propertyToCheck.intValue.Equals((int)attribute.ComparedConditionValue);
                 default:
-                    Debug.LogError(GetType().Name + " - " + propertyToCheck.type + " value type is not supported by ConditionAttributeDrawers.");
+                    ToolboxEditorLog.TypeNotSupportedWarning(property, propertyToCheck.type);
                     return true;
             }
         }

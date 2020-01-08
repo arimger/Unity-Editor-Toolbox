@@ -18,12 +18,19 @@ namespace Toolbox.Editor
             Selection.selectionChanged += onEditorReload + ClearHandlers;
         }
 
-
+        /// 
+        /// Base types for all special drawers
+        ///
+ 
         private readonly static Type targetTypeDrawerBase = typeof(ToolboxTargetTypeDrawer);
         private readonly static Type decoratorDrawerBase = typeof(ToolboxDecoratorDrawer<>);
         private readonly static Type propertyDrawerBase = typeof(ToolboxPropertyDrawer<>);
         private readonly static Type collectionDrawerBase = typeof(ToolboxCollectionDrawer<>);
         private readonly static Type conditionDrawerBase = typeof(ToolboxConditionDrawer<>);
+
+        /// 
+        /// Particular collections for all special drawer types
+        ///
 
         private readonly static Dictionary<Type, ToolboxTargetTypeDrawer> targetTypeDrawers = new Dictionary<Type, ToolboxTargetTypeDrawer>();
 
@@ -32,6 +39,9 @@ namespace Toolbox.Editor
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase>  collectionDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
         private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers  = new Dictionary<Type, ToolboxConditionDrawerBase>();
 
+        /// <summary>
+        /// Collection to store current handlers associated to special key.
+        /// </summary>
         private static readonly Dictionary<string, ToolboxPropertyHandler> propertyHandlers = new Dictionary<string, ToolboxPropertyHandler>();
 
 
@@ -41,6 +51,10 @@ namespace Toolbox.Editor
         private static IToolboxDrawersSettings settings;
 
 
+        /// <summary>
+        /// Create all possible attribute-based drawers and add them to proper collections.
+        /// </summary>
+        /// <param name="settings"></param>
         private static void CreateAttributeDrawers(IToolboxDrawersSettings settings)
         {
             void AddAttributeDrawer<T>(Type drawerType, Type targetAttributeType, Dictionary<Type, T> drawersCollection) where T : ToolboxAttributeDrawer
@@ -61,7 +75,7 @@ namespace Toolbox.Editor
             {
                 if (drawerType == null)
                 {
-                    Debug.LogWarning("One of assigned drawer types in ToolboxEditorSettings is empty.");
+                    Debug.LogWarning("One of assigned drawer types in " + nameof(ToolboxEditorSettings) + " is empty.");
                     return null;
                 }
 
@@ -111,6 +125,10 @@ namespace Toolbox.Editor
             }
         }
 
+        /// <summary>
+        /// Create all possible type-based drawers and add them ro proper collection.
+        /// </summary>
+        /// <param name="settings"></param>
         private static void CreateTargetTypeDrawers(IToolboxDrawersSettings settings)
         {
             targetTypeDrawers.Clear();
@@ -184,7 +202,8 @@ namespace Toolbox.Editor
         {
             if (!decoratorDrawers.TryGetValue(attribute.GetType(), out ToolboxDecoratorDrawerBase drawer))
             {
-                throw new AttributeNotSupportedException(attribute);
+                ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
+                return null;
             }
 
             return drawer;
@@ -194,7 +213,8 @@ namespace Toolbox.Editor
         {
             if (!propertyDrawers.TryGetValue(attribute.GetType(), out ToolboxPropertyDrawerBase drawer))
             {
-                throw new AttributeNotSupportedException(attribute);
+                ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
+                return null;
             }
 
             return drawer;
@@ -204,7 +224,8 @@ namespace Toolbox.Editor
         {
             if (!collectionDrawers.TryGetValue(attribute.GetType(), out ToolboxPropertyDrawerBase drawer))
             {
-                throw new AttributeNotSupportedException(attribute);
+                ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
+                return null;
             }
 
             return drawer;
@@ -214,7 +235,8 @@ namespace Toolbox.Editor
         {
             if (!conditionDrawers.TryGetValue(attribute.GetType(), out ToolboxConditionDrawerBase drawer))
             {
-                throw new AttributeNotSupportedException(attribute);
+                ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
+                return null;
             }
 
             return drawer;
