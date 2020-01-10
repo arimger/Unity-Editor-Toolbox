@@ -1,4 +1,9 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor
@@ -6,6 +11,15 @@ namespace Toolbox.Editor
     [InitializeOnLoad]
     public static class ToolboxEditorHierarchy
     {
+        /// <summary>
+        /// Delegate used in label element drawing process.
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        internal delegate Rect DrawHierarchyContentCallback(GameObject gameObject, Rect rect);
+
+
         static ToolboxEditorHierarchy()
         {
             EditorApplication.hierarchyWindowItemOnGUI += OnItemCallback;
@@ -13,24 +27,31 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Delegate used in label element drawing process.
-        /// </summary>
-        /// <param name="gameObject"></param>
-        /// <param name="rect"></param>
-        /// <returns></returns>
-        private delegate Rect DrawElementCallback(GameObject gameObject, Rect rect);
-
-
-        /// <summary>
         /// Collection of all wanted hierarchy elements drawers.
         /// </summary>
-        private static readonly DrawElementCallback[] drawElementCallbacks = new DrawElementCallback[]
+        private static readonly List<DrawHierarchyContentCallback> drawHierarchyContentCallbacks = new List<DrawHierarchyContentCallback>()
         {
             DrawIcon,
             DrawToggle,
             DrawTag,
             DrawLayer
         };
+
+
+        internal static void AddDrawHierarchyContentCallback(DrawHierarchyContentCallback callback)
+        {
+            drawHierarchyContentCallbacks.Add(callback);
+        }
+
+        internal static void RemoveDrawHierarchyContentCallback(DrawHierarchyContentCallback callback)
+        {
+            drawHierarchyContentCallbacks.Remove(callback);
+        }
+
+        internal static void RemoveAllDrawHierarchyContentCallbacks(Predicate<DrawHierarchyContentCallback> predicate)
+        {
+            drawHierarchyContentCallbacks.RemoveAll(predicate);
+        }
 
 
         /// <summary>
@@ -45,6 +66,8 @@ namespace Toolbox.Editor
                 return;
             }
 
+            //use Unity's internal method to determinate proper GameObject instance
+            //check whenever a provided object is the first element in the whole hierarchy
             var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             if (gameObject)
             {
@@ -72,43 +95,40 @@ namespace Toolbox.Editor
 
         /// <summary>
         /// Draws label as whole. Creates separation lines, standard icon and
-        /// additional elements stored in <see cref="drawElementCallbacks"/> collection.
+        /// additional elements stored in <see cref="drawHierarchyContentCallbacks"/> collection.
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="rect"></param>
         private static void DrawDefaultItemLabel(GameObject gameObject, Rect rect)
         {
-            var contRect = rect;
+            var contentRect = rect;
+            var drawersCount = drawHierarchyContentCallbacks.Count;
 
-            EditorGUI.DrawRect(new Rect(contRect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
+            EditorGUI.DrawRect(new Rect(contentRect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
             //determine if there is anything to draw
-            if (drawElementCallbacks.Length > 0)
+            if (drawersCount > 0)
             {
                 //draw first callback element in proper rect
                 //we have to adjust given rect to our purpose
-                contRect = new Rect(contRect.xMax - Style.maxWidth, rect.y, Style.maxWidth, contRect.height);
-                contRect = drawElementCallbacks[0](gameObject, contRect);
+                contentRect = new Rect(contentRect.xMax - Style.maxWidth, rect.y, Style.maxWidth, contentRect.height);
+                contentRect = drawHierarchyContentCallbacks.First()(gameObject, contentRect);
 
-                EditorGUI.DrawRect(new Rect(contRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
+                EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
                 //draw each needed element content stored in callbacks collection
-                for (var i = 1; i < drawElementCallbacks.Length; i++)
+                for (var i = 1; i < drawersCount; i++)
                 {
-                    contRect = new Rect(contRect.xMin - Style.maxWidth, rect.y, Style.maxWidth, rect.height);
-                    contRect = drawElementCallbacks[i](gameObject, contRect);
+                    contentRect = new Rect(contentRect.xMin - Style.maxWidth, rect.y, Style.maxWidth, rect.height);
+                    contentRect = drawHierarchyContentCallbacks[i](gameObject, contentRect);
 
-                    EditorGUI.DrawRect(new Rect(contRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
+                    EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
                 }
             }
 
             EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
         }
 
-
-        /// 
-        /// Item drawers implementations
-        /// 
 
         private static Rect DrawIcon(GameObject gameObject, Rect rect)
         {
@@ -144,13 +164,14 @@ namespace Toolbox.Editor
         {
             //adjust rect for layer field
             var contentRect = new Rect(rect.x + rect.width - Style.layerWidth, rect.y, Style.layerWidth, rect.height);
+            var objectLayer = gameObject.layer;
 
             if (Event.current.type == EventType.Repaint)
             {
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
             //draw label for gameObject's specific layer
-            EditorGUI.LabelField(contentRect, new GUIContent(gameObject.layer.ToString()), Style.layerLabelStyle);
+            EditorGUI.LabelField(contentRect, new GUIContent(objectLayer.ToString(), LayerMask.LayerToName(objectLayer) + " layer"), Style.layerLabelStyle);
 
             return contentRect;
         }
@@ -203,10 +224,6 @@ namespace Toolbox.Editor
         /// </summary>
         internal static class Style
         {
-            /// 
-            /// Custom rect handling fields
-            /// 
-
             internal static readonly float padding = 2.0f;
             internal static readonly float maxHeight = 16.0f;
             internal static readonly float maxWidth = 55.0f;
@@ -217,12 +234,9 @@ namespace Toolbox.Editor
             internal static readonly float layerWidth = 17.0f;
             internal static readonly float toggleWidth = 17.0f;
 
+            internal static readonly Color textColor = new Color(0.35f, 0.35f, 0.35f);
             internal static readonly Color lineColor = new Color(0.59f, 0.59f, 0.59f);
             internal static readonly Color labelColor = EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f) : new Color(0.855f, 0.855f, 0.855f);
-
-            /// 
-            /// Custom label styles
-            ///
 
             internal static readonly GUIStyle toggleStyle;
             internal static readonly GUIStyle tagLabelStyle;
@@ -231,14 +245,12 @@ namespace Toolbox.Editor
 
             static Style()
             {
-                //set tag label style based on mini label
                 tagLabelStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
                     fontSize = 8
                 };
-                tagLabelStyle.normal.textColor = new Color(0.35f, 0.35f, 0.35f);
+                tagLabelStyle.normal.textColor = textColor;
 
-                //set layer label style based on mini label
                 layerLabelStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
                     fontSize = 8,
@@ -247,15 +259,8 @@ namespace Toolbox.Editor
 
                 toggleStyle = new GUIStyle(EditorStyles.toggle);
 
-                //set proper background texture object
-                var backgroundTex = new Texture2D(1, 1);
-                backgroundTex.SetPixel(0, 0, labelColor);
-                backgroundTex.Apply();
-                backgroundTex.hideFlags = HideFlags.HideAndDontSave;
-
-                //set background style based on custom background texture
                 backgroundStyle = new GUIStyle();
-                backgroundStyle.normal.background = backgroundTex;
+                backgroundStyle.normal.background = AssetUtility.GetPersistentTexture(labelColor);
             }
         }
     }

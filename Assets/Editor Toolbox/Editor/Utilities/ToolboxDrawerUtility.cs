@@ -18,19 +18,12 @@ namespace Toolbox.Editor
             Selection.selectionChanged += onEditorReload + ClearHandlers;
         }
 
-        /// 
-        /// Base types for all special drawers
-        ///
- 
+
         private readonly static Type targetTypeDrawerBase = typeof(ToolboxTargetTypeDrawer);
         private readonly static Type decoratorDrawerBase = typeof(ToolboxDecoratorDrawer<>);
         private readonly static Type propertyDrawerBase = typeof(ToolboxPropertyDrawer<>);
         private readonly static Type collectionDrawerBase = typeof(ToolboxCollectionDrawer<>);
         private readonly static Type conditionDrawerBase = typeof(ToolboxConditionDrawer<>);
-
-        /// 
-        /// Particular collections for all special drawer types
-        ///
 
         private readonly static Dictionary<Type, ToolboxTargetTypeDrawer> targetTypeDrawers = new Dictionary<Type, ToolboxTargetTypeDrawer>();
 
@@ -52,7 +45,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Create all possible attribute-based drawers and add them to proper collections.
+        /// Creates all possible attribute-based drawers and add them to proper collections.
         /// </summary>
         /// <param name="settings"></param>
         private static void CreateAttributeDrawers(IToolboxDrawersSettings settings)
@@ -126,7 +119,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Create all possible type-based drawers and add them ro proper collection.
+        /// Creates all possible type-based drawers and add them ro proper collection.
         /// </summary>
         /// <param name="settings"></param>
         private static void CreateTargetTypeDrawers(IToolboxDrawersSettings settings)
@@ -157,7 +150,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Initialize all possible drawers. Not implemented yet.
+        /// Initializes all possible drawers. Not implemented yet.
         /// </summary>
         internal static void InitializeDrawers()
         {

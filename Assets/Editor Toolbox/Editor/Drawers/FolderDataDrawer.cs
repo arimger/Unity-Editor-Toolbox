@@ -14,7 +14,7 @@ namespace Toolbox.Editor.Drawers
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {            
-            //if expanded - draw foldout + 2 properties + buttons strip + additional icon 
+            //if expanded - draw foldout + 3 properties + buttons strip + additional icon 
             if (property.isExpanded)
             {
                 var height = Style.height;
@@ -35,6 +35,7 @@ namespace Toolbox.Editor.Drawers
                 height += Style.spacing * 4;
                 height += Style.height;
                 height += Style.height;
+                height += Style.height;
                 height += Style.iconHeight;
                 return height;
             }
@@ -48,6 +49,7 @@ namespace Toolbox.Editor.Drawers
             var typeProperty = property.FindPropertyRelative("type");
             var nameProperty = property.FindPropertyRelative("name");
             var pathProperty = property.FindPropertyRelative("path");
+            var toolProperty = property.FindPropertyRelative("tooltip");
             //get icons properties
             var usualIconProperty = property.FindPropertyRelative("icon");
             var smallIconProperty = property.FindPropertyRelative("smallIcon");
@@ -112,6 +114,12 @@ namespace Toolbox.Editor.Drawers
                 sumPropertyHeight += rawPropertyHeight;
             }
 
+            //draw tooltip property
+            EditorGUI.PropertyField(propertyPosition, toolProperty, false);
+            propertyPosition.y += rawPropertyHeight;
+            sumPropertyHeight += rawPropertyHeight;
+
+            //adjust rect for folder icons + button strip
             propertyPosition.y += Style.spacing;
             propertyPosition.x += Style.iconsPadding;
             propertyPosition.width = Style.iconWidth;
@@ -230,6 +238,8 @@ namespace Toolbox.Editor.Drawers
 
                 usualIconPickerContent = new GUIContent("Select");
                 smallIconPickerContent = EditorGUIUtility.IconContent("winbtn_graph");
+                usualIconPickerContent.tooltip = "Select big icon";
+                smallIconPickerContent.tooltip = "Select small icon";
             }
         }
     }

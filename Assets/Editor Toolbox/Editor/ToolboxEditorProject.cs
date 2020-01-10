@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor
@@ -26,6 +28,12 @@ namespace Toolbox.Editor
             if (!ToolboxFolderUtility.TryGetFolderData(path, out FolderData data))
             {
                 return;
+            }
+
+            if (!string.IsNullOrEmpty(data.Tooltip))
+            {
+                //create additional tooltip to mark custom folder
+                EditorGUI.LabelField(rect, new GUIContent(string.Empty, data.Tooltip));
             }
 
             Texture icon;
@@ -67,6 +75,7 @@ namespace Toolbox.Editor
 
             //finally, draw retrieved icon
             GUI.DrawTexture(rect, icon, ScaleMode.ScaleToFit, true);
+
         }
 
         //TODO: refactor needed
@@ -109,7 +118,7 @@ namespace Toolbox.Editor
         Name
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct FolderData
     {
         [SerializeField]
@@ -119,6 +128,9 @@ namespace Toolbox.Editor
         private string name;
         [SerializeField, HideIf(nameof(type), FolderDataType.Path), Directory, Tooltip("Relative path from Assets directory.")]
         private string path;
+
+        [SerializeField, Tooltip("Will create additional tooltip for custom folders. Leave empty to ignore.")]
+        private string tooltip;
 
         [SerializeField]
         private Texture icon;
@@ -142,6 +154,12 @@ namespace Toolbox.Editor
         {
             get => name;
             set => name = value;
+        }
+
+        public string Tooltip
+        {
+            get => tooltip;
+            set => tooltip = value;
         }
 
         public Texture Icon

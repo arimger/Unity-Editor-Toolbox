@@ -27,5 +27,14 @@ namespace Toolbox.Editor
 
             return AssetDatabase.LoadAssetAtPath(path, typeof(Sprite)) as Sprite;
         }
+
+        public static Texture2D GetPersistentTexture(Color textureColor)
+        {
+            var texture = new Texture2D(1, 1);
+            texture.SetPixel(0, 0, textureColor);
+            texture.Apply();
+            texture.hideFlags = HideFlags.HideAndDontSave;
+            return texture;
+        }
     }
 }
