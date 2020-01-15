@@ -14,6 +14,47 @@ namespace Toolbox.Editor
         }
 
 
+        private static readonly float labelHeight = EditorGUIUtility.singleLineHeight;
+        private static readonly float labelSpacing = EditorGUIUtility.standardVerticalSpacing;
+
+        /// <summary>
+        /// Value based on clear space ratio between folder icon and width.
+        /// </summary>
+        internal const float usualFolderWidthOffsetRatio = 0.25f;
+        /// <summary>
+        /// Value based on clear space ratio between folder icon and height.
+        /// </summary>
+        internal const float usualFolderHeightOffsetRatio = 0.375f;
+
+        /// <summary>
+        /// Value used in versions before 2019.3+ to determine maximal width of folder icon.
+        /// </summary>
+        internal const float maximalFolderWidth = 64.0f;
+        /// <summary>
+        /// Value used in versions before 2019.3+ to determine maximal height of folder icon.
+        /// </summary>
+        internal const float maximalFolderHeight = 64.0f;
+        /// <summary>
+        /// Minimal possible width of folder icon.
+        /// </summary>
+        internal const float minimalFolderWidth = 16.0f;
+        /// <summary>
+        /// Minimal possible height of folder icon.
+        /// </summary>
+        internal const float minimalFolderHeight = 16.0f;
+
+        internal const float minimalFolderIconWidth = 10.0f;
+        internal const float minimalFolderIconHeight = 10.0f;
+
+
+        private const float smallFolderWidthPaddingRatioDefault = 0.0f;
+        private const float smallFolderHeightPaddingRatioDefault = 0.0f;
+
+        private const float usualFolderWidthPaddingRatioDefault = 0.0f;
+        private const float usualFolderHeightPaddingRatioDefault = 0.15f;
+        private const float usualFolderIconPlaceToIconRatioDefault = 0.8f;
+
+
         private static void OnItemCallback(string guid, Rect rect)
         {
             //ignore drawing if ToolboxEditorProject functionalites are not allowed
@@ -41,75 +82,92 @@ namespace Toolbox.Editor
             if (rect.width > rect.height)
             {
                 icon = data.SmallIcon;
-
-                //determinate exact folder icon rect
-                rect = new Rect(rect.xMin, rect.y, Style.folderIconWidthSmall, Style.folderIconHeightSmall);
-                
-                rect.x += Style.padding;
-                rect.y += rect.height * Style.yToHeightRatioSmall;
-                rect.width = Style.iconWidthSmall;
-                rect.height = Style.iconHeightSmall;
+                rect = GetSmallIconRect(rect);
             }
             else
             {
                 icon = data.Icon;
-
-                var offset = Mathf.Max(rect.height - Style.labelHeight - Style.folderIconHeight, 0);
-                var iconHeight       = rect.height - Style.labelHeight - offset;
-
-                //determinate exact folder icon rect
-                rect = new Rect(rect.x, rect.yMin + offset / 2 + Style.spacing, rect.width, iconHeight);
-
-                //calculate multipliers
-                var widthRatio = iconHeight / Style.folderIconWidth;
-                var heightRatio = iconHeight / Style.folderIconHeight;
-
-                //set final rect
-                rect.x += rect.width * Style.xToWidthRatio;
-                rect.y += rect.height * Style.yToHeightRatio;
-                rect.width = Style.iconWidth * widthRatio;
-                rect.height = Style.iconHeight * heightRatio;         
+                rect = GetUsualIconRect(rect, true);
             }
 
             if (icon == null) return;
 
             //finally, draw retrieved icon
             GUI.DrawTexture(rect, icon, ScaleMode.ScaleToFit, true);
-
         }
 
-        //TODO: refactor needed
-        internal static class Style
+
+        internal static Rect GetUsualIconRect(Rect folderIconRect)
         {
-            internal const float spacing = 2.0f;
-            internal const float padding = 5.5f;
-            internal const float labelHeight = 16.0f;
-
-            //x ratio will determinate OX position of icon
-            internal const float xToWidthRatio = 0.45f;
-            [System.Obsolete("Use padding instead.")]
-            internal const float xToWidthRatioSmall = 0.25f;
-
-            //y ratio will determinate OY position of icon
-            internal const float yToHeightRatio = 0.3f;
-            internal const float yToHeightRatioSmall = 0.3f;
-
-            //big icon dimensions
-            internal const float iconWidth = 29.0f;
-            internal const float iconHeight = 29.0f;
-
-            //small icon dimensions
-            internal const float iconWidthSmall = 10.0f;
-            internal const float iconHeightSmall = 10.0f;
-
-            //big folder icon dimensions
-            internal const float folderIconWidth = 64.0f;
-            internal const float folderIconHeight = 64.0f;
-
-            //small folder icon dimensions
-            internal const float folderIconWidthSmall = 16.0f;
-            internal const float folderIconHeightSmall = 16.0f;
+            return GetUsualIconRect(folderIconRect, false);
         }
+
+        internal static Rect GetUsualIconRect(Rect folderIconRect, bool clearLabel)
+        {
+            if (clearLabel)
+            {
+                folderIconRect.height -= labelHeight - labelSpacing;
+            }
+
+            //NOTE: in older versions of Unity folder icon is not scaling properly 
+#if !UNITY_2019_3_OR_NEWER
+            var width = Mathf.Min(folderIconRect.width, maximalFolderWidth);
+            var height = Mathf.Min(folderIconRect.height, maximalFolderHeight);
+            folderIconRect.x += (folderIconRect.width - width) / 2;
+            folderIconRect.y += (folderIconRect.height - height) / 2;
+            folderIconRect.width = width;
+            folderIconRect.height = height;
+#endif
+
+            //calculate only base icon dimensions as:
+            // - icon width without offset 
+            // - icon height without offset
+            var iconPlaceWidth = folderIconRect.width - folderIconRect.width * usualFolderWidthOffsetRatio;
+            var iconPlaceHeight = folderIconRect.height - folderIconRect.height * usualFolderHeightOffsetRatio;
+            var centerX = folderIconRect.xMin + folderIconRect.width / 2 - iconPlaceWidth / 2;
+            var centerY = folderIconRect.yMin + folderIconRect.height / 2 - iconPlaceHeight / 2;
+
+            folderIconRect = new Rect(centerX, centerY, iconPlaceWidth, iconPlaceHeight);
+
+            folderIconRect.x += (folderIconRect.width - folderIconRect.width * UsualIconScale) / 2;
+            folderIconRect.y += (folderIconRect.height - folderIconRect.height * UsualIconScale) / 2;
+            folderIconRect.width *= UsualIconScale;
+            folderIconRect.height *= UsualIconScale;
+            folderIconRect.x += folderIconRect.width * UsualIconXPaddingRatio;
+            folderIconRect.y += folderIconRect.height * UsualIconYPaddingRatio;
+
+            return folderIconRect;
+        }
+
+        internal static Rect GetSmallIconRect(Rect folderIconRect)
+        {
+            folderIconRect = new Rect(folderIconRect.xMin, folderIconRect.y, minimalFolderIconWidth, minimalFolderIconHeight);
+
+            folderIconRect.x = folderIconRect.xMin + folderIconRect.width / 2;
+            folderIconRect.y = folderIconRect.yMin + folderIconRect.height / 2;
+            folderIconRect.x += folderIconRect.width * SmallIconXPaddingRatio;
+            folderIconRect.y += folderIconRect.height * SmallIconYPaddingRatio;
+
+            return folderIconRect;
+        }
+
+        internal static void ResetIconProperties()
+        {
+            UsualIconScale = usualFolderIconPlaceToIconRatioDefault;
+
+            UsualIconXPaddingRatio = usualFolderWidthPaddingRatioDefault;
+            UsualIconYPaddingRatio = usualFolderHeightPaddingRatioDefault;
+            SmallIconXPaddingRatio = smallFolderWidthPaddingRatioDefault;
+            SmallIconYPaddingRatio = smallFolderHeightPaddingRatioDefault;
+        }
+
+
+        internal static float UsualIconScale { get; set; } = usualFolderIconPlaceToIconRatioDefault;
+
+        internal static float UsualIconXPaddingRatio { get; set; } = usualFolderWidthPaddingRatioDefault;
+        internal static float UsualIconYPaddingRatio { get; set; } = usualFolderHeightPaddingRatioDefault;
+        internal static float SmallIconXPaddingRatio { get; set; } = smallFolderWidthPaddingRatioDefault;
+        internal static float SmallIconYPaddingRatio { get; set; } = smallFolderHeightPaddingRatioDefault;
     }
 
     public enum FolderDataType

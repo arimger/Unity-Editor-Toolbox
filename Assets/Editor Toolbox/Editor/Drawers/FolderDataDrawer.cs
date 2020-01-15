@@ -12,6 +12,23 @@ namespace Toolbox.Editor.Drawers
         private const int smallIconPickedId = 1002;
 
 
+        private void DrawFolderByNameIcon(Rect rect)
+        {
+            GUI.DrawTexture(rect, Style.folderTexture);
+        }
+
+        private void DrawFolderByPathIcon(Rect rect)
+        {
+            const float doubleIconOffsetRatio = 1.5f;
+
+            GUI.DrawTexture(rect, Style.folderTexture);
+
+            rect.y += Style.spacing;
+            rect.x += Style.spacing * doubleIconOffsetRatio;
+            GUI.DrawTexture(rect, Style.folderTexture);
+        }
+
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {            
             //if expanded - draw foldout + 3 properties + buttons strip + additional icon 
@@ -36,7 +53,7 @@ namespace Toolbox.Editor.Drawers
                 height += Style.height;
                 height += Style.height;
                 height += Style.height;
-                height += Style.iconHeight;
+                height += Style.usualFolderHeight;
                 return height;
             }
 
@@ -45,12 +62,11 @@ namespace Toolbox.Editor.Drawers
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            //get properties
             var typeProperty = property.FindPropertyRelative("type");
             var nameProperty = property.FindPropertyRelative("name");
             var pathProperty = property.FindPropertyRelative("path");
             var toolProperty = property.FindPropertyRelative("tooltip");
-            //get icons properties
+
             var usualIconProperty = property.FindPropertyRelative("icon");
             var smallIconProperty = property.FindPropertyRelative("smallIcon");
 
@@ -70,17 +86,19 @@ namespace Toolbox.Editor.Drawers
                 EditorGUI.EndProperty();
 
                 //adjust position for small icon and draw it in label field
-                var typeIconRect = new Rect(position.xMax - Style.smallIconWidth,
-                                            position.yMin - Style.spacing, Style.smallIconWidth, Style.smallIconHeight);
-
-                //draw additional type icon on folder icon
-                GUI.DrawTexture(typeIconRect, Style.folderTexture);
-
+                var typeIconRect = new Rect(position.xMax - Style.smallFolderWidth,
+#if UNITY_2019_3_OR_NEWER
+                                            position.yMin, Style.smallFolderWidth, Style.smallFolderHeight);
+#else
+                                            position.yMin - Style.spacing, Style.smallFolderWidth, Style.smallFolderHeight);
+#endif
                 if (isPathBased)
                 {
-                    typeIconRect.y += Style.spacing;
-                    typeIconRect.x += Style.spacing * 1.5f;
-                    GUI.DrawTexture(typeIconRect, Style.folderTexture);
+                    DrawFolderByPathIcon(typeIconRect);
+                }
+                else
+                {
+                    DrawFolderByNameIcon(typeIconRect);
                 }
 
                 return;
@@ -122,7 +140,7 @@ namespace Toolbox.Editor.Drawers
             //adjust rect for folder icons + button strip
             propertyPosition.y += Style.spacing;
             propertyPosition.x += Style.iconsPadding;
-            propertyPosition.width = Style.iconWidth;
+            propertyPosition.width = Style.usualFolderWidth;
 
             //draw normal icon property picker
             if (GUI.Button(propertyPosition, Style.usualIconPickerContent, Style.usualIconPickerStyle))
@@ -131,8 +149,8 @@ namespace Toolbox.Editor.Drawers
                 EditorGUIUtility.ShowObjectPicker<Texture>(usualIconProperty.objectReferenceValue, false, null, propertyHash + usualIconPickedId);
             }
 
-            propertyPosition.x += Style.iconWidth;
-            propertyPosition.width = Style.smallIconWidth;
+            propertyPosition.x += Style.usualFolderWidth;
+            propertyPosition.width = Style.smallFolderWidth;
 
             //draw small icon property picker
             if (GUI.Button(propertyPosition, Style.smallIconPickerContent, Style.smallIconPickerStyle))
@@ -159,43 +177,23 @@ namespace Toolbox.Editor.Drawers
 
             position.x += Style.iconsPadding;
 
-            //get specific rects for folder icons
-            var usualFolderIconRect = new Rect(position.x, position.yMin + sumPropertyHeight, Style.iconWidth, Style.iconHeight);
-            var smallFolderIconRect = new Rect(position.x + Style.iconWidth,
-                usualFolderIconRect.y + Style.smallIconHeight / 2 - Style.spacing, Style.smallIconWidth, Style.smallIconHeight);
+            var usualFolderIconRect = new Rect(position.x, position.yMin + sumPropertyHeight, Style.usualFolderWidth, Style.usualFolderHeight);
+            var smallFolderIconRect = new Rect(position.x + Style.usualFolderWidth, 
+                         usualFolderIconRect.y + Style.smallFolderHeight / 2 - Style.spacing, Style.smallFolderWidth, Style.smallFolderHeight);
 
-            //draw folder icons using desired content
             GUI.DrawTexture(usualFolderIconRect, Style.folderTexture, ScaleMode.ScaleToFit);
             GUI.DrawTexture(smallFolderIconRect, Style.folderTexture, ScaleMode.ScaleToFit);
 
-            //handle big icon texture preview if exist
             if (usualIconProperty.objectReferenceValue)
             {
                 var previewTexture = usualIconProperty.objectReferenceValue as Texture;
-
-                //adjust big icon rect using predefined style properties
-                usualFolderIconRect.x += usualFolderIconRect.width * ToolboxEditorProject.Style.xToWidthRatio;
-                usualFolderIconRect.y += usualFolderIconRect.height * ToolboxEditorProject.Style.yToHeightRatio;
-                usualFolderIconRect.width = ToolboxEditorProject.Style.iconWidth;
-                usualFolderIconRect.height = ToolboxEditorProject.Style.iconHeight;
-
-                //draw big preview icon
-                GUI.DrawTexture(usualFolderIconRect, previewTexture, ScaleMode.ScaleToFit);
+                GUI.DrawTexture(ToolboxEditorProject.GetUsualIconRect(usualFolderIconRect), previewTexture, ScaleMode.ScaleToFit);
             }
 
-            //handle small icon texture preview if exist
             if (smallIconProperty.objectReferenceValue)
             {
                 var previewTexture = smallIconProperty.objectReferenceValue as Texture;
-
-                //adjust small icon rect using predefined style properties
-                smallFolderIconRect.x += ToolboxEditorProject.Style.padding;
-                smallFolderIconRect.y += smallFolderIconRect.height * ToolboxEditorProject.Style.yToHeightRatioSmall;
-                smallFolderIconRect.width = ToolboxEditorProject.Style.iconWidthSmall;
-                smallFolderIconRect.height = ToolboxEditorProject.Style.iconHeightSmall;
-
-                //draw small preview icon
-                GUI.DrawTexture(smallFolderIconRect, previewTexture, ScaleMode.ScaleToFit);
+                GUI.DrawTexture(ToolboxEditorProject.GetSmallIconRect(smallFolderIconRect), previewTexture, ScaleMode.ScaleToFit);
             }
 
             EditorGUI.indentLevel--;
@@ -210,10 +208,11 @@ namespace Toolbox.Editor.Drawers
 
             internal const float iconsPadding = 12.0f;
 
-            internal const float iconWidth = ToolboxEditorProject.Style.folderIconWidth;
-            internal const float iconHeight = ToolboxEditorProject.Style.folderIconHeight;
-            internal const float smallIconWidth = ToolboxEditorProject.Style.folderIconWidthSmall;
-            internal const float smallIconHeight = ToolboxEditorProject.Style.folderIconHeightSmall;
+            internal const float usualFolderWidth = ToolboxEditorProject.maximalFolderWidth;
+            internal const float usualFolderHeight = ToolboxEditorProject.maximalFolderHeight;
+
+            internal const float smallFolderWidth = ToolboxEditorProject.minimalFolderWidth;
+            internal const float smallFolderHeight = ToolboxEditorProject.minimalFolderHeight;
 
             internal static readonly Texture2D folderTexture;
 
@@ -232,12 +231,20 @@ namespace Toolbox.Editor.Drawers
                 {
                     padding = new RectOffset(17, 2, 0, 0),                                                         
                 };
-
-                usualIconPickerStyle = new GUIStyle(EditorStyles.miniButtonLeft);
-                smallIconPickerStyle = new GUIStyle(EditorStyles.miniButtonRight);
-
+                
+                usualIconPickerStyle = new GUIStyle(EditorStyles.miniButtonLeft)
+                {
+                    fixedHeight = 16.0f,
+                    fontSize = 9
+                };
+                smallIconPickerStyle = new GUIStyle(EditorStyles.miniButtonRight)
+                {
+                    fixedHeight = 16.0f,
+                    padding = new RectOffset(2, 2, 2, 2)
+                };
+  
                 usualIconPickerContent = new GUIContent("Select");
-                smallIconPickerContent = EditorGUIUtility.IconContent("winbtn_graph");
+                smallIconPickerContent = EditorGUIUtility.IconContent("RawImage Icon");
                 usualIconPickerContent.tooltip = "Select big icon";
                 smallIconPickerContent.tooltip = "Select small icon";
             }

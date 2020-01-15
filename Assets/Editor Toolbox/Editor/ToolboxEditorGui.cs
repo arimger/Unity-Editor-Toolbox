@@ -11,6 +11,17 @@ namespace Toolbox.Editor
     public static partial class ToolboxEditorGui
     {        
         /// <summary>
+        /// Creates inspector horizontal line using <see cref="GUILayout"/> class.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="thickness"></param>
+        /// <param name="padding"></param>
+        public static void DrawLayoutLine(float thickness = 0.75f, float padding = 6.0f)
+        {
+            DrawLine(EditorGUILayout.GetControlRect(GUILayout.Height(padding + thickness)), thickness, padding);
+        }
+
+        /// <summary>
         /// Creates inspector horizontal line.
         /// </summary>
         /// <param name="color"></param>
@@ -22,17 +33,6 @@ namespace Toolbox.Editor
             rect.height = thickness;
 
             EditorGUI.DrawRect(rect, Style.standardLineColor);
-        }
-
-        /// <summary>
-        /// Creates inspector horizontal line using <see cref="GUILayout"/> class.
-        /// </summary>
-        /// <param name="color"></param>
-        /// <param name="thickness"></param>
-        /// <param name="padding"></param>
-        public static void DrawLayoutLine(float thickness = 0.75f, float padding = 6.0f)
-        {
-            DrawLine(EditorGUILayout.GetControlRect(GUILayout.Height(padding + thickness)), thickness, padding);
         }
 
         /// <summary>
@@ -58,31 +58,11 @@ namespace Toolbox.Editor
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            EditorGUILayout.BeginHorizontal(Style.boxStyle);
+            EditorGUILayout.BeginHorizontal(Style.boxedSkinStyle);
             EditorGUI.LabelField(EditorGUILayout.GetControlRect(true, height, previewOptions), GUIContent.none, style);
             EditorGUILayout.EndHorizontal();
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle foldoutStyle)
-        {
-            const float xPadding = 15.0f;
-            const float yPadding = 2.0f;
-
-            if (Event.current.type == EventType.Repaint)
-            {
-                Style.boxStyle.Draw(rect, false, false, false, false);
-            }
-
-            rect.xMin += xPadding;
-            rect.yMin -= yPadding - (rect.height - foldoutStyle.fontSize) / 2;
-
-            return EditorGUI.Foldout(rect, foldout, label, toggleOnLabelClick, foldoutStyle);
         }
 
         /// <summary>
@@ -99,6 +79,79 @@ namespace Toolbox.Editor
 
             return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, foldoutStyle);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle foldoutStyle)
+        {
+            const float xPadding = 15.0f;
+#if UNITY_2019_3_OR_NEWER
+            const float yPadding = 7.0f;
+#else
+            const float yPadding = 2.0f;
+#endif
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                Style.boxedSkinStyle.Draw(rect, false, false, false, false);
+            }
+
+            rect.xMin += xPadding;
+            rect.yMin -= yPadding - (rect.height - foldoutStyle.fontSize) / 2;
+
+            return EditorGUI.Foldout(rect, foldout, label, toggleOnLabelClick, foldoutStyle);
+        }
+
+
+        /// <summary>
+        /// Draws <see cref="ReorderableList"/> as drawer list instace used in <see cref="ToolboxEditorSettings"/>.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="titleLabel"></param>
+        /// <param name="assignButtonLabel"></param>
+        /// <param name="foldoutStyle"></param>
+        /// <returns></returns>
+        internal static bool DrawDrawerList(ReorderableList list, string titleLabel, string assignButtonLabel, GUIStyle foldoutStyle)
+        {
+            GUILayout.BeginHorizontal();
+            var expanded = DrawListFoldout(list, foldoutStyle, titleLabel);
+            GUILayout.FlexibleSpace();
+            var pressed = GUILayout.Button(assignButtonLabel, Style.miniButtonStyle);
+            GUILayout.EndHorizontal();
+
+            if (expanded)
+            {
+                list.DoLayoutList();
+            }
+
+            return pressed;
+        }
+
+        /// <summary>
+        /// Draws <see cref="ReorderableList"/> with additional foldout.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        internal static bool DrawListFoldout(ReorderableList list, GUIStyle style)
+        {
+            return DrawListFoldout(list, style, list.List.displayName);
+        }
+
+        /// <summary>
+        /// Draws <see cref="ReorderableList"/> with additional foldout and custom label.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        internal static bool DrawListFoldout(ReorderableList list, GUIStyle style, string label)
+        {
+            list.HasHeader = false;
+            return list.List.isExpanded = EditorGUILayout.Foldout(list.List.isExpanded, label, true, style);
+        }
+
 
         /// <summary>
         /// Creates <see cref="ReorderableList"/> using standard background.
@@ -124,14 +177,14 @@ namespace Toolbox.Editor
                     rect.y += EditorGUIUtility.standardVerticalSpacing / 2;
                     if (Event.current.type == EventType.Repaint)
                     {
-                        Style.boxStyle.Draw(rect, false, false, false, false);
+                        Style.boxedSkinStyle.Draw(rect, false, false, false, false);
                     }
                 },
                 drawMiddleBackgroundCallback = (Rect rect) =>
                 {
                     if (Event.current.type == EventType.Repaint)
                     {
-                        Style.boxStyle.Draw(rect, false, false, false, false);
+                        Style.boxedSkinStyle.Draw(rect, false, false, false, false);
                     }
                 },
                 drawFooterBackgroundCallback = (Rect rect) =>
@@ -139,10 +192,14 @@ namespace Toolbox.Editor
                     rect.y -= EditorGUIUtility.standardVerticalSpacing / 2;
                     if (Event.current.type == EventType.Repaint)
                     {
-                        Style.boxStyle.Draw(rect, false, false, false, false);
+                        Style.boxedSkinStyle.Draw(rect, false, false, false, false);
                     }
                 },
-                FooterHeight = 15
+#if UNITY_2019_3_OR_NEWER
+                FooterHeight = 17
+#else
+                FooterHeight = 14
+#endif
             };
         }
 
@@ -170,7 +227,12 @@ namespace Toolbox.Editor
                     rect.y -= Style.spacing * 2 - rect.height;
                     DrawLine(rect);
                 },
-                FooterHeight = 14
+#if UNITY_2019_3_OR_NEWER
+                HeaderHeight = 21,
+                FooterHeight = 17
+#else
+                FooterHeight = 15
+#endif
             };
         }
 
@@ -197,18 +259,27 @@ namespace Toolbox.Editor
         /// </summary>
         internal static class Style
         {
-            internal static readonly float height = EditorGUIUtility.singleLineHeight;
-            internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
+            internal readonly static float height = EditorGUIUtility.singleLineHeight;
+            internal readonly static float spacing = EditorGUIUtility.standardVerticalSpacing;
 
-            internal static readonly Color standardLineColor = new Color(0.3f, 0.3f, 0.3f);
+            /// <summary>
+            /// Default color used in vertical line drawing.
+            /// </summary>
+            internal readonly static Color standardLineColor = new Color(0.3f, 0.3f, 0.3f);
 
-            internal static readonly GUIStyle boxStyle;
+            internal readonly static GUIStyle boxedSkinStyle;
+            internal readonly static GUIStyle labelSkinStyle;
+            internal readonly static GUIStyle buttonSkinStyle;
+            internal readonly static GUIStyle miniButtonStyle;
 
             internal static readonly GUIContent warningContent;
 
             static Style()
             {
-                boxStyle = new GUIStyle(GUI.skin.box);
+                boxedSkinStyle = new GUIStyle(GUI.skin.box);
+                labelSkinStyle = new GUIStyle(GUI.skin.label);
+                buttonSkinStyle = new GUIStyle(GUI.skin.button);
+                miniButtonStyle = new GUIStyle(EditorStyles.miniButton);
 
                 warningContent = EditorGUIUtility.IconContent("console.warnicon.sml");
             }
@@ -316,7 +387,15 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// 
+        /// Draws provided property as a warning label.
+        /// </summary>
+        public static void DrawLayoutEmptyProperty(SerializedProperty property, GUIContent label = null)
+        {
+            DrawEmptyProperty(GUILayoutUtility.GetRect(1, Style.height), property, label);
+        }
+
+        /// <summary>
+        /// Draws provided property as a warning label.
         /// </summary>
         public static void DrawEmptyProperty(Rect position, SerializedProperty property, GUIContent label = null)
         {
@@ -335,14 +414,6 @@ namespace Toolbox.Editor
             var content = label ?? new GUIContent(property.displayName);
 
             EditorGUI.LabelField(position, content);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static void DrawLayoutEmptyProperty(SerializedProperty property, GUIContent label = null)
-        {
-            DrawEmptyProperty(GUILayoutUtility.GetRect(1, Style.height), property, label);
         }
     }
 }

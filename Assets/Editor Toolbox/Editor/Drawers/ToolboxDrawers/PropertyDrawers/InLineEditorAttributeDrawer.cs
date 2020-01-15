@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+#if !UNITY_2019_1_OR_NEWER
 using System.Reflection;
+#endif
 
 using UnityEngine;
 using UnityEditor;
@@ -24,9 +26,7 @@ namespace Toolbox.Editor.Drawers
         /// <param name="key"></param>
         private void ClearEditor(string key)
         {
-            //destroy obsolete editor by provided key
             Object.DestroyImmediate(editorInstances[key]);
-            //clear obsolete editor from cached instances
             editorInstances.Remove(key);
         }
 
@@ -35,12 +35,11 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         private void ClearEditors()
         {
-            //destroy all obsolete editors
             foreach (var editor in editorInstances.Values)
             {
                 Object.DestroyImmediate(editor);
             }
-            //clear all obsolete editors
+
             editorInstances.Clear();
         }
 
@@ -57,9 +56,9 @@ namespace Toolbox.Editor.Drawers
                 if (!InternalEditorUtility.GetIsInspectorExpanded(editor.target))
                 {
                     InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
+                    //NOTE: in older versions editor's foldouts are based on m_IsVisible field and Awake() method
 #if !UNITY_2019_1_OR_NEWER
                     const string isVisibleFieldName = "m_IsVisible";
-                    //NOTE: in older versions editor's foldouts are based on m_IsVisible field and Awake() method
                     var isVisible = editor.GetType().GetField(isVisibleFieldName,
                         BindingFlags.Instance | BindingFlags.NonPublic);
                     if (isVisible != null)
@@ -77,7 +76,7 @@ namespace Toolbox.Editor.Drawers
         }
 
         /// <summary>
-        /// Draws inlined editor using provided <see cref="UnityEditor.Editor"/> object.
+        /// Draws inlined editor using provided <see cref="Editor"/> object.
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
@@ -91,7 +90,8 @@ namespace Toolbox.Editor.Drawers
 
             //begin editor inside vertical group
             EditorGUILayout.BeginVertical(Style.inlinedStyle);
-         
+            EditorGUILayout.BeginVertical();
+
             //draw whole inspector and apply all changes 
             editor.serializedObject.Update();
             editor.OnInspectorGUI();
@@ -105,14 +105,15 @@ namespace Toolbox.Editor.Drawers
                     editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, attribute.PreviewHeight), Style.previewStyle);
                 }
             }
-  
+
+            EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
         }
 
 
         /// <summary>
         /// Handles property drawing process and tries to create inlined version of <see cref="Editor"/>
-        /// for <see cref="UnityEngine.Object"/> associated to this property.
+        /// for <see cref="Object"/> associated to this property.
         /// </summary>
         /// <param name="property"></param>
         /// <param name="attribute"></param>
@@ -187,15 +188,8 @@ namespace Toolbox.Editor.Drawers
                     alignment = TextAnchor.MiddleLeft
                 };
 
-                //create background texture for all previews
-                var backgroundTex = new Texture2D(1, 1);
-                backgroundTex.SetPixel(0, 0, new Color(0, 0, 0, 0));
-                backgroundTex.Apply();
-                backgroundTex.hideFlags = HideFlags.HideAndDontSave;
-
-                //create preview style based on transparent texture
                 previewStyle = new GUIStyle();
-                previewStyle.normal.background = backgroundTex;
+                previewStyle.normal.background = AssetUtility.GetPersistentTexture(Color.clear);
             }
         }
     }
