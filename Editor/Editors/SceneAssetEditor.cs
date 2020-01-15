@@ -1,4 +1,4 @@
-﻿//#define CAPTURE
+﻿/*#define CAPTURE*/
 
 using System.IO;
 using System.Linq;
@@ -13,7 +13,9 @@ namespace Toolbox.Editor.Editors
 {
     using Editor = UnityEditor.Editor;
 
+#if CAPTURE
     [CustomEditor(typeof(SceneAsset))]
+#endif
     [CanEditMultipleObjects]
     public class ScenePreview : Editor
     {

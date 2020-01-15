@@ -11,7 +11,7 @@ namespace Toolbox.Editor
         public const BindingFlags allPossibleFieldsBinding =
             BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly;
 
-
+        
         public static IEnumerable<FieldInfo> GetAllFields(object target, Func<FieldInfo, bool> predicate)
         {
             var types = new List<Type>()

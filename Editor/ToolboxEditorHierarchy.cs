@@ -236,7 +236,11 @@ namespace Toolbox.Editor
 
             internal static readonly Color textColor = new Color(0.35f, 0.35f, 0.35f);
             internal static readonly Color lineColor = new Color(0.59f, 0.59f, 0.59f);
+#if UNITY_2019_3_OR_NEWER
+            internal static readonly Color labelColor = EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f) : new Color(0.909f, 0.909f, 0.909f);
+#else
             internal static readonly Color labelColor = EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f) : new Color(0.855f, 0.855f, 0.855f);
+#endif
 
             internal static readonly GUIStyle toggleStyle;
             internal static readonly GUIStyle tagLabelStyle;
@@ -254,7 +258,11 @@ namespace Toolbox.Editor
                 layerLabelStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
                     fontSize = 8,
+#if UNITY_2019_3_OR_NEWER
+                    alignment = TextAnchor.MiddleCenter
+#else
                     alignment = TextAnchor.UpperCenter
+#endif
                 };
 
                 toggleStyle = new GUIStyle(EditorStyles.toggle);
