@@ -59,51 +59,6 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Draws provided <see cref="ReorderableList"/> as list of drawers.
-        /// </summary>
-        /// <param name="list"></param>
-        /// <param name="titleLabel"></param>
-        /// <param name="assignButtonLabel"></param>
-        /// <returns></returns>
-        private bool DrawDrawerList(ReorderableList list, string titleLabel, string assignButtonLabel)
-        {
-            GUILayout.BeginHorizontal();
-            //draw foldout for whole reorderable list
-            var expanded = DrawListFoldout(list, Style.drawerListFoldoutStyle, titleLabel);
-            //adjust space between contents in group
-            GUILayout.FlexibleSpace();
-            //create "Assign all" button
-            var pressed =
-            GUILayout.Button(assignButtonLabel, Style.smallButtonStyle);
-            GUILayout.EndHorizontal();
-
-            //draw reorderable list if expanded
-            if (expanded)
-            {
-                list.DoLayoutList();
-            }
-
-            return pressed;
-        }
-
-        private bool DrawListFoldout(ReorderableList list)
-        {
-            return DrawListFoldout(list, Style.drawerListFoldoutStyle);
-        }
-
-        private bool DrawListFoldout(ReorderableList list, GUIStyle style)
-        {
-            return DrawListFoldout(list, style, list.List.displayName);
-        }
-
-        private bool DrawListFoldout(ReorderableList list, GUIStyle style, string label)
-        {
-            list.HasHeader = false;
-            return list.List.isExpanded = EditorGUILayout.Foldout(list.List.isExpanded, label, true, style);
-        }
-
-
-        /// <summary>
         /// Draws all needed inspector controls.
         /// </summary>
         public override void OnInspectorGUI()
@@ -145,12 +100,11 @@ namespace Toolbox.Editor
                 EditorGUILayout.PropertyField(useToolboxFoldersProperty);
 
                 EditorGUILayout.Space();
-                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
 
                 EditorGUI.BeginDisabledGroup(!useToolboxFoldersProperty.boolValue);
                 
                 //draw custom icons list
-                if (DrawListFoldout(customFoldersList, Style.folderListFoldoutStyle))
+                if (ToolboxEditorGui.DrawListFoldout(customFoldersList, Style.folderListFoldoutStyle))
                 {
                     customFoldersList.DoLayoutList();
                 }
@@ -176,28 +130,26 @@ namespace Toolbox.Editor
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField("Attribute-based", Style.smallHeaderStyle);
 
-                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
-
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
 
                 const string assignButtonLabel = "Assign all possible";
                     
-                if (DrawDrawerList(decoratorDrawerHandlersList, "Decorator Drawers", assignButtonLabel))
+                if (ToolboxEditorGui.DrawDrawerList(decoratorDrawerHandlersList, "Decorator Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
                     currentTarget.SetAllPossibleDecoratorDrawers();
                 }
 
-                if (DrawDrawerList(propertyDrawerHandlersList, "Property Drawers", assignButtonLabel))
+                if (ToolboxEditorGui.DrawDrawerList(propertyDrawerHandlersList, "Property Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
                     currentTarget.SetAllPossiblePropertyDrawers();
                 }
 
-                if (DrawDrawerList(collectionDrawerHandlersList, "Collection Drawers", assignButtonLabel))
+                if (ToolboxEditorGui.DrawDrawerList(collectionDrawerHandlersList, "Collection Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
                     currentTarget.SetAllPossibleCollectionDrawers();
                 }
 
-                if (DrawDrawerList(conditionDrawerHandlersList, "Condition Drawers", assignButtonLabel))
+                if (ToolboxEditorGui.DrawDrawerList(conditionDrawerHandlersList, "Condition Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
                     currentTarget.SetAllPossibleConditionDrawers();
                 }
@@ -205,9 +157,7 @@ namespace Toolbox.Editor
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField("Type-based", Style.smallHeaderStyle);
 
-                ToolboxEditorGui.DrawLayoutLine(lineTickiness);
-
-                if (DrawDrawerList(targetTypeDrawerHandlersList, "Target Type Drawers", assignButtonLabel))
+                if (ToolboxEditorGui.DrawDrawerList(targetTypeDrawerHandlersList, "Target Type Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
                     currentTarget.SetAllPossibleTargetTypeDrawers();
                 }
@@ -246,19 +196,19 @@ namespace Toolbox.Editor
         {
             internal readonly static float spacing = EditorGUIUtility.standardVerticalSpacing;
 
-            internal readonly static GUIStyle smallButtonStyle;
             internal readonly static GUIStyle smallHeaderStyle;
             internal readonly static GUIStyle settingsFoldoutStyle;
             internal readonly static GUIStyle drawerListFoldoutStyle;
             internal readonly static GUIStyle folderListFoldoutStyle;
             internal readonly static GUIStyle settingsVersionLabelStyle;
 
+            internal readonly static GUIContent projectSettingsContent = new GUIContent("Project Settings",
+                EditorGUIUtility.IconContent("Project").image);
+            internal readonly static GUIContent drawersSettingsContent = new GUIContent("Drawers Settings",
+                EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
             internal readonly static GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings", 
                 EditorGUIUtility.IconContent("UnityEditor.HierarchyWindow").image);
-            internal readonly static GUIContent projectSettingsContent = new GUIContent("Project Settings", 
-                EditorGUIUtility.IconContent("d_Project").image);
-            internal readonly static GUIContent drawersSettingsContent = new GUIContent("Drawers Settings", 
-                EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
+
             internal readonly static GUIContent applyButtonContent = new GUIContent("Reload references", "Apply all reference-based changes");
 
             internal readonly static GUILayoutOption[] buttonOptions = new GUILayoutOption[]
@@ -267,8 +217,7 @@ namespace Toolbox.Editor
             };
 
             static Style()
-            {
-                smallButtonStyle = new GUIStyle(EditorStyles.miniButton);              
+            {            
                 smallHeaderStyle = new GUIStyle(EditorStyles.label)
                 {
                     fontStyle = FontStyle.Bold,
@@ -278,7 +227,11 @@ namespace Toolbox.Editor
                 {
                     fontStyle = FontStyle.Bold,
                     alignment = TextAnchor.MiddleLeft,
+#if UNITY_2019_3_OR_NEWER
+                    contentOffset = new Vector2(0, 0),
+#else
                     contentOffset = new Vector2(0, -spacing),
+#endif
                     fontSize = 11
                 };
                 drawerListFoldoutStyle = new GUIStyle(EditorStyles.foldout)
@@ -287,7 +240,6 @@ namespace Toolbox.Editor
                 };
                 folderListFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
-                    fontStyle = FontStyle.Bold,
                     fontSize = 10
                 };
                 settingsVersionLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);

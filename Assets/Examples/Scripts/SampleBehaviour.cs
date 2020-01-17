@@ -206,7 +206,7 @@ public class SampleBehaviour : MonoBehaviour
     [InLineEditor]
     public Mesh var25;
 
-    [InLineEditor(drawHeader: false, drawPreview: true)]
+    [InLineEditor(drawHeader: true, drawPreview: true)]
     public GameObject var26;
 
     [HeaderArea("4", HeaderStyle.Boxed)]

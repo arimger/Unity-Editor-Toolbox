@@ -12,10 +12,6 @@ namespace Toolbox.Editor.Internal
     /// </summary>
     public class ReorderableList
     {
-        /// 
-        /// Basic delegates used in custom list organization.
-        ///
-
         public delegate float ElementCallbackDelegate(int index);
 
         public delegate void DrawRectCallbackDelegate(Rect rect);
@@ -32,9 +28,6 @@ namespace Toolbox.Editor.Internal
 
         public delegate bool CanChangeDetailsCallbackDelegate(ReorderableList list, int oldIndex, int newIndex);
 
-        /// 
-        /// All needed and provided draw callbacks
-        ///
 
         public DrawRectCallbackDelegate drawHeaderBackgroundCallback = null;
         public DrawRectCallbackDelegate drawFooterBackgroundCallback = null;
@@ -50,9 +43,6 @@ namespace Toolbox.Editor.Internal
 
         public DrawDetailedRectCallbackDelegate onAddDropdownCallback;
 
-        /// 
-        /// All needed and provided interaction callbacks
-        ///
 
         public ChangeListCallbackDelegate onAddCallback;
         public ChangeListCallbackDelegate onSelectCallback;
@@ -66,13 +56,9 @@ namespace Toolbox.Editor.Internal
         public CanChangeListCallbackDelegate onCanAddCallback;
         public CanChangeListCallbackDelegate onCanRemoveCallback;
 
-        /// 
-        /// All needed and provided layouts callbacks
-        ///
 
         public ElementCallbackDelegate elementHeightCallback;
 
-        #region Fields
 
         /// <summary>
         /// Hotcontrol index.
@@ -86,8 +72,6 @@ namespace Toolbox.Editor.Internal
         private float footerHeight = 20.0f;
 
         private List<int> nonDragTargetIndices;
-
-        #endregion
 
 
         public ReorderableList(SerializedProperty list) : this(list, null, true, true, false)
@@ -771,17 +755,17 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public void DrawStandardHeader(Rect rect)
         {
-            rect.y += Style.spacing / 2;
             //display property name
             EditorGUI.LabelField(rect, List.displayName);
-            rect.y += Style.spacing / 2;
-            //adjust width and OX position for size property
-            rect = new Rect(rect.xMax - Style.sizeArea, rect.y, Style.sizeArea, rect.height);
 
+            //adjust width and OX position for size property
+            rect = new Rect(rect.xMax - Style.sizeArea, rect.y + (rect.height - Style.sizeLabel.fixedHeight) / 2, Style.sizeArea, rect.height);
+ 
             //display array size property without indentation
             using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
             {
                 var property = Size;
+
                 EditorGUI.BeginDisabledGroup(HasFixedSize);
                 EditorGUI.BeginProperty(rect, Style.arraySizeFieldContent, property);
                 EditorGUI.BeginChangeCheck();
@@ -834,12 +818,11 @@ namespace Toolbox.Editor.Internal
         {
             if (Event.current.type != EventType.Repaint) return;
             if (draggable)
-            {       
+            {
                 rect.height = Style.handleHeight;
                 rect.width = Style.handleWidth;
-                rect.y += (Style.handleHeight + Style.spacing) / 2;
+                rect.y += (Style.handleHeight + rect.height) / 2 - Style.handleOffset;
                 rect.x += Style.handleWidth / 2;
-
                 Style.draggingHandle.Draw(rect, false, false, false, false);
             }
         }
@@ -851,10 +834,17 @@ namespace Toolbox.Editor.Internal
         {
             if (Event.current.type == EventType.Repaint)
             {
-                //additional height for selection rect + shadow
                 if (selected)
                 {
-                    rect.height += Style.spacing / 2;
+                    //additional height for selection rect + shadow
+                    //NOTE: shadow appears before Unity 2019.3+
+#if UNITY_2019_3_OR_NEWER
+                    var padding = Style.spacing;
+#else
+                    var padding = Style.spacing + Style.spacing / 2;
+#endif
+                    rect.height += padding;
+                    rect.y -= padding / 2;
                 }
                 Style.elementBackground.Draw(rect, false, selected, selected, focused);
             }
@@ -1008,11 +998,20 @@ namespace Toolbox.Editor.Internal
             internal static readonly float buttonWidth = 25;
             internal static readonly float buttonHeight = 13;
             internal static readonly float buttonMargin = 4;
+#if UNITY_2019_3_OR_NEWER
+            internal static readonly float buttonPadding = 0;
+#else
             internal static readonly float buttonPadding = 3;
+#endif
 
             internal static readonly float handleArea = 40;
             internal static readonly float handleWidth = 15;
             internal static readonly float handleHeight = 7;
+#if UNITY_2019_3_OR_NEWER
+            internal static readonly float handleOffset = 0;
+#else
+            internal static readonly float handleOffset = 2;
+#endif
 
             internal static readonly GUIContent iconToolbarAdd;
             internal static readonly GUIContent iconToolbarDrop;
