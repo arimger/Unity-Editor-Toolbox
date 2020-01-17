@@ -26,7 +26,11 @@ namespace Toolbox.Editor.Drawers
         /// <param name="key"></param>
         private void ClearEditor(string key)
         {
-            Object.DestroyImmediate(editorInstances[key]);
+            if (editorInstances.TryGetValue(key, out Editor editor))
+            {
+                Object.DestroyImmediate(editor);
+            }
+
             editorInstances.Remove(key);
         }
 
