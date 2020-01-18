@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Toolbox.Editor
 {
+    /// <summary>
+    /// Static GUI representation for Project Overlay. It is directly managed by <see cref="ToolboxProjectUtility"/>.
+    /// </summary>
     [InitializeOnLoad]
     public static class ToolboxEditorProject
     {
@@ -20,11 +23,11 @@ namespace Toolbox.Editor
         /// <summary>
         /// Value based on clear space ratio between folder icon and width.
         /// </summary>
-        internal const float usualFolderWidthOffsetRatio = 0.25f;
+        internal const float folderWidthOffsetRatio = 0.25f;
         /// <summary>
         /// Value based on clear space ratio between folder icon and height.
         /// </summary>
-        internal const float usualFolderHeightOffsetRatio = 0.375f;
+        internal const float folderHeightOffsetRatio = 0.375f;
 
         /// <summary>
         /// Value used in versions before 2019.3+ to determine maximal width of folder icon.
@@ -43,22 +46,11 @@ namespace Toolbox.Editor
         /// </summary>
         internal const float minimalFolderHeight = 16.0f;
 
-        internal const float minimalFolderIconWidth = 10.0f;
-        internal const float minimalFolderIconHeight = 10.0f;
-
-
-        private const float smallFolderWidthPaddingRatioDefault = 0.0f;
-        private const float smallFolderHeightPaddingRatioDefault = 0.0f;
-
-        private const float usualFolderWidthPaddingRatioDefault = 0.0f;
-        private const float usualFolderHeightPaddingRatioDefault = 0.15f;
-        private const float usualFolderIconPlaceToIconRatioDefault = 0.8f;
-
 
         private static void OnItemCallback(string guid, Rect rect)
         {
             //ignore drawing if ToolboxEditorProject functionalites are not allowed
-            if (!ToolboxFolderUtility.ToolboxFoldersAllowed)
+            if (!ToolboxProjectUtility.ToolboxProjectAllowed)
             {
                 return;
             }
@@ -66,7 +58,7 @@ namespace Toolbox.Editor
             var path = AssetDatabase.GUIDToAssetPath(guid);
 
             //try to get icon for this folder
-            if (!ToolboxFolderUtility.TryGetFolderData(path, out FolderData data))
+            if (!ToolboxProjectUtility.TryGetFolderData(path, out FolderData data))
             {
                 return;
             }
@@ -87,7 +79,7 @@ namespace Toolbox.Editor
             else
             {
                 icon = data.Icon;
-                rect = GetUsualIconRect(rect, true);
+                rect = GetLargeIconRect(rect, true);
             }
 
             if (icon == null) return;
@@ -97,12 +89,12 @@ namespace Toolbox.Editor
         }
 
 
-        internal static Rect GetUsualIconRect(Rect folderIconRect)
+        internal static Rect GetLargeIconRect(Rect folderIconRect)
         {
-            return GetUsualIconRect(folderIconRect, false);
+            return GetLargeIconRect(folderIconRect, false);
         }
 
-        internal static Rect GetUsualIconRect(Rect folderIconRect, bool clearLabel)
+        internal static Rect GetLargeIconRect(Rect folderIconRect, bool clearLabel)
         {
             if (clearLabel)
             {
@@ -122,52 +114,38 @@ namespace Toolbox.Editor
             //calculate only base icon dimensions as:
             // - icon width without offset 
             // - icon height without offset
-            var iconPlaceWidth = folderIconRect.width - folderIconRect.width * usualFolderWidthOffsetRatio;
-            var iconPlaceHeight = folderIconRect.height - folderIconRect.height * usualFolderHeightOffsetRatio;
+            var iconPlaceWidth = folderIconRect.width - folderIconRect.width * folderWidthOffsetRatio;
+            var iconPlaceHeight = folderIconRect.height - folderIconRect.height * folderHeightOffsetRatio;
             var centerX = folderIconRect.xMin + folderIconRect.width / 2 - iconPlaceWidth / 2;
             var centerY = folderIconRect.yMin + folderIconRect.height / 2 - iconPlaceHeight / 2;
 
             folderIconRect = new Rect(centerX, centerY, iconPlaceWidth, iconPlaceHeight);
 
-            folderIconRect.x += (folderIconRect.width - folderIconRect.width * UsualIconScale) / 2;
-            folderIconRect.y += (folderIconRect.height - folderIconRect.height * UsualIconScale) / 2;
-            folderIconRect.width *= UsualIconScale;
-            folderIconRect.height *= UsualIconScale;
-            folderIconRect.x += folderIconRect.width * UsualIconXPaddingRatio;
-            folderIconRect.y += folderIconRect.height * UsualIconYPaddingRatio;
+            folderIconRect.x += (folderIconRect.width - folderIconRect.width * ToolboxProjectUtility.LargeIconScale) / 2;
+            folderIconRect.y += (folderIconRect.height - folderIconRect.height * ToolboxProjectUtility.LargeIconScale) / 2;
+            folderIconRect.width *= ToolboxProjectUtility.LargeIconScale;
+            folderIconRect.height *= ToolboxProjectUtility.LargeIconScale;
+            folderIconRect.x += folderIconRect.width * ToolboxProjectUtility.LargeIconPaddingRatio.x;
+            folderIconRect.y += folderIconRect.height * ToolboxProjectUtility.LargeIconPaddingRatio.y;
 
             return folderIconRect;
         }
 
         internal static Rect GetSmallIconRect(Rect folderIconRect)
         {
-            folderIconRect = new Rect(folderIconRect.xMin, folderIconRect.y, minimalFolderIconWidth, minimalFolderIconHeight);
+            folderIconRect = new Rect(folderIconRect.xMin, folderIconRect.y, minimalFolderWidth, minimalFolderHeight);
 
-            folderIconRect.x = folderIconRect.xMin + folderIconRect.width / 2;
-            folderIconRect.y = folderIconRect.yMin + folderIconRect.height / 2;
-            folderIconRect.x += folderIconRect.width * SmallIconXPaddingRatio;
-            folderIconRect.y += folderIconRect.height * SmallIconYPaddingRatio;
+            folderIconRect.x += (folderIconRect.width - folderIconRect.width * ToolboxProjectUtility.SmallIconScale) / 2;
+            folderIconRect.y += (folderIconRect.height - folderIconRect.height * ToolboxProjectUtility.SmallIconScale) / 2;
+            folderIconRect.width *= ToolboxProjectUtility.SmallIconScale;
+            folderIconRect.height *= ToolboxProjectUtility.SmallIconScale;
+            folderIconRect.x += folderIconRect.width * ToolboxProjectUtility.SmallIconPaddingRatio.x;
+            folderIconRect.y += folderIconRect.height * ToolboxProjectUtility.SmallIconPaddingRatio.y;
 
             return folderIconRect;
         }
 
-        internal static void ResetIconProperties()
-        {
-            UsualIconScale = usualFolderIconPlaceToIconRatioDefault;
-
-            UsualIconXPaddingRatio = usualFolderWidthPaddingRatioDefault;
-            UsualIconYPaddingRatio = usualFolderHeightPaddingRatioDefault;
-            SmallIconXPaddingRatio = smallFolderWidthPaddingRatioDefault;
-            SmallIconYPaddingRatio = smallFolderHeightPaddingRatioDefault;
-        }
-
-
-        internal static float UsualIconScale { get; set; } = usualFolderIconPlaceToIconRatioDefault;
-
-        internal static float UsualIconXPaddingRatio { get; set; } = usualFolderWidthPaddingRatioDefault;
-        internal static float UsualIconYPaddingRatio { get; set; } = usualFolderHeightPaddingRatioDefault;
-        internal static float SmallIconXPaddingRatio { get; set; } = smallFolderWidthPaddingRatioDefault;
-        internal static float SmallIconYPaddingRatio { get; set; } = smallFolderHeightPaddingRatioDefault;
+        internal static void RepaintProjectOverlay() => EditorApplication.RepaintProjectWindow();
     }
 
     public enum FolderDataType

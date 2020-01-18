@@ -6,7 +6,7 @@ namespace Toolbox.Editor
     using Toolbox.Editor.Internal;
 
     [CustomEditor(typeof(ToolboxEditorSettings), true, isFallback = false)]
-    [CanEditMultipleObjects]
+    [CanEditMultipleObjects, InitializeOnLoad]
     public class ToolboxEditorSettingsEditor : ToolboxEditor
     {
         private bool drawersSettingsEnabled;
@@ -16,11 +16,15 @@ namespace Toolbox.Editor
         private SerializedProperty useToolboxDrawersProperty;
         private SerializedProperty useToolboxFoldersProperty;
         private SerializedProperty useToolboxHierarchyProperty;
+        private SerializedProperty largeIconScaleProperty;
+        private SerializedProperty smallIconScaleProperty;
+        private SerializedProperty largeIconPaddingProperty;
+        private SerializedProperty smallIconPaddingProperty;
 
         private ReorderableList customFoldersList;
 
-        private ReorderableList decoratorDrawerHandlersList;
         private ReorderableList propertyDrawerHandlersList;
+        private ReorderableList decoratorDrawerHandlersList;
         private ReorderableList collectionDrawerHandlersList;
         private ReorderableList conditionDrawerHandlersList;
 
@@ -31,18 +35,22 @@ namespace Toolbox.Editor
 
         private void OnEnable()
         {
-            drawersSettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.drawersSettingsEnabled", false);
-            projectSettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.projectSettingsEnabled", false);
-            hierarchySettingsEnabled = EditorPrefs.GetBool("ToolboxEditorSettings.hierarchySettingsEnabled", false);
+            drawersSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + "." + nameof(drawersSettingsEnabled), false);
+            projectSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + "." + nameof(projectSettingsEnabled), false);
+            hierarchySettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + "." + nameof(hierarchySettingsEnabled), false);
 
             useToolboxDrawersProperty = serializedObject.FindProperty("useToolboxDrawers");
             useToolboxFoldersProperty = serializedObject.FindProperty("useToolboxFolders");
             useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
+            largeIconScaleProperty = serializedObject.FindProperty("largeIconScale");
+            smallIconScaleProperty = serializedObject.FindProperty("smallIconScale");
+            largeIconPaddingProperty = serializedObject.FindProperty("largeIconPadding");
+            smallIconPaddingProperty = serializedObject.FindProperty("smallIconPadding");
 
             customFoldersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("customFolders"));
 
-            decoratorDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("decoratorDrawerHandlers"));
             propertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("propertyDrawerHandlers"));
+            decoratorDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("decoratorDrawerHandlers"));
             conditionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("conditionDrawerHandlers"));
             collectionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("collectionDrawerHandlers"));
             targetTypeDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("targetTypeDrawerHandlers"));
@@ -52,9 +60,9 @@ namespace Toolbox.Editor
 
         private void OnDisable()
         {
-            EditorPrefs.SetBool("ToolboxEditorSettings.drawersSettingsEnabled", drawersSettingsEnabled);
-            EditorPrefs.SetBool("ToolboxEditorSettings.projectSettingsEnabled", projectSettingsEnabled);
-            EditorPrefs.SetBool("ToolboxEditorSettings.hierarchySettingsEnabled", hierarchySettingsEnabled);
+            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + "." + nameof(drawersSettingsEnabled), drawersSettingsEnabled);
+            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + "." + nameof(projectSettingsEnabled), projectSettingsEnabled);
+            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + "." + nameof(hierarchySettingsEnabled), hierarchySettingsEnabled);
         }
 
 
@@ -67,21 +75,16 @@ namespace Toolbox.Editor
 
             serializedObject.Update();
 
+            //forcing validation is usefull when target field is edited directly
+            //NOTE: check ComponentUtility for more details
+            var forceValidation = false;
+
             //handle hierarchy settings section
             if (hierarchySettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.settingsFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
-
-                EditorGUI.BeginChangeCheck();
-                //draw associated toggle property field
                 EditorGUILayout.PropertyField(useToolboxHierarchyProperty);
-                //force hierarchy repaint if toggle was clicked
-                if (EditorGUI.EndChangeCheck())
-                {
-                    EditorApplication.RepaintHierarchyWindow();
-                }
-
                 EditorGUILayout.Space();
                 EditorGUI.indentLevel--;
             }
@@ -95,14 +98,53 @@ namespace Toolbox.Editor
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
-
-                //draw associated toggle property
                 EditorGUILayout.PropertyField(useToolboxFoldersProperty);
-
                 EditorGUILayout.Space();
 
                 EditorGUI.BeginDisabledGroup(!useToolboxFoldersProperty.boolValue);
+
+                EditorGUILayout.LabelField("Large Icon Properties");
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(largeIconScaleProperty, new GUIContent("Scale"), false);       
                 
+                var x = 0.0f;
+                var y = 0.0f;
+
+                const float minPadding = -1.2f;
+                const float maxPadding = +1.2f;
+
+                EditorGUI.BeginChangeCheck();
+                x = EditorGUILayout.Slider(new GUIContent("X"), largeIconPaddingProperty.vector2Value.x, minPadding, maxPadding);
+                y = EditorGUILayout.Slider(new GUIContent("Y"), largeIconPaddingProperty.vector2Value.y, minPadding, maxPadding);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    largeIconPaddingProperty.vector2Value = new Vector2(x, y);
+                }
+                EditorGUI.indentLevel--;
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Small Icon Properties");
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(smallIconScaleProperty, new GUIContent("Scale"), false);
+                EditorGUI.BeginChangeCheck();
+                x = EditorGUILayout.Slider(new GUIContent("X"), smallIconPaddingProperty.vector2Value.x, minPadding, maxPadding);
+                y = EditorGUILayout.Slider(new GUIContent("Y"), smallIconPaddingProperty.vector2Value.y, minPadding, maxPadding);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    smallIconPaddingProperty.vector2Value = new Vector2(x, y);
+                }
+                EditorGUI.indentLevel--;
+
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Reset", Style.miniButtonStyle, Style.resetButtonOptions))
+                {
+                    currentTarget.ResetIconProperties();
+                    forceValidation = true;
+                }
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.Space();
+
                 //draw custom icons list
                 if (ToolboxEditorGui.DrawListFoldout(customFoldersList, Style.folderListFoldoutStyle))
                 {
@@ -133,25 +175,29 @@ namespace Toolbox.Editor
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
 
                 const string assignButtonLabel = "Assign all possible";
-                    
+
                 if (ToolboxEditorGui.DrawDrawerList(decoratorDrawerHandlersList, "Decorator Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
-                {
+                {              
                     currentTarget.SetAllPossibleDecoratorDrawers();
+                    forceValidation = true;
                 }
 
                 if (ToolboxEditorGui.DrawDrawerList(propertyDrawerHandlersList, "Property Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
                     currentTarget.SetAllPossiblePropertyDrawers();
+                    forceValidation = true;
                 }
 
                 if (ToolboxEditorGui.DrawDrawerList(collectionDrawerHandlersList, "Collection Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
                     currentTarget.SetAllPossibleCollectionDrawers();
+                    forceValidation = true;
                 }
 
                 if (ToolboxEditorGui.DrawDrawerList(conditionDrawerHandlersList, "Condition Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
                     currentTarget.SetAllPossibleConditionDrawers();
+                    forceValidation = true;
                 }
 
                 EditorGUILayout.Space();
@@ -160,6 +206,7 @@ namespace Toolbox.Editor
                 if (ToolboxEditorGui.DrawDrawerList(targetTypeDrawerHandlersList, "Target Type Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
                     currentTarget.SetAllPossibleTargetTypeDrawers();
+                    forceValidation = true;
                 }
 
                 EditorGUI.EndDisabledGroup();
@@ -172,19 +219,12 @@ namespace Toolbox.Editor
                 GUILayout.Space(-lineTickiness);
             }
 
-            serializedObject.ApplyModifiedProperties();
-
-            EditorGUILayout.Space();
-            EditorGUILayout.Space();
-
-            EditorGUILayout.BeginHorizontal();
-
-            if (GUILayout.Button(Style.applyButtonContent, Style.buttonOptions))
+            if (forceValidation)
             {
-                ToolboxSettingsUtility.ReimportSettings();
+                ComponentUtility.SimulateOnValidate(currentTarget);
             }
 
-            EditorGUILayout.EndHorizontal();
+            serializedObject.ApplyModifiedProperties();
 
             GUILayout.FlexibleSpace();
             //draw current Toolbox version
@@ -196,7 +236,10 @@ namespace Toolbox.Editor
         {
             internal readonly static float spacing = EditorGUIUtility.standardVerticalSpacing;
 
+            internal readonly static GUIStyle miniButtonStyle;
+            internal readonly static GUIStyle smallLabelStyle;
             internal readonly static GUIStyle smallHeaderStyle;
+            internal readonly static GUIStyle usualHeaderStyle;
             internal readonly static GUIStyle settingsFoldoutStyle;
             internal readonly static GUIStyle drawerListFoldoutStyle;
             internal readonly static GUIStyle folderListFoldoutStyle;
@@ -206,23 +249,30 @@ namespace Toolbox.Editor
                 EditorGUIUtility.IconContent("Project").image);
             internal readonly static GUIContent drawersSettingsContent = new GUIContent("Drawers Settings",
                 EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
-            internal readonly static GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings", 
+            internal readonly static GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings",
                 EditorGUIUtility.IconContent("UnityEditor.HierarchyWindow").image);
 
             internal readonly static GUIContent applyButtonContent = new GUIContent("Reload references", "Apply all reference-based changes");
 
-            internal readonly static GUILayoutOption[] buttonOptions = new GUILayoutOption[]
+            internal readonly static GUILayoutOption[] resetButtonOptions = new GUILayoutOption[]
             {
-                GUILayout.Width(120)
+                GUILayout.Width(50)
             };
 
             static Style()
-            {            
-                smallHeaderStyle = new GUIStyle(EditorStyles.label)
+            {
+                miniButtonStyle = new GUIStyle(EditorStyles.miniButton);
+                smallLabelStyle = new GUIStyle(EditorStyles.label)
                 {
-                    fontStyle = FontStyle.Bold,
                     fontSize = 10
                 };
+
+                smallHeaderStyle = new GUIStyle(EditorStyles.boldLabel)
+                {
+                    fontSize = 10
+                };
+                usualHeaderStyle = new GUIStyle(EditorStyles.boldLabel);
+
                 settingsFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontStyle = FontStyle.Bold,
@@ -234,14 +284,14 @@ namespace Toolbox.Editor
 #endif
                     fontSize = 11
                 };
+
                 drawerListFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontSize = 10
                 };
                 folderListFoldoutStyle = new GUIStyle(EditorStyles.foldout)
-                {
-                    fontSize = 10
-                };
+                { };
+
                 settingsVersionLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
             }
         }

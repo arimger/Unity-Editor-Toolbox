@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Toolbox.Editor
 {
@@ -51,6 +51,12 @@ namespace Toolbox.Editor
 
         bool UseToolboxProject { get; }
 
+        float LargeIconScale { get; }
+        float SmallIconScale { get; }
+
+        Vector2 LargeIconPadding { get; }
+        Vector2 SmallIconPadding { get; }
+
         int CustomFoldersCount { get; }
     }
 
@@ -68,6 +74,17 @@ namespace Toolbox.Editor
         private bool useToolboxFolders = true;
         [SerializeField]
         private bool useToolboxDrawers = true;
+
+        [SerializeField]
+        private float largeIconScale = Defaults.largeFolderIconScaleDefault;
+        [SerializeField]
+        private float smallIconScale = Defaults.smallFolderIconScaleDefault;
+
+        [SerializeField]
+        private Vector2 largeIconPadding = new Vector2(Defaults.largeFolderIconXPaddingDefault, Defaults.largeFolderIconYPaddingDefault);
+        [SerializeField]
+        private Vector2 smallIconPadding = new Vector2(Defaults.smallFolderIconXPaddingDefault, Defaults.smallFolderIconYPaddingDefault);
+
 
         [HideIf("useToolboxProject", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed)]
@@ -89,6 +106,25 @@ namespace Toolbox.Editor
         [HideIf("useToolboxDrawers", true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxTargetTypeDrawer))]
         private List<SerializedType> targetTypeDrawerHandlers;
+
+        private UnityEvent onSettingsUpdated = new UnityEvent();
+
+
+        private void OnValidate()
+        {
+            onSettingsUpdated.Invoke();
+        }
+
+
+        internal void AddOnSettingsUpdatedListener(UnityAction listener)
+        {
+            onSettingsUpdated.AddListener(listener);
+        }
+
+        internal void RemoveOnSettingsUpdatedListener(UnityAction listener)
+        {
+            onSettingsUpdated.RemoveListener(listener);
+        }
 
 
         public void AddCustomFolder(FolderData path)
@@ -183,7 +219,7 @@ namespace Toolbox.Editor
 
         public void AddCollectionDrawerHandler(SerializedType drawerReference)
         {
-            if (conditionDrawerHandlers == null) collectionDrawerHandlers = new List<SerializedType>();
+            if (collectionDrawerHandlers == null) collectionDrawerHandlers = new List<SerializedType>();
             collectionDrawerHandlers.Add(drawerReference);
         }
 
@@ -244,6 +280,16 @@ namespace Toolbox.Editor
         }
 
 
+        public void ResetIconProperties()
+        {
+            largeIconScale = Defaults.largeFolderIconScaleDefault;
+            smallIconScale = Defaults.smallFolderIconScaleDefault;
+
+            largeIconPadding = new Vector2(Defaults.largeFolderIconXPaddingDefault, Defaults.largeFolderIconYPaddingDefault);
+            smallIconPadding = new Vector2(Defaults.smallFolderIconXPaddingDefault, Defaults.smallFolderIconYPaddingDefault);
+        }
+
+
         public bool UseToolboxHierarchy
         {
             get => useToolboxHierarchy;
@@ -262,6 +308,30 @@ namespace Toolbox.Editor
             set => useToolboxDrawers = value;
         }
 
+        public float LargeIconScale
+        {
+            get => largeIconScale;
+            set => largeIconScale = value;
+        }
+
+        public float SmallIconScale
+        {
+            get => smallIconScale;
+            set => smallIconScale = value;
+        }
+
+        public Vector2 LargeIconPadding
+        {
+            get => largeIconPadding;
+            set => largeIconPadding = value;
+        }
+
+        public Vector2 SmallIconPadding
+        {
+            get => smallIconPadding;
+            set => smallIconPadding = value;
+        }
+
 
         public int CustomFoldersCount => customFolders != null ? customFolders.Count : 0;
 
@@ -275,5 +345,17 @@ namespace Toolbox.Editor
         public int CollectionDrawersCount => collectionDrawerHandlers != null ? collectionDrawerHandlers.Count : 0;
 
         public int TargetTypeDrawersCount => targetTypeDrawerHandlers != null ? targetTypeDrawerHandlers.Count : 0;
+
+
+        private static class Defaults
+        {
+            internal const float largeFolderIconScaleDefault = 0.8f;
+            internal const float smallFolderIconScaleDefault = 0.7f;
+
+            internal const float largeFolderIconXPaddingDefault = 0.0f;
+            internal const float largeFolderIconYPaddingDefault = 0.15f;
+            internal const float smallFolderIconXPaddingDefault = 0.15f;
+            internal const float smallFolderIconYPaddingDefault = 0.15f;
+        }
     }
 }
