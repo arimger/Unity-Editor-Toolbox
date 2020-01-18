@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace Toolbox.Editor
 {
+    /// <summary>
+    /// Static GUI representation for Hierarchy Overlay. It is directly managed by <see cref="ToolboxHierarchyUtility"/>.
+    /// </summary>
     [InitializeOnLoad]
     public static class ToolboxEditorHierarchy
     {
@@ -52,6 +55,8 @@ namespace Toolbox.Editor
         {
             drawHierarchyContentCallbacks.RemoveAll(predicate);
         }
+
+        internal static void RepaintHierarchyOverlay() => EditorApplication.RepaintHierarchyWindow();
 
 
         /// <summary>

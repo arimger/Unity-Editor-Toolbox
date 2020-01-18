@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Toolbox.Editor
 {
@@ -44,10 +45,22 @@ namespace Toolbox.Editor
             }
 
             Settings = settings;
+            Settings.AddOnSettingsUpdatedListener(() =>
+            {
+                //perform separated data models update
+                ToolboxDrawerUtility.PerformData();
+                ToolboxProjectUtility.PerformData();
+                ToolboxHierarchyUtility.PerformData();
+
+                //perform additional repaint to update GUI
+                ToolboxEditorProject.RepaintProjectOverlay();
+                ToolboxEditorHierarchy.RepaintHierarchyOverlay();
+            });
 
             //initialize core functionalities
-            ToolboxDrawerUtility.InitializeDrawers(Settings);
-            ToolboxFolderUtility.InitializeProject(Settings);
+            ToolboxDrawerUtility.PerformData(Settings);
+            ToolboxProjectUtility.PerformData(Settings);
+            ToolboxHierarchyUtility.PerformData(Settings);
         }
 
         internal static void ReimportSettings()
@@ -64,58 +77,60 @@ namespace Toolbox.Editor
         [SettingsProvider]
         internal static SettingsProvider SettingsProvider()
         {
-            var provider = new SettingsProvider("Project/Editor Toolbox", SettingsScope.Project)
+            var provider = new SettingsProvider("Project/Editor Toolbox", SettingsScope.Project);
+            provider.guiHandler = (searchContext) =>
             {
-                guiHandler = (searchContext) =>
+                if (globalSettingsEditor == null || globalSettingsEditor.serializedObject.targetObject == null)
                 {
-                    if (globalSettingsEditor == null || globalSettingsEditor.serializedObject.targetObject == null)
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("Cannot find " + settingsType + " file located in this Project");
+                    EditorGUILayout.Space();
+
+                    void InitializeProvider()
                     {
-                        EditorGUILayout.Space();
-                        EditorGUILayout.LabelField("Cannot find " + settingsType + " file located in this Project");
-                        EditorGUILayout.Space();
-
-                        //tries to find settings file in Project 
-                        if (GUILayout.Button("Try to find settings file"))
-                        {                          
-                            ReimportSettings();
-                        }
-
-                        //creates new settings file as asset located in default path
-                        if (GUILayout.Button("Create settings new file"))
-                        {
-                            var settingsInstance = ScriptableObject.CreateInstance(settingsType);
-                            var path = "Assets/" + settingsType + ".asset";
-
-                            AssetDatabase.CreateAsset(settingsInstance, path);
-                            AssetDatabase.SaveAssets();
-                            AssetDatabase.Refresh();
-
-                            Debug.Log("Created settings file at - " + path);
-
-                            ReimportSettings();
-                        }
-
-                        return;
+                        provider.OnDeactivate();
+                        provider.OnActivate("", null);
                     }
 
-                    EditorGUILayout.Space();
-                    EditorGUILayout.LabelField("Settings file location - " + settingsPath);
-                    EditorGUILayout.Space();
+                    if (GUILayout.Button("Try to find settings file"))
+                    {
+                        InitializeSettings();
+                        InitializeProvider();
+                    }
 
-                    globalSettingsEditor.serializedObject.Update();
-                    globalSettingsEditor.OnInspectorGUI();
-                    globalSettingsEditor.serializedObject.ApplyModifiedProperties();
-                },
-                //initialize editor for currently cached settings file 
-                activateHandler = (searchContext, elements) =>
-                {
-                    globalSettingsEditor = Editor.CreateEditor(Settings);
-                },
-                //destroy obsolete settings editor
-                deactivateHandler = () =>
-                {
-                    Object.DestroyImmediate(globalSettingsEditor);
+                    if (GUILayout.Button("Create settings new file"))
+                    {
+                        var settingsInstance = ScriptableObject.CreateInstance(settingsType);
+                        var path = "Assets/" + settingsType + ".asset";
+
+                        AssetDatabase.CreateAsset(settingsInstance, path);
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
+
+                        Debug.Log("Created settings file at - " + path);
+
+                        InitializeSettings();
+                        InitializeProvider();
+                    }
+
+                    return;
                 }
+
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Settings file location - " + settingsPath);
+                EditorGUILayout.Space();
+
+                globalSettingsEditor.serializedObject.Update();
+                globalSettingsEditor.OnInspectorGUI();
+                globalSettingsEditor.serializedObject.ApplyModifiedProperties();
+            };
+            provider.activateHandler = (searchContext, elements) =>
+            {
+                globalSettingsEditor = Editor.CreateEditor(Settings);
+            };
+            provider.deactivateHandler = () =>
+            {
+                Object.DestroyImmediate(globalSettingsEditor);
             };
 
             return provider;

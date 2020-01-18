@@ -6,7 +6,7 @@ namespace Toolbox.Editor
     using Toolbox.Editor.Internal;
 
     /// <summary>
-    /// This class contains all useful and ready to use editor controls.
+    /// This class contains all useful and ready to use Editor controls.
     /// </summary>
     public static partial class ToolboxEditorGui
     {        
