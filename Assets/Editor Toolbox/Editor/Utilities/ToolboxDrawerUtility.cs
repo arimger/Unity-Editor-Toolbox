@@ -150,23 +150,30 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Initializes all possible drawers. Not implemented yet.
+        /// Initializes all possible drawers.
         /// </summary>
-        internal static void InitializeDrawers()
+        internal static void PerformData()
         {
-            throw new NotImplementedException();
+            if (settings == null)
+            {
+                return;
+            }
+
+            PerformData(settings);
         }
 
         /// <summary>
         /// Initializes all assigned drawers using provided settings reference.
         /// </summary>
         /// <param name="settings"></param>
-        internal static void InitializeDrawers(IToolboxDrawersSettings settings)
+        internal static void PerformData(IToolboxDrawersSettings settings)
         {
             ToolboxDrawerUtility.settings = settings;
 
             CreateAttributeDrawers(settings);
             CreateTargetTypeDrawers(settings);
+
+            ToolboxDrawersAllowed = settings.UseToolboxDrawers;
         }
 
 
@@ -273,7 +280,7 @@ namespace Toolbox.Editor
         }
 
 
-        internal static bool ToolboxDrawersAllowed => settings != null ? settings.UseToolboxDrawers : false;
+        internal static bool ToolboxDrawersAllowed { get; private set; }
 
 
         /// <summary>
