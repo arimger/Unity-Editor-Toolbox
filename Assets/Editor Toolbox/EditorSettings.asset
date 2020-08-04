@@ -23,7 +23,7 @@ MonoBehaviour:
   - type: 0
     name: 
     path: Editor Toolbox
-    tooltip: Directory for all files associated to Editor Toolbox.
+    tooltip: Directory for all files associated to the Editor Toolbox.
     icon: {fileID: 2800000, guid: ee4ce20abd2621b4687047a8e4e03f96, type: 3}
     smallIcon: {fileID: 2800000, guid: ae0310c2e6a193f4f935eef57508cd40, type: 3}
   - type: 0

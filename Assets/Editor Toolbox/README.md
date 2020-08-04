@@ -1,16 +1,17 @@
 # Unity Editor Toolbox
 
 ## Introduction
-TODO
+
+Provided here Toolbox is focused on additional Editor features. The main reason for its creation was to improve the useability and clarity of Unity Editor's key functionalities. The most time-consuming part was the preparation of custom property drawers and whole proprietary, layout-based drawers system. It allows programmers to create a readable and useful component editor only by using attributes. Next crucial thing is fast and clear access to the data from particular Game Objects placed in the Scene. Therefore it was decided to extend the hierarchy with additional information. Last main module of presented Toolbox is focused on the Project window. The provided extension allows user to customize folder icons. Additionally, this repository contains many useful scripts, classes, and functions for Editor extensions development. It's worth to mention this code was written to be as flexible and optimized as possible. More information about the main features is described in the following sections.
 
 ## System Requirements
 Unity 2018.x or newer
 
-## Instalation
+## Installation
 
 - Copy and paste `Editor Toolbox` directory into your project (basically into `Asset` directory or somewhere deeper)
 - Open Edit/Project Settings/Editor Toolbox window
-- If Toolbox Editor Settings is not available press "Try to find settings file" button or create new
+- If Toolbox Editor Settings is not available, press "Try to find the settings file" button or create new
 - Manage settings in your way
 	- Enable/disable Hierarchy overlay
 	- Enable/disable Project icons or/and assign own directories
@@ -30,7 +31,16 @@ Unity 2018.x or newer
 
 ## Settings
 
-TODO
+The most important file, it allows user to manage all available features. Can be accessed within the Project Settings window (Edit/Project Settings.../Editor Toolbox) or directly from the Project window. Make sure to have one valid settings file within a project.
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc14.png)
+
+Available features are divided into three sections:
+- Hierarchy
+- Project
+- Inspector 
+
+Each module is described in details within the associated section.
 
 ## Attributes
 
@@ -47,9 +57,19 @@ Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associa
 
 #### HelpAttribute
 
+```csharp
+[Help("You can provide more information in HelpBoxes.", order = 100)]
+public int var1;
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc1.png)
 
 #### TagSelectorAttribute
+
+```csharp
+[TagSelector]
+public string var1;
+```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc2.png)
 
@@ -58,6 +78,11 @@ Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associa
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc3.png)
 
 #### ProgressBarAttribute
+
+```csharp
+[ProgressBar(minValue:0.0f, maxValue:100.0f)]
+public float var1 = 36.0f;
+```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc4.png)
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc5.png)
@@ -76,10 +101,22 @@ Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associa
 
 #### ConditionalHideAttribute
 
+```csharp
+public bool toggle;
+[ConditionalHide(nameof(toggle), true)]
+public float var1;
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc9.png)
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc8.png)
 
 #### ConditionalDisableAttribute
+
+```csharp
+public bool toggle;
+[ConditionalDisable(nameof(toggle), true)]
+public float var1;
+```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc24.png)
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc25.png)
@@ -221,7 +258,7 @@ public double var1;
 
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
 
-Drawers based on classes inheriting from **ToolboxDrawer** and associated **ToolboxAttribute**. A quite powerful custom system that allows you to create really flexible drawers. You can use them without limitations(they work with sub-classes and as array children). Every ToolboxDrawer is layout-based. For proper work they need at least one settings file located in your project. You can find predefined one here - `Editor Toolbox/EditorSettings.asset`.
+Drawers based on classes inheriting from **ToolboxDrawer** and associated **ToolboxAttribute**. A quite powerful custom system that allows you to create really flexible drawers. You can use them without limitations (they work with sub-classes and as array children). Every ToolboxDrawer is layout-based. For proper work they need at least one settings file located in your project. You can find predefined one here - `Editor Toolbox/EditorSettings.asset`.
 
 &nbsp;
 
@@ -234,7 +271,7 @@ Drawers based on classes inheriting from **ToolboxDrawer** and associated **Tool
 
 #### ToolboxDecoratorAttributes
 
-Display/create something before and after property in desired order(using Order property).   
+Display/create something before and after property in the desired order(using Order property).   
 In fact **ToolboxDecoratorDrawers** are like extended version of built-in **DecoratorDrawers**. 
 Unfortunately, standard decorators won't always work with ToolboxDrawers so try to use this replacement instead.
 
@@ -317,7 +354,7 @@ Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
 
 #### DisableIfAttribute
 
-Same like standard PropertyDrawer for **ConditionalDisableAttribute** but works with Enum types and arrays/lists.   
+Same as standard PropertyDrawer for **ConditionalDisableAttribute** but works with Enum types and arrays/lists.   
 Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
 
 ```csharp
@@ -329,9 +366,9 @@ public int[] vars1 = new [] { 1, 2, 3, 4 };
 
 ## Reorderable List
 
-> Editor Toolbox/Editor/Internal/ReorderableList.cs
+Custom implementation of standard ReorderableList(UnityEditorInternal). Useable as an attribute in inspector fields or a single object in custom editors.
 
-Custom implementation of standard ReorderableList(UnityEditorInternal). Useable as attribute in inspector fields or single object in custom editors.
+> Editor Toolbox/Editor/Internal/ReorderableList.cs
 
 ```csharp
 var list = new ReorderableList(SerializedProperty property, string elementLabel, bool draggable, bool hasHeader, bool fixedSize);
@@ -356,7 +393,13 @@ public GameObject[] boxedStyleList = new GameObject[4];
 
 ### Hierarchy <a name="hierarchy"></a>
 
-Enable custom hierarchy overlay in **ToolboxEditorSettings**.
+Enable custom hierarchy overlay in **ToolboxEditorSettings**. Basically it provides more data about particular GameObjects directly within the Hierarchy window. 
+
+Each row contains:
+- Layer
+- Tag
+- Toggle to enable/disable GameObject
+- Icon
 
 > Editor Toolbox/Editor/ToolboxEditorHierarchy.cs
 
@@ -366,10 +409,17 @@ Enable custom hierarchy overlay in **ToolboxEditorSettings**.
 
 Set custom folder icons in **ToolboxEditorSettings**.
 
+Properties that can be edited include:
+- XY position and scale of the large icon
+- XY position and scale of the small icon
+- Path to directory or name (depends on picked item type)
+- Optional tooltip
+- Large icon
+- Small icon
+
 > Editor Toolbox/Editor/ToolboxEditorProject.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc12.png)  
-
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc11.png)
 

@@ -92,13 +92,13 @@ namespace Toolbox.Editor
                         provider.OnActivate("", null);
                     }
 
-                    if (GUILayout.Button("Try to find settings file"))
+                    if (GUILayout.Button("Try to find the settings file"))
                     {
                         InitializeSettings();
                         InitializeProvider();
                     }
 
-                    if (GUILayout.Button("Create settings new file"))
+                    if (GUILayout.Button("Create the new settings file"))
                     {
                         var settingsInstance = ScriptableObject.CreateInstance(settingsType);
                         var path = "Assets/" + settingsType + ".asset";
