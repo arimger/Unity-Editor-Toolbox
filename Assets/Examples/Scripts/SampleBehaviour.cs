@@ -44,7 +44,7 @@ public class SampleBehaviour : MonoBehaviour
     
     [HideLabel, Help("Use this toggle to show/hide property.", order = 100)]
     public bool toggle1;
-    [ConditionalHide("toggle1", true)]
+    [ConditionalHide(nameof(toggle1), true)]
     public float var6;
 
     [BoxedHeader("8")]
