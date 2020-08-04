@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Provided here Toolbox is focused on additional Editor features. The main reason for its creation was to improve the useability and clarity of Unity Editor's key features. The most time was spent to prepare custom property drawers and whole proprietary, layout-based drawers system. It allows programmers to create a readable and useful component editor only by attributes. Next crucial thing in development is fast and clear access to the data from particular Game Objects placed in the Scene. Therefore it was decided to extend the hierarchy with additional information. Last main module of presented Toolbox is focused on the Project window, provided extension allows user to customize folder icons. Additionally, this repository contains many useful scripts, classes, and functions for Editor extensions development. More information about the main features described in the following sections.
+Provided here Toolbox is focused on additional Editor features. The main reason for its creation was to improve the useability and clarity of Unity Editor's key functionalities. The most time-consuming part was the preparation of custom property drawers and whole proprietary, layout-based drawers system. It allows programmers to create a readable and useful component editor only by using attributes. Next crucial thing is fast and clear access to the data from particular Game Objects placed in the Scene. Therefore it was decided to extend the hierarchy with additional information. Last main module of presented Toolbox is focused on the Project window. The provided extension allows user to customize folder icons. Additionally, this repository contains many useful scripts, classes, and functions for Editor extensions development. It's worth to mention this code was written to be as flexible and optimized as possible. More information about the main features is described in the following sections.
 
 ## System Requirements
 Unity 2018.x or newer
@@ -31,7 +31,7 @@ Unity 2018.x or newer
 
 ## Settings
 
-The most important file, it allows user to manage all available features. Can be accessed within the Project Settings window (Edit/Project Settings.../Editor Toolbox) or directly from the Project window. Be sure to have one valid settings file within a project.
+The most important file, it allows user to manage all available features. Can be accessed within the Project Settings window (Edit/Project Settings.../Editor Toolbox) or directly from the Project window. Make sure to have one valid settings file within a project.
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc14.png)
 
@@ -39,6 +39,7 @@ Available features are divided into three sections:
 - Hierarchy
 - Project
 - Inspector 
+
 Each module is described in details within the associated section.
 
 ## Attributes
@@ -395,10 +396,10 @@ public GameObject[] boxedStyleList = new GameObject[4];
 Enable custom hierarchy overlay in **ToolboxEditorSettings**. Basically it provides more data about particular GameObjects directly within the Hierarchy window. 
 
 Each row contains:
-- layer
-- tag
-- toggle to enable/disable GameObject
-- icon
+- Layer
+- Tag
+- Toggle to enable/disable GameObject
+- Icon
 
 > Editor Toolbox/Editor/ToolboxEditorHierarchy.cs
 
@@ -411,10 +412,10 @@ Set custom folder icons in **ToolboxEditorSettings**.
 Properties that can be edited include:
 - XY position and scale of the large icon
 - XY position and scale of the small icon
-- path to directory or name (depends on picked item type)
-- optional tooltip
-- large icon
-- small icon
+- Path to directory or name (depends on picked item type)
+- Optional tooltip
+- Large icon
+- Small icon
 
 > Editor Toolbox/Editor/ToolboxEditorProject.cs
 
