@@ -15,6 +15,7 @@ MonoBehaviour:
   useToolboxHierarchy: 1
   useToolboxFolders: 1
   useToolboxDrawers: 1
+  rowDataItems: 00000000010000000200000003000000
   largeIconScale: 0.8
   smallIconScale: 0.7
   largeIconPadding: {x: 0, y: 0.15}

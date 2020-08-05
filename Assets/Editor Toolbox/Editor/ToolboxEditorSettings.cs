@@ -46,7 +46,7 @@ namespace Toolbox.Editor
     {
         void AddCustomFolder(FolderData path);
         void RemoveCustomFolder(FolderData path);
-
+        void RemoveCustomFolderAt(int index);
         FolderData GetCustomFolderAt(int index);
 
         bool UseToolboxProject { get; }
@@ -62,7 +62,14 @@ namespace Toolbox.Editor
 
     public interface IToolboxHierarchySettings
     {
+        void AddRowDataItem(HierarchyObjectDataItem item);
+        void RemoveRowDataItem(HierarchyObjectDataItem item);
+        void RemoveRowDataItemAt(int index);
+        HierarchyObjectDataItem GetRowDataItemAt(int index);
+
         bool UseToolboxHierarchy { get; }
+
+        int RowDataItemsCount { get; }
     }
 
     [CreateAssetMenu(menuName = "Editor Toolbox/Settings", order = 1)]
@@ -75,6 +82,10 @@ namespace Toolbox.Editor
         [SerializeField]
         private bool useToolboxDrawers = true;
 
+        [HideIf(nameof(useToolboxHierarchy), true)]
+        [SerializeField, ReorderableList(ListStyle.Boxed)]
+        private List<HierarchyObjectDataItem> rowDataItems = Defaults.rowDataItems;
+
         [SerializeField]
         private float largeIconScale = Defaults.largeFolderIconScaleDefault;
         [SerializeField]
@@ -84,32 +95,34 @@ namespace Toolbox.Editor
         private Vector2 largeIconPadding = new Vector2(Defaults.largeFolderIconXPaddingDefault, Defaults.largeFolderIconYPaddingDefault);
         [SerializeField]
         private Vector2 smallIconPadding = new Vector2(Defaults.smallFolderIconXPaddingDefault, Defaults.smallFolderIconYPaddingDefault);
-
-
-        [HideIf("useToolboxProject", true)]
+        
+        [HideIf(nameof(useToolboxFolders), true)]
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         private List<FolderData> customFolders;
 
-        [HideIf("useToolboxDrawers", true)]
+        [HideIf(nameof(useToolboxDrawers), true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxDecoratorDrawer<>))]
         private List<SerializedType> decoratorDrawerHandlers;
-        [HideIf("useToolboxDrawers", true)]
+        [HideIf(nameof(useToolboxDrawers), true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxPropertyDrawer<>))]
         private List<SerializedType> propertyDrawerHandlers;
-        [HideIf("useToolboxDrawers", true)]
+        [HideIf(nameof(useToolboxDrawers), true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxCollectionDrawer<>))]
         private List<SerializedType> collectionDrawerHandlers;
-        [HideIf("useToolboxDrawers", true)]
+        [HideIf(nameof(useToolboxDrawers), true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxConditionDrawer<>))]
         private List<SerializedType> conditionDrawerHandlers;
 
-        [HideIf("useToolboxDrawers", true)]
+        [HideIf(nameof(useToolboxDrawers), true)]
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxTargetTypeDrawer))]
         private List<SerializedType> targetTypeDrawerHandlers;
 
         private UnityEvent onSettingsUpdated = new UnityEvent();
 
 
+        /// <summary>
+        /// Called internally by the Editor.
+        /// </summary>
         private void OnValidate()
         {
             onSettingsUpdated.Invoke();
@@ -127,15 +140,42 @@ namespace Toolbox.Editor
         }
 
 
-        public void AddCustomFolder(FolderData path)
+        public void AddRowDataItem(HierarchyObjectDataItem item)
         {
-            if (customFolders == null) customFolders = new List<FolderData>();
-            customFolders.Add(path);
+            if (rowDataItems == null) rowDataItems = new List<HierarchyObjectDataItem>();
+            rowDataItems.Add(item);
         }
 
-        public void RemoveCustomFolder(FolderData path)
+        public void RemoveRowDataItem(HierarchyObjectDataItem item)
         {
-            customFolders?.Remove(path);
+            rowDataItems?.Remove(item);
+        }
+
+        public void RemoveRowDataItemAt(int index)
+        {
+            rowDataItems?.RemoveAt(index);
+        }
+
+        public HierarchyObjectDataItem GetRowDataItemAt(int index)
+        {
+            return rowDataItems[index];
+        }
+
+
+        public void AddCustomFolder(FolderData data)
+        {
+            if (customFolders == null) customFolders = new List<FolderData>();
+            customFolders.Add(data);
+        }
+
+        public void RemoveCustomFolder(FolderData data)
+        {
+            customFolders?.Remove(data);
+        }
+
+        public void RemoveCustomFolderAt(int index)
+        {
+            customFolders?.RemoveAt(index);
         }
 
         public FolderData GetCustomFolderAt(int index)
@@ -333,6 +373,8 @@ namespace Toolbox.Editor
         }
 
 
+        public int RowDataItemsCount => rowDataItems != null ? rowDataItems.Count : 0;
+
         public int CustomFoldersCount => customFolders != null ? customFolders.Count : 0;
 
 
@@ -356,6 +398,14 @@ namespace Toolbox.Editor
             internal const float largeFolderIconYPaddingDefault = 0.15f;
             internal const float smallFolderIconXPaddingDefault = 0.15f;
             internal const float smallFolderIconYPaddingDefault = 0.15f;
+
+            internal readonly static List<HierarchyObjectDataItem> rowDataItems = new List<HierarchyObjectDataItem>()
+            {
+                HierarchyObjectDataItem.Icon,
+                HierarchyObjectDataItem.Toggle,
+                HierarchyObjectDataItem.Tag,
+                HierarchyObjectDataItem.Layer
+            };
         }
     }
 }
