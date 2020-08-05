@@ -21,6 +21,7 @@ namespace Toolbox.Editor
         private SerializedProperty largeIconPaddingProperty;
         private SerializedProperty smallIconPaddingProperty;
 
+        private ReorderableList rowDataItemsList;
         private ReorderableList customFoldersList;
 
         private ReorderableList propertyDrawerHandlersList;
@@ -47,6 +48,7 @@ namespace Toolbox.Editor
             largeIconPaddingProperty = serializedObject.FindProperty("largeIconPadding");
             smallIconPaddingProperty = serializedObject.FindProperty("smallIconPadding");
 
+            rowDataItemsList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("rowDataItems"));
             customFoldersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("customFolders"));
 
             propertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("propertyDrawerHandlers"));
@@ -85,6 +87,16 @@ namespace Toolbox.Editor
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
                 EditorGUILayout.PropertyField(useToolboxHierarchyProperty);
+                EditorGUILayout.Space();
+
+                EditorGUI.BeginDisabledGroup(!useToolboxHierarchyProperty.boolValue);
+                if (ToolboxEditorGui.DrawListFoldout(rowDataItemsList, Style.classicListFoldoutStyle))
+                {
+                    rowDataItemsList.ElementLabel = "Position";
+                    rowDataItemsList.DoLayoutList();
+                }            
+                EditorGUI.EndDisabledGroup();
+
                 EditorGUILayout.Space();
                 EditorGUI.indentLevel--;
             }
@@ -146,7 +158,7 @@ namespace Toolbox.Editor
                 EditorGUILayout.Space();
 
                 //draw custom icons list
-                if (ToolboxEditorGui.DrawListFoldout(customFoldersList, Style.folderListFoldoutStyle))
+                if (ToolboxEditorGui.DrawListFoldout(customFoldersList, Style.classicListFoldoutStyle))
                 {
                     customFoldersList.DoLayoutList();
                 }
@@ -242,7 +254,7 @@ namespace Toolbox.Editor
             internal readonly static GUIStyle usualHeaderStyle;
             internal readonly static GUIStyle settingsFoldoutStyle;
             internal readonly static GUIStyle drawerListFoldoutStyle;
-            internal readonly static GUIStyle folderListFoldoutStyle;
+            internal readonly static GUIStyle classicListFoldoutStyle;
             internal readonly static GUIStyle settingsVersionLabelStyle;
 
             internal readonly static GUIContent projectSettingsContent = new GUIContent("Project Settings",
@@ -289,7 +301,7 @@ namespace Toolbox.Editor
                 {
                     fontSize = 10
                 };
-                folderListFoldoutStyle = new GUIStyle(EditorStyles.foldout)
+                classicListFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 { };
 
                 settingsVersionLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);

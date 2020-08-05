@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +7,14 @@ using UnityEngine;
 
 namespace Toolbox.Editor
 {
+    public enum HierarchyObjectDataItem
+    {
+        Icon,
+        Toggle,
+        Tag,
+        Layer
+    }
+
     /// <summary>
     /// Static GUI representation for Hierarchy Overlay. It is directly managed by <see cref="ToolboxHierarchyUtility"/>.
     /// </summary>
@@ -30,35 +37,48 @@ namespace Toolbox.Editor
 
 
         /// <summary>
+        /// Collection of all available content drawers associated to particular data type.
+        /// </summary>
+        private static readonly Dictionary<HierarchyObjectDataItem, DrawHierarchyContentCallback>
+            availableDrawContentCallbacks = new Dictionary<HierarchyObjectDataItem, DrawHierarchyContentCallback>(4)
+            {
+                { HierarchyObjectDataItem.Icon, DrawIcon },
+                { HierarchyObjectDataItem.Toggle, DrawToggle },
+                { HierarchyObjectDataItem.Tag, DrawTag },
+                { HierarchyObjectDataItem.Layer, DrawLayer },
+            };
+
+        /// <summary>
         /// Collection of all wanted hierarchy elements drawers.
         /// </summary>
-        private static readonly List<DrawHierarchyContentCallback> drawHierarchyContentCallbacks = new List<DrawHierarchyContentCallback>()
-        {
-            DrawIcon,
-            DrawToggle,
-            DrawTag,
-            DrawLayer
-        };
+        private static readonly List<DrawHierarchyContentCallback> 
+            allowedDrawContentCallbacks = new List<DrawHierarchyContentCallback>(4)
+            {
+                DrawIcon,
+                DrawToggle,
+                DrawTag,
+                DrawLayer
+            };
 
+
+        internal static void RepaintHierarchyOverlay() => EditorApplication.RepaintHierarchyWindow();
 
         internal static void AddDrawHierarchyContentCallback(DrawHierarchyContentCallback callback)
         {
-            drawHierarchyContentCallbacks.Add(callback);
+            allowedDrawContentCallbacks.Add(callback);
         }
 
         internal static void RemoveDrawHierarchyContentCallback(DrawHierarchyContentCallback callback)
         {
-            drawHierarchyContentCallbacks.Remove(callback);
+            allowedDrawContentCallbacks.Remove(callback);
         }
 
         internal static void RemoveAllDrawHierarchyContentCallbacks(Predicate<DrawHierarchyContentCallback> predicate)
         {
-            drawHierarchyContentCallbacks.RemoveAll(predicate);
+            allowedDrawContentCallbacks.RemoveAll(predicate);
         }
 
-        internal static void RepaintHierarchyOverlay() => EditorApplication.RepaintHierarchyWindow();
-
-
+        
         /// <summary>
         /// Tries to display item label in hierarchy window.
         /// </summary>
@@ -88,26 +108,54 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
+        /// Prepares allowed drawers collection based on the settings file.
+        /// </summary>
+        private static void PrepareDrawCallbacks()
+        {
+            if (!ToolboxHierarchyUtility.AreRowDataItemsUpdated)
+            {
+                return;
+            }
+
+            allowedDrawContentCallbacks.Clear();
+
+            var rowDataItems = ToolboxHierarchyUtility.GetRowDataItems();
+            foreach (var item in rowDataItems)
+            {
+                if (!availableDrawContentCallbacks.TryGetValue(item, out var drawer))
+                {
+                    continue;
+                }
+
+                allowedDrawContentCallbacks.Add(drawer);
+            }
+        }
+
+        /// <summary>
         /// Draws label in default way but additionaly handles content for whole overlay.
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="rect"></param>
         private static void DrawPrimeItemLabel(GameObject gameObject, Rect rect)
-        {
+        {            
             //NOTE: prime item can be used to draw single options for whole hierarchy
+
+            //pick all choosen items diretcly from settings utility
+            PrepareDrawCallbacks();
+            //draw the current object in default way
             DrawDefaultItemLabel(gameObject, rect);
         }
 
         /// <summary>
         /// Draws label as whole. Creates separation lines, standard icon and
-        /// additional elements stored in <see cref="drawHierarchyContentCallbacks"/> collection.
+        /// additional elements stored in <see cref="allowedDrawContentCallbacks"/> collection.
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="rect"></param>
         private static void DrawDefaultItemLabel(GameObject gameObject, Rect rect)
         {
             var contentRect = rect;
-            var drawersCount = drawHierarchyContentCallbacks.Count;
+            var drawersCount = allowedDrawContentCallbacks.Count;
 
             EditorGUI.DrawRect(new Rect(contentRect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
@@ -117,7 +165,7 @@ namespace Toolbox.Editor
                 //draw first callback element in proper rect
                 //we have to adjust given rect to our purpose
                 contentRect = new Rect(contentRect.xMax - Style.maxWidth, rect.y, Style.maxWidth, contentRect.height);
-                contentRect = drawHierarchyContentCallbacks.First()(gameObject, contentRect);
+                contentRect = allowedDrawContentCallbacks.First()(gameObject, contentRect);
 
                 EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
@@ -125,7 +173,7 @@ namespace Toolbox.Editor
                 for (var i = 1; i < drawersCount; i++)
                 {
                     contentRect = new Rect(contentRect.xMin - Style.maxWidth, rect.y, Style.maxWidth, rect.height);
-                    contentRect = drawHierarchyContentCallbacks[i](gameObject, contentRect);
+                    contentRect = allowedDrawContentCallbacks[i](gameObject, contentRect);
 
                     EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
                 }
