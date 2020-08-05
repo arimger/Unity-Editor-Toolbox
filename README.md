@@ -2,7 +2,14 @@
 
 ## Introduction
 
-Provided here Toolbox is focused on additional Editor features. The main reason for its creation was to improve the useability and clarity of Unity Editor's key functionalities. The most time-consuming part was the preparation of custom property drawers and whole proprietary, layout-based drawers system. It allows programmers to create a readable and useful component editor only by using attributes. Next crucial thing is fast and clear access to the data from particular Game Objects placed in the Scene. Therefore it was decided to extend the hierarchy with additional information. Last main module of presented Toolbox is focused on the Project window. The provided extension allows user to customize folder icons. Additionally, this repository contains many useful scripts, classes, and functions for Editor extensions development. It's worth to mention this code was written to be as flexible and optimized as possible. More information about the main features is described in the following sections.
+Improve usability and clarity of key features in Unity Editor for better workflow!
+
+This Toolbox not only extends functionalities, it does so with the user in mind.
+Written to be as flexible and optimized as possible. Now you and other programming professionals will be able to create a readable and useful component editor simply by using attributes. You’ll get fast and clear access to data from Game Objects placed in the Scene. Lastly, you’ll gain more control over the Project Window. Go ahead, customize those folder icons.
+
+It's worth to mention that prepared drawers are based on the custom, layout-based system. Additionally, I’m leaving you some useful scripts, classes, and functions that facilitate Editor extensions development.
+
+Learn all the details about the main features below.
 
 ## System Requirements
 Unity 2018.x or newer
@@ -31,16 +38,16 @@ Unity 2018.x or newer
 
 ## Settings
 
-The most important file, it allows user to manage all available features. Can be accessed within the Project Settings window (Edit/Project Settings.../Editor Toolbox) or directly from the Project window. Make sure to have one valid settings file within a project.
+The most important file, it allows the user to manage all available features. Can be accessed from the Project Settings window (Edit/Project Settings.../Editor Toolbox) or directly inside the Project window. Make sure to have one valid settings file per project.
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc14.png)
 
-Available features are divided into three sections:
+Available features are divided into three groups:
 - Hierarchy
 - Project
 - Inspector 
 
-Each module is described in details within the associated section.
+Each module is described in its respective section.
 
 ## Attributes
 
@@ -258,7 +265,7 @@ public double var1;
 
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
 
-Drawers based on classes inheriting from **ToolboxDrawer** and associated **ToolboxAttribute**. A quite powerful custom system that allows you to create really flexible drawers. You can use them without limitations (they work with sub-classes and as array children). Every ToolboxDrawer is layout-based. For proper work they need at least one settings file located in your project. You can find predefined one here - `Editor Toolbox/EditorSettings.asset`.
+Drawers are based on classes inherited from the **ToolboxDrawer** class and associated **ToolboxAttribute**. With this powerful custom system you are able to create really flexible drawers. You can use them without limitations (they work with sub-classes and as array children). Every ToolboxDrawer is layout-based. For proper work they need at least one settings file located in your project. You can find predefined one here - `Editor Toolbox/EditorSettings.asset`.
 
 &nbsp;
 
@@ -271,7 +278,7 @@ Drawers based on classes inheriting from **ToolboxDrawer** and associated **Tool
 
 #### ToolboxDecoratorAttributes
 
-Display/create something before and after property in the desired order(using Order property).   
+Display/create something before and after property in the desired order (using Order property).   
 In fact **ToolboxDecoratorDrawers** are like extended version of built-in **DecoratorDrawers**. 
 Unfortunately, standard decorators won't always work with ToolboxDrawers so try to use this replacement instead.
 
@@ -344,7 +351,7 @@ Hides any property.
 
 #### HideIfAttribute
 
-Same like standard PropertyDrawer for **ConditionalHideAttribute** but works with Enum types and arrays/lists.   
+Similar to the standard PropertyDrawer for the **ConditionalHideAttribute** but works with Enum types and arrays/lists.   
 Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
 
 #### DisableAttribute
@@ -354,7 +361,7 @@ Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
 
 #### DisableIfAttribute
 
-Same as standard PropertyDrawer for **ConditionalDisableAttribute** but works with Enum types and arrays/lists.   
+Similar to the standard PropertyDrawer for the **ConditionalDisableAttribute** but works with Enum types and arrays/lists.   
 Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
 
 ```csharp
@@ -366,7 +373,7 @@ public int[] vars1 = new [] { 1, 2, 3, 4 };
 
 ## Reorderable List
 
-Custom implementation of standard ReorderableList(UnityEditorInternal). Useable as an attribute in inspector fields or a single object in custom editors.
+Custom implementation of standard ReorderableList(UnityEditorInternal). Usable as an attribute in inspector fields or a single object in custom editors.
 
 > Editor Toolbox/Editor/Internal/ReorderableList.cs
 
@@ -393,9 +400,9 @@ public GameObject[] boxedStyleList = new GameObject[4];
 
 ### Hierarchy <a name="hierarchy"></a>
 
-Enable custom hierarchy overlay in **ToolboxEditorSettings**. Basically it provides more data about particular GameObjects directly within the Hierarchy window. 
+Enable and customize the presented hierarchy overlay in the **ToolboxEditorSettings**. Basically it provides more data about particular GameObjects directly within the Hierarchy window.
 
-Each row contains:
+Each row can contain:
 - Layer
 - Tag
 - Toggle to enable/disable GameObject
@@ -407,7 +414,7 @@ Each row contains:
 
 ### Project <a name="project"></a>
 
-Set custom folder icons in **ToolboxEditorSettings**.
+Set custom folder icons in the **ToolboxEditorSettings**.
 
 Properties that can be edited include:
 - XY position and scale of the large icon

@@ -1,14 +1,19 @@
+## 0.5.7 [05.08.2020]
+
+### Added:
+- Possibility to customize displayed data inside the Hierarchy window (check the ToolboxEditorHierarchy.cs)
+
 ## 0.5.6 [16.01.2020]
 
 ### Added:
-- Possibility to customize folder icons positions (check ToolboxEditorProject)
+- Possibility to customize folder icons positions (check the ToolboxEditorProject.cs)
 
 ### Changed:
-- Fix footer position of ReorderableList in Unity 2019.3+
-- Fix handle position of ReorderableList in Unity 2019.3+
+- Fix footer position of the ReorderableList in Unity 2019.3+
+- Fix handle position of the ReorderableList in Unity 2019.3+
 - Fix custom folders scalling 
-- Fix object assignment in InLineEditorAttributeDrawer
-- Fix settings reload in Editor Settings window
+- Fix object assignment in the InLineEditorAttributeDrawer
+- Fix settings reload in the Editor Settings window
 
 ## 0.5.5 [09.01.2020]
 
