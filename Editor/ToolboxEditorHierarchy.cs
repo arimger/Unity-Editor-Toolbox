@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +11,8 @@ namespace Toolbox.Editor
         Icon,
         Toggle,
         Tag,
-        Layer
+        Layer,
+        Script
     }
 
     /// <summary>
@@ -46,18 +46,20 @@ namespace Toolbox.Editor
                 { HierarchyObjectDataItem.Toggle, DrawToggle },
                 { HierarchyObjectDataItem.Tag, DrawTag },
                 { HierarchyObjectDataItem.Layer, DrawLayer },
+                { HierarchyObjectDataItem.Script, DrawScript },
             };
 
         /// <summary>
         /// Collection of all wanted hierarchy elements drawers.
         /// </summary>
-        private static readonly List<DrawHierarchyContentCallback> 
+        private static readonly List<DrawHierarchyContentCallback>
             allowedDrawContentCallbacks = new List<DrawHierarchyContentCallback>(4)
             {
                 DrawIcon,
                 DrawToggle,
                 DrawTag,
-                DrawLayer
+                DrawLayer,
+                DrawScript
             };
 
 
@@ -78,7 +80,7 @@ namespace Toolbox.Editor
             allowedDrawContentCallbacks.RemoveAll(predicate);
         }
 
-        
+
         /// <summary>
         /// Tries to display item label in hierarchy window.
         /// </summary>
@@ -137,10 +139,10 @@ namespace Toolbox.Editor
         /// <param name="gameObject"></param>
         /// <param name="rect"></param>
         private static void DrawPrimeItemLabel(GameObject gameObject, Rect rect)
-        {            
-            //NOTE: prime item can be used to draw single options for whole hierarchy
+        {
+            //NOTE: the prime item can be used to draw single options for whole the hierarchy
 
-            //pick all choosen items diretcly from settings utility
+            //pick all choosen items directly from the settings utility
             PrepareDrawCallbacks();
             //draw the current object in default way
             DrawDefaultItemLabel(gameObject, rect);
@@ -162,14 +164,14 @@ namespace Toolbox.Editor
             //determine if there is anything to draw
             if (drawersCount > 0)
             {
-                //draw first callback element in proper rect
-                //we have to adjust given rect to our purpose
+                //draw first the callback element in proper rect
+                //we have to adjust a given rect to our purpose
                 contentRect = new Rect(contentRect.xMax - Style.maxWidth, rect.y, Style.maxWidth, contentRect.height);
-                contentRect = allowedDrawContentCallbacks.First()(gameObject, contentRect);
+                contentRect = allowedDrawContentCallbacks[0](gameObject, contentRect);
 
                 EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
-                //draw each needed element content stored in callbacks collection
+                //draw each needed element content stored in the callbacks collection
                 for (var i = 1; i < drawersCount; i++)
                 {
                     contentRect = new Rect(contentRect.xMin - Style.maxWidth, rect.y, Style.maxWidth, rect.height);
@@ -180,6 +182,11 @@ namespace Toolbox.Editor
             }
 
             EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
+
+            contentRect.xMax = contentRect.xMin;
+            contentRect.xMin = rect.xMin;
+
+            EditorGUI.LabelField(contentRect, new GUIContent(string.Empty, gameObject.name));
         }
 
 
@@ -213,18 +220,43 @@ namespace Toolbox.Editor
             return contentRect;
         }
 
+        private static Rect DrawToggle(GameObject gameObject, Rect rect)
+        {
+            rect = new Rect(rect.x + rect.width - Style.toggleWidth, rect.y, Style.toggleWidth, rect.height);
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                Style.backgroundStyle.Draw(rect, false, false, false, false);
+            }
+
+            var content = new GUIContent(string.Empty, "Enable/disable GameObject");
+            var result = GUI.Toggle(new Rect(rect.x + Style.padding, rect.y, rect.width, rect.height), gameObject.activeSelf, content);
+            //NOTE: using EditorGUI.Toggle will cause bug and deselect all hierarchy toggles when you will pick multi-selected property in inspector
+            if (rect.Contains(Event.current.mousePosition))
+            {
+                if (result != gameObject.activeSelf)
+                {
+                    Undo.RecordObject(gameObject, "SetActive");
+                    gameObject.SetActive(result);
+                }
+            }
+
+            return rect;
+        }
+
         private static Rect DrawLayer(GameObject gameObject, Rect rect)
         {
             //adjust rect for layer field
             var contentRect = new Rect(rect.x + rect.width - Style.layerWidth, rect.y, Style.layerWidth, rect.height);
             var objectLayer = gameObject.layer;
+            var contentText = new GUIContent(objectLayer.ToString(), LayerMask.LayerToName(objectLayer) + " layer");
 
             if (Event.current.type == EventType.Repaint)
             {
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
             //draw label for gameObject's specific layer
-            EditorGUI.LabelField(contentRect, new GUIContent(objectLayer.ToString(), LayerMask.LayerToName(objectLayer) + " layer"), Style.layerLabelStyle);
+            EditorGUI.LabelField(contentRect, contentText, Style.layerLabelStyle);
 
             return contentRect;
         }
@@ -233,7 +265,7 @@ namespace Toolbox.Editor
         {
             const string defaultUnityTag = "Untagged";
 
-            var content = new GUIContent(gameObject.tag);
+            var content = new GUIContent(gameObject.tag, gameObject.tag);
 
             if (Event.current.type == EventType.Repaint)
             {
@@ -248,26 +280,70 @@ namespace Toolbox.Editor
             return rect;
         }
 
-        private static Rect DrawToggle(GameObject gameObject, Rect rect)
+        private static Rect DrawScript(GameObject gameObject, Rect rect)
         {
-            rect = new Rect(rect.x + rect.width - Style.toggleWidth, rect.y, Style.toggleWidth, rect.height);
+            rect = new Rect(rect.x + rect.width - Style.iconWidth, rect.y, Style.iconWidth, rect.height);
+                 
+            var tooltip = string.Empty;
+            var texture = Style.componentTexture;
+
+            if (rect.Contains(Event.current.mousePosition))
+            {
+                var components = gameObject.GetComponents<Component>();
+                if (components.Length > 1)
+                {
+                    texture = null;
+                    tooltip = "Components:\n";
+                    //set tooltip based on available components
+                    for (var i = 1; i < components.Length; i++)
+                    {
+                        tooltip += "- " + components[i].GetType().Name;
+                        tooltip += i == components.Length - 1 ? "" : "\n";
+                    }
+
+                    //create tooltip for the basic rect
+                    GUI.Label(rect, new GUIContent(string.Empty, tooltip));
+
+                    //adjust rect to all icons
+                    rect.xMin -= Style.iconWidth * (components.Length - 2);
+
+                    //draw standard background
+                    if (Event.current.type == EventType.Repaint)
+                    {
+                        Style.backgroundStyle.Draw(rect, false, false, false, false);
+                    }
+
+                    var iconRect = rect;
+                    iconRect.xMin = rect.xMin;
+                    iconRect.xMax = rect.xMin + Style.iconWidth;
+
+                    //iterate over available components
+                    for (var i = 1; i < components.Length; i++)
+                    {
+                        var component = components[i];
+                        var content = EditorGUIUtility.ObjectContent(component, component.GetType());
+
+                        //draw icon for the current component
+                        GUI.Label(iconRect, new GUIContent(content.image));
+                        //adjust rect for the next icon
+                        iconRect.x += Style.iconWidth;
+                    }
+
+                    return rect;
+                }
+                else
+                {
+                    texture = Style.transformTexture;
+                    tooltip = "There is no additional component";
+                }
+            }
 
             if (Event.current.type == EventType.Repaint)
             {
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
 
-            var value = GUI.Toggle(new Rect(rect.x + Style.padding, rect.y, rect.width, rect.height), gameObject.activeSelf, GUIContent.none);
-            //NOTE: using EditorGUI.Toggle will cause bug and deselect all hierarchy toggles when you will pick multi-selected property in inspector
-            if (rect.Contains(Event.current.mousePosition))
-            {
-                if (value != gameObject.activeSelf)
-                {
-                    Undo.RecordObject(gameObject, "SetActive");
-                    gameObject.SetActive(value);
-                }
-            }
-
+            GUI.Label(rect, new GUIContent(texture, tooltip));
             return rect;
         }
 
@@ -300,6 +376,9 @@ namespace Toolbox.Editor
             internal static readonly GUIStyle layerLabelStyle;
             internal static readonly GUIStyle backgroundStyle;
 
+            internal static readonly Texture componentTexture;
+            internal static readonly Texture transformTexture;
+
             static Style()
             {
                 tagLabelStyle = new GUIStyle(EditorStyles.miniLabel)
@@ -322,6 +401,9 @@ namespace Toolbox.Editor
 
                 backgroundStyle = new GUIStyle();
                 backgroundStyle.normal.background = AssetUtility.GetPersistentTexture(labelColor);
+
+                componentTexture = EditorGUIUtility.IconContent("cs Script Icon").image;
+                transformTexture = EditorGUIUtility.IconContent("Transform Icon").image;
             }
         }
     }
