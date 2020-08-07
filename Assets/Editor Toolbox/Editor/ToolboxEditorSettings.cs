@@ -404,7 +404,8 @@ namespace Toolbox.Editor
                 HierarchyObjectDataItem.Icon,
                 HierarchyObjectDataItem.Toggle,
                 HierarchyObjectDataItem.Tag,
-                HierarchyObjectDataItem.Layer
+                HierarchyObjectDataItem.Layer,
+                HierarchyObjectDataItem.Script
             };
         }
     }

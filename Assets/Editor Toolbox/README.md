@@ -45,7 +45,7 @@ The most important file, it allows the user to manage all available features. Ca
 Available features are divided into three groups:
 - Hierarchy
 - Project
-- Inspector 
+- Inspector/Drawers
 
 Each module is described in its respective section.
 
