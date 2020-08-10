@@ -16,7 +16,7 @@ namespace Toolbox.Editor
     }
 
     /// <summary>
-    /// Static GUI representation for Hierarchy Overlay. It is directly managed by <see cref="ToolboxHierarchyUtility"/>.
+    /// Static GUI representation for the Hierarchy Overlay. It is directly managed by the <see cref="ToolboxHierarchyUtility"/>.
     /// </summary>
     [InitializeOnLoad]
     public static class ToolboxEditorHierarchy
@@ -32,6 +32,7 @@ namespace Toolbox.Editor
 
         static ToolboxEditorHierarchy()
         {
+            EditorApplication.hierarchyWindowItemOnGUI -= OnItemCallback;
             EditorApplication.hierarchyWindowItemOnGUI += OnItemCallback;
         }
 
@@ -82,30 +83,48 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Tries to display item label in hierarchy window.
+        /// Tries to display item label in the hierarchy window.
         /// </summary>
-        /// <param name="instanceID"></param>
+        /// <param name="instanceId"></param>
         /// <param name="rect"></param>
-        private static void OnItemCallback(int instanceID, Rect rect)
+        private static void OnItemCallback(int instanceId, Rect rect)
         {
             if (!ToolboxHierarchyUtility.ToolboxHierarchyAllowed)
             {
                 return;
             }
 
-            //use Unity's internal method to determinate proper GameObject instance
-            //check whenever a provided object is the first element in the whole hierarchy
-            var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            //use Unity's internal method to determinate the proper GameObject instance
+            var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
             if (gameObject)
             {
-                if (gameObject.transform.parent != null || gameObject.transform.GetSiblingIndex() > 0)
-                {
-                    DrawDefaultItemLabel(gameObject, rect);
+                //NOTE: the prime item can be used to draw single options for the whole hierarchy
+                if (IsPrimeGameObject(gameObject))
+                {                    
+                    //pick all choosen items directly from the settings utility
+                    PrepareDrawCallbacks();                    
                 }
-                else
+
+                var name = gameObject.name;
+                if (name.StartsWith("#") && name.Length > 1)
                 {
-                    DrawPrimeItemLabel(gameObject, rect);
+                    var label = name.Remove(0, 2);
+                    var prefix = name[1];
+
+                    switch (prefix)
+                    {
+                        case 'h':
+                            DrawHeaderItemLabel(gameObject, rect, label);
+                            break;
+                        default:
+                            DrawDefaultItemLabel(gameObject, rect, label);
+                            break;
+                    }
+                    
+                    return;
                 }
+                //draw the current object in default way
+                DrawDefaultItemLabel(gameObject, rect, name);
             }
         }
 
@@ -124,37 +143,45 @@ namespace Toolbox.Editor
             var rowDataItems = ToolboxHierarchyUtility.GetRowDataItems();
             foreach (var item in rowDataItems)
             {
+                //validate current item and try to get associated drawer
                 if (!availableDrawContentCallbacks.TryGetValue(item, out var drawer))
                 {
                     continue;
                 }
 
+                //add drawer to the allowed drawers collection
                 allowedDrawContentCallbacks.Add(drawer);
             }
         }
 
         /// <summary>
-        /// Draws label in default way but additionaly handles content for whole overlay.
+        /// Draws GameObject's as header. Creates separation lines and a proper background.
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="rect"></param>
-        private static void DrawPrimeItemLabel(GameObject gameObject, Rect rect)
+        /// <param name="label"></param>
+        private static void DrawHeaderItemLabel(GameObject gameObject, Rect rect, string label)
         {
-            //NOTE: the prime item can be used to draw single options for whole the hierarchy
+            if (Event.current.type == EventType.Repaint)
+            {
+                Style.backgroundStyle.Draw(rect, false, false, false, false);
+            }
 
-            //pick all choosen items directly from the settings utility
-            PrepareDrawCallbacks();
-            //draw the current object in default way
-            DrawDefaultItemLabel(gameObject, rect);
+            EditorGUI.DrawRect(new Rect(rect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
+            EditorGUI.DrawRect(new Rect(rect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
+
+            EditorGUI.LabelField(rect, new GUIContent(label), Style.headerLabelStyle);
+
+            EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
         }
 
         /// <summary>
-        /// Draws label as whole. Creates separation lines, standard icon and
-        /// additional elements stored in <see cref="allowedDrawContentCallbacks"/> collection.
+        /// Draws label as whole. Creates separation lines, associated icons and
+        /// additional elements stored in the <see cref="allowedDrawContentCallbacks"/> collection.
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="rect"></param>
-        private static void DrawDefaultItemLabel(GameObject gameObject, Rect rect)
+        private static void DrawDefaultItemLabel(GameObject gameObject, Rect rect, string label)
         {
             var contentRect = rect;
             var drawersCount = allowedDrawContentCallbacks.Count;
@@ -186,7 +213,7 @@ namespace Toolbox.Editor
             contentRect.xMax = contentRect.xMin;
             contentRect.xMin = rect.xMin;
 
-            EditorGUI.LabelField(contentRect, new GUIContent(string.Empty, gameObject.name));
+            EditorGUI.LabelField(contentRect, new GUIContent(string.Empty, label));
         }
 
 
@@ -272,7 +299,7 @@ namespace Toolbox.Editor
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
 
-            if (content.text != defaultUnityTag)
+            if (!gameObject.CompareTag(defaultUnityTag))
             {
                 EditorGUI.LabelField(rect, content, Style.tagLabelStyle);
             }
@@ -349,6 +376,40 @@ namespace Toolbox.Editor
 
 
         /// <summary>
+        /// Determines if the provided GameObject is first element inside hierarchy.
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <returns></returns>
+        private static bool IsPrimeGameObject(GameObject gameObject)
+        {
+            return gameObject.transform.parent == null && gameObject.transform.GetSiblingIndex() == 0;
+        }
+
+
+        [MenuItem("GameObject/Editor Toolbox/Hierarchy Header", false, 10)]
+        private static void CreateHeaderObject(MenuCommand menuCommand)
+        {
+            const string key = "#h";
+            const string name = "Header";
+            const string tag = "EditorOnly";
+
+            var gameObject = new GameObject();
+            gameObject.transform.hideFlags = HideFlags.HideInInspector;
+            gameObject.name = key + name;
+            gameObject.tag = tag;
+            gameObject.layer = 0;
+            gameObject.isStatic = true;
+            
+            //ensure it gets reparented if this was a context click(otherwise does nothing)
+            GameObjectUtility.SetParentAndAlign(gameObject, menuCommand.context as GameObject);
+            //register the creation in the undo system
+            Undo.RegisterCreatedObjectUndo(gameObject, "Create " + gameObject.name);
+            //set proper selection
+            Selection.activeObject = gameObject;
+        }
+
+
+        /// <summary>
         /// Static representation of custom hierarchy style.
         /// </summary>
         internal static class Style
@@ -375,6 +436,7 @@ namespace Toolbox.Editor
             internal static readonly GUIStyle tagLabelStyle;
             internal static readonly GUIStyle layerLabelStyle;
             internal static readonly GUIStyle backgroundStyle;
+            internal static readonly GUIStyle headerLabelStyle;
 
             internal static readonly Texture componentTexture;
             internal static readonly Texture transformTexture;
@@ -401,6 +463,11 @@ namespace Toolbox.Editor
 
                 backgroundStyle = new GUIStyle();
                 backgroundStyle.normal.background = AssetUtility.GetPersistentTexture(labelColor);
+
+                headerLabelStyle = new GUIStyle(EditorStyles.boldLabel)
+                {
+                    alignment = TextAnchor.MiddleCenter
+                };
 
                 componentTexture = EditorGUIUtility.IconContent("cs Script Icon").image;
                 transformTexture = EditorGUIUtility.IconContent("Transform Icon").image;

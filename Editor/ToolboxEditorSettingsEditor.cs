@@ -182,9 +182,10 @@ namespace Toolbox.Editor
                 EditorGUILayout.PropertyField(useToolboxDrawersProperty);
 
                 EditorGUILayout.Space();
-                EditorGUILayout.LabelField("Attribute-based", Style.smallHeaderStyle);
 
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
+
+                EditorGUILayout.LabelField("Attribute-based", Style.smallHeaderStyle);
 
                 const string assignButtonLabel = "Assign all possible";
 
