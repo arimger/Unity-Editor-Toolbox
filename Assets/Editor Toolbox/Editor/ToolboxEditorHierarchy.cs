@@ -162,6 +162,7 @@ namespace Toolbox.Editor
         /// <param name="label"></param>
         private static void DrawHeaderItemLabel(GameObject gameObject, Rect rect, string label)
         {
+            //repaint background on proper event
             if (Event.current.type == EventType.Repaint)
             {
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
@@ -170,7 +171,22 @@ namespace Toolbox.Editor
             EditorGUI.DrawRect(new Rect(rect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
             EditorGUI.DrawRect(new Rect(rect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
-            EditorGUI.LabelField(rect, new GUIContent(label), Style.headerLabelStyle);
+            //prepare content for the associated label
+            var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
+            if (content.image)
+            {
+                var iconName = content.image.name;
+                if (iconName == ToolboxEditorUtility.defaultObjectIconName ||
+                    iconName == ToolboxEditorUtility.defaultPrefabIconName)
+                {
+                    content.image = null;
+                }
+            }
+            content.text = label;
+            content.tooltip = string.Empty;
+
+            //draw custom label field for the provided GameObject
+            EditorGUI.LabelField(rect, content, Style.headerLabelStyle);
 
             EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
         }
@@ -219,8 +235,6 @@ namespace Toolbox.Editor
 
         private static Rect DrawIcon(GameObject gameObject, Rect rect)
         {
-            const string defaultIconName = "GameObject Icon";
-
             //get specific icon for this gameObject
             var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
             var contentIcon = content.image;
@@ -239,7 +253,7 @@ namespace Toolbox.Editor
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
             //draw specific icon 
-            if (contentIcon.name != defaultIconName)
+            if (contentIcon.name != ToolboxEditorUtility.defaultObjectIconName)
             {
                 GUI.Label(contentRect, contentIcon);
             }
