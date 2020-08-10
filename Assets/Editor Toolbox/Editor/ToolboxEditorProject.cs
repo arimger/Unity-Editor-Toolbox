@@ -13,6 +13,7 @@ namespace Toolbox.Editor
     {
         static ToolboxEditorProject()
         {
+            EditorApplication.projectWindowItemOnGUI -= OnItemCallback;
             EditorApplication.projectWindowItemOnGUI += OnItemCallback;
         }
 
