@@ -16,7 +16,8 @@ namespace Toolbox.Editor
     }
 
     /// <summary>
-    /// Static GUI representation for the Hierarchy Overlay. It is directly managed by the <see cref="ToolboxHierarchyUtility"/>.
+    /// Static GUI representation for the Hierarchy Overlay.
+    /// It is directly managed by the <see cref="ToolboxHierarchyUtility"/>.
     /// </summary>
     [InitializeOnLoad]
     public static class ToolboxEditorHierarchy
@@ -63,6 +64,11 @@ namespace Toolbox.Editor
                 DrawScript
             };
 
+        /// <summary>
+        /// Index of current (last processed) GameObject within the Hierarchy.
+        /// </summary>
+        private static int currentItemIndex = 0;
+
 
         internal static void RepaintHierarchyOverlay() => EditorApplication.RepaintHierarchyWindow();
 
@@ -100,9 +106,11 @@ namespace Toolbox.Editor
             {
                 //NOTE: the prime item can be used to draw single options for the whole hierarchy
                 if (IsPrimeGameObject(gameObject))
-                {                    
+                {
                     //pick all choosen items directly from the settings utility
-                    PrepareDrawCallbacks();                    
+                    PrepareDrawCallbacks();
+                    //reset items index
+                    currentItemIndex = 0;
                 }
 
                 var name = gameObject.name;
@@ -113,18 +121,25 @@ namespace Toolbox.Editor
 
                     switch (prefix)
                     {
+                        case 'e':
+                            DrawEmptyItemLabel(gameObject, rect, label, currentItemIndex);
+                            break;
                         case 'h':
-                            DrawHeaderItemLabel(gameObject, rect, label);
+                            DrawHeaderItemLabel(gameObject, rect, label, currentItemIndex);
                             break;
                         default:
-                            DrawDefaultItemLabel(gameObject, rect, label);
+                            DrawDefaultItemLabel(gameObject, rect, label, currentItemIndex);
                             break;
                     }
-                    
-                    return;
                 }
-                //draw the current object in default way
-                DrawDefaultItemLabel(gameObject, rect, name);
+                else
+                {
+                    //draw the current object in default way
+                    DrawDefaultItemLabel(gameObject, rect, name, currentItemIndex);
+                }
+
+                //increment index after drawing
+                currentItemIndex++;
             }
         }
 
@@ -154,13 +169,25 @@ namespace Toolbox.Editor
             }
         }
 
+
+        /// <summary>
+        /// Draws item in the completely raw way.
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="rect"></param>
+        /// <param name="label"></param>
+        /// <param name="index"></param>
+        private static void DrawEmptyItemLabel(GameObject gameObject, Rect rect, string label, int index = 0)
+        { }
+
         /// <summary>
         /// Draws GameObject's as header. Creates separation lines and a proper background.
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="rect"></param>
         /// <param name="label"></param>
-        private static void DrawHeaderItemLabel(GameObject gameObject, Rect rect, string label)
+        /// <param name="index"></param>
+        private static void DrawHeaderItemLabel(GameObject gameObject, Rect rect, string label, int index = 0)
         {
             //repaint background on proper event
             if (Event.current.type == EventType.Repaint)
@@ -168,6 +195,11 @@ namespace Toolbox.Editor
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
 
+            if (index > 0)
+            {
+                EditorGUI.DrawRect(new Rect(rect.x, rect.y - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
+            }
+            
             EditorGUI.DrawRect(new Rect(rect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
             EditorGUI.DrawRect(new Rect(rect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
@@ -197,7 +229,9 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="rect"></param>
-        private static void DrawDefaultItemLabel(GameObject gameObject, Rect rect, string label)
+        /// <param name="label"></param>
+        /// <param name="index"></param>
+        private static void DrawDefaultItemLabel(GameObject gameObject, Rect rect, string label, int index = 0)
         {
             var contentRect = rect;
             var drawersCount = allowedDrawContentCallbacks.Count;
@@ -252,12 +286,15 @@ namespace Toolbox.Editor
             {
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
-            //draw specific icon 
-            if (contentIcon.name != ToolboxEditorUtility.defaultObjectIconName)
+
+            if (contentIcon.name == ToolboxEditorUtility.defaultObjectIconName ||
+                contentIcon.name == ToolboxEditorUtility.defaultPrefabIconName)
             {
-                GUI.Label(contentRect, contentIcon);
+                return contentRect;              
             }
 
+            //draw specific icon 
+            GUI.Label(contentRect, contentIcon);
             return contentRect;
         }
 
