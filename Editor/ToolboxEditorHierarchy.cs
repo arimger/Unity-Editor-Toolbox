@@ -408,7 +408,9 @@ namespace Toolbox.Editor
             const string tag = "EditorOnly";
 
             var gameObject = new GameObject();
+            //hide the obsolete transform component
             gameObject.transform.hideFlags = HideFlags.HideInInspector;
+            //set proper essentials
             gameObject.name = key + name;
             gameObject.tag = tag;
             gameObject.layer = 0;
