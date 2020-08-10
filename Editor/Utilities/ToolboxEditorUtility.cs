@@ -13,7 +13,11 @@ namespace Toolbox.Editor
 
         internal const string defaultObjectPickEventName = "ObjectSelectorUpdated";
 
+        internal const string defaultObjectIconName = "GameObject Icon";
 
+        internal const string defaultPrefabIconName = "Prefab Icon";
+
+                  
         internal static bool IsDefaultScriptProperty(SerializedProperty property)
         {
             return defaultScriptPropertyPath == property.propertyPath;
