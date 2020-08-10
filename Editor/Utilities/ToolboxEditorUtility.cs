@@ -32,5 +32,16 @@ namespace Toolbox.Editor
         {
             return defaultScriptPropertyType == propertyType;
         }
+
+
+        internal static bool IsDefaultObjectIcon(string name)
+        {
+            return name == defaultObjectIconName;
+        }
+
+        internal static bool IsDefaultPrefabIcon(string name)
+        {
+            return name == defaultPrefabIconName;
+        }
     }
 }
