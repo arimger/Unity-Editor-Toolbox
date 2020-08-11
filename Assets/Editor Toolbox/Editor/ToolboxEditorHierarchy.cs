@@ -99,14 +99,14 @@ namespace Toolbox.Editor
             {
                 return;
             }
-
+            
             //use Unity's internal method to determinate the proper GameObject instance
             var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
             if (gameObject)
             {
                 //NOTE: the prime item can be used to draw single options for the whole hierarchy
                 if (IsPrimeGameObject(gameObject))
-                {
+                {                  
                     //pick all choosen items directly from the settings utility
                     PrepareDrawCallbacks();
                     //reset items index
@@ -324,18 +324,39 @@ namespace Toolbox.Editor
 
         private static Rect DrawLayer(GameObject gameObject, Rect rect)
         {
-            //adjust rect for layer field
+            const int edDefaultLayout = 0;
+            const int irDefaultLayout = 2;
+            const int uiDefaultLayout = 5;
+            
+            //adjust rect for the layer field
             var contentRect = new Rect(rect.x + rect.width - Style.layerWidth, rect.y, Style.layerWidth, rect.height);
-            var objectLayer = gameObject.layer;
-            var contentText = new GUIContent(objectLayer.ToString(), LayerMask.LayerToName(objectLayer) + " layer");
 
             if (Event.current.type == EventType.Repaint)
             {
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
-            //draw label for gameObject's specific layer
-            EditorGUI.LabelField(contentRect, contentText, Style.layerLabelStyle);
+			
+			var layerMask = gameObject.layer;
+            var layerName = LayerMask.LayerToName(layerMask);
 
+            var contentLabel = layerMask.ToString();
+
+            //adjust the layer label to known layer values
+            switch (layerMask)
+			{
+				case edDefaultLayout:
+                    contentLabel = string.Empty;
+					break;
+				case uiDefaultLayout:
+					contentLabel = layerName;
+					break;
+                case irDefaultLayout:
+					break;
+			}
+            var content = new GUIContent(contentLabel, layerName + " layer");
+			
+            //draw label for the gameObject's specific layer
+            EditorGUI.LabelField(contentRect, content, Style.layerLabelStyle);
             return contentRect;
         }
 
@@ -343,18 +364,22 @@ namespace Toolbox.Editor
         {
             const string defaultUnityTag = "Untagged";
 
-            var content = new GUIContent(gameObject.tag, gameObject.tag);
+            //prepare content based on the GameObject's tag
+            var contentTag = gameObject.tag;
+            var contentText = gameObject.tag;
+            if (contentTag == defaultUnityTag)
+            {
+                contentText = string.Empty;           
+            }
+            var content = new GUIContent(contentText, contentTag);
 
             if (Event.current.type == EventType.Repaint)
             {
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
 
-            if (!gameObject.CompareTag(defaultUnityTag))
-            {
-                EditorGUI.LabelField(rect, content, Style.tagLabelStyle);
-            }
-
+            //draw related label field using prepared content
+            EditorGUI.LabelField(rect, content, Style.tagLabelStyle);
             return rect;
         }
 
