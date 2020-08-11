@@ -258,6 +258,11 @@ namespace Toolbox.Editor
                 }
             }
 
+            if (contentRect.xMin < rect.xMin)
+            {
+                rect.xMin = contentRect.xMin;
+            }
+
             EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
 
             contentRect.xMax = contentRect.xMin;
