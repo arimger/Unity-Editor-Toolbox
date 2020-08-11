@@ -9,7 +9,7 @@ namespace Toolbox.Editor
     [CanEditMultipleObjects, InitializeOnLoad]
     public class ToolboxEditorSettingsEditor : ToolboxEditor
     {
-        private bool drawersSettingsEnabled;
+        private bool inspectorSettingsEnabled;
         private bool projectSettingsEnabled;
         private bool hierarchySettingsEnabled;
 
@@ -36,9 +36,9 @@ namespace Toolbox.Editor
 
         private void OnEnable()
         {
-            drawersSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + "." + nameof(drawersSettingsEnabled), false);
-            projectSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + "." + nameof(projectSettingsEnabled), false);
-            hierarchySettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + "." + nameof(hierarchySettingsEnabled), false);
+            inspectorSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", false);
+            projectSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", false);
+            hierarchySettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".HierarchyEnabled", false);
 
             useToolboxDrawersProperty = serializedObject.FindProperty("useToolboxDrawers");
             useToolboxFoldersProperty = serializedObject.FindProperty("useToolboxFolders");
@@ -62,9 +62,9 @@ namespace Toolbox.Editor
 
         private void OnDisable()
         {
-            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + "." + nameof(drawersSettingsEnabled), drawersSettingsEnabled);
-            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + "." + nameof(projectSettingsEnabled), projectSettingsEnabled);
-            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + "." + nameof(hierarchySettingsEnabled), hierarchySettingsEnabled);
+            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", inspectorSettingsEnabled);
+            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", projectSettingsEnabled);
+            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".HierarchyEnabled", hierarchySettingsEnabled);
         }
 
 
@@ -174,7 +174,7 @@ namespace Toolbox.Editor
             }
 
             //handle drawers settings section
-            if (drawersSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(drawersSettingsEnabled, Style.drawersSettingsContent, true, Style.settingsFoldoutStyle))
+            if (inspectorSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(inspectorSettingsEnabled, Style.drawersSettingsContent, true, Style.settingsFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
@@ -182,9 +182,10 @@ namespace Toolbox.Editor
                 EditorGUILayout.PropertyField(useToolboxDrawersProperty);
 
                 EditorGUILayout.Space();
-                EditorGUILayout.LabelField("Attribute-based", Style.smallHeaderStyle);
 
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
+
+                EditorGUILayout.LabelField("Attribute-based", Style.smallHeaderStyle);
 
                 const string assignButtonLabel = "Assign all possible";
 
