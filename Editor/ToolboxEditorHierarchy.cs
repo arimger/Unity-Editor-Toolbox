@@ -106,7 +106,7 @@ namespace Toolbox.Editor
             {
                 //NOTE: the prime item can be used to draw single options for the whole hierarchy
                 if (IsPrimeGameObject(gameObject))
-                {                  
+                {
                     //pick all choosen items directly from the settings utility
                     PrepareDrawCallbacks();
                     //reset items index
@@ -280,7 +280,6 @@ namespace Toolbox.Editor
             var contentRect = rect;
 
             contentRect.width = Style.iconWidth;
-            //contentRect.height = Style.iconHeight;
 #if UNITY_2018_1_OR_NEWER
             contentRect.x = rect.xMax - contentRect.width;
 #else
@@ -292,6 +291,7 @@ namespace Toolbox.Editor
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
 
+            //ignore situations when the provided icon is default or prefab one
             if (contentIcon.name == ToolboxEditorUtility.defaultObjectIconName ||
                 contentIcon.name == ToolboxEditorUtility.defaultPrefabIconName)
             {
@@ -344,21 +344,21 @@ namespace Toolbox.Editor
 			var layerMask = gameObject.layer;
             var layerName = LayerMask.LayerToName(layerMask);
 
-            var contentLabel = layerMask.ToString();
+            var contentText = layerMask.ToString();
 
             //adjust the layer label to known layer values
             switch (layerMask)
 			{
 				case edDefaultLayout:
-                    contentLabel = string.Empty;
+                    contentText = string.Empty;
 					break;
 				case uiDefaultLayout:
-					contentLabel = layerName;
+					contentText = layerName;
 					break;
                 case irDefaultLayout:
 					break;
 			}
-            var content = new GUIContent(contentLabel, layerName + " layer");
+            var content = new GUIContent(contentText, layerName + " layer");
 			
             //draw label for the gameObject's specific layer
             EditorGUI.LabelField(contentRect, content, Style.layerLabelStyle);
@@ -541,17 +541,22 @@ namespace Toolbox.Editor
                     alignment = TextAnchor.UpperCenter
 #endif
                 };
+                layerLabelStyle.normal.textColor = textColor;
 
+                //set the default toggle style
                 toggleStyle = new GUIStyle(EditorStyles.toggle);
 
+                //set the background style
                 backgroundStyle = new GUIStyle();
                 backgroundStyle.normal.background = AssetUtility.GetPersistentTexture(labelColor);
 
+                //set the header label style
                 headerLabelStyle = new GUIStyle(EditorStyles.boldLabel)
                 {
                     alignment = TextAnchor.MiddleCenter
                 };
 
+                //set default icon textures
                 componentTexture = EditorGUIUtility.IconContent("cs Script Icon").image;
                 transformTexture = EditorGUIUtility.IconContent("Transform Icon").image;
             }
