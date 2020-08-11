@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - SampleTag 1
+  - SampleTag 2
   layers:
   - Default
   - TransparentFX
@@ -15,7 +17,7 @@ TagManager:
   - 
   - PostProcessing
   - Terrain
-  - 
+  - SampleLayer
   - 
   - 
   - 
