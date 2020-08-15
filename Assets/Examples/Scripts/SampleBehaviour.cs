@@ -237,6 +237,8 @@ public class SampleBehaviour : MonoBehaviour
     [BeginHorizontal]
     public int var29;
     public int var30;
+    //NOTE: custom sample created within the Examples
+    [Sample]
     [EndHorizontal]
     public int var31;
 

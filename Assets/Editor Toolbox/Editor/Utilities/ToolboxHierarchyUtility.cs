@@ -30,6 +30,7 @@ namespace Toolbox.Editor
             ToolboxHierarchyUtility.settings = settings;
 
             ToolboxHierarchyAllowed = settings.UseToolboxHierarchy;
+            HorizontalLinesAllowed = settings.DrawHorizontalLines;
 
             rowDataItems.Clear();
             for (var i = 0; i < settings.RowDataItemsCount; i++)
@@ -47,6 +48,8 @@ namespace Toolbox.Editor
 
 
         internal static bool ToolboxHierarchyAllowed { get; private set; }
+
+        internal static bool HorizontalLinesAllowed { get; private set; }
 
         internal static bool AreRowDataItemsUpdated { get; private set; }
     }
