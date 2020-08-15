@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 #if !UNITY_2019_1_OR_NEWER
 using System.Reflection;
 #endif
@@ -21,7 +20,7 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Clears and destroys particular editor by provided key.
+        /// Clears and destroys particular editor by the provided key.
         /// </summary>
         /// <param name="key"></param>
         private void ClearEditor(string key)
@@ -35,7 +34,7 @@ namespace Toolbox.Editor.Drawers
         }
 
         /// <summary>
-        /// Clears and destroys all available editor instances in <see cref="editorInstances"/>.
+        /// Clears and destroys all available editor instances in the <see cref="editorInstances"/> collection.
         /// </summary>
         private void ClearEditors()
         {
@@ -48,7 +47,7 @@ namespace Toolbox.Editor.Drawers
         }
 
         /// <summary>
-        /// Draws inlined version of <see cref="Editor"></see> and handles all unexpected situations.
+        /// Draws the inlined version of the <see cref="Editor"></see> and handles all unexpected situations.
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
@@ -56,11 +55,11 @@ namespace Toolbox.Editor.Drawers
         {
             if (!attribute.DrawHeader)
             {
-                //force expanded inspector if header is not expected
+                //force the expanded inspector if a header is not expected
                 if (!InternalEditorUtility.GetIsInspectorExpanded(editor.target))
                 {
                     InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
-                    //NOTE: in older versions editor's foldouts are based on m_IsVisible field and Awake() method
+                    //NOTE: in older versions editor's foldouts are based on the m_IsVisible field and the Awake() method
 #if !UNITY_2019_1_OR_NEWER
                     const string isVisibleFieldName = "m_IsVisible";
                     var isVisible = editor.GetType().GetField(isVisibleFieldName,
@@ -80,7 +79,7 @@ namespace Toolbox.Editor.Drawers
         }
 
         /// <summary>
-        /// Draws inlined editor using provided <see cref="Editor"/> object.
+        /// Draws the inlined editor using the provided <see cref="Editor"/> object.
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
@@ -100,7 +99,7 @@ namespace Toolbox.Editor.Drawers
             editor.serializedObject.Update();
             editor.OnInspectorGUI();
             editor.serializedObject.ApplyModifiedProperties();
-
+            
             if (editor.HasPreviewGUI())
             {
                 //draw preview if possible and needed
@@ -108,7 +107,15 @@ namespace Toolbox.Editor.Drawers
                 {
                     editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, attribute.PreviewHeight), Style.previewStyle);
                 }
+
+                if (attribute.DrawSettings)
+                {
+                    editor.OnPreviewSettings();
+                }
             }
+
+            //TODO:
+            //if (AssetDatabase.Contains(editor.target))
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
@@ -116,7 +123,7 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Handles property drawing process and tries to create inlined version of <see cref="Editor"/>
+        /// Handles the property drawing process and tries to create a inlined version of <see cref="Editor"/>
         /// for <see cref="Object"/> associated to this property.
         /// </summary>
         /// <param name="property"></param>
@@ -161,7 +168,7 @@ namespace Toolbox.Editor.Drawers
         }
 
         /// <summary>
-        /// Checks if provided property can by handled by this drawer.
+        /// Checks if the provided property can be handled by this drawer.
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>

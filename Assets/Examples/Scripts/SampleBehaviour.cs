@@ -198,7 +198,7 @@ public class SampleBehaviour : MonoBehaviour
 
     [SpaceArea]
 
-    [InLineEditor]
+    [InLineEditor(drawSettings:true)]
     public AudioClip var24;
 
     [SpaceArea]
