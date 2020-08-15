@@ -18,10 +18,11 @@ namespace Toolbox.Editor
             if (!ToolboxDrawerUtility.ToolboxDrawersAllowed)
             {
                 DrawDefaultInspector();
-                return;
             }
-
-            DrawCustomInspector();
+            else
+            {
+                DrawCustomInspector();
+            }            
         }
 
 

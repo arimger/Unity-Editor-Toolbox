@@ -68,6 +68,7 @@ namespace Toolbox.Editor
         HierarchyObjectDataItem GetRowDataItemAt(int index);
 
         bool UseToolboxHierarchy { get; }
+        bool DrawHorizontalLines { get; }
 
         int RowDataItemsCount { get; }
     }
@@ -85,6 +86,9 @@ namespace Toolbox.Editor
         [HideIf(nameof(useToolboxHierarchy), true)]
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         private List<HierarchyObjectDataItem> rowDataItems = Defaults.rowDataItems;
+
+        [SerializeField]
+        private bool drawHorizontalLines = true;
 
         [SerializeField]
         private float largeIconScale = Defaults.largeFolderIconScaleDefault;
@@ -346,6 +350,12 @@ namespace Toolbox.Editor
         {
             get => useToolboxDrawers;
             set => useToolboxDrawers = value;
+        }
+
+        public bool DrawHorizontalLines
+        {
+            get => drawHorizontalLines;
+            set => drawHorizontalLines = value;
         }
 
         public float LargeIconScale
