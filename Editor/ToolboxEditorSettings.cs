@@ -127,7 +127,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Called internally by the Editor.
         /// </summary>
-        private void OnValidate()
+        internal void OnValidate()
         {
             onSettingsUpdated.Invoke();
         }
@@ -141,6 +141,11 @@ namespace Toolbox.Editor
         internal void RemoveOnSettingsUpdatedListener(UnityAction listener)
         {
             onSettingsUpdated.RemoveListener(listener);
+        }
+
+        internal void RemoveAllOnSettingsUpdatedListeners()
+        {
+            onSettingsUpdated.RemoveAllListeners();
         }
 
 
