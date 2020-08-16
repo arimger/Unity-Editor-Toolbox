@@ -16,6 +16,7 @@ MonoBehaviour:
   useToolboxFolders: 1
   useToolboxDrawers: 1
   rowDataItems: 0000000001000000020000000300000004000000
+  drawHorizontalLines: 1
   largeIconScale: 0.8
   smallIconScale: 0.7
   largeIconPadding: {x: 0, y: 0.15}
@@ -50,6 +51,7 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.HighlightAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.LineAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox-Editor
+  - classReference: SampleDrawer, Assembly-CSharp-Editor
   propertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
   collectionDrawerHandlers:

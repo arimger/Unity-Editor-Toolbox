@@ -60,7 +60,10 @@ namespace Toolbox.Editor.Drawers
                     projectRelativePath += assetRelativePath + "/";
                 }
 
+                //NOTE:we have to exit GUI since EditorUtility methods will break layouting system
                 property.stringValue = EditorUtility.OpenFolderPanel("Pick directory", "Assets/" + assetRelativePath, "").Replace(projectRelativePath, "");
+                property.serializedObject.ApplyModifiedProperties();
+                GUIUtility.ExitGUI();
             }
         }
 

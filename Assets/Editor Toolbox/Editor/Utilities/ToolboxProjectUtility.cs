@@ -63,11 +63,6 @@ namespace Toolbox.Editor
 
         internal static void PerformData()
         {
-            if (settings == null)
-            {
-                return;              
-            }
-
             PerformData(settings);
         }
 
@@ -75,9 +70,14 @@ namespace Toolbox.Editor
         {
             ToolboxProjectUtility.settings = settings;
 
-            CreateCustomFolders(settings);
+            ToolboxProjectAllowed = settings != null ? settings.UseToolboxProject : false;
 
-            ToolboxProjectAllowed = settings.UseToolboxProject;
+            if (settings == null)
+            {
+                return;
+            }
+
+            CreateCustomFolders(settings);
 
             LargeIconScale = settings.LargeIconScale;
             SmallIconScale = settings.SmallIconScale;

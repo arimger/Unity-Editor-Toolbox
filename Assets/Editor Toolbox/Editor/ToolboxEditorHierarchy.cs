@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEditor;
 using UnityEngine;
@@ -55,7 +56,7 @@ namespace Toolbox.Editor
         /// Collection of all wanted hierarchy elements drawers.
         /// </summary>
         private static readonly List<DrawHierarchyContentCallback>
-            allowedDrawContentCallbacks = new List<DrawHierarchyContentCallback>(4)
+            allowedDrawContentCallbacks = new List<DrawHierarchyContentCallback>()
             {
                 DrawIcon,
                 DrawToggle,
@@ -65,10 +66,23 @@ namespace Toolbox.Editor
             };
 
         /// <summary>
+        /// Collection of all additional external callbacks.
+        /// </summary>
+        private static readonly List<DrawHierarchyContentCallback>
+            createdDrawContentCallbacks = new List<DrawHierarchyContentCallback>();
+
+        /// <summary>
         /// Index of current (last processed) GameObject within the Hierarchy.
         /// </summary>
         private static int currentItemIndex = 0;
 
+        /// <summary>
+        /// Determines if horizontal lines within the Hierarchy overlay should be drawn.
+        /// </summary>
+        private static bool drawHorizontalLines = true;
+#pragma warning disable 414
+        private static bool drawSeparationLines = true;
+#pragma warning restore 414
 
         internal static void RepaintHierarchyOverlay() => EditorApplication.RepaintHierarchyWindow();
 
@@ -107,8 +121,9 @@ namespace Toolbox.Editor
                 //NOTE: the prime item can be used to draw single options for the whole hierarchy
                 if (IsPrimeGameObject(gameObject))
                 {
-                    //pick all choosen items directly from the settings utility
+                    //pick all choosen items and settings directly from the settings utility
                     PrepareDrawCallbacks();
+                    PrepareDrawUtilities();
                     //reset items index
                     currentItemIndex = 0;
                 }
@@ -167,6 +182,16 @@ namespace Toolbox.Editor
                 //add drawer to the allowed drawers collection
                 allowedDrawContentCallbacks.Add(drawer);
             }
+
+            allowedDrawContentCallbacks.Concat(createdDrawContentCallbacks);
+        }
+
+        /// <summary>
+        /// Prepares additional settings for the Hierarchy overlay.
+        /// </summary>
+        private static void PrepareDrawUtilities()
+        {
+            drawHorizontalLines = ToolboxHierarchyUtility.HorizontalLinesAllowed;
         }
 
 
@@ -263,7 +288,10 @@ namespace Toolbox.Editor
                 rect.xMin = contentRect.xMin;
             }
 
-            EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
+            if (drawHorizontalLines)
+            {
+                EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
+            }
 
             contentRect.xMax = contentRect.xMin;
             contentRect.xMin = rect.xMin;

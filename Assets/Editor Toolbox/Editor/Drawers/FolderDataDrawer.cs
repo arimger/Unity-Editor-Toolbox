@@ -168,11 +168,13 @@ namespace Toolbox.Editor.Drawers
                 {
                     case largeIconPickedId:
                         largeIconProperty.objectReferenceValue = EditorGUIUtility.GetObjectPickerObject();
+                        largeIconProperty.serializedObject.ApplyModifiedProperties();
                         break;
                     case smallIconPickedId:
                         smallIconProperty.objectReferenceValue = EditorGUIUtility.GetObjectPickerObject();
+                        smallIconProperty.serializedObject.ApplyModifiedProperties();
                         break;
-                }
+                }                
             }
 
             position.x += Style.iconsPadding;

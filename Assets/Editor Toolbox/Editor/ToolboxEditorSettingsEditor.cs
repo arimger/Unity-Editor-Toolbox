@@ -13,9 +13,10 @@ namespace Toolbox.Editor
         private bool projectSettingsEnabled;
         private bool hierarchySettingsEnabled;
 
-        private SerializedProperty useToolboxDrawersProperty;
-        private SerializedProperty useToolboxFoldersProperty;
         private SerializedProperty useToolboxHierarchyProperty;
+        private SerializedProperty useToolboxFoldersProperty;
+        private SerializedProperty useToolboxDrawersProperty;
+        private SerializedProperty drawHorizontalLinesProperty;
         private SerializedProperty largeIconScaleProperty;
         private SerializedProperty smallIconScaleProperty;
         private SerializedProperty largeIconPaddingProperty;
@@ -36,13 +37,14 @@ namespace Toolbox.Editor
 
         private void OnEnable()
         {
-            inspectorSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", false);
-            projectSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", false);
             hierarchySettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".HierarchyEnabled", false);
+            projectSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", false);
+            inspectorSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", false);
 
+            useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
             useToolboxDrawersProperty = serializedObject.FindProperty("useToolboxDrawers");
             useToolboxFoldersProperty = serializedObject.FindProperty("useToolboxFolders");
-            useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
+            drawHorizontalLinesProperty = serializedObject.FindProperty("drawHorizontalLines");
             largeIconScaleProperty = serializedObject.FindProperty("largeIconScale");
             smallIconScaleProperty = serializedObject.FindProperty("smallIconScale");
             largeIconPaddingProperty = serializedObject.FindProperty("largeIconPadding");
@@ -62,9 +64,9 @@ namespace Toolbox.Editor
 
         private void OnDisable()
         {
-            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", inspectorSettingsEnabled);
-            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", projectSettingsEnabled);
             EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".HierarchyEnabled", hierarchySettingsEnabled);
+            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", projectSettingsEnabled);
+            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", inspectorSettingsEnabled);
         }
 
 
@@ -94,7 +96,9 @@ namespace Toolbox.Editor
                 {
                     rowDataItemsList.ElementLabel = "Position";
                     rowDataItemsList.DoLayoutList();
-                }            
+                }
+                EditorGUILayout.Space();
+                EditorGUILayout.PropertyField(drawHorizontalLinesProperty);
                 EditorGUI.EndDisabledGroup();
 
                 EditorGUILayout.Space();

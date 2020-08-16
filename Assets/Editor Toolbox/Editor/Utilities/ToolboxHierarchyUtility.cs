@@ -17,11 +17,6 @@ namespace Toolbox.Editor
 
         internal static void PerformData()
         {
-            if (settings == null)
-            {
-                return;
-            }
-
             PerformData(settings);
         }
 
@@ -29,14 +24,21 @@ namespace Toolbox.Editor
         {
             ToolboxHierarchyUtility.settings = settings;
 
-            ToolboxHierarchyAllowed = settings.UseToolboxHierarchy;
+            ToolboxHierarchyAllowed = settings != null ? settings.UseToolboxHierarchy : false;
+
+            if (settings == null)
+            {
+                return;
+            }
 
             rowDataItems.Clear();
             for (var i = 0; i < settings.RowDataItemsCount; i++)
             {
                 rowDataItems.Add(settings.GetRowDataItemAt(i));
             }
+
             AreRowDataItemsUpdated = true;
+            HorizontalLinesAllowed = settings.DrawHorizontalLines;
         }
 
         internal static HierarchyObjectDataItem[] GetRowDataItems()
@@ -47,6 +49,8 @@ namespace Toolbox.Editor
 
 
         internal static bool ToolboxHierarchyAllowed { get; private set; }
+
+        internal static bool HorizontalLinesAllowed { get; private set; }
 
         internal static bool AreRowDataItemsUpdated { get; private set; }
     }

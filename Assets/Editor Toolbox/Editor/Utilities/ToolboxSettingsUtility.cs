@@ -1,6 +1,5 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace Toolbox.Editor
 {
@@ -11,56 +10,54 @@ namespace Toolbox.Editor
     {
         private const string settingsType = nameof(ToolboxEditorSettings);
 
-        private static string settingsGuid;
-        private static string settingsPath;
-
         private static Editor globalSettingsEditor;
 
 
         [InitializeOnLoadMethod]
-        internal static void InitializeSettings()
+        internal static bool InitializeSettings()
         {
             var guids = AssetDatabase.FindAssets("t:" + settingsType);
 
-            InitializeSettings(guids.Length > 0 ? guids[0] : null);
+            if (InitializeSettings(guids.Length > 0 ? guids[0] : null))
+            {
+                return true;
+            }
+            else
+            {
+                ToolboxEditorLog.KitInitializationWarning(settingsType);
+                return false;
+            }
         }
 
-        internal static void InitializeSettings(ToolboxEditorSettings settings)
+        internal static bool InitializeSettings(ToolboxEditorSettings settings)
         {
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(settings, out string guid, out long id);
 
-            InitializeSettings(guid);
+            return InitializeSettings(guid);
         }
 
-        internal static void InitializeSettings(string assetGuid)
+        internal static bool InitializeSettings(string assetGuid)
         {
-            settingsGuid = assetGuid;
-            settingsPath = AssetDatabase.GUIDToAssetPath(assetGuid);
-            //try to get proper settings asset from provided guid
-            var settings = AssetDatabase.LoadAssetAtPath<ToolboxEditorSettings>(settingsPath);
-            if (settings == null)
+            SettingsGuid = assetGuid;
+            SettingsPath = AssetDatabase.GUIDToAssetPath(assetGuid);
+
+            //try to get proper settings asset from the provided guid
+            if (Settings = AssetDatabase.LoadAssetAtPath<ToolboxEditorSettings>(SettingsPath))
             {
-                ToolboxEditorLog.KitInitializationWarning(settingsType);
-                return;
+                Settings.AddOnSettingsUpdatedListener(() =>
+                {
+                    //update associated utitilies after validation 
+                    ForceSettingsUpdate();
+                });
+                //initialize core functionalities
+                Settings.OnValidate();
+                return true;
             }
-
-            Settings = settings;
-            Settings.AddOnSettingsUpdatedListener(() =>
+            else
             {
-                //perform separated data models update
-                ToolboxDrawerUtility.PerformData();
-                ToolboxProjectUtility.PerformData();
-                ToolboxHierarchyUtility.PerformData();
-
-                //perform additional repaint to update GUI
-                ToolboxEditorProject.RepaintProjectOverlay();
-                ToolboxEditorHierarchy.RepaintHierarchyOverlay();
-            });
-
-            //initialize core functionalities
-            ToolboxDrawerUtility.PerformData(Settings);
-            ToolboxProjectUtility.PerformData(Settings);
-            ToolboxHierarchyUtility.PerformData(Settings);
+                ForceSettingsUpdate();
+                return false;
+            }
         }
 
         internal static void ReimportSettings()
@@ -71,6 +68,18 @@ namespace Toolbox.Editor
             var path = AssetDatabase.GUIDToAssetPath(guids[0]);
 
             AssetDatabase.ImportAsset(path);
+        }
+
+        private static void ForceSettingsUpdate()
+        {
+            //perform separated data models update
+            ToolboxDrawerUtility.PerformData(Settings);
+            ToolboxProjectUtility.PerformData(Settings);
+            ToolboxHierarchyUtility.PerformData(Settings);
+
+            //perform additional repaint to update GUI
+            ToolboxEditorProject.RepaintProjectOverlay();
+            ToolboxEditorHierarchy.RepaintHierarchyOverlay();
         }
 
 
@@ -101,13 +110,15 @@ namespace Toolbox.Editor
                     if (GUILayout.Button("Create the new settings file"))
                     {
                         var settingsInstance = ScriptableObject.CreateInstance(settingsType);
-                        var path = "Assets/" + settingsType + ".asset";
 
-                        AssetDatabase.CreateAsset(settingsInstance, path);
+                        var directoryPath = EditorUtility.OpenFolderPanel("New Settings file location", "Assets", "");                      
+                        var settingsPath = directoryPath.Substring(directoryPath.IndexOf("Assets/")) + "/" + settingsType + ".asset";
+
+                        AssetDatabase.CreateAsset(settingsInstance, settingsPath);
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
 
-                        Debug.Log("Created settings file at - " + path);
+                        Debug.Log("Created the settings file at - " + settingsPath);
 
                         InitializeSettings();
                         InitializeProvider();
@@ -117,7 +128,7 @@ namespace Toolbox.Editor
                 }
 
                 EditorGUILayout.Space();
-                EditorGUILayout.LabelField("Settings file location - " + settingsPath);
+                EditorGUILayout.LabelField("Settings file location - " + SettingsPath);
                 EditorGUILayout.Space();
 
                 globalSettingsEditor.serializedObject.Update();
@@ -138,5 +149,8 @@ namespace Toolbox.Editor
 
 
         internal static ToolboxEditorSettings Settings { get; private set; }
+
+        internal static string SettingsPath { get; private set; }
+        internal static string SettingsGuid { get; private set; }
     }
 }
