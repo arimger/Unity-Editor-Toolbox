@@ -42,10 +42,14 @@ namespace Toolbox.Editor.Drawers
 
                     var index = Array.IndexOf(values, property.GetProperValue(fieldInfo, targetObject));
 
-                    EditorGUI.BeginProperty(position, label, property);
+                    //begin the true property
+                    label = EditorGUI.BeginProperty(position, label, property);
+                    //draw the prefix label
+                    position = EditorGUI.PrefixLabel(position, label);
+
                     EditorGUI.BeginChangeCheck();
                     //get index value from popup
-                    index = EditorGUI.Popup(position, label.text, index, options);
+                    index = EditorGUI.Popup(position, index, options);
                     //validate index value
                     index = Mathf.Clamp(index, 0, list.Count - 1);
 

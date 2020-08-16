@@ -118,7 +118,10 @@ namespace Toolbox.Editor
         {
             var elements = element.propertyPath.Replace("Array.data[", "[").Split('.');
 
-            if (!elements[elements.Length - 1].Contains("[")) return null;
+            if (!elements[elements.Length - 1].Contains("["))
+            {
+                return null;
+            }
 
             for (int i = elements.Length - 1; i >= 0; i--)
             {
@@ -138,7 +141,10 @@ namespace Toolbox.Editor
 
         public static SerializedProperty GetParent(this SerializedProperty property)
         {
-            if (property.depth == 0) return null;
+            if (property.depth == 0)
+            {
+                return null;
+            }
 
             var path = property.propertyPath.Replace(".Array.data[", "[");
             var elements = path.Split('.');

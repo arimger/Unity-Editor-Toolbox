@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 using UnityEditor;
@@ -8,7 +7,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Internal
 {
     /// <summary>
-    /// Custom implementation of <see cref="UnityEditorInternal.ReorderableList"/>.
+    /// Custom implementation of the <see cref="UnityEditorInternal.ReorderableList"/>.
     /// </summary>
     public class ReorderableList
     {

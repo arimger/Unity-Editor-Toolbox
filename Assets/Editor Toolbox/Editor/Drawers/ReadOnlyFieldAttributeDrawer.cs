@@ -13,14 +13,14 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUI.PropertyField(position, property, label, true);
+            EditorGUI.PropertyField(position, property, label, property.isExpanded);
             EditorGUI.EndDisabledGroup();
         }
 
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return EditorGUI.GetPropertyHeight(property, label, true);
+            return EditorGUI.GetPropertyHeight(property, label, property.isExpanded);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using UnityEditor;
 using UnityEditorInternal;
@@ -13,7 +11,11 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUI.BeginProperty(position, label, property);
+            //begin the true property
+            label = EditorGUI.BeginProperty(position, label, property);
+            //draw the prefix label
+            position = EditorGUI.PrefixLabel(position, label);
+
             var tags = new List<string>
             {
                 "<None>"
@@ -37,7 +39,8 @@ namespace Toolbox.Editor.Drawers
                 }
             }
 
-            index = EditorGUI.Popup(position, label.text, index, tags.ToArray());
+            //draw the popup window
+            index = EditorGUI.Popup(position, index, tags.ToArray());
 
             property.stringValue = index >= 1 ? tags[index] : "";
 
