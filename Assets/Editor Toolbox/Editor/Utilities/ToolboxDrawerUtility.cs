@@ -153,11 +153,6 @@ namespace Toolbox.Editor
         /// </summary>
         internal static void PerformData()
         {
-            if (settings == null)
-            {
-                return;
-            }
-
             PerformData(settings);
         }
 
@@ -169,10 +164,15 @@ namespace Toolbox.Editor
         {
             ToolboxDrawerUtility.settings = settings;
 
+            ToolboxDrawersAllowed = settings != null ? settings.UseToolboxDrawers : false;
+
+            if (settings == null)
+            {
+                return;
+            }
+
             CreateAttributeDrawers(settings);
             CreateTargetTypeDrawers(settings);
-
-            ToolboxDrawersAllowed = settings.UseToolboxDrawers;
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 [ExecuteAlways]
+[AddComponentMenu("Toolbox/Cheat Sheet")]
 public class SampleBehaviour : MonoBehaviour
 {
     [Help("This sample component provides all additional inspector extensions(drawers and associated attributes) implemented in Editor Toolbox plugin. " +
@@ -238,7 +239,7 @@ public class SampleBehaviour : MonoBehaviour
     public int var29;
     public int var30;
     //NOTE: custom sample created within the Examples
-    [Sample]
+    //[Sample]
     [EndHorizontal]
     public int var31;
 
