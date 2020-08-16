@@ -26,10 +26,13 @@ namespace Toolbox.Editor.Drawers
             //get field info value from this property, works even on array elements
             var enumValue = property.GetProperValue(fieldInfo, targetObject) as Enum;
 
-            //begin popup property
-            EditorGUI.BeginProperty(position, label, property);
+            //begin the popup property
+            label = EditorGUI.BeginProperty(position, label, property);
+            //draw the field label
+            position = EditorGUI.PrefixLabel(position, label);
+
             EditorGUI.BeginChangeCheck();
-            enumValue = EditorGUI.EnumFlagsField(position, label, enumValue);
+            enumValue = EditorGUI.EnumFlagsField(position, enumValue);
             if (EditorGUI.EndChangeCheck())
             {
                 property.intValue = Convert.ToInt32(enumValue);
@@ -43,7 +46,7 @@ namespace Toolbox.Editor.Drawers
             var buttonsToDisplay = new List<int>();
 
             //begin property and draw label
-            EditorGUI.BeginProperty(position, label, property);
+            label = EditorGUI.BeginProperty(position, label, property);
             var buttonPosition = EditorGUI.PrefixLabel(position, label);
             EditorGUI.BeginChangeCheck();
 

@@ -19,8 +19,9 @@ namespace Toolbox.Editor.Drawers
                 : new GUIContent();
             var id = GUIUtility.GetControlID(FocusType.Keyboard, position);
 
-            //draw prefix label and begin true property
+            //begin the true property
             label = EditorGUI.BeginProperty(position, label, property);
+            //draw the prefix label
             position = EditorGUI.PrefixLabel(position, id, label);
             //draw dropdown button, will be used to activate popup
             if (EditorGUI.DropdownButton(position, buttonLabel, FocusType.Keyboard))
