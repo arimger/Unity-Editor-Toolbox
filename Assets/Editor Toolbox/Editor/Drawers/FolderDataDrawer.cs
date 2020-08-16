@@ -145,7 +145,7 @@ namespace Toolbox.Editor.Drawers
             //draw normal icon property picker
             if (GUI.Button(propertyPosition, Style.largeIconPickerContent, Style.largeIconPickerStyle))
             {
-                var propertyHash = property.GetPropertyKey().GetHashCode();
+                var propertyHash = property.propertyPath.GetHashCode() + property.serializedObject.GetHashCode();
                 EditorGUIUtility.ShowObjectPicker<Texture>(largeIconProperty.objectReferenceValue, false, null, propertyHash + largeIconPickedId);
             }
 
@@ -155,7 +155,7 @@ namespace Toolbox.Editor.Drawers
             //draw small icon property picker
             if (GUI.Button(propertyPosition, Style.smallIconPickerContent, Style.smallIconPickerStyle))
             {
-                var propertyHash = property.GetPropertyKey().GetHashCode();
+                var propertyHash = property.propertyPath.GetHashCode() + property.serializedObject.GetHashCode();
                 EditorGUIUtility.ShowObjectPicker<Texture>(smallIconProperty.objectReferenceValue, false, null, propertyHash + smallIconPickedId);
             }
 
@@ -163,7 +163,8 @@ namespace Toolbox.Editor.Drawers
             if (Event.current.commandName == selectorEventName)
             {
                 //get proper action id by removing unique property hash code
-                var controlId = EditorGUIUtility.GetObjectPickerControlID() - property.GetPropertyKey().GetHashCode();
+                var rawPickId = EditorGUIUtility.GetObjectPickerControlID();
+                var controlId = rawPickId - property.propertyPath.GetHashCode() - property.serializedObject.GetHashCode();
                 switch (controlId)
                 {
                     case largeIconPickedId:

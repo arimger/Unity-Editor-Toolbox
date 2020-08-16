@@ -217,12 +217,12 @@ namespace Toolbox.Editor
             //all "single" properties and all properties with custom native drawers should be drawn in standard way
             if (!property.hasVisibleChildren || hasNativePropertyDrawer)
             {
-                ToolboxEditorGui.DrawLayoutNativeProperty(property);
+                ToolboxEditorGui.DrawLayoutNativeProperty(property, propertyLabel);
                 return;
             }
 
             //handles property in default native way but supports ToolboxDrawers in children
-            ToolboxEditorGui.DrawLayoutDefaultProperty(property);
+            ToolboxEditorGui.DrawLayoutDefaultProperty(property, propertyLabel);
         }
     }
 }

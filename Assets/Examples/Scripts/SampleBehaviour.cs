@@ -4,8 +4,8 @@
 [AddComponentMenu("Toolbox/Cheat Sheet")]
 public class SampleBehaviour : MonoBehaviour
 {
-    [Help("This sample component provides all additional inspector extensions(drawers and associated attributes) implemented in Editor Toolbox plugin. " +
-          "Check SampleBehaviour.cs file for more details.", order = -1)]
+    [Help("This sample component provides all additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
+          "Check the SampleBehaviour.cs script for more details.", order = -1)]
 
     [BoxedHeader("1")]
 
@@ -86,7 +86,7 @@ public class SampleBehaviour : MonoBehaviour
 
     [BoxedHeader("11")]
 
-    [ClassExtends(typeof(Object))]
+    [ClassExtends(typeof(Object)), Tooltip("This variable is able to serialize Type.")]
     public SerializedType type1;
     [ClassImplements(typeof(System.Collections.ICollection))]
     public SerializedType type2;
@@ -146,7 +146,7 @@ public class SampleBehaviour : MonoBehaviour
 
     [BoxedHeader("19")]
 
-    [Preset(nameof(presetValues))]
+    [Preset(nameof(presetValues)), Tooltip("Pick value")]
     public int presetTarget;
 
     private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
@@ -214,7 +214,6 @@ public class SampleBehaviour : MonoBehaviour
 
     [Disable]
     public int[] vars1 = new[] {1, 2, 3, 4};
-
 
     [System.Serializable]
     public class SampleNestedClass

@@ -70,7 +70,7 @@ namespace Toolbox.Editor.Drawers
             //validate serialized data
             if (refAttribute == null || refAttribute.AssemblyType == null)
             {
-                EditorGUI.PropertyField(position, refProperty, label);
+                EditorGUI.PropertyField(position, property, label);
                 return;
             }
 
@@ -100,11 +100,14 @@ namespace Toolbox.Editor.Drawers
                 refLabels.Add(menuLabel);
             }
 
-            //draw reference property
-            EditorGUI.BeginProperty(position, label, refProperty);
+            //draw the reference property
+            label = EditorGUI.BeginProperty(position, label, property);
             label = property.name != "data" ? label : GUIContent.none;
-            index = EditorGUI.Popup(position, label.text, index + 1, refLabels.ToArray());
-            //get correct class reference, index = 0 is reserved to <None> type
+            //draw the proper label field
+            position = EditorGUI.PrefixLabel(position, label);
+
+            index = EditorGUI.Popup(position, index + 1, refLabels.ToArray());
+            //get the correct class reference, index = 0 is reserved to <None> type
             refProperty.stringValue = index >= 1 ? SerializedType.GetClassReference(refTypes[index - 1]) : "";
             EditorGUI.EndProperty();
         }
