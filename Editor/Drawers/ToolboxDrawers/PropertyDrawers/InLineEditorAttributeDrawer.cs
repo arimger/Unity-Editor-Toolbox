@@ -99,7 +99,7 @@ namespace Toolbox.Editor.Drawers
             editor.serializedObject.Update();
             editor.OnInspectorGUI();
             editor.serializedObject.ApplyModifiedProperties();
-            
+
             if (editor.HasPreviewGUI())
             {
                 //draw preview if possible and needed
