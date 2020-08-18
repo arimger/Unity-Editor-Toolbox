@@ -401,7 +401,7 @@ GameObject:
   - component: {fileID: 758033805}
   m_Layer: 0
   m_Name: GameObject (4)
-  m_TagString: SampleTag 2
+  m_TagString: Respawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -479,9 +479,10 @@ MonoBehaviour:
   presetTarget: 3
   enumSearch: 8
   clampedValue: 4.699999809265137
+  password: password
   list:
   - {fileID: 2133702603}
-  - {fileID: 2133702603}
+  - {fileID: 959025297}
   - {fileID: 2133702603}
   var14: 0
   var15: 0

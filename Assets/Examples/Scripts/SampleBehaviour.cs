@@ -161,6 +161,11 @@ public class SampleBehaviour : MonoBehaviour
     [Clamp(0.0f, 11.2f)]
     public double clampedValue;
 
+    [BoxedHeader("22")]
+
+    [Password]
+    public string password;
+
     [HeaderArea("Toolbox Attributes", HeaderStyle.Boxed)]
     [HeaderArea("1", HeaderStyle.Boxed)]
 
