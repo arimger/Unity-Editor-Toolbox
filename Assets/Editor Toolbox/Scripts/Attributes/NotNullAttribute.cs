@@ -5,7 +5,7 @@ namespace UnityEngine
     /// <summary>
     /// This attribute will cause an additional help box if an associated property is null. Allowed only on <see cref="Object"/> type properties.
     /// </summary>
-    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class NotNullAttribute : PropertyAttribute
     {
         public NotNullAttribute()

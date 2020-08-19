@@ -2,7 +2,7 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class IndentAttribute : PropertyAttribute
     {
         public IndentAttribute()

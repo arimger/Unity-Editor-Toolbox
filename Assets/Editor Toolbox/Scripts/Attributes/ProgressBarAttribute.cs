@@ -2,7 +2,7 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class ProgressBarAttribute : PropertyAttribute
     {
         public ProgressBarAttribute(string name = "", float minValue = 0, float maxValue = 100)

@@ -2,12 +2,14 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(validOn: AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
     public class SeparatorAttribute : PropertyAttribute
     {
         public SeparatorAttribute(float thickness = 0.75f, float padding = 6.0f)
         {
+            //validate the thickness property
             Thickness = Mathf.Max(thickness, 0);
+            //validate the padding property
             Padding = Mathf.Max(padding, 0);
         }
 
