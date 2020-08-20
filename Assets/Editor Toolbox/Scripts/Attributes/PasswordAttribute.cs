@@ -3,6 +3,6 @@
 namespace UnityEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-    public class HideLabelAttribute : PropertyAttribute
+    public class PasswordAttribute : PropertyAttribute
     { }
 }

@@ -67,7 +67,7 @@ namespace Toolbox.Editor
             {
                 if (drawerType == null)
                 {
-                    Debug.LogWarning("One of assigned drawer types in " + nameof(ToolboxEditorSettings) + " is empty.");
+                    Debug.LogWarning("One of assigned drawer types in the " + nameof(ToolboxEditorSettings) + " is empty.");
                     return null;
                 }
 

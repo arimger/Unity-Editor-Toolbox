@@ -3,9 +3,9 @@
 namespace UnityEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public class Vector3RangeAttribute : PropertyAttribute
+    public class Vector2RangeAttribute : PropertyAttribute
     {
-        public Vector3RangeAttribute(float min, float max)
+        public Vector2RangeAttribute(float min, float max)
         {
             Min = min;
             Max = max;

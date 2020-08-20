@@ -90,9 +90,9 @@ namespace Toolbox.Editor
         [SerializeField]
         private bool drawHorizontalLines = true;
 
-        [SerializeField]
+        [SerializeField, Clamp(0.0f, float.MaxValue)]
         private float largeIconScale = Defaults.largeFolderIconScaleDefault;
-        [SerializeField]
+        [SerializeField, Clamp(0.0f, float.MaxValue)]
         private float smallIconScale = Defaults.smallFolderIconScaleDefault;
 
         [SerializeField]

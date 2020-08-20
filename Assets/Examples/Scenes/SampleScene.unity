@@ -401,7 +401,7 @@ GameObject:
   - component: {fileID: 758033805}
   m_Layer: 0
   m_Name: GameObject (4)
-  m_TagString: SampleTag 2
+  m_TagString: Respawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -479,9 +479,14 @@ MonoBehaviour:
   presetTarget: 3
   enumSearch: 8
   clampedValue: 4.699999809265137
+  password: password
+  vector2: {x: 0.75, y: 0.21}
+  vector3: {x: 1, y: 0, z: 1}
+  prefab: {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
+  hexColor: 1247A6FF
   list:
   - {fileID: 2133702603}
-  - {fileID: 2133702603}
+  - {fileID: 959025297}
   - {fileID: 2133702603}
   var14: 0
   var15: 0

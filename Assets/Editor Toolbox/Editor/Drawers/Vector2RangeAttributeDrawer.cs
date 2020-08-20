@@ -3,25 +3,24 @@ using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
-    [CustomPropertyDrawer(typeof(Vector3RangeAttribute))]
-    public class Vector3RangeAttributeDrawer : ToolboxNativePropertyDrawer
+    [CustomPropertyDrawer(typeof(Vector2RangeAttribute))]
+    public class Vector2RangeAttributeDrawer : ToolboxNativePropertyDrawer
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            var attribute = (Vector3RangeAttribute)base.attribute;
+            var attribute = (Vector2RangeAttribute)base.attribute;
 
             EditorGUI.BeginChangeCheck();
             EditorGUI.PropertyField(position, property, label);
 
             if (EditorGUI.EndChangeCheck())
             {
-                var vectorData = property.vector3Value;
+                var vectorData = property.vector2Value;
 
                 vectorData.x = Mathf.Clamp(vectorData.x, attribute.Min, attribute.Max);
                 vectorData.y = Mathf.Clamp(vectorData.y, attribute.Min, attribute.Max);
-                vectorData.z = Mathf.Clamp(vectorData.z, attribute.Min, attribute.Max);
 
-                property.vector3Value = vectorData;
+                property.vector2Value = vectorData;
                 property.serializedObject.ApplyModifiedProperties();
             }
         }
@@ -29,7 +28,7 @@ namespace Toolbox.Editor.Drawers
 
         public override bool IsPropertyValid(SerializedProperty property)
         {
-            return property.propertyType == SerializedPropertyType.Vector3;
+            return property.propertyType == SerializedPropertyType.Vector2;
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)

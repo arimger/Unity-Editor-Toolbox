@@ -1,0 +1,31 @@
+﻿using UnityEngine;
+using UnityEditor;
+
+namespace Toolbox.Editor.Drawers
+{
+    [CustomPropertyDrawer(typeof(PasswordAttribute))]
+    public class PasswordAttributeDrawer : ToolboxNativePropertyDrawer
+    {
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
+        {
+            //begin property drawing
+            label = EditorGUI.BeginProperty(position, label, property);
+            //create the associated label
+            position = EditorGUI.PrefixLabel(position, label);
+            //craete the password field and cache the current result
+            property.stringValue = EditorGUI.PasswordField(position, GUIContent.none, property.stringValue);
+            EditorGUI.EndProperty();
+        }
+
+
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.String;
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeight(property, label);
+        }
+    }
+}

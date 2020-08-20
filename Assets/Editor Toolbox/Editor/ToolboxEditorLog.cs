@@ -54,13 +54,13 @@ namespace Toolbox.Editor
         {
             var message = settingsTypeName +
                           " asset file not found. Cannot initialize Toolbox core functionalities. " +
-                          "You can create new settings file using CreateAsset menu -> Create -> Toolbox Editor -> Settings.";
+                          "You can create a new settings file using the CreateAsset menu -> Create -> Toolbox Editor -> Settings.";
             Debug.LogWarning(message);
         }
 
         public static void AttributeNotSupportedWarning(Attribute attribute)
         {
-            Debug.LogWarning(attribute.GetType() + " is not supported. Assign it in " + nameof(ToolboxEditorSettings) + ".");
+            Debug.LogWarning(attribute.GetType() + " is not supported. Assign it in the " + nameof(ToolboxEditorSettings) + ".");
         }
 
         public static void PrefabExpectedWarning()
@@ -76,7 +76,7 @@ namespace Toolbox.Editor
 
         public static void LogWarning(string message)
         {
-            //Debug.LogWarning("Toolbox Editor Kit: " + message);
+            //Debug.LogWarning("[Editor Toolbox Kit] " + message);
             throw new NotImplementedException();
         }
     }

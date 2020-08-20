@@ -161,6 +161,28 @@ public class SampleBehaviour : MonoBehaviour
     [Clamp(0.0f, 11.2f)]
     public double clampedValue;
 
+    [BoxedHeader("22")]
+
+    [Password]
+    public string password;
+
+    [BoxedHeader("23")]
+
+    [Vector2Range(0, 1)]
+    public Vector2 vector2;
+    [Vector3Range(0, 1)]
+    public Vector3 vector3;
+
+    [BoxedHeader("24")]
+
+    [PrefabReference]
+    public GameObject prefab;
+
+    [BoxedHeader("25")]
+
+    [HexColor]
+    public string hexColor;
+
     [HeaderArea("Toolbox Attributes", HeaderStyle.Boxed)]
     [HeaderArea("1", HeaderStyle.Boxed)]
 
