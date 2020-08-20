@@ -40,8 +40,6 @@ namespace Toolbox.Editor
         /// </summary>
         public virtual void DrawCustomInspector()
         {
-            const string editorHeaderText = "Component Editor";
-
             var expanded = true;
 
             serializedObject.Update();
@@ -51,9 +49,9 @@ namespace Toolbox.Editor
             {
                 expanded = false;
 
-                EditorGUILayout.LabelField(editorHeaderText, ToolboxEditorUtility.headerTextStyle);
+                var disable = ToolboxEditorUtility.IsDefaultScriptProperty(property);
 
-                EditorGUI.BeginDisabledGroup(property.type == ToolboxEditorUtility.defaultScriptPropertyType);
+                EditorGUI.BeginDisabledGroup(disable);
                 EditorGUILayout.PropertyField(property);
                 EditorGUI.EndDisabledGroup();
 

@@ -22,8 +22,8 @@ MonoBehaviour:
   largeIconPadding: {x: 0, y: 0.15}
   smallIconPadding: {x: 0.15, y: 0.15}
   customFolders:
-  - type: 0
-    name: 
+  - type: 1
+    name: Editor Toolbox
     path: Editor Toolbox
     tooltip: Directory for all files associated to the Editor Toolbox.
     icon: {fileID: 2800000, guid: ee4ce20abd2621b4687047a8e4e03f96, type: 3}
@@ -51,6 +51,7 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.HighlightAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.LineAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.ImageAreaAttributeDrawer, Toolbox-Editor
   propertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
   collectionDrawerHandlers:

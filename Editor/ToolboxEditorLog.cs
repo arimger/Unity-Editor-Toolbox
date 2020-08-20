@@ -53,8 +53,7 @@ namespace Toolbox.Editor
         public static void KitInitializationWarning(string settingsTypeName)
         {
             var message = settingsTypeName +
-                          " asset file not found. Cannot initialize Toolbox core functionalities. " +
-                          "You can create a new settings file using the CreateAsset menu -> Create -> Toolbox Editor -> Settings.";
+                          " asset file not found. Go to Edit/Project Settings/Editor Toolbox and pick an existing Settings file or create new. ";
             Debug.LogWarning(message);
         }
 

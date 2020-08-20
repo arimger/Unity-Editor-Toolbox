@@ -1,47 +1,61 @@
-﻿using UnityEditor;
+﻿using System;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor
 {
     internal static class ToolboxEditorUtility
     {
-        internal static GUIStyle headerTextStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
+        private static readonly Type inspectorType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
 
-        internal const string defaultScriptPropertyPath = "m_Script";
 
-        internal const string defaultScriptPropertyType = "PPtr<MonoScript>";
-
-        internal const string defaultObjectPickEventName = "ObjectSelectorUpdated";
-
-        internal const string defaultObjectIconName = "GameObject Icon";
-
-        internal const string defaultPrefabIconName = "Prefab Icon";
-
-                  
         internal static bool IsDefaultScriptProperty(SerializedProperty property)
         {
-            return defaultScriptPropertyPath == property.propertyPath;
+            return IsDefaultScriptPropertyByPath(property.propertyPath);
         }
 
         internal static bool IsDefaultScriptPropertyByPath(string propertyPath)
         {
-            return defaultScriptPropertyPath == propertyPath;
+            return propertyPath == "m_Script";
         }
 
         internal static bool IsDefaultScriptPropertyByType(string propertyType)
         {
-            return defaultScriptPropertyType == propertyType;
+            return propertyType == "PPtr<MonoScript>";
         }
 
 
         internal static bool IsDefaultObjectIcon(string name)
         {
-            return name == defaultObjectIconName;
+            return name == "GameObject Icon";
         }
 
         internal static bool IsDefaultPrefabIcon(string name)
         {
-            return name == defaultPrefabIconName;
+            return name == "Prefab Icon";
         }
+
+
+        /// <summary>
+        /// Forces the available InspectorWindow to repaint. 
+        /// </summary>
+        internal static void RepaintInspector()
+        {
+            var windows = Resources.FindObjectsOfTypeAll(inspectorType);
+            if (windows == null || windows.Length == 0)
+            {
+                return;
+            }
+
+            for (var i = 0; i < windows.Length; i++)
+            {
+                var window = windows[i] as EditorWindow;
+                if (window)
+                {
+                    window.Repaint();
+                }
+            }
+        }        
     }
 }

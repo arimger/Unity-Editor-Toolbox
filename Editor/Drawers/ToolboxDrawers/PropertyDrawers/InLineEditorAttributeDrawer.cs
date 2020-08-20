@@ -199,8 +199,13 @@ namespace Toolbox.Editor.Drawers
                     alignment = TextAnchor.MiddleLeft
                 };
 
+                var texture = new Texture2D(1, 1);
+                texture.SetPixel(0, 0, Color.clear);
+                texture.Apply();
+                texture.hideFlags = HideFlags.HideAndDontSave;
+
                 previewStyle = new GUIStyle();
-                previewStyle.normal.background = AssetUtility.GetPersistentTexture(Color.clear);
+                previewStyle.normal.background = texture;
             }
         }
     }
