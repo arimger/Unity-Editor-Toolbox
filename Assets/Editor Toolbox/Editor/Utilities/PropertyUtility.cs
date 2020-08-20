@@ -17,7 +17,7 @@ namespace Toolbox.Editor
 
             //TODO: handle this case:
             //NOTE: in Unity 2019.3 it should be GetDrawerTypeForPropertyAndType
-            getDrawerTypeForTypeMethod = builtInPropertyUtilityType.GetMethod("GetDrawerTypeForType", 
+            getDrawerTypeForPropertyMethod = builtInPropertyUtilityType.GetMethod("GetDrawerTypeForType", 
                 BindingFlags.NonPublic | BindingFlags.Static);
             getFieldInfoForPropertyMethod = builtInPropertyUtilityType.GetMethod("GetFieldInfoFromProperty",
                 BindingFlags.NonPublic | BindingFlags.Static);
@@ -29,7 +29,13 @@ namespace Toolbox.Editor
         /// </summary>
         private static Type builtInPropertyUtilityType;
 
-        private static MethodInfo getDrawerTypeForTypeMethod;
+        /// <summary>
+        /// Method returns the drawer type related to provided property type.
+        /// </summary>
+        private static MethodInfo getDrawerTypeForPropertyMethod;
+        /// <summary>
+        /// Method returns the field info associated to provided property.
+        /// </summary>
         private static MethodInfo getFieldInfoForPropertyMethod;
 
 
@@ -64,7 +70,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Checks if a provided property is an array element, it uses associated fieldInfo to speed up inference.
+        /// Checks if the provided property is an array element, it uses associated fieldInfo to speed up inference.
         /// </summary>
         /// <param name="property"></param>
         /// <param name="fieldInfo"></param>
@@ -336,7 +342,7 @@ namespace Toolbox.Editor
             }
 
             var parameters = new object[] { drawerType };
-            var result = getDrawerTypeForTypeMethod.Invoke(null, parameters) as Type;
+            var result = getDrawerTypeForPropertyMethod.Invoke(null, parameters) as Type;
             return result != null && typeof(PropertyDrawer).IsAssignableFrom(result);
         }
     }

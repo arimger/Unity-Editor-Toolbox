@@ -242,10 +242,6 @@ namespace Toolbox.Editor
             }
 
             serializedObject.ApplyModifiedProperties();
-
-            GUILayout.FlexibleSpace();
-            //draw current Toolbox version
-            GUILayout.Label(ToolboxKitUtility.Version, Style.settingsVersionLabelStyle);
         }
 
 

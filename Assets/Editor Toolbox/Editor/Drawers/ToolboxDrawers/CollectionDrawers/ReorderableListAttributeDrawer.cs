@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using UnityEditor;
 using UnityEngine;
@@ -18,7 +16,7 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Draws <see cref="ReorderableList"/> if provided property is previously cached array/list or creates completely new instance.
+        /// Draws a <see cref="ReorderableList"/> if provided property is previously cached array/list or creates completely new instance.
         /// </summary>
         /// <param name="property">Property to draw.</param>
         /// <param name="attribute"></param>

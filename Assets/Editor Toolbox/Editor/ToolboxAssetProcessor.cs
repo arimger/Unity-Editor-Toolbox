@@ -6,13 +6,13 @@ namespace Toolbox.Editor
     {
         private static AssetDeleteResult OnWillDeleteAsset(string assetPath, RemoveAssetOptions options)
         {
-            if (ToolboxSettingsUtility.Settings)
+            if (ToolboxManager.Settings)
             {
                 var guid = AssetDatabase.AssetPathToGUID(assetPath);
 
-                if (ToolboxSettingsUtility.SettingsGuid == guid)
+                if (ToolboxManager.SettingsGuid == guid)
                 {
-                    ToolboxSettingsUtility.InitializeSettings((string)null);
+                    ToolboxManager.InitializeSettings((string)null);
                 }
             }
 

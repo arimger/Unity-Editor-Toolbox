@@ -6,7 +6,7 @@ namespace Toolbox.Editor
     using Editor = UnityEditor.Editor;
 
     [InitializeOnLoad]
-    internal static class ToolboxSettingsUtility
+    internal static class ToolboxManager
     {
         private const string settingsType = nameof(ToolboxEditorSettings);
 
@@ -63,7 +63,7 @@ namespace Toolbox.Editor
         internal static void ReimportSettings()
         {
             //find and re-import this script file
-            var guids = AssetDatabase.FindAssets(nameof(ToolboxSettingsUtility));
+            var guids = AssetDatabase.FindAssets(nameof(ToolboxManager));
             if (guids == null || guids.Length == 0) return;
             var path = AssetDatabase.GUIDToAssetPath(guids[0]);
 

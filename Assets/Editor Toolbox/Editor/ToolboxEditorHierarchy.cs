@@ -233,8 +233,8 @@ namespace Toolbox.Editor
             if (content.image)
             {
                 var iconName = content.image.name;
-                if (iconName == ToolboxEditorUtility.defaultObjectIconName ||
-                    iconName == ToolboxEditorUtility.defaultPrefabIconName)
+                if (ToolboxEditorUtility.IsDefaultObjectIcon(iconName) ||
+                    ToolboxEditorUtility.IsDefaultPrefabIcon(iconName))
                 {
                     content.image = null;
                 }
@@ -320,8 +320,8 @@ namespace Toolbox.Editor
             }
 
             //ignore situations when the provided icon is default or prefab one
-            if (contentIcon.name == ToolboxEditorUtility.defaultObjectIconName ||
-                contentIcon.name == ToolboxEditorUtility.defaultPrefabIconName)
+            if (ToolboxEditorUtility.IsDefaultObjectIcon(contentIcon.name) ||
+                ToolboxEditorUtility.IsDefaultPrefabIcon(contentIcon.name))
             {
                 return contentRect;              
             }
@@ -574,9 +574,15 @@ namespace Toolbox.Editor
                 //set the default toggle style
                 toggleStyle = new GUIStyle(EditorStyles.toggle);
 
+                //prepare the background texture
+                var texture = new Texture2D(1, 1);
+                texture.SetPixel(0, 0, labelColor);
+                texture.Apply();
+                texture.hideFlags = HideFlags.HideAndDontSave;
+
                 //set the background style
                 backgroundStyle = new GUIStyle();
-                backgroundStyle.normal.background = AssetUtility.GetPersistentTexture(labelColor);
+                backgroundStyle.normal.background = texture;
 
                 //set the header label style
                 headerLabelStyle = new GUIStyle(EditorStyles.boldLabel)

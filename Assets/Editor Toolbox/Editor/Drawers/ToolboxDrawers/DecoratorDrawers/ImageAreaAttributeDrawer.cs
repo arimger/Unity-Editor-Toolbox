@@ -1,0 +1,94 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Networking;
+
+namespace Toolbox.Editor.Drawers
+{
+    using Toolbox.Editor.Routine;
+
+    public class ImageAreaAttributeDrawer : ToolboxDecoratorDrawer<ImageAreaAttribute>
+    {      
+        private readonly static Dictionary<string, DownloadedTexture> textures = new Dictionary<string, DownloadedTexture>();
+
+
+        protected override void OnGuiBeginSafe(ImageAreaAttribute attribute)
+        {
+            var url = attribute.Url;
+            if (!textures.TryGetValue(url, out var texture))
+            {
+                textures[url] = texture = new DownloadedTexture(true);
+                EditorCoroutineUtility.StartCoroutineOwnerless(SendGetImageRequest(url, (b, t) =>
+                {
+                    textures[url] = new DownloadedTexture(false, t);                    
+                    ToolboxEditorUtility.RepaintInspector();
+                }));
+            }
+
+            if (texture.Texture2D != null)
+            {
+                EditorGUILayout.LabelField(new GUIContent(texture.Texture2D), Style.imageStyle, GUILayout.Height(attribute.Height));
+            }
+        }
+
+        private UnityWebRequest GetImageRequest(string url)
+        {
+            return UnityWebRequestTexture.GetTexture(url, false);
+        }
+
+        private IEnumerator SendGetImageRequest(string url, Action<bool, Texture2D> onRequestResult)
+        {
+            var webRequest = GetImageRequest(url);
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.isHttpError || webRequest.isNetworkError)
+            {
+                onRequestResult?.Invoke(false, null);
+            }
+            else
+            {
+                onRequestResult?.Invoke(true, (webRequest.downloadHandler as DownloadHandlerTexture).texture);
+            }
+        }
+
+
+        private class DownloadedTexture
+        {
+            public DownloadedTexture(bool isLoading) : this(isLoading, null)
+            { }
+
+            public DownloadedTexture(bool isLoading, Texture2D texture2D)
+            {
+                IsLoading = isLoading;
+                Texture2D = texture2D;
+            }
+
+            public bool IsLoading
+            {
+                get; set;
+            }
+
+            public Texture2D Texture2D
+            {
+                get; set;
+            }
+        }
+
+
+        internal static class Style
+        {
+            internal static readonly GUIStyle imageStyle;
+
+            static Style()
+            {
+                imageStyle = new GUIStyle
+                {
+                    alignment = TextAnchor.MiddleCenter
+                };
+            }
+        }
+    }
+}
