@@ -14,6 +14,7 @@ namespace Toolbox.Editor.Drawers
         /// <param name="label"></param>
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
+            label = EditorGUI.BeginProperty(position, label, property);
             EditorGUI.LabelField(position, GUIContent.none, Style.boxStyle);
             label.text = string.IsNullOrEmpty(Attribute.Label) ? label.text : Attribute.Label;
             EditorGUI.BeginChangeCheck();
@@ -21,7 +22,7 @@ namespace Toolbox.Editor.Drawers
             position.y += Style.spacing;
             property.boolValue = EditorGUI.ToggleLeft(position, label, property.boolValue);
             EditorGUI.EndChangeCheck();
-            property.serializedObject.ApplyModifiedProperties();
+            EditorGUI.EndProperty();
         }
 
 

@@ -61,6 +61,7 @@ namespace Toolbox.Editor.Drawers
                         property.serializedObject.ApplyModifiedProperties();
                         property.serializedObject.SetIsDifferentCacheDirty();
                     }
+
                     EditorGUI.EndProperty();
                 }
                 else
