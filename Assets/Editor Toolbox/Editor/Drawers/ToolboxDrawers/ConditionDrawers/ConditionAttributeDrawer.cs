@@ -7,7 +7,11 @@ namespace Toolbox.Editor.Drawers
     {
         protected bool IsConditionMet(SerializedProperty property, T attribute)
         {
-            if (attribute == null) return true;
+            if (attribute == null)
+            {
+                return true;
+            }
+
             var propertyToCheck = property.serializedObject.FindProperty(attribute.ComparedPropertyName);
             if (propertyToCheck == null)
             {

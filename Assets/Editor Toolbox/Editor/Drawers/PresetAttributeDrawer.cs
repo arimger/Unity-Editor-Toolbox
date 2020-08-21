@@ -16,7 +16,8 @@ namespace Toolbox.Editor.Drawers
           
             if (presetValues == null)
             {
-                LogWarning(property, attribute, "Cannot find relative preset field " + Attribute.PresetPropertyName + ".Property will be drawn in standard way.");
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
+                    "Cannot find relative preset field (" + Attribute.PresetPropertyName + "). Property will be drawn in the standard way.");
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
@@ -61,19 +62,20 @@ namespace Toolbox.Editor.Drawers
                         property.serializedObject.ApplyModifiedProperties();
                         property.serializedObject.SetIsDifferentCacheDirty();
                     }
-
                     EditorGUI.EndProperty();
                 }
                 else
                 {
-                    LogWarning(property, attribute, "Type mismatch between serialized property and provided preset field. Property will be drawn in standard way.");
+                    ToolboxEditorLog.AttributeUsageWarning(attribute, property, 
+                        "Type mismatch between serialized property and provided preset field. Property will be drawn in the standard way.");
                     EditorGUI.PropertyField(position, property, label);
                     return;
                 }
             }
             else
             {
-                LogWarning(property, attribute, "Preset field (" + Attribute.PresetPropertyName + ") has to be a one-dimensional collection(array or list). Property will be drawn in standard way.");
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property, 
+                    "Preset field (" + Attribute.PresetPropertyName + ") has to be a one-dimensional collection(array or list). Property will be drawn in the standard way.");
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }

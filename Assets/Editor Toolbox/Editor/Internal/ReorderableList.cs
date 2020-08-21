@@ -787,7 +787,6 @@ namespace Toolbox.Editor.Internal
                 EditorGUI.EndProperty();
                 EditorGUI.EndDisabledGroup();
             }
-
             EditorGUI.EndProperty();
         }
 
