@@ -75,11 +75,9 @@ namespace Toolbox.Editor
             LogWarning(name + " should be a prefab.");
         }
 
-        public static void KitInitializationWarning(string settingsTypeName)
+        public static void KitInitializationMessage()
         {
-            var message = settingsTypeName +
-                          " asset file not found. Go to Edit/Project Settings/Editor Toolbox and pick an existing Settings file or create new. ";
-            LogWarning(message);
+            LogMessage("Settings initialization needed. Go to Edit/Project Settings.../Editor Toolbox and pick an existing Settings file or create new. ");
         }
 
         public static void LogWarning(string message)

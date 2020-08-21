@@ -259,18 +259,18 @@ namespace Toolbox.Editor
         /// </summary>
         internal static class Style
         {
-            internal readonly static float height = EditorGUIUtility.singleLineHeight;
-            internal readonly static float spacing = EditorGUIUtility.standardVerticalSpacing;
+            internal static readonly float height = EditorGUIUtility.singleLineHeight;
+            internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
 
             /// <summary>
             /// Default color used in vertical line drawing.
             /// </summary>
-            internal readonly static Color standardLineColor = new Color(0.3f, 0.3f, 0.3f);
+            internal static readonly Color standardLineColor = new Color(0.3f, 0.3f, 0.3f);
 
-            internal readonly static GUIStyle boxedSkinStyle;
-            internal readonly static GUIStyle labelSkinStyle;
-            internal readonly static GUIStyle buttonSkinStyle;
-            internal readonly static GUIStyle miniButtonStyle;
+            internal static readonly GUIStyle boxedSkinStyle;
+            internal static readonly GUIStyle labelSkinStyle;
+            internal static readonly GUIStyle buttonSkinStyle;
+            internal static readonly GUIStyle miniButtonStyle;
 
             internal static readonly GUIContent warningContent;
 

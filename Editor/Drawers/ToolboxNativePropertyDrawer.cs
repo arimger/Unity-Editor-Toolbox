@@ -4,12 +4,12 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     /// <summary>
-    /// Base class for Toolbox drawers based on native <see cref="PropertyDrawer"/> implementation. 
+    /// Base class for Toolbox drawers based on the native <see cref="PropertyDrawer"/> implementation. 
     /// </summary>
     public abstract class ToolboxNativePropertyDrawer : PropertyDrawer
     {
         /// <summary>
-        /// Safe GUI method. Provided property is previously validated by <see cref="IsPropertyValid(SerializedProperty)"/> method.
+        /// Safe GUI method. Provided property is previously validated by the <see cref="IsPropertyValid(SerializedProperty)"/> method.
         /// </summary>
         /// <param name="position"></param>
         /// <param name="property"></param>
@@ -42,7 +42,7 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Checks if provided property will be properly handled by this drawer.
+        /// Checks if provided property can be properly handled by this drawer.
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>

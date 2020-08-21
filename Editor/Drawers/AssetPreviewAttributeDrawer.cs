@@ -28,7 +28,10 @@ namespace Toolbox.Editor.Drawers
             {
                 var previewTexture = AssetPreview.GetAssetPreview(property.objectReferenceValue);
 
-                if (!previewTexture) return;
+                if (!previewTexture)
+                {
+                    return;
+                }
 
                 //cache indent difference
                 var indent = position.width - EditorGUI.IndentedRect(position).width;
@@ -96,9 +99,6 @@ namespace Toolbox.Editor.Drawers
         private AssetPreviewAttribute Attribute => attribute as AssetPreviewAttribute;
 
 
-        /// <summary>
-        /// Static representation of asset preview style.
-        /// </summary>
         private static class Style
         {
             internal static readonly float height = EditorGUIUtility.singleLineHeight;

@@ -50,9 +50,6 @@ namespace Toolbox.Editor.Drawers
         private BroadcastButtonAttribute Attribute => attribute as BroadcastButtonAttribute;
 
 
-        /// <summary>
-        /// Static representation of button style.
-        /// </summary>
         private static class Style
         {
             internal static readonly float height = EditorGUIUtility.singleLineHeight * 1.25f;
