@@ -10,8 +10,12 @@ namespace Toolbox.Editor.Drawers
         {
             var newLabel = new GUIContent(Attribute.NewLabel);
             var oldLabel = new GUIContent(Attribute.OldLabel ?? label.text);
+
+            //NOTE:we have perform BeginProperty to prevent label overriding
+            label = EditorGUI.BeginProperty(position, label, property);
             label.text = property.displayName.Replace(oldLabel.text, newLabel.text);
             EditorGUI.PropertyField(position, property, label, property.isExpanded);
+            EditorGUI.EndProperty();
         }
 
 

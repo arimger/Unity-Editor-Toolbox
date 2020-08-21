@@ -23,7 +23,7 @@ namespace Toolbox.Editor.Drawers
             var yValue = property.vector2Value.y;
 
             var labelRect = new Rect(position.x, position.y, labelWidth, position.height);
-            var minFieldRect = new Rect(position.x + labelWidth, position.y, fieldWidth, position.height);
+            var minFieldRect = new Rect(position.xMin + labelWidth, position.y, fieldWidth, position.height);
             var maxFieldRect = new Rect(position.xMax - fieldWidth, position.y, fieldWidth, position.height);
             //set slider rect between min and max fields + additional padding
             var minMaxSliderRect = new Rect
@@ -33,8 +33,9 @@ namespace Toolbox.Editor.Drawers
                  position.height);
 
             //begin drawing using GUI methods
+            label = EditorGUI.BeginProperty(position, label, property);
             EditorGUI.BeginChangeCheck();
-            EditorGUI.LabelField(labelRect, property.displayName);
+            EditorGUI.LabelField(labelRect, label);
             xValue = EditorGUI.FloatField(minFieldRect, xValue);
             yValue = EditorGUI.FloatField(maxFieldRect, yValue);
             EditorGUI.MinMaxSlider(minMaxSliderRect, ref xValue, ref yValue, minValue, maxValue);
@@ -46,6 +47,7 @@ namespace Toolbox.Editor.Drawers
             {
                 property.vector2Value = new Vector2(xValue, yValue);
             }
+            EditorGUI.EndProperty();
         }
 
 

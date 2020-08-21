@@ -49,9 +49,9 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.EndIndentAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HeaderAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HighlightAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.ImageAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.LineAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.ImageAreaAttributeDrawer, Toolbox-Editor
   propertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
   collectionDrawerHandlers:

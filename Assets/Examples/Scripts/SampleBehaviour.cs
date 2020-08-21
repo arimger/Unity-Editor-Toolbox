@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [ExecuteAlways]
-[AddComponentMenu("Toolbox/Cheat Sheet")]
+[AddComponentMenu("Editor Toolbox/Cheat Sheet")]
 public class SampleBehaviour : MonoBehaviour
 {
     [Help("This sample component provides all additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +

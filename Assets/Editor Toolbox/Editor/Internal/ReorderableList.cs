@@ -340,7 +340,10 @@ namespace Toolbox.Editor.Internal
 
         private void DoListHeader(Rect headerRect)
         {
-            if (!HasHeader) return;
+            if (!HasHeader)
+            {
+                return;
+            }
 
             //draw the background on repaint
             if (Event.current.type == EventType.Repaint)
@@ -754,12 +757,19 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public void DrawStandardHeader(Rect rect)
         {
-            //display property name
-            EditorGUI.LabelField(rect, List.displayName);
+            var label = EditorGUI.BeginProperty(rect, new GUIContent(List.displayName), List);
 
-            //adjust width and OX position for size property
-            rect = new Rect(rect.xMax - Style.sizeArea, rect.y + (rect.height - Style.sizeLabel.fixedHeight) / 2, Style.sizeArea, rect.height);
- 
+            //adjust OY position to middle of the conent
+            rect.y = rect.y + (rect.height - Style.sizeLabel.fixedHeight) / 2;
+
+            //display the property label using preprocessed name by BeginProperty method
+            EditorGUI.LabelField(rect, label);
+
+            //adjust OX position and width for the size property
+            var width = Style.sizeArea;
+            rect.xMin = rect.xMax - width;
+            rect.width = width;
+
             //display array size property without indentation
             using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
             {
@@ -768,7 +778,7 @@ namespace Toolbox.Editor.Internal
                 EditorGUI.BeginDisabledGroup(HasFixedSize);
                 EditorGUI.BeginProperty(rect, Style.arraySizeFieldContent, property);
                 EditorGUI.BeginChangeCheck();
-                //cache delayed size value using delayed int field
+                //cache a delayed size value using the delayed int field
                 var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, property.intValue, Style.sizeLabel), 0);
                 if (EditorGUI.EndChangeCheck())
                 {
@@ -777,6 +787,8 @@ namespace Toolbox.Editor.Internal
                 EditorGUI.EndProperty();
                 EditorGUI.EndDisabledGroup();
             }
+
+            EditorGUI.EndProperty();
         }
 
         /// <summary>
