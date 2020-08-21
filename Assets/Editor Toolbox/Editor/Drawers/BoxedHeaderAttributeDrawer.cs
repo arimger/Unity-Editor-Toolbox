@@ -29,9 +29,6 @@ namespace Toolbox.Editor.Drawers
         private BoxedHeaderAttribute Attribute => attribute as BoxedHeaderAttribute;
 
 
-        /// <summary>
-        /// Static representation of header style.
-        /// </summary>
         private static class Style
         {
             internal static readonly float height = EditorGUIUtility.singleLineHeight * 1.25f;

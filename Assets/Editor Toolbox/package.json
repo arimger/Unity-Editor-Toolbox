@@ -1,10 +1,16 @@
 {
   "name": "com.arimger.editor-toolbox",
   "displayName": "Editor Toolbox",
-  "version": "0.5.9",
+  "version": "0.6.0",
   "unity": "2018.1",
   "description": "Tools, custom attributes, drawers, hierarchy overlay, and other extensions for the Unity Editor.",
-  "keywords": [ "editor", "attribute", "inspector", "hierarchy", "folders" ],
+  "keywords": [
+    "editor",
+    "attribute",
+    "inspector",
+    "hierarchy",
+    "folders"
+  ],
   "category": "editor extensions",
   "dependencies": {},
   "author": {

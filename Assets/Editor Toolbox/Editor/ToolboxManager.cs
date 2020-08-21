@@ -24,7 +24,7 @@ namespace Toolbox.Editor
             }
             else
             {
-                ToolboxEditorLog.KitInitializationWarning(settingsType);
+                ToolboxEditorLog.KitInitializationMessage();
                 return false;
             }
         }

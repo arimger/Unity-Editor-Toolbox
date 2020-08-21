@@ -121,8 +121,8 @@ namespace Toolbox.Editor
 
                 EditorGUILayout.LabelField("Large Icon Properties");
                 EditorGUI.indentLevel++;
-                EditorGUILayout.PropertyField(largeIconScaleProperty, new GUIContent("Scale"), false);       
-                
+                EditorGUILayout.PropertyField(largeIconScaleProperty, new GUIContent("Scale"), false);
+
                 var x = 0.0f;
                 var y = 0.0f;
 
@@ -194,7 +194,7 @@ namespace Toolbox.Editor
                 const string assignButtonLabel = "Assign all possible";
 
                 if (ToolboxEditorGui.DrawDrawerList(decoratorDrawerHandlersList, "Decorator Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
-                {              
+                {
                     currentTarget.SetAllPossibleDecoratorDrawers();
                     forceValidation = true;
                 }
@@ -247,27 +247,27 @@ namespace Toolbox.Editor
 
         internal static class Style
         {
-            internal readonly static float spacing = EditorGUIUtility.standardVerticalSpacing;
+            internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
 
-            internal readonly static GUIStyle miniButtonStyle;
-            internal readonly static GUIStyle smallLabelStyle;
-            internal readonly static GUIStyle smallHeaderStyle;
-            internal readonly static GUIStyle usualHeaderStyle;
-            internal readonly static GUIStyle settingsFoldoutStyle;
-            internal readonly static GUIStyle drawerListFoldoutStyle;
-            internal readonly static GUIStyle classicListFoldoutStyle;
-            internal readonly static GUIStyle settingsVersionLabelStyle;
+            internal static readonly GUIStyle miniButtonStyle;
+            internal static readonly GUIStyle smallLabelStyle;
+            internal static readonly GUIStyle smallHeaderStyle;
+            internal static readonly GUIStyle usualHeaderStyle;
+            internal static readonly GUIStyle settingsFoldoutStyle;
+            internal static readonly GUIStyle drawerListFoldoutStyle;
+            internal static readonly GUIStyle classicListFoldoutStyle;
+            internal static readonly GUIStyle settingsVersionLabelStyle;
 
-            internal readonly static GUIContent projectSettingsContent = new GUIContent("Project Settings",
+            internal static readonly GUIContent projectSettingsContent = new GUIContent("Project Settings",
                 EditorGUIUtility.IconContent("Project").image);
-            internal readonly static GUIContent drawersSettingsContent = new GUIContent("Drawers Settings",
+            internal static readonly GUIContent drawersSettingsContent = new GUIContent("Drawers Settings",
                 EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
-            internal readonly static GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings",
+            internal static readonly GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings",
                 EditorGUIUtility.IconContent("UnityEditor.HierarchyWindow").image);
 
-            internal readonly static GUIContent applyButtonContent = new GUIContent("Reload references", "Apply all reference-based changes");
+            internal static readonly GUIContent applyButtonContent = new GUIContent("Reload references", "Apply all reference-based changes");
 
-            internal readonly static GUILayoutOption[] resetButtonOptions = new GUILayoutOption[]
+            internal static readonly GUILayoutOption[] resetButtonOptions = new GUILayoutOption[]
             {
                 GUILayout.Width(50)
             };

@@ -182,4 +182,11 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [HexColor]
     public string hexColor;
+
+    [BoxedHeader("26")]
+
+    [Vector3Direction]
+    public Vector3 direction3d;
+    [Vector2Direction]
+    public Vector2 direction2d;
 }

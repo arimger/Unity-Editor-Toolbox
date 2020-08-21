@@ -38,7 +38,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Forces the available InspectorWindow to repaint. 
+        /// Forces the available InspectorWindows to repaint. 
         /// </summary>
         internal static void RepaintInspector()
         {
@@ -56,6 +56,9 @@ namespace Toolbox.Editor
                     window.Repaint();
                 }
             }
+
+            //NOTE:none reflection way
+            //UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
         }        
     }
 }

@@ -7,7 +7,7 @@ namespace Toolbox.Editor.Drawers
     public class BoxedToggleAttributeDrawer : ToolboxNativePropertyDrawer
     {   
         /// <summary>
-        /// Draws validated property.
+        /// Draws the validated property.
         /// </summary>
         /// <param name="position"></param>
         /// <param name="property"></param>
@@ -43,9 +43,6 @@ namespace Toolbox.Editor.Drawers
         private BoxedToggleAttribute Attribute => attribute as BoxedToggleAttribute;
 
 
-        /// <summary>
-        /// Static representation of toggle style.
-        /// </summary>
         private static class Style
         {
             internal static readonly float height = EditorGUIUtility.singleLineHeight * 1.25f;

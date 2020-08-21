@@ -1,7 +1,6 @@
 ﻿//Custom reimplementation of an idea orginally provided here - https://github.com/roboryantron/UnityEditorJunkie/blob/master/Assets/SearchableEnum/Code/Editor/SearchablePopup.cs, 2019
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 using UnityEditor;
