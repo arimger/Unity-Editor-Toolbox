@@ -48,6 +48,7 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.EndHorizontalAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.EndIndentAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HeaderAreaAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.HelpAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HighlightAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.ImageAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.LineAreaAttributeDrawer, Toolbox-Editor

@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
 [ExecuteAlways]
-[AddComponentMenu("Editor Toolbox/Cheat Sheet")]
-public class SampleBehaviour : MonoBehaviour
+[AddComponentMenu("Editor Toolbox/Cheat Sheet 1")]
+public class SampleBehaviour1 : MonoBehaviour
 {
-    [Help("This sample component provides all additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
-          "Check the SampleBehaviour.cs script for more details.", order = -1)]
+    [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
+          "Check the SampleBehaviour1.cs script for more details.", order = -1)]
 
     [BoxedHeader("1")]
 
@@ -57,7 +57,7 @@ public class SampleBehaviour : MonoBehaviour
 
     [BoxedHeader("9")]
 
-    [InstanceButton(typeof(SampleBehaviour), nameof(ResetVar8), 
+    [InstanceButton(typeof(SampleBehaviour1), nameof(ResetVar8), 
                                         "Use this button to reset var8 using this instance[in Play mode]", ButtonActivityType.OnPlayMode, order = 100)]
     [BroadcastButton(nameof(ResetVar8), "Use this button to reset var8 using broadcasting[in Edit mode]", ButtonActivityType.OnEditMode, order = 100)]
 
@@ -182,90 +182,4 @@ public class SampleBehaviour : MonoBehaviour
 
     [HexColor]
     public string hexColor;
-
-    [HeaderArea("Toolbox Attributes", HeaderStyle.Boxed)]
-    [HeaderArea("1", HeaderStyle.Boxed)]
-
-    [ReorderableList(ListStyle.Boxed, elementLabel:"GameObject"), Tooltip("Sample List")]
-    public GameObject[] list;
-
-    [HeaderArea("2", HeaderStyle.Boxed)]
-
-    [BeginGroup("Custom group")]
-    public int var14;
-    [Separator]
-    public int var15;
-    public int var16;
-    [BeginIndent]
-    public int var17;
-    public int var18;
-    [EndIndent]
-    public int var19;
-    [EndGroup]
-    public int var20;
-
-    [HeaderArea("3", HeaderStyle.Boxed)]
-
-    [InLineEditor]
-    public Transform var21;
-
-    [SpaceArea]
-
-    [InLineEditor]
-    public Material var22;
-
-    [SpaceArea]
-
-    [InLineEditor(true, true)]
-    public Texture var23;
-
-    [SpaceArea]
-
-    [InLineEditor(drawSettings:true)]
-    public AudioClip var24;
-
-    [SpaceArea]
-
-    [InLineEditor]
-    public Mesh var25;
-
-    [InLineEditor(drawHeader: true, drawPreview: true)]
-    public GameObject var26;
-
-    [HeaderArea("4", HeaderStyle.Boxed)]
-
-    [Disable]
-    public int[] vars1 = new[] {1, 2, 3, 4};
-
-    [System.Serializable]
-    public class SampleNestedClass
-    {
-        public int i = 0;
-        [ReorderableList, TagSelector]
-        public string[] strings;
-    }
-
-    [HeaderArea("5", HeaderStyle.Boxed)]
-
-    public SampleNestedClass var27;
-
-    [HeaderArea("6", HeaderStyle.Boxed)]
-
-    [Highlight(0, 1, 0)]
-    public GameObject var28;
-
-    [HeaderArea("7", HeaderStyle.Boxed)]
-
-    [BeginHorizontal]
-    public int var29;
-    public int var30;
-    //NOTE: custom sample created within the Examples
-    //[Sample]
-    [EndHorizontal]
-    public int var31;
-
-    private void Start()
-    {
-        transform.hideFlags = HideFlags.HideInInspector;
-    }
 }

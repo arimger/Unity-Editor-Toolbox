@@ -83,7 +83,10 @@ namespace Toolbox.Editor
                 rect = GetLargeIconRect(rect, true);
             }
 
-            if (icon == null) return;
+            if (icon == null)
+            {
+                return;
+            }
 
             //finally, draw retrieved icon
             GUI.DrawTexture(rect, icon, ScaleMode.ScaleToFit, true);
