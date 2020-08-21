@@ -26,10 +26,10 @@ Unity 2018.x or newer
 
 ## Table Of Contents
 
-- [Attributes](#attributes)
+- [Attributes&Drawers](#drawers)
 	- [Native Drawers](#nativedrawers)
-	- [Toolbox Drawers](#toolboxdrawers)
-- [ReorderableList](#reorderable-list)
+	- [Custom Drawers](#toolboxdrawers)
+- [Reorderable List](#reorderable-list)
 - [Editor Extensions](#editor-extensions)
 	- [Hierarchy](#hierarchy)
 	- [Project](#project)
@@ -49,7 +49,7 @@ Available features are divided into three groups:
 
 Each module is described in its respective section.
 
-## Attributes
+## Attributes&Drawers <a name="drawers"></a>
 
 ### Native Drawers <a name="nativedrawers"></a>
 
@@ -129,6 +129,11 @@ public float var1;
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc25.png)
 
 #### AssetPreviewAttribute
+
+```csharp
+[AssetPreview]
+public GameObject var1;
+```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc10.png)
 
@@ -403,6 +408,7 @@ public GameObject[] boxedStyleList = new GameObject[4];
 Enable and customize the presented hierarchy overlay in the **ToolboxEditorSettings**. Basically it provides more data about particular GameObjects directly within the Hierarchy window.
 
 Each row can contain:
+- Scripts information
 - Layer
 - Tag
 - Toggle to enable/disable GameObject

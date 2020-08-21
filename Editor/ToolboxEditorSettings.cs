@@ -73,7 +73,6 @@ namespace Toolbox.Editor
         int RowDataItemsCount { get; }
     }
 
-    [CreateAssetMenu(menuName = "Editor Toolbox/Settings", order = 1)]
     public class ToolboxEditorSettings : ScriptableObject, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxDrawersSettings
     {
         [SerializeField]
