@@ -28,7 +28,6 @@ namespace Toolbox.Editor.Drawers
             color = EditorGUI.ColorField(colorRect, GUIContent.none, color, true, true, false);
             property.stringValue = ColorUtility.ToHtmlStringRGBA(color);
             EditorGUI.SelectableLabel(labelRect, string.Format(hexFormat, property.stringValue));
-
             EditorGUI.EndProperty();
         }
 

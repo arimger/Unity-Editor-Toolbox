@@ -35,7 +35,7 @@ namespace Toolbox.Editor.Drawers
             else
             {
                 var warningContent = new GUIContent(property.displayName + " has invalid property drawer");
-                ToolboxEditorLog.WrongAttributeUsageWarning(property, attribute);
+                ToolboxEditorLog.WrongAttributeUsageWarning(attribute, property);
                 ToolboxEditorGui.DrawEmptyProperty(position, property, warningContent);
             }
         }
@@ -49,18 +49,6 @@ namespace Toolbox.Editor.Drawers
         public virtual bool IsPropertyValid(SerializedProperty property)
         {
             return true;
-        }
-
-
-
-        /// <summary>
-        /// Logs to debug console message relative to given property and attribute.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <param name="message"></param>
-        protected static void LogWarning(SerializedProperty property, PropertyAttribute attribute, string message)
-        {
-            Debug.LogWarning(property.name + " property in " + property.serializedObject.targetObject.GetType() + "[" + attribute.GetType().Name + "]" + ": " + message);
         }
     }
 }

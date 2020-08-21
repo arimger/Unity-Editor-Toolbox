@@ -14,7 +14,7 @@ namespace Toolbox.Editor.Drawers
         {
             //end horizontal group
             EditorGUILayout.EndHorizontal();
-            //restore label width using native values - hard coded and retrieved from source code
+            //restore label width using native values - hard coded and retrieved from the source code
             EditorGUIUtility.labelWidth = Mathf.Max(EditorGUIUtility.currentViewWidth * sizeToWidthRatio - minWidthOffset, minWidthSize);
         }
     }

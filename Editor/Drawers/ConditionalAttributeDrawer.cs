@@ -18,12 +18,12 @@ namespace Toolbox.Editor.Drawers
                 }
                 else
                 {
-                    LogWarning(property, attribute, PropertyToCheck + " has to be boolean value property.");
+                    ToolboxEditorLog.AttributeUsageWarning(attribute, property, PropertyToCheck + " has to be boolean value property.");
                 }
             }
             else
             {
-                LogWarning(property, attribute, PropertyToCheck + " does not exists.");
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property, PropertyToCheck + " does not exists.");
             }
 
             return true;

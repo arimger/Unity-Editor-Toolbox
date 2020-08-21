@@ -60,7 +60,7 @@ namespace Toolbox.Editor.Drawers
             else
             {
                 var warningContent = new GUIContent(property.displayName + " has invalid property drawer");
-                ToolboxEditorLog.WrongAttributeUsageWarning(property, attribute);
+                ToolboxEditorLog.WrongAttributeUsageWarning(attribute, property);
                 ToolboxEditorGui.DrawLayoutEmptyProperty(property, warningContent);
             }
         }

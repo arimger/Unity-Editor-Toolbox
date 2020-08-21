@@ -50,8 +50,9 @@ namespace Toolbox.Editor.Drawers
 
                         var targetComponent = target.GetComponent(attribute.InstanceType);
                         if (targetComponent == null)
-                        {                          
-                            LogWarning(attribute.InstanceType + " component not found in selected GameObject(" + target.name + ").");
+                        {                                       
+                            ToolboxEditorLog.AttributeUsageWarning(attribute, 
+                                attribute.InstanceType + " component not found in selected GameObject(" + target.name + ").");
                             continue;
                         }
 
@@ -60,20 +61,11 @@ namespace Toolbox.Editor.Drawers
                 }
                 else
                 {
-                    LogWarning(attribute.MethodName + " method not found inside " + attribute.InstanceType + " type.");
+                    ToolboxEditorLog.AttributeUsageWarning(attribute, 
+                        attribute.MethodName + " method not found inside " + attribute.InstanceType + " type.");
                 }
             }
             EditorGUI.EndDisabledGroup();
-        }
-
-
-        /// <summary>
-        /// Logs warning message to debug console and associates it to a given attribute.
-        /// </summary>
-        /// <param name="message"></param>
-        private void LogWarning(string message)
-        {
-            Debug.LogWarning(attribute.GetType().Name + ": " + message);
         }
 
 

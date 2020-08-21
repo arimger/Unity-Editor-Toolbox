@@ -18,7 +18,7 @@ namespace Toolbox.Editor.Drawers
 
             if (PrefabUtility.GetPrefabAssetType(property.objectReferenceValue) == PrefabAssetType.NotAPrefab)
             {
-                LogWarning(property, attribute, "Assigned object has to be a prefab.");
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property, "Assigned object has to be a prefab.");
                 property.objectReferenceValue = null;
             }
         }

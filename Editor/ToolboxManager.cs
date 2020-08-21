@@ -118,7 +118,7 @@ namespace Toolbox.Editor
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
 
-                        Debug.Log("Created the settings file at - " + settingsPath);
+                        ToolboxEditorLog.LogMessage("Created the settings file at - " + settingsPath);
 
                         InitializeSettings();
                         InitializeProvider();

@@ -23,8 +23,15 @@ namespace Toolbox.Editor.Drawers
                 textures[url] = texture = new DownloadedTexture(true);
                 EditorCoroutineUtility.StartCoroutineOwnerless(SendGetImageRequest(url, (b, t) =>
                 {
-                    textures[url] = new DownloadedTexture(false, t);                    
-                    ToolboxEditorUtility.RepaintInspector();
+                    textures[url] = new DownloadedTexture(false, t);
+                    if (b)
+                    {
+                        ToolboxEditorUtility.RepaintInspector();
+                    }
+                    else
+                    {
+                        ToolboxEditorLog.AttributeUsageWarning(attribute, "Cannot retrive image from the provided URL - " + url);
+                    }
                 }));
             }
 
@@ -64,6 +71,11 @@ namespace Toolbox.Editor.Drawers
             {
                 IsLoading = isLoading;
                 Texture2D = texture2D;
+            }
+
+            public bool IsLoaded
+            {
+                get => !IsLoading && Texture2D;
             }
 
             public bool IsLoading
