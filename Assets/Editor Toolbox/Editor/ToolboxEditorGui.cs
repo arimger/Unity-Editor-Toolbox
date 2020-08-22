@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
@@ -9,30 +10,53 @@ namespace Toolbox.Editor
     /// This class contains all useful and ready to use Editor controls.
     /// </summary>
     public static partial class ToolboxEditorGui
-    {        
+    {
         /// <summary>
-        /// Creates inspector horizontal line using <see cref="GUILayout"/> class.
+        /// Draws horizontal line. Uses built-in layouting system.
         /// </summary>
         /// <param name="color"></param>
         /// <param name="thickness"></param>
         /// <param name="padding"></param>
         public static void DrawLayoutLine(float thickness = 0.75f, float padding = 6.0f)
         {
-            DrawLine(EditorGUILayout.GetControlRect(GUILayout.Height(padding + thickness)), thickness, padding);
+            DrawLayoutLine(thickness, padding, Style.standardLineColor);
         }
 
         /// <summary>
-        /// Creates inspector horizontal line.
+        /// Draws horizontal line. Uses built-in layouting system.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="thickness"></param>
+        /// <param name="padding"></param>
+        public static void DrawLayoutLine(float thickness, float padding, Color color)
+        {
+            DrawLine(EditorGUILayout.GetControlRect(GUILayout.Height(padding + thickness)), thickness, padding, color);
+        }
+
+        /// <summary>
+        /// Draws horizontal line.
         /// </summary>
         /// <param name="color"></param>
         /// <param name="thickness"></param>
         /// <param name="padding"></param>
         public static void DrawLine(Rect rect, float thickness = 0.75f, float padding = 6.0f)
         {
+            DrawLine(rect, thickness, padding, Style.standardLineColor);
+        }
+
+        /// <summary>
+        /// Draws horizontal line.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="thickness"></param>
+        /// <param name="padding"></param>
+        /// <param name="color"></param>
+        public static void DrawLine(Rect rect, float thickness, float padding, Color color)
+        {
             rect.y += padding / 2;
             rect.height = thickness;
 
-            EditorGUI.DrawRect(rect, Style.standardLineColor);
+            EditorGUI.DrawRect(rect, color);
         }
 
         /// <summary>
@@ -44,7 +68,10 @@ namespace Toolbox.Editor
         {
             var previewTexture = AssetPreview.GetAssetPreview(asset);
 
-            if (!previewTexture) return;
+            if (!previewTexture)
+            {
+                return;
+            }
 
             var style = new GUIStyle();
             style.normal.background = previewTexture;
@@ -66,7 +93,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// 
+        /// Draws header-like label in form of foldout. Uses built-in layouting system.
         /// </summary>
         /// <returns></returns>
         public static bool DrawLayoutHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle foldoutStyle)
@@ -81,7 +108,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// 
+        /// Draws header-like label in form of foldout.
         /// </summary>
         /// <returns></returns>
         public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle foldoutStyle)
@@ -289,14 +316,9 @@ namespace Toolbox.Editor
 
     public static partial class ToolboxEditorGui
     {                
-        /// <summary>
-        /// Not implemented.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <param name="position"></param>
+        [System.Obsolete]
         public static void DrawToolboxProperty(Rect position, SerializedProperty property)
         {
-            //TODO:
             throw new System.NotImplementedException();
         }
 
@@ -306,7 +328,7 @@ namespace Toolbox.Editor
         /// <param name="property"></param>
         public static void DrawLayoutToolboxProperty(SerializedProperty property)
         {
-            ToolboxDrawerUtility.GetPropertyHandler(property).OnGuiLayout();
+            ToolboxDrawerModule.GetPropertyHandler(property).OnGuiLayout();
         }
 
         /// <summary>
@@ -389,7 +411,15 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws provided property as a warning label.
         /// </summary>
-        public static void DrawLayoutEmptyProperty(SerializedProperty property, GUIContent label = null)
+        public static void DrawLayoutEmptyProperty(SerializedProperty property)
+        {
+            DrawLayoutEmptyProperty(property, null);
+        }
+
+        /// <summary>
+        /// Draws provided property as a warning label.
+        /// </summary>
+        public static void DrawLayoutEmptyProperty(SerializedProperty property, GUIContent label)
         {
             DrawEmptyProperty(GUILayoutUtility.GetRect(1, Style.height), property, label);
         }
@@ -397,7 +427,15 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws provided property as a warning label.
         /// </summary>
-        public static void DrawEmptyProperty(Rect position, SerializedProperty property, GUIContent label = null)
+        public static void DrawEmptyProperty(Rect position, SerializedProperty property)
+        {
+            DrawEmptyProperty(position, property, null);
+        }
+
+        /// <summary>
+        /// Draws provided property as a warning label.
+        /// </summary>
+        public static void DrawEmptyProperty(Rect position, SerializedProperty property, GUIContent label)
         {
             const float iconHeight = 20.0f;
             const float iconWidth = 20.0f;

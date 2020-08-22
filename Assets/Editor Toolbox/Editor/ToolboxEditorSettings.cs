@@ -8,7 +8,38 @@ namespace Toolbox.Editor
 {
     using Toolbox.Editor.Drawers;
 
-    public interface IToolboxDrawersSettings
+    public interface IToolboxHierarchySettings
+    {
+        void AddRowDataItem(HierarchyObjectDataItem item);
+        void RemoveRowDataItem(HierarchyObjectDataItem item);
+        void RemoveRowDataItemAt(int index);
+        HierarchyObjectDataItem GetRowDataItemAt(int index);
+
+        bool UseToolboxHierarchy { get; }
+        bool DrawHorizontalLines { get; }
+
+        int RowDataItemsCount { get; }
+    }
+
+    public interface IToolboxProjectSettings
+    {
+        void AddCustomFolder(FolderData path);
+        void RemoveCustomFolder(FolderData path);
+        void RemoveCustomFolderAt(int index);
+        FolderData GetCustomFolderAt(int index);
+
+        bool UseToolboxProject { get; }
+
+        float LargeIconScale { get; }
+        float SmallIconScale { get; }
+
+        Vector2 LargeIconPadding { get; }
+        Vector2 SmallIconPadding { get; }
+
+        int CustomFoldersCount { get; }
+    }
+
+    public interface IToolboxInspectorSettings
     {
         void SetAllPossibleDecoratorDrawers();
         void SetAllPossiblePropertyDrawers();
@@ -42,38 +73,7 @@ namespace Toolbox.Editor
         int TargetTypeDrawersCount { get; }
     }
 
-    public interface IToolboxProjectSettings
-    {
-        void AddCustomFolder(FolderData path);
-        void RemoveCustomFolder(FolderData path);
-        void RemoveCustomFolderAt(int index);
-        FolderData GetCustomFolderAt(int index);
-
-        bool UseToolboxProject { get; }
-
-        float LargeIconScale { get; }
-        float SmallIconScale { get; }
-
-        Vector2 LargeIconPadding { get; }
-        Vector2 SmallIconPadding { get; }
-
-        int CustomFoldersCount { get; }
-    }
-
-    public interface IToolboxHierarchySettings
-    {
-        void AddRowDataItem(HierarchyObjectDataItem item);
-        void RemoveRowDataItem(HierarchyObjectDataItem item);
-        void RemoveRowDataItemAt(int index);
-        HierarchyObjectDataItem GetRowDataItemAt(int index);
-
-        bool UseToolboxHierarchy { get; }
-        bool DrawHorizontalLines { get; }
-
-        int RowDataItemsCount { get; }
-    }
-
-    public class ToolboxEditorSettings : ScriptableObject, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxDrawersSettings
+    public class ToolboxEditorSettings : ScriptableObject, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxInspectorSettings
     {
         [SerializeField]
         private bool useToolboxHierarchy = true;
@@ -98,7 +98,7 @@ namespace Toolbox.Editor
         private Vector2 largeIconPadding = new Vector2(Defaults.largeFolderIconXPaddingDefault, Defaults.largeFolderIconYPaddingDefault);
         [SerializeField]
         private Vector2 smallIconPadding = new Vector2(Defaults.smallFolderIconXPaddingDefault, Defaults.smallFolderIconYPaddingDefault);
-        
+
         [HideIf(nameof(useToolboxFolders), true)]
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         private List<FolderData> customFolders;
@@ -120,15 +120,21 @@ namespace Toolbox.Editor
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxTargetTypeDrawer))]
         private List<SerializedType> targetTypeDrawerHandlers;
 
+        [SerializeField, HideInInspector]
+        private bool needsUpdate;
+
         private UnityEvent onSettingsUpdated = new UnityEvent();
 
 
-        /// <summary>
-        /// Called internally by the Editor.
-        /// </summary>
         internal void OnValidate()
         {
-            onSettingsUpdated.Invoke();
+            needsUpdate = true;
+        }
+
+        internal void ForceUpdate()
+        {
+            needsUpdate = false;
+            onSettingsUpdated?.Invoke();
         }
 
 
@@ -150,7 +156,10 @@ namespace Toolbox.Editor
 
         public void AddRowDataItem(HierarchyObjectDataItem item)
         {
-            if (rowDataItems == null) rowDataItems = new List<HierarchyObjectDataItem>();
+            if (rowDataItems == null)
+            {
+                rowDataItems = new List<HierarchyObjectDataItem>();
+            }
             rowDataItems.Add(item);
         }
 
@@ -172,7 +181,10 @@ namespace Toolbox.Editor
 
         public void AddCustomFolder(FolderData data)
         {
-            if (customFolders == null) customFolders = new List<FolderData>();
+            if (customFolders == null)
+            {
+                customFolders = new List<FolderData>();
+            }
             customFolders.Add(data);
         }
 
@@ -196,7 +208,7 @@ namespace Toolbox.Editor
         {
             decoratorDrawerHandlers?.Clear();
 
-            var types = ToolboxDrawerUtility.GetAllPossibleDecoratorDrawers();
+            var types = ToolboxDrawerModule.GetAllPossibleDecoratorDrawers();
             for (var i = 0; i < types.Count; i++)
             {
                 AddDecoratorDrawerHandler(new SerializedType(types[i]));
@@ -207,7 +219,7 @@ namespace Toolbox.Editor
         {
             propertyDrawerHandlers?.Clear();
 
-            var types = ToolboxDrawerUtility.GetAllPossiblePropertyDrawers();
+            var types = ToolboxDrawerModule.GetAllPossiblePropertyDrawers();
             for (var i = 0; i < types.Count; i++)
             {
                 AddPropertyDrawerHandler(new SerializedType(types[i]));
@@ -218,7 +230,7 @@ namespace Toolbox.Editor
         {
             collectionDrawerHandlers?.Clear();
 
-            var types = ToolboxDrawerUtility.GetAllPossibleCollectionDrawers();
+            var types = ToolboxDrawerModule.GetAllPossibleCollectionDrawers();
             for (var i = 0; i < types.Count; i++)
             {
                 AddCollectionDrawerHandler(new SerializedType(types[i]));
@@ -229,7 +241,7 @@ namespace Toolbox.Editor
         {
             conditionDrawerHandlers?.Clear();
 
-            var types = ToolboxDrawerUtility.GetAllPossibleConditionDrawers();
+            var types = ToolboxDrawerModule.GetAllPossibleConditionDrawers();
             for (var i = 0; i < types.Count; i++)
             {
                 AddConditionDrawerHandler(new SerializedType(types[i]));
@@ -240,7 +252,7 @@ namespace Toolbox.Editor
         {
             targetTypeDrawerHandlers?.Clear();
 
-            var types = ToolboxDrawerUtility.GetAllPossibleTargetTypeDrawers();
+            var types = ToolboxDrawerModule.GetAllPossibleTargetTypeDrawers();
             for (var i = 0; i < types.Count; i++)
             {
                 AddTargetTypeDrawerHandler(new SerializedType(types[i]));
@@ -249,31 +261,46 @@ namespace Toolbox.Editor
 
         public void AddDecoratorDrawerHandler(SerializedType drawerReference)
         {
-            if (decoratorDrawerHandlers == null) decoratorDrawerHandlers = new List<SerializedType>();
+            if (decoratorDrawerHandlers == null)
+            {
+                decoratorDrawerHandlers = new List<SerializedType>();
+            }
             decoratorDrawerHandlers.Add(drawerReference);
         }
 
         public void AddPropertyDrawerHandler(SerializedType drawerReference)
         {
-            if (propertyDrawerHandlers == null) propertyDrawerHandlers = new List<SerializedType>();
+            if (propertyDrawerHandlers == null)
+            {
+                propertyDrawerHandlers = new List<SerializedType>();
+            }
             propertyDrawerHandlers.Add(drawerReference);
         }
 
         public void AddConditionDrawerHandler(SerializedType drawerReference)
         {
-            if (conditionDrawerHandlers == null) conditionDrawerHandlers = new List<SerializedType>();
+            if (conditionDrawerHandlers == null)
+            {
+                conditionDrawerHandlers = new List<SerializedType>();
+            }
             conditionDrawerHandlers.Add(drawerReference);
         }
 
         public void AddCollectionDrawerHandler(SerializedType drawerReference)
         {
-            if (collectionDrawerHandlers == null) collectionDrawerHandlers = new List<SerializedType>();
+            if (collectionDrawerHandlers == null)
+            {
+                collectionDrawerHandlers = new List<SerializedType>();
+            }
             collectionDrawerHandlers.Add(drawerReference);
         }
 
         public void AddTargetTypeDrawerHandler(SerializedType drawerReference)
         {
-            if (targetTypeDrawerHandlers == null) targetTypeDrawerHandlers = new List<SerializedType>();
+            if (targetTypeDrawerHandlers == null)
+            {
+                targetTypeDrawerHandlers = new List<SerializedType>();
+            }
             targetTypeDrawerHandlers.Add(drawerReference);
         }
 
@@ -333,8 +360,10 @@ namespace Toolbox.Editor
             largeIconScale = Defaults.largeFolderIconScaleDefault;
             smallIconScale = Defaults.smallFolderIconScaleDefault;
 
-            largeIconPadding = new Vector2(Defaults.largeFolderIconXPaddingDefault, Defaults.largeFolderIconYPaddingDefault);
-            smallIconPadding = new Vector2(Defaults.smallFolderIconXPaddingDefault, Defaults.smallFolderIconYPaddingDefault);
+            largeIconPadding = new Vector2(Defaults.largeFolderIconXPaddingDefault,
+                Defaults.largeFolderIconYPaddingDefault);
+            smallIconPadding = new Vector2(Defaults.smallFolderIconXPaddingDefault,
+                Defaults.smallFolderIconYPaddingDefault);
         }
 
 
@@ -401,6 +430,12 @@ namespace Toolbox.Editor
         public int CollectionDrawersCount => collectionDrawerHandlers != null ? collectionDrawerHandlers.Count : 0;
 
         public int TargetTypeDrawersCount => targetTypeDrawerHandlers != null ? targetTypeDrawerHandlers.Count : 0;
+
+
+        internal bool NeedsUpdate
+        {
+            get => needsUpdate;
+        }
 
 
         private static class Defaults

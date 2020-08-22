@@ -98,7 +98,7 @@ namespace Toolbox.Editor
                 }
             }
 
-            hasToolboxTargetTypeDrawer = ToolboxDrawerUtility.HasTargetTypeDrawer(propertyType);
+            hasToolboxTargetTypeDrawer = ToolboxDrawerModule.HasTargetTypeDrawer(propertyType);
 
             //specify drawer attribute 
             if (property.isArray)
@@ -144,7 +144,7 @@ namespace Toolbox.Editor
             {
                 for (var i = 0; i < decoratorAttributes.Length; i++)
                 {
-                    ToolboxDrawerUtility.GetDecoratorDrawer(decoratorAttributes[i])?.OnGuiBegin(decoratorAttributes[i]);
+                    ToolboxDrawerModule.GetDecoratorDrawer(decoratorAttributes[i])?.OnGuiBegin(decoratorAttributes[i]);
                 }
             }
 
@@ -152,7 +152,7 @@ namespace Toolbox.Editor
             var conditionState = PropertyCondition.Valid;
             if (conditionAttribute != null)
             {
-                conditionState = ToolboxDrawerUtility.GetConditionDrawer(conditionAttribute)?.OnGuiValidate(property, conditionAttribute) ?? conditionState;
+                conditionState = ToolboxDrawerModule.GetConditionDrawer(conditionAttribute)?.OnGuiValidate(property, conditionAttribute) ?? conditionState;
             }
 
             if (conditionState == PropertyCondition.NonValid)
@@ -173,17 +173,17 @@ namespace Toolbox.Editor
                 if (hasToolboxTargetTypeDrawer)
                 {
                     //draw property based on associated type drawer
-                    ToolboxDrawerUtility.GetTargetTypeDrawer(propertyType).OnGui(property, propertyLabel);
+                    ToolboxDrawerModule.GetTargetTypeDrawer(propertyType).OnGui(property, propertyLabel);
                 }
                 else if (property.isArray)
                 {
                     //draw array property by its collection drawer
-                    ToolboxDrawerUtility.GetCollectionDrawer(propertyArrayAttribute)?.OnGui(property, propertyLabel, propertyArrayAttribute);
+                    ToolboxDrawerModule.GetCollectionDrawer(propertyArrayAttribute)?.OnGui(property, propertyLabel, propertyArrayAttribute);
                 }
                 else
                 {
                     //draw single property by its property drawer
-                    ToolboxDrawerUtility.GetPropertyDrawer(propertySingleAttribute)?.OnGui(property, propertyLabel, propertySingleAttribute);
+                    ToolboxDrawerModule.GetPropertyDrawer(propertySingleAttribute)?.OnGui(property, propertyLabel, propertySingleAttribute);
                 }
             }
             else
@@ -203,7 +203,7 @@ namespace Toolbox.Editor
             {
                 for (var i = decoratorAttributes.Length - 1; i >= 0; i--)
                 {
-                    ToolboxDrawerUtility.GetDecoratorDrawer(decoratorAttributes[i])?.OnGuiEnd(decoratorAttributes[i]);
+                    ToolboxDrawerModule.GetDecoratorDrawer(decoratorAttributes[i])?.OnGuiEnd(decoratorAttributes[i]);
                 }
             }
         }

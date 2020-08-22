@@ -4,7 +4,7 @@
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 2")]
 public class SampleBehaviour2 : MonoBehaviour
 {
-    [HelpArea("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
+    [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
           "Check the SampleBehaviour2.cs script for more details.", Order = -1)]
 
     [HeaderArea("Toolbox Attributes", HeaderStyle.Boxed)]
@@ -17,7 +17,7 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [BeginGroup("Custom group")]
     public int var14;
-    [Separator]
+    [Separator] //or [Line]
     public int var15;
     public int var16;
     [BeginIndent]
@@ -26,6 +26,8 @@ public class SampleBehaviour2 : MonoBehaviour
     [EndIndent]
     public int var19;
     [EndGroup]
+    [Line()]
+    [Line(Color = "#9800FF")]
     public int var20;
 
     [HeaderArea("3", HeaderStyle.Boxed)]

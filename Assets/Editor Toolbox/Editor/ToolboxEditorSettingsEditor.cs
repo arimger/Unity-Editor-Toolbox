@@ -80,7 +80,7 @@ namespace Toolbox.Editor
             serializedObject.Update();
 
             //forcing validation is usefull when target field is edited directly
-            //NOTE: check ComponentUtility for more details
+            //NOTE: check InspectorUtility for more details
             var forceValidation = false;
 
             //handle hierarchy settings section
@@ -182,9 +182,7 @@ namespace Toolbox.Editor
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
-
                 EditorGUILayout.PropertyField(useToolboxDrawersProperty);
-
                 EditorGUILayout.Space();
 
                 EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
@@ -236,9 +234,9 @@ namespace Toolbox.Editor
                 GUILayout.Space(-lineTickiness);
             }
 
-            if (forceValidation)
+            if (currentTarget.NeedsUpdate || forceValidation)
             {
-                ComponentUtility.SimulateOnValidate(currentTarget);
+                currentTarget.ForceUpdate();
             }
 
             serializedObject.ApplyModifiedProperties();

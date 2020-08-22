@@ -5,11 +5,11 @@
 public class SampleBehaviour1 : MonoBehaviour
 {
     [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
-          "Check the SampleBehaviour1.cs script for more details.", order = -1)]
+          "Check the SampleBehaviour1.cs script for more details.", Order = -1)]
 
     [BoxedHeader("1")]
 
-    [Help("You can provide more information in HelpBoxes.", order = 100)]
+    [Help("You can provide more information in HelpBoxes.", Order = 100)]
     public int var1;
 
     [BoxedHeader("2")]
@@ -19,7 +19,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [BoxedHeader("3")]
 
-    [ProgressBar(minValue:10.0f, maxValue:50.0f)]
+    [ProgressBar(minValue:10.0f, maxValue:50.0f, Color = "#234DEA")]
     public float progressBar = 25.4f;
 
     [BoxedHeader("4")]
@@ -43,14 +43,14 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [BoxedHeader("7")]
     
-    [HideLabel, Help("Use this toggle to show/hide property.", order = 100)]
+    [HideLabel, Help("Use this toggle to show/hide property.", Order = 100)]
     public bool toggle1;
     [ConditionalHide(nameof(toggle1), true)]
     public float var6;
 
     [BoxedHeader("8")]
 
-    [HideLabel, Help("Use this toggle to enable/disable property.", order = 100)]
+    [HideLabel, Help("Use this toggle to enable/disable property.", Order = 100)]
     public bool toggle2;
     [ConditionalDisable(nameof(toggle2), true)]
     public float var7;

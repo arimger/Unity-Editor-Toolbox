@@ -546,8 +546,8 @@ MonoBehaviour:
   enumFlag1: 35
   enumFlag2: 198
   var13: {fileID: 0}
-  randomValue: -8.382832
-  directory: Editor Toolbox/Editor/Editors
+  randomValue: -6.175682
+  directory: Editor Toolbox/Editors
   sceneName: SampleScene
   presetTarget: 3
   enumSearch: 8
@@ -556,7 +556,7 @@ MonoBehaviour:
   vector2: {x: 0.18, y: 0.21}
   vector3: {x: 1, y: 0, z: 1}
   prefab: {fileID: 0}
-  hexColor: 1247A6FF
+  hexColor: 234CE0FF
   direction3d: {x: 0, y: 0, z: 0}
   direction2d: {x: 0, y: 1}
 --- !u!4 &959025299

@@ -1,15 +1,13 @@
-using System;
+﻿using System;
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// Draws a HelpBox within the InspectorWindow above this field.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
-    public class HelpAttribute : PropertyAttribute
-    {
-        /// <summary>
-        /// Adds a HelpBox to the Unity property inspector above this field.
-        /// </summary>
-        /// <param name="text">The help text to be displayed in the HelpBox.</param>
-        /// <param name="type">The icon to be displayed in the HelpBox.</param>
+    public class HelpAttribute : ToolboxDecoratorAttribute
+    {        
         public HelpAttribute(string text, UnityMessageType type = UnityMessageType.Info)
         {
             Text = text;

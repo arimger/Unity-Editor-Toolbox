@@ -4,10 +4,99 @@ using System.Reflection;
 
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
-    public static class ComponentUtility
+    internal static partial class InspectorUtility
+    {
+        [InitializeOnLoadMethod]
+        private static void InitializeEvents()
+        {
+            Selection.selectionChanged += OnEditorReload;
+        }
+
+
+        private static readonly Type inspectorType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
+
+
+        /// <summary>
+        /// Forces the available InspectorWindows to repaint. 
+        /// </summary>
+        internal static void RepaintInspectors()
+        {
+            var windows = Resources.FindObjectsOfTypeAll(inspectorType);
+            if (windows == null || windows.Length == 0)
+            {
+                return;
+            }
+
+            for (var i = 0; i < windows.Length; i++)
+            {
+                var window = windows[i] as EditorWindow;
+                if (window)
+                {
+                    window.Repaint();
+                }
+            }
+
+            //NOTE:none reflection way
+            //UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+        }
+
+        /// <summary>
+        /// Simulates OnValidate broadcast call on the target object.
+        /// </summary>
+        /// <param name="target"></param>
+        internal static void SimulateOnValidate(Object target)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            var methodInfo = target.GetType().GetMethod("OnValidate", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (methodInfo != null)
+            {
+                methodInfo.Invoke(target, null);
+            }
+        }
+
+
+        internal static bool IsDefaultScriptProperty(SerializedProperty property)
+        {
+            return IsDefaultScriptPropertyByPath(property.propertyPath);
+        }
+
+        internal static bool IsDefaultScriptPropertyByPath(string propertyPath)
+        {
+            return propertyPath == "m_Script";
+        }
+
+        internal static bool IsDefaultScriptPropertyByType(string propertyType)
+        {
+            return propertyType == "PPtr<MonoScript>";
+        }
+
+
+        internal static bool IsDefaultObjectIcon(string name)
+        {
+            return name == "GameObject Icon";
+        }
+
+        internal static bool IsDefaultPrefabIcon(string name)
+        {
+            return name == "Prefab Icon";
+        }
+
+
+        /// <summary>
+        /// Event fired every time when the inspector window is fully rebuilt.
+        /// </summary>
+        internal static event Action OnEditorReload;
+    }
+
+    internal static partial class InspectorUtility
     {
         private static List<Component> copiedComponents = new List<Component>();
 
@@ -23,7 +112,7 @@ namespace Toolbox.Editor
                 var componentsOfSelectedTransforms = selectedGameObjects[i].GetComponents<Component>();
 
                 for (var j = 0; j < componentsOfSelectedTransforms.Length; j++)
-                {       
+                {
                     if (componentsOfSelectedTransforms[j] is Transform)
                         continue;
 
@@ -45,7 +134,7 @@ namespace Toolbox.Editor
         private static void Paste()
         {
             var selectedGameobjects = Selection.gameObjects;
-         
+
             for (int i = 0; i < selectedGameobjects.Length; i++)
             {
                 var gameObject = selectedGameobjects[i];
@@ -76,7 +165,7 @@ namespace Toolbox.Editor
             component.hideFlags |= HideFlags.HideInInspector;
             EditorUtility.SetDirty(component);
         }
-        
+
         [MenuItem("CONTEXT/Component/Hide All Components", false, priority = 301)]
         private static void HideAll(MenuCommand menuCommand)
         {
@@ -107,21 +196,6 @@ namespace Toolbox.Editor
             }
 
             EditorUtility.SetDirty(gameObject);
-        }
-
-
-        public static void SimulateOnValidate(UnityEngine.Object target)
-        {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
-
-            var methodInfo = target.GetType().GetMethod("OnValidate", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (methodInfo != null)
-            {
-                methodInfo.Invoke(target, null);
-            }
         }
     }
 }

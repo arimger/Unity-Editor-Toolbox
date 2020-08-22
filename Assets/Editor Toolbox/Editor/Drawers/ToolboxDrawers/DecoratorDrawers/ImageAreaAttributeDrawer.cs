@@ -26,7 +26,7 @@ namespace Toolbox.Editor.Drawers
                     textures[url] = new DownloadedTexture(false, t);
                     if (b)
                     {
-                        ToolboxEditorUtility.RepaintInspector();
+                        InspectorUtility.RepaintInspectors();
                     }
                     else
                     {
@@ -40,6 +40,7 @@ namespace Toolbox.Editor.Drawers
                 EditorGUILayout.LabelField(new GUIContent(texture.Texture2D), Style.imageStyle, GUILayout.Height(attribute.Height));
             }
         }
+
 
         private UnityWebRequest GetImageRequest(string url)
         {

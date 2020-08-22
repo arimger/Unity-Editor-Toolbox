@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Starts vertical group of properties in inspector window. Has to be closed by <see cref="EndGroupAttribute"/>.
+    /// Starts vertical group of properties in the inspector window. Has to be closed by the <see cref="EndGroupAttribute"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
     public class BeginGroupAttribute : ToolboxDecoratorAttribute

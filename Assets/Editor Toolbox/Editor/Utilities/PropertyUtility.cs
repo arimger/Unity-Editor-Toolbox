@@ -297,7 +297,7 @@ namespace Toolbox.Editor
                 }
 
                 //simulate OnValidate call since we changed only fieldInfo's value
-                ComponentUtility.SimulateOnValidate(targetObject);
+                InspectorUtility.SimulateOnValidate(targetObject);
             }    
         }
 

@@ -211,11 +211,11 @@ namespace Toolbox.Editor.Drawers
 
             internal const float iconsPadding = 12.0f;
 
-            internal const float largeFolderWidth = ToolboxEditorProject.maximalFolderWidth;
-            internal const float largeFolderHeight = ToolboxEditorProject.maximalFolderHeight;
+            internal const float largeFolderWidth = ToolboxEditorProject.Style.maxFolderWidth;
+            internal const float largeFolderHeight = ToolboxEditorProject.Style.maxFolderHeight;
 
-            internal const float smallFolderWidth = ToolboxEditorProject.minimalFolderWidth;
-            internal const float smallFolderHeight = ToolboxEditorProject.minimalFolderHeight;
+            internal const float smallFolderWidth = ToolboxEditorProject.Style.minFolderWidth;
+            internal const float smallFolderHeight = ToolboxEditorProject.Style.minFolderHeight;
 
             internal static readonly Texture2D folderTexture;
 

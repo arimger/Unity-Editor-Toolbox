@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 using UnityEditor;
 using UnityEngine;
@@ -18,7 +16,6 @@ namespace Toolbox.Editor
 
     /// <summary>
     /// Static GUI representation for the Hierarchy Overlay.
-    /// It is directly managed by the <see cref="ToolboxHierarchyUtility"/>.
     /// </summary>
     [InitializeOnLoad]
     public static class ToolboxEditorHierarchy
@@ -40,7 +37,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Collection of all available content drawers associated to particular data type.
+        /// Collection of all available content drawers associated to predefined data types.
         /// </summary>
         private static readonly Dictionary<HierarchyObjectDataItem, DrawHierarchyContentCallback>
             availableDrawContentCallbacks = new Dictionary<HierarchyObjectDataItem, DrawHierarchyContentCallback>(4)
@@ -53,7 +50,7 @@ namespace Toolbox.Editor
             };
 
         /// <summary>
-        /// Collection of all wanted hierarchy elements drawers.
+        /// Collection of all curretnly allowed hierarchy elements drawers.
         /// </summary>
         private static readonly List<DrawHierarchyContentCallback>
             allowedDrawContentCallbacks = new List<DrawHierarchyContentCallback>()
@@ -65,41 +62,11 @@ namespace Toolbox.Editor
                 DrawScript
             };
 
-        /// <summary>
-        /// Collection of all additional external callbacks.
-        /// </summary>
-        private static readonly List<DrawHierarchyContentCallback>
-            createdDrawContentCallbacks = new List<DrawHierarchyContentCallback>();
 
         /// <summary>
         /// Index of current (last processed) GameObject within the Hierarchy.
         /// </summary>
         private static int currentItemIndex = 0;
-
-        /// <summary>
-        /// Determines if horizontal lines within the Hierarchy overlay should be drawn.
-        /// </summary>
-        private static bool drawHorizontalLines = true;
-#pragma warning disable 414
-        private static bool drawSeparationLines = true;
-#pragma warning restore 414
-
-        internal static void RepaintHierarchyOverlay() => EditorApplication.RepaintHierarchyWindow();
-
-        internal static void AddDrawHierarchyContentCallback(DrawHierarchyContentCallback callback)
-        {
-            allowedDrawContentCallbacks.Add(callback);
-        }
-
-        internal static void RemoveDrawHierarchyContentCallback(DrawHierarchyContentCallback callback)
-        {
-            allowedDrawContentCallbacks.Remove(callback);
-        }
-
-        internal static void RemoveAllDrawHierarchyContentCallbacks(Predicate<DrawHierarchyContentCallback> predicate)
-        {
-            allowedDrawContentCallbacks.RemoveAll(predicate);
-        }
 
 
         /// <summary>
@@ -109,21 +76,18 @@ namespace Toolbox.Editor
         /// <param name="rect"></param>
         private static void OnItemCallback(int instanceId, Rect rect)
         {
-            if (!ToolboxHierarchyUtility.ToolboxHierarchyAllowed)
+            if (!IsOverlayAllowed)
             {
                 return;
             }
-            
+
             //use Unity's internal method to determinate the proper GameObject instance
             var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
             if (gameObject)
             {
-                //NOTE: the prime item can be used to draw single options for the whole hierarchy
-                if (IsPrimeGameObject(gameObject))
+                //NOTE: the first item can be used to draw single options for the whole hierarchy
+                if (IsFirstGameObject(gameObject))
                 {
-                    //pick all choosen items and settings directly from the settings utility
-                    PrepareDrawCallbacks();
-                    PrepareDrawUtilities();
                     //reset items index
                     currentItemIndex = 0;
                 }
@@ -158,42 +122,6 @@ namespace Toolbox.Editor
             }
         }
 
-        /// <summary>
-        /// Prepares allowed drawers collection based on the settings file.
-        /// </summary>
-        private static void PrepareDrawCallbacks()
-        {
-            if (!ToolboxHierarchyUtility.AreRowDataItemsUpdated)
-            {
-                return;
-            }
-
-            allowedDrawContentCallbacks.Clear();
-
-            var rowDataItems = ToolboxHierarchyUtility.GetRowDataItems();
-            foreach (var item in rowDataItems)
-            {
-                //validate current item and try to get associated drawer
-                if (!availableDrawContentCallbacks.TryGetValue(item, out var drawer))
-                {
-                    continue;
-                }
-
-                //add drawer to the allowed drawers collection
-                allowedDrawContentCallbacks.Add(drawer);
-            }
-
-            allowedDrawContentCallbacks.Concat(createdDrawContentCallbacks);
-        }
-
-        /// <summary>
-        /// Prepares additional settings for the Hierarchy overlay.
-        /// </summary>
-        private static void PrepareDrawUtilities()
-        {
-            drawHorizontalLines = ToolboxHierarchyUtility.HorizontalLinesAllowed;
-        }
-
 
         /// <summary>
         /// Draws item in the completely raw way.
@@ -224,7 +152,7 @@ namespace Toolbox.Editor
             {
                 EditorGUI.DrawRect(new Rect(rect.x, rect.y - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
             }
-            
+
             EditorGUI.DrawRect(new Rect(rect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
             EditorGUI.DrawRect(new Rect(rect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
@@ -233,8 +161,8 @@ namespace Toolbox.Editor
             if (content.image)
             {
                 var iconName = content.image.name;
-                if (ToolboxEditorUtility.IsDefaultObjectIcon(iconName) ||
-                    ToolboxEditorUtility.IsDefaultPrefabIcon(iconName))
+                if (InspectorUtility.IsDefaultObjectIcon(iconName) ||
+                    InspectorUtility.IsDefaultPrefabIcon(iconName))
                 {
                     content.image = null;
                 }
@@ -249,8 +177,8 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws label as whole. Creates separation lines, associated icons and
-        /// additional elements stored in the <see cref="allowedDrawContentCallbacks"/> collection.
+        /// Draws label as whole.
+        /// Creates separation lines and content based on the <see cref="allowedDrawContentCallbacks"/> collection.
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="rect"></param>
@@ -288,7 +216,7 @@ namespace Toolbox.Editor
                 rect.xMin = contentRect.xMin;
             }
 
-            if (drawHorizontalLines)
+            if (DrawHorizontalLines)
             {
                 EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
             }
@@ -320,10 +248,10 @@ namespace Toolbox.Editor
             }
 
             //ignore situations when the provided icon is default or prefab one
-            if (ToolboxEditorUtility.IsDefaultObjectIcon(contentIcon.name) ||
-                ToolboxEditorUtility.IsDefaultPrefabIcon(contentIcon.name))
+            if (InspectorUtility.IsDefaultObjectIcon(contentIcon.name) ||
+                InspectorUtility.IsDefaultPrefabIcon(contentIcon.name))
             {
-                return contentRect;              
+                return contentRect;
             }
 
             //draw specific icon 
@@ -360,7 +288,7 @@ namespace Toolbox.Editor
             const int edDefaultLayout = 0;
             const int irDefaultLayout = 2;
             const int uiDefaultLayout = 5;
-            
+
             //adjust rect for the layer field
             var contentRect = new Rect(rect.x + rect.width - Style.layerWidth, rect.y, Style.layerWidth, rect.height);
 
@@ -368,26 +296,26 @@ namespace Toolbox.Editor
             {
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
-			
-			var layerMask = gameObject.layer;
+
+            var layerMask = gameObject.layer;
             var layerName = LayerMask.LayerToName(layerMask);
 
             var contentText = layerMask.ToString();
 
             //adjust the layer label to known layer values
             switch (layerMask)
-			{
-				case edDefaultLayout:
+            {
+                case edDefaultLayout:
                     contentText = string.Empty;
-					break;
-				case uiDefaultLayout:
-					contentText = layerName;
-					break;
+                    break;
+                case uiDefaultLayout:
+                    contentText = layerName;
+                    break;
                 case irDefaultLayout:
-					break;
-			}
+                    break;
+            }
             var content = new GUIContent(contentText, layerName + " layer");
-			
+
             //draw label for the gameObject's specific layer
             EditorGUI.LabelField(contentRect, content, Style.layerLabelStyle);
             return contentRect;
@@ -402,7 +330,7 @@ namespace Toolbox.Editor
             var contentText = gameObject.tag;
             if (contentTag == defaultUnityTag)
             {
-                contentText = string.Empty;           
+                contentText = string.Empty;
             }
             var content = new GUIContent(contentText, contentTag);
 
@@ -419,7 +347,7 @@ namespace Toolbox.Editor
         private static Rect DrawScript(GameObject gameObject, Rect rect)
         {
             rect = new Rect(rect.x + rect.width - Style.iconWidth, rect.y, Style.iconWidth, rect.height);
-                 
+
             var tooltip = string.Empty;
             var texture = Style.componentTexture;
 
@@ -489,7 +417,7 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="gameObject"></param>
         /// <returns></returns>
-        private static bool IsPrimeGameObject(GameObject gameObject)
+        private static bool IsFirstGameObject(GameObject gameObject)
         {
             return gameObject.transform.parent == null && gameObject.transform.GetSiblingIndex() == 0;
         }
@@ -510,7 +438,7 @@ namespace Toolbox.Editor
             gameObject.tag = tag;
             gameObject.layer = 0;
             gameObject.isStatic = true;
-            
+
             //ensure it gets reparented if this was a context click(otherwise does nothing)
             GameObjectUtility.SetParentAndAlign(gameObject, menuCommand.context as GameObject);
             //register the creation in the undo system
@@ -520,9 +448,48 @@ namespace Toolbox.Editor
         }
 
 
+        internal static void AppendAllowedHierarchyContentCallback(DrawHierarchyContentCallback callback)
+        {
+            allowedDrawContentCallbacks.Add(callback);
+        }
+
+        internal static void RemoveAllowedHierarchyContentCallback(DrawHierarchyContentCallback callback)
+        {
+            allowedDrawContentCallbacks.Remove(callback);
+        }
+
+        internal static void CreateAllowedHierarchyContentCallbacks(params HierarchyObjectDataItem[] items)
+        {
+            foreach (var item in items)
+            {
+                //validate current item and try to get associated drawer
+                if (!availableDrawContentCallbacks.TryGetValue(item, out var drawer))
+                {
+                    continue;
+                }
+
+                //add drawer to the defined drawers collection
+                AppendAllowedHierarchyContentCallback(drawer);
+            }
+        }
+
+        internal static void RemoveAllowedHierarchyContentCallbacks()
+        {
+            allowedDrawContentCallbacks.Clear();
+        }
+
+        internal static void RepaintHierarchyOverlay() => EditorApplication.RepaintHierarchyWindow();
+
+
         /// <summary>
-        /// Static representation of custom hierarchy style.
+        /// Determines if <see cref="ToolboxEditorHierarchy"/> can create an additional overlay on the Hierarchy Window.
         /// </summary>
+        internal static bool IsOverlayAllowed { get; set; } = false;
+
+        internal static bool DrawHorizontalLines { get; set; } = true;
+        internal static bool DrawSeparationLines { get; set; } = true;
+
+
         internal static class Style
         {
             internal static readonly float padding = 2.0f;

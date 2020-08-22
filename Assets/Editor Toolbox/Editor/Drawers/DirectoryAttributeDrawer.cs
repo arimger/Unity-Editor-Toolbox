@@ -9,7 +9,7 @@ namespace Toolbox.Editor.Drawers
     public class DirectoryAttributeDrawer : ToolboxNativePropertyDrawer
     {
         /// <summary>
-        /// Checks if provided path exist. Depends on relative path and <see cref="Application.dataPath"/>.
+        /// Checks if provided path exist. Depends on relative path and the <see cref="Application.dataPath"/> property.
         /// </summary>
         /// <param name="propertyPath"></param>
         /// <param name="assetRelativePath"></param>
@@ -43,14 +43,14 @@ namespace Toolbox.Editor.Drawers
                 position.y += Style.boxHeight + Style.spacing + Style.spacing;
             }
 
-            position.height = Style.height;
+            position.height = Style.rowHeight;
             position.width -= Style.directoryButtonWidth + Style.spacing;
             //draw standard string property field
             EditorGUI.PropertyField(position, property, label);
             position.x = position.xMax + Style.spacing;
             position.width = Style.directoryButtonWidth;
             //create additional pick directory button
-            if (GUI.Button(position, Style.directoryButtonContent, Style.directoryButtonStyle))
+            if (GUI.Button(position, Style.directoryButtonLabel, Style.directoryButtonStyle))
             {
                 var assetRelativePath = Attribute.RelativePath;
                 var projectRelativePath = Application.dataPath + "/";
@@ -82,7 +82,7 @@ namespace Toolbox.Editor.Drawers
             }
 
             //return adjusted height
-            return base.GetPropertyHeight(property, label) + Style.boxHeight + Style.spacing;
+            return base.GetPropertyHeight(property, label) + Style.boxHeight + Style.spacing * 2;
         }
 
 
@@ -94,19 +94,19 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal static readonly float height = EditorGUIUtility.singleLineHeight;
+            internal static readonly float rowHeight = EditorGUIUtility.singleLineHeight;
             internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.5f;
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
             internal static readonly float directoryButtonWidth = 30.0f;
 
-            internal static readonly GUIStyle directoryButtonStyle;
+            internal static readonly GUIContent directoryButtonLabel;
 
-            internal static readonly GUIContent directoryButtonContent;
-    
+            internal static readonly GUIStyle directoryButtonStyle;
+ 
             static Style()
             {
                 directoryButtonStyle = new GUIStyle(EditorStyles.miniButton);
-                directoryButtonContent = new GUIContent(EditorGUIUtility.FindTexture("Folder Icon"), "Pick directory");
+                directoryButtonLabel = new GUIContent(EditorGUIUtility.FindTexture("Folder Icon"), "Pick directory");
             }
         }
     }
