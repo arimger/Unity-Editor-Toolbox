@@ -9,12 +9,12 @@ namespace Toolbox.Editor
 {
     using Toolbox.Editor.Drawers;
 
-    internal static class ToolboxDrawerUtility
+    internal static class ToolboxDrawerModule
     {
         [InitializeOnLoadMethod]
         internal static void InitializeEvents()
         {
-            Selection.selectionChanged += onEditorReload + ClearHandlers;
+            InspectorUtility.OnEditorReload += ClearHandlers;
         }
 
 
@@ -40,14 +40,14 @@ namespace Toolbox.Editor
         /// <summary>
         /// Settings provided to handle custom drawers.
         /// </summary>
-        private static IToolboxDrawersSettings settings;
+        private static IToolboxInspectorSettings settings;
 
 
         /// <summary>
         /// Creates all possible attribute-based drawers and add them to proper collections.
         /// </summary>
         /// <param name="settings"></param>
-        private static void CreateAttributeDrawers(IToolboxDrawersSettings settings)
+        private static void CreateAttributeDrawers(IToolboxInspectorSettings settings)
         {
             void AddAttributeDrawer<T>(Type drawerType, Type targetAttributeType, Dictionary<Type, T> drawersCollection) where T : ToolboxAttributeDrawer
             {
@@ -121,7 +121,7 @@ namespace Toolbox.Editor
         /// Creates all possible type-based drawers and add them ro proper collection.
         /// </summary>
         /// <param name="settings"></param>
-        private static void CreateTargetTypeDrawers(IToolboxDrawersSettings settings)
+        private static void CreateTargetTypeDrawers(IToolboxInspectorSettings settings)
         {
             targetTypeDrawers.Clear();
             for (var i = 0; i < settings.TargetTypeDrawersCount; i++)
@@ -141,7 +141,7 @@ namespace Toolbox.Editor
 
         /// <summary>
         /// Clears all currently stored <see cref="ToolboxPropertyHandler"/>s.
-        /// This method is always called through <see cref="onEditorReload"/> event.
+        /// This method is always called through <see cref="OnEditorReload"/> event.
         /// </summary>
         internal static void ClearHandlers()
         {
@@ -151,18 +151,18 @@ namespace Toolbox.Editor
         /// <summary>
         /// Initializes all possible drawers.
         /// </summary>
-        internal static void PerformData()
+        internal static void UpdateDrawers()
         {
-            PerformData(settings);
+            UpdateDrawers(settings);
         }
 
         /// <summary>
         /// Initializes all assigned drawers using provided settings reference.
         /// </summary>
         /// <param name="settings"></param>
-        internal static void PerformData(IToolboxDrawersSettings settings)
+        internal static void UpdateDrawers(IToolboxInspectorSettings settings)
         {
-            ToolboxDrawerUtility.settings = settings;
+            ToolboxDrawerModule.settings = settings;
 
             ToolboxDrawersAllowed = settings != null ? settings.UseToolboxDrawers : false;
 
@@ -280,11 +280,5 @@ namespace Toolbox.Editor
 
 
         internal static bool ToolboxDrawersAllowed { get; private set; }
-
-
-        /// <summary>
-        /// Action called every time when the inspector window is fully rebuilt.
-        /// </summary>
-        internal static Action onEditorReload;
     }
 }

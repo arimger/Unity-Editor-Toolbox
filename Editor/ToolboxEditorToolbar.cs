@@ -72,14 +72,20 @@ namespace Toolbox.Editor
 
         private static void OnUpdate()
         {
-            if (toolbar != null) return;
+            if (toolbar != null)
+            {
+                return;
+            }
 
             //try to find toolbar object
             var toolbars = Resources.FindObjectsOfTypeAll(toolbarType);
 
             toolbar = toolbars.Length > 0 ? toolbars[0] : null;
 
-            if (toolbar == null) return;
+            if (toolbar == null)
+            {
+                return;
+            }
 
             //get current toolbar containter using reflection
             var elements = visualTree.GetValue(toolbar, null) 
@@ -107,7 +113,10 @@ namespace Toolbox.Editor
             const float fromStripOffsetX = 100.0f;
 #endif
 
-            if (buttons.Count == 0) return;
+            if (buttons.Count == 0)
+            {
+                return;
+            }
 
             var screenWidth = EditorGUIUtility.currentViewWidth;
             var screenHeight = Screen.height;
@@ -121,7 +130,10 @@ namespace Toolbox.Editor
             buttonsRect.xMax -= Style.spacing;
             buttonsRect.y += Style.padding;
 
-            if (buttonsRect.width <= 0) return;
+            if (buttonsRect.width <= 0)
+            {
+                return;
+            }
 
             //begin right drawing in calculated area
             GUILayout.BeginArea(buttonsRect);

@@ -13,7 +13,21 @@ namespace UnityEngine
             MaxValue = Mathf.Max(maxValue, minValue);
         }
 
+        public Color GetBarColor()
+        {
+            if (ColorUtility.TryParseHtmlString(Color, out var color))
+            {
+                return color;
+            }
+            else
+            {
+                return new Color(0.28f, 0.38f, 0.88f);
+            }
+        }
+
         public string Name { get; private set; }
+
+        public string Color { get; set; }
 
         public float MinValue { get; private set; }
 

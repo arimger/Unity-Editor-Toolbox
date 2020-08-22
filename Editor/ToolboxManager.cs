@@ -13,6 +13,75 @@ namespace Toolbox.Editor
         private static Editor globalSettingsEditor;
 
 
+        private static void ForceSettingsUpdate()
+        {
+            //perform separated data models update
+            ManageInspectorCore(Settings);
+            ManageProjectCore(Settings);
+            ManageHierarchyCore(Settings);
+        }
+
+        private static void ManageInspectorCore(IToolboxInspectorSettings settings)
+        {
+            //setup all available drawers using internal module
+            ToolboxDrawerModule.UpdateDrawers(settings);
+        }
+
+        private static void ManageProjectCore(IToolboxProjectSettings settings)
+        {
+            if (settings == null)
+            {
+                ToolboxEditorProject.IsOverlayAllowed = false;
+                ToolboxEditorProject.RepaintProjectOverlay();
+                return;
+            }
+            else
+            {
+                ToolboxEditorProject.IsOverlayAllowed = settings.UseToolboxProject;
+            }
+
+            ToolboxEditorProject.LargeIconScale = settings.LargeIconScale;
+            ToolboxEditorProject.SmallIconScale = settings.SmallIconScale;
+            ToolboxEditorProject.LargeIconPaddingRatio = settings.LargeIconPadding;
+            ToolboxEditorProject.SmallIconPaddingRatio = settings.SmallIconPadding;
+
+            ToolboxEditorProject.RemoveCustomFolders();
+
+            for (var i = 0; i < settings.CustomFoldersCount; i++)
+            {
+                ToolboxEditorProject.CreateCustomFolder(settings.GetCustomFolderAt(i));
+            }
+
+            ToolboxEditorProject.RepaintProjectOverlay();
+        }
+
+        private static void ManageHierarchyCore(IToolboxHierarchySettings settings)
+        {
+            if (settings == null)
+            {
+                ToolboxEditorHierarchy.IsOverlayAllowed = false;
+                ToolboxEditorHierarchy.RepaintHierarchyOverlay();
+                return;
+            }
+            else
+            {
+                ToolboxEditorHierarchy.IsOverlayAllowed = settings.UseToolboxHierarchy;
+            }
+
+            ToolboxEditorHierarchy.DrawHorizontalLines = settings.DrawHorizontalLines;
+            ToolboxEditorHierarchy.DrawSeparationLines = true;
+
+            ToolboxEditorHierarchy.RemoveAllowedHierarchyContentCallbacks();
+
+            for (var i = 0; i < settings.RowDataItemsCount; i++)
+            {
+                ToolboxEditorHierarchy.CreateAllowedHierarchyContentCallbacks(settings.GetRowDataItemAt(i));
+            }
+
+            ToolboxEditorHierarchy.RepaintHierarchyOverlay();
+        }
+
+
         [InitializeOnLoadMethod]
         internal static bool InitializeSettings()
         {
@@ -37,7 +106,7 @@ namespace Toolbox.Editor
         }
 
         internal static bool InitializeSettings(string assetGuid)
-        {
+        {           
             SettingsGuid = assetGuid;
             SettingsPath = AssetDatabase.GUIDToAssetPath(assetGuid);
 
@@ -50,7 +119,7 @@ namespace Toolbox.Editor
                     ForceSettingsUpdate();
                 });
                 //initialize core functionalities
-                Settings.OnValidate();
+                Settings.ForceUpdate();
                 return true;
             }
             else
@@ -68,18 +137,6 @@ namespace Toolbox.Editor
             var path = AssetDatabase.GUIDToAssetPath(guids[0]);
 
             AssetDatabase.ImportAsset(path);
-        }
-
-        private static void ForceSettingsUpdate()
-        {
-            //perform separated data models update
-            ToolboxDrawerUtility.PerformData(Settings);
-            ToolboxProjectUtility.PerformData(Settings);
-            ToolboxHierarchyUtility.PerformData(Settings);
-
-            //perform additional repaint to update GUI
-            ToolboxEditorProject.RepaintProjectOverlay();
-            ToolboxEditorHierarchy.RepaintHierarchyOverlay();
         }
 
 

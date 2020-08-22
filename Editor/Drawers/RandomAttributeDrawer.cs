@@ -8,14 +8,20 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            //adjust field width to additional button
-            var fieldRect = new Rect(position.x, position.y, position.width - Style.buttonWidth - Style.spacing, position.height);
-            //set button rect aligned to field rect
-            var buttonRect = new Rect(position.xMax - Style.buttonWidth, position.y, Style.buttonWidth, position.height);
+            //adjust field width to the random button
+            var fieldRect = new Rect(position.x, 
+                                     position.y, 
+                                     position.width - Style.buttonWidth - Style.spacing, 
+                                     position.height);
+            //set button rect aligned to the field rect
+            var buttonRect = new Rect(position.xMax - Style.buttonWidth, 
+                                      position.y, 
+                                      Style.buttonWidth, 
+                                      position.height);
 
             EditorGUI.PropertyField(fieldRect, property, property.isExpanded);
-            //draw random button using custom style class
-            if (GUI.Button(buttonRect, Style.buttonContent))
+            //draw random button using the custom style class
+            if (GUI.Button(buttonRect, Style.buttonLabel, Style.buttonStyle))
             {
                 var random = Random.Range(Attribute.MinValue, Attribute.MaxValue);
                 if (property.propertyType == SerializedPropertyType.Float)
@@ -48,20 +54,22 @@ namespace Toolbox.Editor.Drawers
         private RandomAttribute Attribute => attribute as RandomAttribute;
 
 
-        /// <summary>
-        /// Style representation.
-        /// </summary>
         private static class Style
         {
-            internal static readonly float height = EditorGUIUtility.singleLineHeight;
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
             internal static readonly float buttonWidth = 30.0f;
 
-            internal static readonly GUIContent buttonContent;
+            internal static readonly GUIContent buttonLabel;
+
+            internal static readonly GUIStyle buttonStyle;
 
             static Style()
             {
-                buttonContent = new GUIContent(EditorGUIUtility.FindTexture("LookDevResetEnv@2x"), "Set random value");
+                buttonLabel = new GUIContent("\u211D", "Set random value");
+                buttonStyle = new GUIStyle(EditorStyles.miniButton)
+                {
+                    fontSize = 13
+                };
             }
         }
     }

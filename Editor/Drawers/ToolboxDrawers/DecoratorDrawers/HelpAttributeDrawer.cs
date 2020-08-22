@@ -3,9 +3,9 @@ using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class HelpAreaAttributeDrawer : ToolboxDecoratorDrawer<HelpAreaAttribute>
+    public class HelpAttributeDrawer : ToolboxDecoratorDrawer<HelpAttribute>
     {
-        protected override void OnGuiBeginSafe(HelpAreaAttribute attribute)
+        protected override void OnGuiBeginSafe(HelpAttribute attribute)
         {
             EditorGUILayout.HelpBox(attribute.Text, (MessageType)attribute.Type);
         }
