@@ -16,7 +16,12 @@ Unity 2018.x or newer
 
 ## Installation
 
-- Copy and paste `Editor Toolbox` directory into your project (basically into `Asset` directory or somewhere deeper)
+- Install Editor Toolbox package:
+	- 1 way: Copy and paste `Editor Toolbox` directory into your project (basically into `Asset` directory or somewhere deeper)
+	- 2 way: Find Unity Package Manager (Window/Package Manager) and add package using this git URL:
+	```
+	https://github.com/arimger/Unity-Editor-Toolbox.git#upm
+	```
 - Open Edit/Project Settings/Editor Toolbox window
 - If Toolbox Editor Settings is not available, press "Try to find the settings file" button or create new
 - Manage settings in your way
@@ -359,15 +364,20 @@ Hides any property.
 Similar to the standard PropertyDrawer for the **ConditionalHideAttribute** but works with Enum types and arrays/lists.   
 Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
 
+#### ShowIfAttribute
+
+Shows property if provided condition is met.
+
+```csharp
+public string stringValue = "sho";
+[EnableIf(nameof(stringValue), "show")]
+public int var1;
+```
+
 #### DisableAttribute
 
 Disables any property.   
 Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.  
-
-#### DisableIfAttribute
-
-Similar to the standard PropertyDrawer for the **ConditionalDisableAttribute** but works with Enum types and arrays/lists.   
-Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
 
 ```csharp
 [Disable, ReorderableList]
@@ -375,6 +385,21 @@ public int[] vars1 = new [] { 1, 2, 3, 4 };
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc19.png)
+
+#### DisableIfAttribute
+
+Similar to the standard PropertyDrawer for the **ConditionalDisableAttribute** but works with Enum types and arrays/lists.   
+Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
+
+#### EnableIfAttribute
+
+Enables property if provided condition is met.
+
+```csharp
+public KeyCode enumValue = KeyCode.A;
+[EnableIf(nameof(enumValue), KeyCode.A)]
+public int var1;
+```
 
 ## Reorderable List
 
