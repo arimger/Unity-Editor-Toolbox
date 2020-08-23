@@ -418,6 +418,10 @@ MonoBehaviour:
   var30: 2
   var31: 3
   var32: 0
+  stringValue: sho
+  var33: 0
+  enumValue: 97
+  var35: 0
 --- !u!4 &661896459
 Transform:
   m_ObjectHideFlags: 2

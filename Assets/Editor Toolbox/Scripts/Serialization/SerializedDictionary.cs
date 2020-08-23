@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace UnityEngine
 {
-    [Serializable]
+    [Serializable, Obsolete]
     public class SerializedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         [SerializeField, HideInInspector]

@@ -40,7 +40,7 @@ namespace Toolbox.Editor
                 }
             }
 
-            //NOTE:none reflection way
+            //NOTE: none reflection way
             //UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
         }
 

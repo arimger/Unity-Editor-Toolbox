@@ -35,18 +35,18 @@ namespace Toolbox.Editor
                 ToolboxEditorProject.RepaintProjectOverlay();
                 return;
             }
-            else
-            {
-                ToolboxEditorProject.IsOverlayAllowed = settings.UseToolboxProject;
-            }
-
+			
+			//enable/disable core function
+			ToolboxEditorProject.IsOverlayAllowed = settings.UseToolboxProject;
+			
             ToolboxEditorProject.LargeIconScale = settings.LargeIconScale;
             ToolboxEditorProject.SmallIconScale = settings.SmallIconScale;
             ToolboxEditorProject.LargeIconPaddingRatio = settings.LargeIconPadding;
             ToolboxEditorProject.SmallIconPaddingRatio = settings.SmallIconPadding;
 
             ToolboxEditorProject.RemoveCustomFolders();
-
+			
+			//create custom folders using stored data
             for (var i = 0; i < settings.CustomFoldersCount; i++)
             {
                 ToolboxEditorProject.CreateCustomFolder(settings.GetCustomFolderAt(i));
@@ -63,16 +63,16 @@ namespace Toolbox.Editor
                 ToolboxEditorHierarchy.RepaintHierarchyOverlay();
                 return;
             }
-            else
-            {
-                ToolboxEditorHierarchy.IsOverlayAllowed = settings.UseToolboxHierarchy;
-            }
-
+			
+			//enable/disable core function
+			ToolboxEditorHierarchy.IsOverlayAllowed = settings.UseToolboxHierarchy;
+			
             ToolboxEditorHierarchy.DrawHorizontalLines = settings.DrawHorizontalLines;
             ToolboxEditorHierarchy.DrawSeparationLines = true;
 
             ToolboxEditorHierarchy.RemoveAllowedHierarchyContentCallbacks();
 
+			//create custom drawers using stored data
             for (var i = 0; i < settings.RowDataItemsCount; i++)
             {
                 ToolboxEditorHierarchy.CreateAllowedHierarchyContentCallbacks(settings.GetRowDataItemAt(i));
@@ -89,6 +89,7 @@ namespace Toolbox.Editor
 
             if (InitializeSettings(guids.Length > 0 ? guids[0] : null))
             {
+                IsInitialized = true;
                 return true;
             }
             else
@@ -204,6 +205,8 @@ namespace Toolbox.Editor
             return provider;
         }
 
+
+        internal static bool IsInitialized { get; private set; }
 
         internal static ToolboxEditorSettings Settings { get; private set; }
 

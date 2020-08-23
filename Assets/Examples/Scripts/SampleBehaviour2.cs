@@ -94,4 +94,16 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 150.0f)]
     public int var32;
+
+    [HeaderArea("9", HeaderStyle.Boxed)]
+
+    public string stringValue = "sho";
+    [ShowIf(nameof(stringValue), "show")]
+    public int var33;
+
+    [SpaceArea]
+
+    public KeyCode enumValue = KeyCode.A;
+    [DisableIf(nameof(enumValue), KeyCode.A)]
+    public int var35;
 }

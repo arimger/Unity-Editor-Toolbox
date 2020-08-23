@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
-using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class DisableIfAttributeDrawer : ConditionAttributeDrawer<DisableIfAttribute>
+    public class DisableIfAttributeDrawer : ComparisonAttributeDrawer<DisableIfAttribute>
     {
-        protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, DisableIfAttribute attribute)
+        protected override PropertyCondition OnComparisonResult(bool result)
         {
-            return IsConditionMet(property, attribute) ? PropertyCondition.Valid : PropertyCondition.Disabled;
+            return result ? PropertyCondition.Disabled : PropertyCondition.Valid;
         }
     }
 }

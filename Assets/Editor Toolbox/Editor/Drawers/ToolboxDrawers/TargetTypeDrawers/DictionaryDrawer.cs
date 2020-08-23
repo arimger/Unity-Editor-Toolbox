@@ -5,11 +5,12 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    [Obsolete]
     public class DictionaryDrawer : ToolboxTargetTypeDrawer
     {
         public override void OnGui(SerializedProperty property, GUIContent label)
         {
-            //TODO
+            //TODO:
             EditorGUILayout.PropertyField(property, label);
         }
 
