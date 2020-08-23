@@ -80,14 +80,21 @@ namespace Toolbox.Editor
             LogMessage("Settings initialization needed. Go to Edit/Project Settings.../Editor Toolbox and pick an existing Settings file or create new. ");
         }
 
-        public static void LogWarning(string message)
-        {
-            Debug.LogWarning("[Editor Toolbox] " + message);
-        }
 
         public static void LogMessage(string message)
         {
             Debug.LogWarning("[Editor Toolbox] " + message);
         }
+
+        public static void LogWarning(string message)
+        {
+            Debug.LogWarning("[Editor Toolbox] " + message);
+        }
+
+
+        public static void LogError(string message)
+        {
+            Debug.LogError("[Editor Toolbox] " + message);
+        }     
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Toolbox.Editor.Drawers
 {
-    public class HideIfAttributeDrawer : ComparisonAttributeDrawer<HideIfAttribute>
+    public class ShowIfAttributeDrawer : ComparisonAttributeDrawer<ShowIfAttribute>
     {
         protected override PropertyCondition OnComparisonResult(bool result)
         {
-            return result ? PropertyCondition.NonValid : PropertyCondition.Valid;
+            return result ? PropertyCondition.Valid : PropertyCondition.NonValid;
         }
     }
 }

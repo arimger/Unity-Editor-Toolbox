@@ -8,9 +8,7 @@ namespace Toolbox.Editor
         {
             if (ToolboxManager.Settings)
             {
-                var guid = AssetDatabase.AssetPathToGUID(assetPath);
-
-                if (ToolboxManager.SettingsGuid == guid)
+                if (ToolboxManager.SettingsGuid == AssetDatabase.AssetPathToGUID(assetPath))
                 {
                     ToolboxManager.InitializeSettings((string)null);
                 }

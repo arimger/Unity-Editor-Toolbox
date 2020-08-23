@@ -3,9 +3,9 @@
 namespace UnityEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-    public abstract class ConditionAttribute : ToolboxConditionAttribute
+    public abstract class ComparisonAttribute : ToolboxConditionAttribute
     {
-        public ConditionAttribute(string comparedPropertyName, object comparedConditionValue)
+        public ComparisonAttribute(string comparedPropertyName, object comparedConditionValue)
         {
             ComparedPropertyName = comparedPropertyName;
             ComparedConditionValue = comparedConditionValue;

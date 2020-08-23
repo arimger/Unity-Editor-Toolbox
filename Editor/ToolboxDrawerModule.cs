@@ -17,12 +17,16 @@ namespace Toolbox.Editor
             InspectorUtility.OnEditorReload += ClearHandlers;
         }
 
+        [InitializeOnLoadMethod]
+        internal static void InitializeModule()
+        { }
+
 
         private readonly static Type targetTypeDrawerBase = typeof(ToolboxTargetTypeDrawer);
-        private readonly static Type decoratorDrawerBase = typeof(ToolboxDecoratorDrawer<>);
-        private readonly static Type propertyDrawerBase = typeof(ToolboxPropertyDrawer<>);
+        private readonly static Type decoratorDrawerBase  = typeof(ToolboxDecoratorDrawer<>);
+        private readonly static Type propertyDrawerBase   = typeof(ToolboxPropertyDrawer<>);
         private readonly static Type collectionDrawerBase = typeof(ToolboxCollectionDrawer<>);
-        private readonly static Type conditionDrawerBase = typeof(ToolboxConditionDrawer<>);
+        private readonly static Type conditionDrawerBase  = typeof(ToolboxConditionDrawer<>);
 
         private readonly static Dictionary<Type, ToolboxTargetTypeDrawer> targetTypeDrawers = new Dictionary<Type, ToolboxTargetTypeDrawer>();
 
@@ -42,6 +46,11 @@ namespace Toolbox.Editor
         /// </summary>
         private static IToolboxInspectorSettings settings;
 
+        /// <summary>
+        /// Determines if any invalid settings should be logged into console.
+        /// </summary>
+        private static bool validateSettings = true;
+
 
         /// <summary>
         /// Creates all possible attribute-based drawers and add them to proper collections.
@@ -51,12 +60,20 @@ namespace Toolbox.Editor
         {
             void AddAttributeDrawer<T>(Type drawerType, Type targetAttributeType, Dictionary<Type, T> drawersCollection) where T : ToolboxAttributeDrawer
             {
-                if (drawerType == null) return;
+                if (drawerType == null)
+                {
+                    return;
+                }
+
                 var drawerInstance = Activator.CreateInstance(drawerType) as T;
 
                 if (drawersCollection.ContainsKey(targetAttributeType))
                 {
-                    Debug.LogWarning(targetAttributeType + " is already associated to more than one ToolboxDrawer.");
+                    if (validateSettings)
+                    {
+                        ToolboxEditorLog.LogError("Attribute:" + targetAttributeType + " is associated to more than one ToolboxDrawer.");
+                    }
+                        
                     return;
                 }
 
@@ -67,7 +84,11 @@ namespace Toolbox.Editor
             {
                 if (drawerType == null)
                 {
-                    Debug.LogWarning("One of assigned drawer types in the " + nameof(ToolboxEditorSettings) + " is empty.");
+                    if (validateSettings)
+                    {
+                        ToolboxEditorLog.LogWarning("One of assigned drawer types in the " + nameof(ToolboxEditorSettings) + " is empty.");
+                    }
+
                     return null;
                 }
 
@@ -127,12 +148,29 @@ namespace Toolbox.Editor
             for (var i = 0; i < settings.TargetTypeDrawersCount; i++)
             {
                 var drawerType = settings.GetTargetTypeDrawerTypeAt(i);
-                if (drawerType == null) continue;
+                if (drawerType == null)
+                {
+                    if (validateSettings)
+                    {
+                        ToolboxEditorLog.LogWarning("One of assigned drawer types in the " + nameof(ToolboxEditorSettings) + " is empty.");
+                    }
+                    
+                    continue;
+                }
                 var drawerInstance = Activator.CreateInstance(drawerType) as ToolboxTargetTypeDrawer;
                 var targetTypes = drawerInstance.GetTargetType().GetAllChildClasses();
 
                 foreach (var type in targetTypes)
                 {
+                    if (targetTypes.Contains(type))
+                    {
+                        if (validateSettings)
+                        {
+                            ToolboxEditorLog.LogError("Type:" + type + " is associated to more than one ToolboxDrawer.");
+                        }
+                        
+                        continue;              
+                    }
                     targetTypeDrawers[type] = drawerInstance;
                 }
             }
@@ -157,27 +195,30 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Initializes all assigned drawers using provided settings reference.
+        /// Initializes all assigned drawers using the given settings reference.
         /// </summary>
         /// <param name="settings"></param>
         internal static void UpdateDrawers(IToolboxInspectorSettings settings)
         {
             ToolboxDrawerModule.settings = settings;
 
-            ToolboxDrawersAllowed = settings != null ? settings.UseToolboxDrawers : false;
-
             if (settings == null)
             {
+                ToolboxDrawersAllowed = false;
                 return;
             }
 
+            ToolboxDrawersAllowed = settings.UseToolboxDrawers;
+
             CreateAttributeDrawers(settings);
             CreateTargetTypeDrawers(settings);
+
+            validateSettings = false;
         }
 
 
         /// <summary>
-        /// Checks if provided type has <see cref="ToolboxTargetTypeDrawer"/>.
+        /// Checks if provided type has an associated <see cref="ToolboxTargetTypeDrawer"/>.
         /// </summary>
         /// <param name="propertyType"></param>
         /// <returns></returns>
@@ -279,6 +320,6 @@ namespace Toolbox.Editor
         }
 
 
-        internal static bool ToolboxDrawersAllowed { get; private set; }
+        internal static bool ToolboxDrawersAllowed { get; set; }
     }
 }
