@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(FolderData))]
-    public class FolderDataDrawer : PropertyDrawer
+    internal class FolderDataDrawer : PropertyDrawer
     {
         private const string selectorEventName = "ObjectSelectorUpdated";
 
@@ -180,10 +180,12 @@ namespace Toolbox.Editor.Drawers
 
             position.x += Style.iconsPadding;
 
+            //adjust rect for each icon
             var largeFolderIconRect = new Rect(position.x, position.yMin + sumPropertyHeight, Style.largeFolderWidth, Style.largeFolderHeight);
             var smallFolderIconRect = new Rect(position.x + Style.largeFolderWidth, 
                          largeFolderIconRect.y + Style.smallFolderHeight / 2 - Style.spacing, Style.smallFolderWidth, Style.smallFolderHeight);
 
+            //draw default folder icons
             GUI.DrawTexture(largeFolderIconRect, Style.folderTexture, ScaleMode.ScaleToFit);
             GUI.DrawTexture(smallFolderIconRect, Style.folderTexture, ScaleMode.ScaleToFit);
 
@@ -199,6 +201,7 @@ namespace Toolbox.Editor.Drawers
                 GUI.DrawTexture(ToolboxEditorProject.GetSmallIconRect(smallFolderIconRect), previewTexture, ScaleMode.ScaleToFit);
             }
 
+            //end property and fix indent level
             EditorGUI.indentLevel--;
             EditorGUI.EndProperty();
         }

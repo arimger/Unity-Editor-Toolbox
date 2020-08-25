@@ -2,7 +2,7 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
     public class SpaceAreaAttribute : ToolboxDecoratorAttribute
     {
         public SpaceAreaAttribute(float spaceBefore = 5.0f, float spaceAfter = 0.0f)

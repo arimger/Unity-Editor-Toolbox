@@ -2,7 +2,7 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
     public class BoxedHeaderAttribute : PropertyAttribute
     {
         public BoxedHeaderAttribute(string header)

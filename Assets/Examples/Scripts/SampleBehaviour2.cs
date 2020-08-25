@@ -92,8 +92,8 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [Label("8", skinStyle: SkinStyle.Box)]
 
-    [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 150.0f)]
-    public int var32;
+    [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 180.0f)]
+    public int var1;
 
     [Label("9", skinStyle: SkinStyle.Box)]
 
