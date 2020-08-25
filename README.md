@@ -13,15 +13,15 @@ Learn all the details about the main features below.
 
 ## System Requirements
 Unity 2018.x or newer
-
+ 
 ## Installation
 
 - Install Editor Toolbox package:
-	- 1 way: Copy and paste `Editor Toolbox` directory into your project (basically into `Asset` directory or somewhere deeper)
-	- 2 way: Find Unity Package Manager (Window/Package Manager) and add package using this git URL:
+	- 1 way: Find Unity Package Manager (Window/Package Manager) and add package using this git URL:
 	```
 	https://github.com/arimger/Unity-Editor-Toolbox.git#upm
 	```
+	- 2 way: Copy and paste `Editor Toolbox` directory into your project (Assets/...)
 - Open Edit/Project Settings/Editor Toolbox window
 - If Toolbox Editor Settings is not available, press "Try to find the settings file" button or create new
 - Manage settings in your way
@@ -32,8 +32,8 @@ Unity 2018.x or newer
 ## Table Of Contents
 
 - [Attributes&Drawers](#drawers)
-	- [Native Drawers](#nativedrawers)
-	- [Custom Drawers](#toolboxdrawers)
+	- [Old-system Drawers](#nativedrawers)
+	- [New-system Drawers](#toolboxdrawers)
 - [Reorderable List](#reorderable-list)
 - [Editor Extensions](#editor-extensions)
 	- [Hierarchy](#hierarchy)

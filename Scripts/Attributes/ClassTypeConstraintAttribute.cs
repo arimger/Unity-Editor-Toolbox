@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -145,7 +144,6 @@ namespace UnityEngine
         { }
 
 
-        /// <inheritdoc/>
         public override bool IsConstraintSatisfied(Type type)
         {
             if (type == AssemblyType || !base.IsConstraintSatisfied(type))
@@ -180,7 +178,6 @@ namespace UnityEngine
         { }
 
 
-        /// <inheritdoc/>
         public override bool IsConstraintSatisfied(Type type)
         {
             if (base.IsConstraintSatisfied(type))

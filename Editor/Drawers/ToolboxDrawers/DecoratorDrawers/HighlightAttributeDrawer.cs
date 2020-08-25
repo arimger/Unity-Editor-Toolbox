@@ -24,19 +24,19 @@ namespace Toolbox.Editor.Drawers
 
             internal static void SetHighlightColor(Color color)
             {
-                var backgroundTex = highlightStyle.normal.background;
+                var backgroundTexture = highlightStyle.normal.background;
 
                 if (highlightStyle.normal.background == null)
                 {
-                    backgroundTex = new Texture2D(1, 1)
+                    backgroundTexture = new Texture2D(1, 1)
                     {
                         hideFlags = HideFlags.HideAndDontSave
                     };
-                    highlightStyle.normal.background = backgroundTex;
+                    highlightStyle.normal.background = backgroundTexture;
                 }
 
-                backgroundTex.SetPixel(0, 0, color);
-                backgroundTex.Apply();
+                backgroundTexture.SetPixel(0, 0, color);
+                backgroundTexture.Apply();
             }
         }
     }

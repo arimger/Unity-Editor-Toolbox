@@ -6,66 +6,44 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(InstanceButtonAttribute))]
-    public class InstanceButtonAttributeDrawer : ToolboxNativeDecoratorDrawer
+    public class InstanceButtonAttributeDrawer : ButtonAttributeDrawer
     {
         public override float GetHeight()
         {
             return Style.height + Style.spacing;
         }
 
-        public override void OnGUI(Rect position)
+        public override void OnButtonClick()
         {
-            position.height = Style.height;
-
             var attribute = Attribute;
-            var disable = false;
-            switch (attribute.Type)
-            {
-                case ButtonActivityType.Everything:
-                    break;
-                case ButtonActivityType.Nothing:
-                    disable = true;
-                    break;
-                case ButtonActivityType.OnEditMode:
-                    disable = Application.isPlaying;
-                    break;
-                case ButtonActivityType.OnPlayMode:
-                    disable = !Application.isPlaying;
-                    break;
-            }
 
-            EditorGUI.BeginDisabledGroup(disable);
-            if (GUI.Button(position, string.IsNullOrEmpty(attribute.Label) ? attribute.MethodName : attribute.Label))
+            var method = attribute.InstanceType.GetMethod(attribute.MethodName,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+            if (method != null)
             {
-                var method = attribute.InstanceType.GetMethod(attribute.MethodName,
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-                if (method != null)
+                foreach (var target in Selection.gameObjects)
                 {
-                    foreach (var target in Selection.gameObjects)
+                    if (target == null)
                     {
-                        if (target == null)
-                        {
-                            continue;
-                        }
-
-                        var targetComponent = target.GetComponent(attribute.InstanceType);
-                        if (targetComponent == null)
-                        {                                       
-                            ToolboxEditorLog.AttributeUsageWarning(attribute, 
-                                attribute.InstanceType + " component not found in selected GameObject(" + target.name + ").");
-                            continue;
-                        }
-
-                        method.Invoke(targetComponent, null);
+                        continue;
                     }
-                }
-                else
-                {
-                    ToolboxEditorLog.AttributeUsageWarning(attribute, 
-                        attribute.MethodName + " method not found inside " + attribute.InstanceType + " type.");
+
+                    var targetComponent = target.GetComponent(attribute.InstanceType);
+                    if (targetComponent == null)
+                    {
+                        ToolboxEditorLog.AttributeUsageWarning(attribute,
+                            attribute.InstanceType + " component not found in selected GameObject(" + target.name + ").");
+                        continue;
+                    }
+
+                    method.Invoke(targetComponent, null);
                 }
             }
-            EditorGUI.EndDisabledGroup();
+            else
+            {
+                ToolboxEditorLog.AttributeUsageWarning(attribute,
+                    attribute.MethodName + " method not found inside " + attribute.InstanceType + " type.");
+            }
         }
 
 
@@ -75,9 +53,6 @@ namespace Toolbox.Editor.Drawers
         private InstanceButtonAttribute Attribute => attribute as InstanceButtonAttribute;
 
 
-        /// <summary>
-        /// Static representation of button style.
-        /// </summary>
         private static class Style
         {
             internal static readonly float height = EditorGUIUtility.singleLineHeight * 1.25f;

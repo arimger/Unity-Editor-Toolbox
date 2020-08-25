@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Creates thin, horizontal line in the InspectorWindow.
+    /// Creates thin, horizontal line in the Inspector Window.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
     public class LineAttribute : ToolboxDecoratorAttribute

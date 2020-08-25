@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Draws a HelpBox within the InspectorWindow above this field.
+    /// Draws a HelpBox within the Inspector Window above this field.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
     public class HelpAttribute : ToolboxDecoratorAttribute
