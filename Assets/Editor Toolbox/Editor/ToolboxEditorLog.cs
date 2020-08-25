@@ -8,6 +8,10 @@ namespace Toolbox.Editor
 {
     internal static class ToolboxEditorLog
     {
+        private const string tag = "Editor Toolbox";
+        private const string format  = "[{0}] {1}";
+
+
         private static string GetPropertyLocation(SerializedProperty property)
         {
             return property.name + " property in " + property.serializedObject.targetObject;
@@ -77,24 +81,24 @@ namespace Toolbox.Editor
 
         public static void KitInitializationMessage()
         {
-            LogMessage("Settings initialization needed. Go to Edit/Project Settings.../Editor Toolbox and pick an existing Settings file or create new. ");
+            LogWarning("Settings initialization needed. Go to Edit/Project Settings.../Editor Toolbox and pick an existing Settings file or create new. ");
         }
 
 
         public static void LogMessage(string message)
         {
-            Debug.LogWarning("[Editor Toolbox] " + message);
+            Debug.LogFormat(format, tag, message);
         }
 
         public static void LogWarning(string message)
         {
-            Debug.LogWarning("[Editor Toolbox] " + message);
+            Debug.LogWarningFormat(format, tag, message);
         }
 
 
         public static void LogError(string message)
         {
-            Debug.LogError("[Editor Toolbox] " + message);
+            Debug.LogErrorFormat(format, tag, message);
         }     
     }
 }

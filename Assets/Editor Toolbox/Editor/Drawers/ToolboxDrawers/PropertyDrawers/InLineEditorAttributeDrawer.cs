@@ -110,7 +110,9 @@ namespace Toolbox.Editor.Drawers
 
                 if (attribute.DrawSettings)
                 {
+                    EditorGUILayout.BeginHorizontal();
                     editor.OnPreviewSettings();
+                    EditorGUILayout.EndHorizontal();
                 }
             }
 

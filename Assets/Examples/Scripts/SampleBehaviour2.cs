@@ -37,7 +37,7 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [SpaceArea]
 
-    [InLineEditor]
+    [InLineEditor(drawSettings:true)]
     public Material var22;
 
     [SpaceArea]
@@ -98,12 +98,12 @@ public class SampleBehaviour2 : MonoBehaviour
     [Label("9", skinStyle: SkinStyle.Box)]
 
     public string stringValue = "sho";
-    [ShowIf(nameof(stringValue), "show")]
+    [ShowIf(nameof(stringValue), "show")] //or HideIf
     public int var33;
 
     [SpaceArea]
 
     public KeyCode enumValue = KeyCode.A;
-    [DisableIf(nameof(enumValue), KeyCode.A)]
+    [DisableIf(nameof(enumValue), KeyCode.A)] //or EnableIf
     public int var35;
 }
