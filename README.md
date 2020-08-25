@@ -25,7 +25,7 @@ Unity 2018.x or newer
 - Open Edit/Project Settings/Editor Toolbox window
 - If Toolbox Editor Settings is not available, press "Try to find the settings file" button or create new
 - Manage settings in your way
-	- Enable/disable Hierarchy overlay
+	- Enable/disable Hierarchy overlay, choose allowed information
 	- Enable/disable Project icons or/and assign own directories
 	- Enable/disable Toolbox drawers or/and assign custom drawers
 
@@ -249,7 +249,7 @@ private void MyMethod()
 ```csharp
 private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
 
-[Preset("presetValues")]
+[Preset(nameof(presetValues))]
 public int presetTarget;
 ```
 
@@ -271,6 +271,21 @@ public KeyCode enumSearch;
 public double var1;
 ```
 
+#### Vector2DirectionAttribute&Vector3DirectionAttribute
+
+```csharp
+[Vector2Direction]
+public Vector2 direction2d;
+[Vector3Direction]
+public Vector3 direction3d;
+```
+
+#### PasswordAttribute
+
+```csharp
+[Password]
+public string password;
+```
 ---
 
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
@@ -320,13 +335,23 @@ public int var4;
 public int var1;
 ```
 ```csharp
-[HeaderArea("My Custom Header")]
+[Label("My Custom Header", skinStyle: SkinStyle.Box, Alignment = TextAnchor.MiddleCenter)]
 public int var1;
 ```
 ```csharp
 [Highlight(0, 1, 0)]
 public int var1;
 ```
+```csharp
+[Help("Help information", Order = -1)]
+public int var1;
+```
+```csharp
+[ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 150.0f)]
+public int var1;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc39.png)
 
 #### ReorderableListAttribute
 
@@ -355,29 +380,22 @@ public Material var1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc37.png)
 
-#### HideAttribute
+#### ToolboxConditionDrawers
 
-Hides any property.
-
-#### HideIfAttribute
-
-Similar to the standard PropertyDrawer for the **ConditionalHideAttribute** but works with Enum types and arrays/lists.   
-Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
-
-#### ShowIfAttribute
-
-Shows property if provided condition is met.
+Enable/disable or show/hide properties using custom conditions. You can use them together with any other type of drawer.
+Every ToolboxConditionDrawer supports boolean, int, string and enum types and works even with array/list properties.
 
 ```csharp
 public string stringValue = "sho";
-[EnableIf(nameof(stringValue), "show")]
+[EnableIf(nameof(stringValue), "show")] //or DisableIfAttribute
 public int var1;
 ```
 
-#### DisableAttribute
-
-Disables any property.   
-Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.  
+```csharp
+public KeyCode enumValue = KeyCode.A;
+[ShowIf(nameof(enumValue), KeyCode.A)] //or HideIfAttribute
+public int var1;
+```
 
 ```csharp
 [Disable, ReorderableList]
@@ -385,21 +403,6 @@ public int[] vars1 = new [] { 1, 2, 3, 4 };
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc19.png)
-
-#### DisableIfAttribute
-
-Similar to the standard PropertyDrawer for the **ConditionalDisableAttribute** but works with Enum types and arrays/lists.   
-Can be used additionally to any **PropertyDrawer** or **ToolboxPropertyDrawer**.
-
-#### EnableIfAttribute
-
-Enables property if provided condition is met.
-
-```csharp
-public KeyCode enumValue = KeyCode.A;
-[EnableIf(nameof(enumValue), KeyCode.A)]
-public int var1;
-```
 
 ## Reorderable List
 
@@ -430,7 +433,7 @@ public GameObject[] boxedStyleList = new GameObject[4];
 
 ### Hierarchy <a name="hierarchy"></a>
 
-Enable and customize the presented hierarchy overlay in the **ToolboxEditorSettings**. Basically it provides more data about particular GameObjects directly within the Hierarchy window.
+Enable and customize the presented hierarchy overlay in the **ToolboxEditorSettings**. Basically it provides more data about particular GameObjects directly within the Hierarchy window. Additionally, you can create special 'Header' objects using the '#h' prefix or Create menu: GameObject/Editor Toolbox/Hierarchy Header.
 
 Each row can contain:
 - Scripts information

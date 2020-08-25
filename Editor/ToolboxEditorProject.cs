@@ -49,12 +49,10 @@ namespace Toolbox.Editor
             //try to determine if the found path has own data
             if (TryGetFolderData(path, out var data))
             {
-                //draw additional tooltip
                 ToolboxEditorGui.DrawTooltip(rect, data.Tooltip);
 
                 if (TryGetFolderIcon(data, rect, out var icon, out var iconRect))
                 {
-                    //draw associated texture
                     ToolboxEditorGui.DrawTexture(iconRect, icon);
                 }
             }

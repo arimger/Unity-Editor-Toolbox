@@ -2,7 +2,7 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
     public class EndIndentAttribute : ToolboxDecoratorAttribute
     {
         public EndIndentAttribute(int indentToSubtract = 1)
