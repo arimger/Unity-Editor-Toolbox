@@ -131,6 +131,50 @@ namespace Toolbox.Editor
             return EditorGUI.Foldout(rect, foldout, label, toggleOnLabelClick, foldoutStyle);
         }
 
+        /// <summary>
+        /// Creates a tooltip-only label field.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="tooltip"></param>
+        public static void DrawTooltip(Rect rect, string tooltip)
+        {
+            if (tooltip == null || tooltip.Length == 0)
+            {
+                return;
+            }
+
+            GUI.Label(rect, new GUIContent(string.Empty, tooltip));
+        }
+
+        /// <summary>
+        /// Draws texture using the built-in <see cref="GUI"/> class.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="texture"></param>
+        public static void DrawTexture(Rect rect, Texture texture)
+        {
+            DrawTexture(rect, texture, ScaleMode.ScaleToFit, true);
+        }
+
+        /// <summary>
+        /// Draws texture using the built-in <see cref="GUI"/> class.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="texture"></param>
+        public static void DrawTexture(Rect rect, Texture texture, ScaleMode scaleMode)
+        {
+            DrawTexture(rect, texture, scaleMode, true);
+        }
+
+        /// <summary>
+        /// Draws texture using the built-in <see cref="GUI"/> class.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="texture"></param>
+        public static void DrawTexture(Rect rect, Texture texture, ScaleMode scaleMode, bool alphaBlend)
+        {
+            GUI.DrawTexture(rect, texture, scaleMode, alphaBlend);
+        }
 
         /// <summary>
         /// Draws <see cref="ReorderableList"/> as drawer list instace used in <see cref="ToolboxEditorSettings"/>.

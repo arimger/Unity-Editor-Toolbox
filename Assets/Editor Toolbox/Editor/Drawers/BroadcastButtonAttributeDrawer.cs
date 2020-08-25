@@ -4,43 +4,24 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(BroadcastButtonAttribute))]
-    public class BroadcastButtonAttributeDrawer : ToolboxNativeDecoratorDrawer
+    public class BroadcastButtonAttributeDrawer : ButtonAttributeDrawer
     {
         public override float GetHeight()
         {
             return Style.height + Style.spacing;
         }
 
-        public override void OnGUI(Rect position)
+        public override void OnButtonClick()
         {
-            position.height = Style.height;
-
-            var disable = false;
-            switch (Attribute.Type)
+            foreach (var target in Selection.gameObjects)
             {
-                case ButtonActivityType.Everything:
-                    break;
-                case ButtonActivityType.Nothing:
-                    disable = true;
-                    break;
-                case ButtonActivityType.OnEditMode:
-                    disable = Application.isPlaying;
-                    break;
-                case ButtonActivityType.OnPlayMode:
-                    disable = !Application.isPlaying;
-                    break;
-            }
-
-            EditorGUI.BeginDisabledGroup(disable);
-            if (GUI.Button(position, string.IsNullOrEmpty(Attribute.Label) ? Attribute.MethodName : Attribute.Label))
-            {
-                foreach (var target in Selection.gameObjects)
+                if (target == null)
                 {
-                    if (target == null) return;
-                    target.SendMessage(Attribute.MethodName, SendMessageOptions.RequireReceiver);
+                    return;
                 }
+
+                target.SendMessage(Attribute.MethodName, SendMessageOptions.RequireReceiver);
             }
-            EditorGUI.EndDisabledGroup();
         }
 
 

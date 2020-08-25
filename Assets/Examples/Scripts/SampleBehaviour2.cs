@@ -7,13 +7,13 @@ public class SampleBehaviour2 : MonoBehaviour
     [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
           "Check the SampleBehaviour2.cs script for more details.", Order = -1)]
 
-    [HeaderArea("Toolbox Attributes", HeaderStyle.Boxed)]
-    [HeaderArea("1", HeaderStyle.Boxed)]
+    [Label("Toolbox Attributes", skinStyle: SkinStyle.Box, Alignment = TextAnchor.MiddleCenter)]
+    [Label("1", skinStyle: SkinStyle.Box)]
 
     [ReorderableList(ListStyle.Boxed, elementLabel: "GameObject"), Tooltip("Sample List")]
     public GameObject[] list;
 
-    [HeaderArea("2", HeaderStyle.Boxed)]
+    [Label("2", skinStyle: SkinStyle.Box)]
 
     [BeginGroup("Custom group")]
     public int var14;
@@ -30,7 +30,7 @@ public class SampleBehaviour2 : MonoBehaviour
     [Line(Color = "#9800FF")]
     public int var20;
 
-    [HeaderArea("3", HeaderStyle.Boxed)]
+    [Label("3", skinStyle: SkinStyle.Box)]
 
     [InLineEditor]
     public Transform var21;
@@ -58,7 +58,7 @@ public class SampleBehaviour2 : MonoBehaviour
     [InLineEditor(drawHeader: true, drawPreview: true)]
     public GameObject var26;
 
-    [HeaderArea("4", HeaderStyle.Boxed)]
+    [Label("4", skinStyle: SkinStyle.Box)]
 
     [Disable]
     public int[] vars1 = new[] { 1, 2, 3, 4 };
@@ -71,16 +71,16 @@ public class SampleBehaviour2 : MonoBehaviour
         public string[] strings;
     }
 
-    [HeaderArea("5", HeaderStyle.Boxed)]
+    [Label("5", skinStyle: SkinStyle.Box)]
 
     public SampleNestedClass var27;
 
-    [HeaderArea("6", HeaderStyle.Boxed)]
+    [Label("6", skinStyle: SkinStyle.Box)]
 
     [Highlight(0, 1, 0)]
     public GameObject var28;
 
-    [HeaderArea("7", HeaderStyle.Boxed)]
+    [Label("7", skinStyle: SkinStyle.Box)]
 
     [BeginHorizontal]
     public int var29;
@@ -90,12 +90,12 @@ public class SampleBehaviour2 : MonoBehaviour
     [EndHorizontal]
     public int var31;
 
-    [HeaderArea("8", HeaderStyle.Boxed)]
+    [Label("8", skinStyle: SkinStyle.Box)]
 
     [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 150.0f)]
     public int var32;
 
-    [HeaderArea("9", HeaderStyle.Boxed)]
+    [Label("9", skinStyle: SkinStyle.Box)]
 
     public string stringValue = "sho";
     [ShowIf(nameof(stringValue), "show")]

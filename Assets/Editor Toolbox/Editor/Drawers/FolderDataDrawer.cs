@@ -67,7 +67,7 @@ namespace Toolbox.Editor.Drawers
             var pathProperty = property.FindPropertyRelative("path");
             var toolProperty = property.FindPropertyRelative("tooltip");
 
-            var largeIconProperty = property.FindPropertyRelative("icon");
+            var largeIconProperty = property.FindPropertyRelative("largeIcon");
             var smallIconProperty = property.FindPropertyRelative("smallIcon");
 
             var isPathBased = typeProperty.intValue == 0;

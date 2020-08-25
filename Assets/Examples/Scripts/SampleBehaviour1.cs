@@ -43,16 +43,18 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [BoxedHeader("7")]
     
-    [HideLabel, Help("Use this toggle to show/hide property.", Order = 100)]
+    [HideLabel]
     public bool toggle1;
-    [ConditionalHide(nameof(toggle1), true)]
+    [Help("Use this toggle to show/hide property.", Order = 100)]
+    [ConditionalHide(nameof(toggle1), true)] //ConditionalShow
     public float var6;
 
     [BoxedHeader("8")]
 
-    [HideLabel, Help("Use this toggle to enable/disable property.", Order = 100)]
+    [HideLabel]
     public bool toggle2;
-    [ConditionalDisable(nameof(toggle2), true)]
+    [Help("Use this toggle to enable/disable property.", Order = 100)]
+    [ConditionalDisable(nameof(toggle2), true)] //ConditionalEnable
     public float var7;
 
     [BoxedHeader("9")]

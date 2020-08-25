@@ -4,6 +4,7 @@ using System.IO;
 
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Toolbox.Editor
 {
@@ -21,80 +22,44 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// All custom folders mapped with own path relative to the Asset directory.
+        /// All custom folders mapped to own path relative to the Asset directory.
         /// </summary>
         private readonly static Dictionary<string, FolderData> pathBasedFoldersData = new Dictionary<string, FolderData>();
         /// <summary>
-        /// All custom folders mapped with a name.
+        /// All custom folders mapped to a name.
         /// </summary>
         private readonly static Dictionary<string, FolderData> nameBasedFoldersData = new Dictionary<string, FolderData>();
 
 
+        /// <summary>
+        /// Draws icons and additional tooltips for matched assets.
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="rect"></param>
         private static void OnItemCallback(string guid, Rect rect)
         {
-            //ignore drawing if ToolboxEditorProject functionalites are not allowed
             if (!IsOverlayAllowed)
             {
                 return;
             }
 
+            //try to get path to the asset using given GUID
             var path = AssetDatabase.GUIDToAssetPath(guid);
 
-            //try to get icon for this folder
-            if (!TryGetFolderData(path, out var data))
+            //try to determine if the found path has own data
+            if (TryGetFolderData(path, out var data))
             {
-                return;
-            }
+                //draw additional tooltip
+                ToolboxEditorGui.DrawTooltip(rect, data.Tooltip);
 
-            DrawItemOverlay(data, rect);
+                if (TryGetFolderIcon(data, rect, out var icon, out var iconRect))
+                {
+                    //draw associated texture
+                    ToolboxEditorGui.DrawTexture(iconRect, icon);
+                }
+            }
         }
 
-
-        /// <summary>
-        /// Draws folder overlay based on given <see cref="FolderData"/> and <see cref="Rect"/>.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="rect"></param>
-        private static void DrawItemOverlay(FolderData data, Rect rect)
-        {
-            //create additional tooltip to mark custom folder
-            GUI.Label(rect, new GUIContent(string.Empty, data.Tooltip));
-
-            if (!TryGetFolderIcon(data, rect, out var icon, out var iconRect))
-            {
-                return;
-            }
-
-            //finally, draw retrieved icon
-            GUI.DrawTexture(iconRect, icon, ScaleMode.ScaleToFit, true);
-        }
-
-        /// <summary>
-        /// Tries to retrive proper icon for given <see cref="FolderData"/> and <see cref="Rect"/>.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="rect"></param>
-        /// <param name="icon"></param>
-        /// <param name="iconRect"></param>
-        /// <returns></returns>
-        private static bool TryGetFolderIcon(FolderData data, Rect rect, out Texture icon, out Rect iconRect)
-        {
-            icon = null;
-
-            if (rect.width > rect.height)
-            {
-                icon = data.SmallIcon;
-                rect = GetSmallIconRect(rect);
-            }
-            else
-            {
-                icon = data.Icon;
-                rect = GetLargeIconRect(rect, true);
-            }
-
-            iconRect = rect;
-            return icon;
-        }
 
         /// <summary>
         /// Tries to retrive <see cref="FolderData"/> associated to given path.
@@ -104,8 +69,31 @@ namespace Toolbox.Editor
         /// <returns></returns>
         private static bool TryGetFolderData(string path, out FolderData data)
         {
-            return pathBasedFoldersData.TryGetValue(path, out data) ||
-                   nameBasedFoldersData.TryGetValue(Path.GetFileName(path), out data);
+            return pathBasedFoldersData.TryGetValue(path, out data) || nameBasedFoldersData.TryGetValue(Path.GetFileName(path), out data);
+        }
+
+        /// <summary>
+        /// Tries to retrive proper icon for given <see cref="FolderData"/> and <see cref="Rect"/>.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="labelRect"></param>
+        /// <param name="icon"></param>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        private static bool TryGetFolderIcon(FolderData data, Rect labelRect, out Texture icon, out Rect rect)
+        {
+            var isSmallIcon = labelRect.width > labelRect.height;
+            icon = isSmallIcon ? data.SmallIcon : data.LargeIcon;
+
+            //skip rect-related calculations if there is no icon
+            if (!icon)
+            {
+                rect = labelRect;
+                return false;
+            }
+
+            rect = isSmallIcon ? GetSmallIconRect(labelRect) : GetLargeIconRect(labelRect, true);
+            return true;
         }
 
 
@@ -115,6 +103,7 @@ namespace Toolbox.Editor
         /// <param name="data"></param>
         internal static void CreateCustomFolder(FolderData data)
         {
+            //TODO: data overriding validation
             switch (data.Type)
             {
                 case FolderDataType.Path:
@@ -162,7 +151,7 @@ namespace Toolbox.Editor
         {
             if (clearLabel)
             {
-                folderIconRect.height -= EditorGUIUtility.singleLineHeight - EditorGUIUtility.standardVerticalSpacing;
+                folderIconRect.height -= EditorGUIUtility.singleLineHeight - EditorGUIUtility.standardVerticalSpacing * 2;
             }
 
             //NOTE: in older versions of Unity folder icon is not scaling properly 
@@ -178,17 +167,22 @@ namespace Toolbox.Editor
             //calculate only base icon dimensions as:
             // - icon width without offset 
             // - icon height without offset
-            var iconPlaceWidth = folderIconRect.width - folderIconRect.width * Style.folderWidthOffsetRatio;
-            var iconPlaceHeight = folderIconRect.height - folderIconRect.height * Style.folderHeightOffsetRatio;
+            var iconPlaceWidth = folderIconRect.width - folderIconRect.width
+                                 * Style.folderWidthOffsetRatio;
+            var iconPlaceHeight = folderIconRect.height - folderIconRect.height
+                                  * Style.folderHeightOffsetRatio;
             var centerX = folderIconRect.xMin + folderIconRect.width / 2 - iconPlaceWidth / 2;
             var centerY = folderIconRect.yMin + folderIconRect.height / 2 - iconPlaceHeight / 2;
 
+            //prepare final rect for the large icon
             folderIconRect = new Rect(centerX, centerY, iconPlaceWidth, iconPlaceHeight);
 
             folderIconRect.x += (folderIconRect.width - folderIconRect.width * LargeIconScale) / 2;
             folderIconRect.y += (folderIconRect.height - folderIconRect.height * LargeIconScale) / 2;
+            //adjust rect to the scale
             folderIconRect.width *= LargeIconScale;
             folderIconRect.height *= LargeIconScale;
+            //adjust rect to the padding
             folderIconRect.x += folderIconRect.width * LargeIconPaddingRatio.x;
             folderIconRect.y += folderIconRect.height * LargeIconPaddingRatio.y;
 
@@ -197,12 +191,15 @@ namespace Toolbox.Editor
 
         internal static Rect GetSmallIconRect(Rect folderIconRect)
         {
+            //prepare final rect for the small icon
             folderIconRect = new Rect(folderIconRect.xMin, folderIconRect.y, Style.minFolderWidth, Style.minFolderHeight);
 
             folderIconRect.x += (folderIconRect.width - folderIconRect.width * SmallIconScale) / 2;
             folderIconRect.y += (folderIconRect.height - folderIconRect.height * SmallIconScale) / 2;
+            //adjust rect to the scale
             folderIconRect.width *= SmallIconScale;
             folderIconRect.height *= SmallIconScale;
+            //adjust rect to the padding
             folderIconRect.x += folderIconRect.width * SmallIconPaddingRatio.x;
             folderIconRect.y += folderIconRect.height * SmallIconPaddingRatio.y;
 
@@ -286,8 +283,8 @@ namespace Toolbox.Editor
         [SerializeField, Tooltip("Will create additional tooltip for custom folders. Leave empty to ignore.")]
         private string tooltip;
 
-        [SerializeField]
-        private Texture icon;
+        [SerializeField, FormerlySerializedAs("icon")]
+        private Texture largeIcon;
         [SerializeField]
         private Texture smallIcon;
 
@@ -316,10 +313,10 @@ namespace Toolbox.Editor
             set => tooltip = value;
         }
 
-        public Texture Icon
+        public Texture LargeIcon
         {
-            get => icon;
-            set => icon = value;
+            get => largeIcon;
+            set => largeIcon = value;
         }
 
         public Texture SmallIcon

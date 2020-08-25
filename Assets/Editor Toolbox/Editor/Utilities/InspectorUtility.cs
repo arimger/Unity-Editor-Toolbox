@@ -21,7 +21,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Forces the available InspectorWindows to repaint. 
+        /// Forces the available Inspector Windows to repaint. 
         /// </summary>
         internal static void RepaintInspectors()
         {

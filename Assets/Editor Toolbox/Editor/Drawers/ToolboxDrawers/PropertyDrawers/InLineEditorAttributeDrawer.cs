@@ -114,9 +114,6 @@ namespace Toolbox.Editor.Drawers
                 }
             }
 
-            //TODO:
-            //if (AssetDatabase.Contains(editor.target))
-
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
         }
@@ -178,9 +175,6 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// Custom style representation.
-        /// </summary>
         private static class Style
         {
             internal static readonly GUIStyle inlinedStyle;
@@ -199,13 +193,8 @@ namespace Toolbox.Editor.Drawers
                     alignment = TextAnchor.MiddleLeft
                 };
 
-                var texture = new Texture2D(1, 1);
-                texture.SetPixel(0, 0, Color.clear);
-                texture.Apply();
-                texture.hideFlags = HideFlags.HideAndDontSave;
-
                 previewStyle = new GUIStyle();
-                previewStyle.normal.background = texture;
+                previewStyle.normal.background = TextureUtility.CreatePersistantTexture(Color.clear);
             }
         }
     }

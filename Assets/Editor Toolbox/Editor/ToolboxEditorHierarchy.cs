@@ -50,7 +50,7 @@ namespace Toolbox.Editor
             };
 
         /// <summary>
-        /// Collection of all curretnly allowed hierarchy elements drawers.
+        /// Collection of all currently allowed hierarchy element drawers.
         /// </summary>
         private static readonly List<DrawHierarchyContentCallback>
             allowedDrawContentCallbacks = new List<DrawHierarchyContentCallback>()
@@ -64,13 +64,13 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Index of current (last processed) GameObject within the Hierarchy.
+        /// Index of current (last processed) GameObject within the Hierarchy Window.
         /// </summary>
         private static int currentItemIndex = 0;
 
 
         /// <summary>
-        /// Tries to display item label in the hierarchy window.
+        /// Tries to display item label in the Hierarchy Window.
         /// </summary>
         /// <param name="instanceId"></param>
         /// <param name="rect"></param>
@@ -340,7 +340,7 @@ namespace Toolbox.Editor
             }
 
             //draw related label field using prepared content
-            EditorGUI.LabelField(rect, content, Style.tagLabelStyle);
+            EditorGUI.LabelField(rect, content, Style.normalLabelStyle);
             return rect;
         }
 
@@ -349,7 +349,7 @@ namespace Toolbox.Editor
             rect = new Rect(rect.x + rect.width - Style.iconWidth, rect.y, Style.iconWidth, rect.height);
 
             var tooltip = string.Empty;
-            var texture = Style.componentTexture;
+            var texture = Style.componentIcon;
 
             if (rect.Contains(Event.current.mousePosition))
             {
@@ -397,7 +397,7 @@ namespace Toolbox.Editor
                 }
                 else
                 {
-                    texture = Style.transformTexture;
+                    texture = Style.transformIcon;
                     tooltip = "There is no additional component";
                 }
             }
@@ -426,25 +426,26 @@ namespace Toolbox.Editor
         [MenuItem("GameObject/Editor Toolbox/Hierarchy Header", false, 10)]
         private static void CreateHeaderObject(MenuCommand menuCommand)
         {
-            const string key = "#h";
-            const string name = "Header";
-            const string tag = "EditorOnly";
+            var parentGameObject = menuCommand.context as GameObject;
+            var headerGameObject = new GameObject();
 
-            var gameObject = new GameObject();
-            //hide the obsolete transform component
-            gameObject.transform.hideFlags = HideFlags.HideInInspector;
+            //hide the redundant transform component
+            headerGameObject.transform.hideFlags = HideFlags.HideInInspector;
             //set proper essentials
-            gameObject.name = key + name;
-            gameObject.tag = tag;
-            gameObject.layer = 0;
-            gameObject.isStatic = true;
+            headerGameObject.name = "#hHeader";           
+            headerGameObject.layer = 0;
+            headerGameObject.tag = "EditorOnly";
+            headerGameObject.isStatic = true;
 
-            //ensure it gets reparented if this was a context click(otherwise does nothing)
-            GameObjectUtility.SetParentAndAlign(gameObject, menuCommand.context as GameObject);
+            //ensure it gets reparented if this was a context click(otherwise does nothing) and fix name
+            GameObjectUtility.EnsureUniqueNameForSibling(headerGameObject);
+            GameObjectUtility.SetParentAndAlign(headerGameObject, parentGameObject);
+
             //register the creation in the undo system
-            Undo.RegisterCreatedObjectUndo(gameObject, "Create " + gameObject.name);
+            Undo.RegisterCreatedObjectUndo(headerGameObject, "Create " + headerGameObject.name);
+
             //set proper selection
-            Selection.activeObject = gameObject;
+            Selection.activeObject = headerGameObject;
         }
 
 
@@ -493,8 +494,8 @@ namespace Toolbox.Editor
         internal static class Style
         {
             internal static readonly float padding = 2.0f;
-            internal static readonly float maxHeight = 16.0f;
             internal static readonly float maxWidth = 55.0f;
+            internal static readonly float maxHeight = 16.0f;
             internal static readonly float lineWidth = 1.0f;
             internal static readonly float lineOffset = 2.0f;
             internal static readonly float iconWidth = 17.0f;
@@ -509,23 +510,21 @@ namespace Toolbox.Editor
 #else
             internal static readonly Color labelColor = EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f) : new Color(0.855f, 0.855f, 0.855f);
 #endif
-
-            internal static readonly GUIStyle toggleStyle;
-            internal static readonly GUIStyle tagLabelStyle;
+            internal static readonly GUIStyle normalLabelStyle;
             internal static readonly GUIStyle layerLabelStyle;
             internal static readonly GUIStyle backgroundStyle;
             internal static readonly GUIStyle headerLabelStyle;
 
-            internal static readonly Texture componentTexture;
-            internal static readonly Texture transformTexture;
+            internal static readonly Texture componentIcon;
+            internal static readonly Texture transformIcon;
 
             static Style()
             {
-                tagLabelStyle = new GUIStyle(EditorStyles.miniLabel)
+                normalLabelStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
-                    fontSize = 8
+                    fontSize = 8,
                 };
-                tagLabelStyle.normal.textColor = textColor;
+                normalLabelStyle.normal.textColor = textColor;
 
                 layerLabelStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
@@ -538,28 +537,16 @@ namespace Toolbox.Editor
                 };
                 layerLabelStyle.normal.textColor = textColor;
 
-                //set the default toggle style
-                toggleStyle = new GUIStyle(EditorStyles.toggle);
-
-                //prepare the background texture
-                var texture = new Texture2D(1, 1);
-                texture.SetPixel(0, 0, labelColor);
-                texture.Apply();
-                texture.hideFlags = HideFlags.HideAndDontSave;
-
-                //set the background style
                 backgroundStyle = new GUIStyle();
-                backgroundStyle.normal.background = texture;
+                backgroundStyle.normal.background = TextureUtility.CreatePersistantTexture(labelColor);
 
-                //set the header label style
                 headerLabelStyle = new GUIStyle(EditorStyles.boldLabel)
                 {
                     alignment = TextAnchor.MiddleCenter
                 };
 
-                //set default icon textures
-                componentTexture = EditorGUIUtility.IconContent("cs Script Icon").image;
-                transformTexture = EditorGUIUtility.IconContent("Transform Icon").image;
+                componentIcon = EditorGUIUtility.IconContent("cs Script Icon").image;
+                transformIcon = EditorGUIUtility.IconContent("Transform Icon").image;
             }
         }
     }
