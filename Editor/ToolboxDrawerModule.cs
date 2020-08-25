@@ -36,7 +36,7 @@ namespace Toolbox.Editor
         private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers  = new Dictionary<Type, ToolboxConditionDrawerBase>();
 
         /// <summary>
-        /// Collection to store current handlers associated to special key.
+        /// Collection of currently cached handlers associated to special key.
         /// </summary>
         private static readonly Dictionary<string, ToolboxPropertyHandler> propertyHandlers = new Dictionary<string, ToolboxPropertyHandler>();
 

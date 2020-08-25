@@ -140,6 +140,7 @@ namespace Toolbox.Editor
             nameBasedFoldersData.Clear();
         }
 
+
         internal static Rect GetLargeIconRect(Rect folderIconRect)
         {
             return GetLargeIconRect(folderIconRect, false);
@@ -156,6 +157,7 @@ namespace Toolbox.Editor
 #if !UNITY_2019_3_OR_NEWER
             var width = Mathf.Min(folderIconRect.width, Style.maxFolderWidth);
             var height = Mathf.Min(folderIconRect.height, Style.maxFolderHeight);
+
             folderIconRect.x += (folderIconRect.width - width) / 2;
             folderIconRect.y += (folderIconRect.height - height) / 2;
             folderIconRect.width = width;
@@ -169,6 +171,7 @@ namespace Toolbox.Editor
                                  * Style.folderWidthOffsetRatio;
             var iconPlaceHeight = folderIconRect.height - folderIconRect.height
                                   * Style.folderHeightOffsetRatio;
+
             var centerX = folderIconRect.xMin + folderIconRect.width / 2 - iconPlaceWidth / 2;
             var centerY = folderIconRect.yMin + folderIconRect.height / 2 - iconPlaceHeight / 2;
 
@@ -203,6 +206,7 @@ namespace Toolbox.Editor
 
             return folderIconRect;
         }
+
 
         internal static void RepaintProjectOverlay() => EditorApplication.RepaintProjectWindow();
 
