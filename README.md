@@ -351,7 +351,7 @@ public int var1;
 public int var1;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc39.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc39.PNG)
 
 #### ReorderableListAttribute
 
