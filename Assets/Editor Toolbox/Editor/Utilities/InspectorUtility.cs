@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -161,12 +162,31 @@ namespace Toolbox.Editor
         private static void Hide(MenuCommand menuCommand)
         {
             var component = menuCommand.context as Component;
-            Undo.RecordObject(component, "Hide " + component.GetType() + " in " + component.name);
+            var components = component.gameObject.GetComponents<Component>();
+
+            //validate if this is the last visible component
+            var visibleCount = 0;
+            for (var i = 0; i < components.Length; i++)
+            {
+                var c = components[i];
+                if (!c.hideFlags.HasFlag(HideFlags.HideInInspector))
+                {
+                    visibleCount++;
+                }
+            }
+
+            //show display dialog and make sure user knows consequences 
+            if (visibleCount <= 1 && !EditorUtility.DisplayDialog("Hide Warning", 
+                                                                  "Do you really want to hide the last visible component?", "Yes", "Cancel"))
+            {
+                return;
+            }
+
             component.hideFlags |= HideFlags.HideInInspector;
-            EditorUtility.SetDirty(component);
+            InternalEditorUtility.RepaintAllViews();
         }
 
-        [MenuItem("CONTEXT/Component/Hide All Components", false, priority = 301)]
+        //[MenuItem("CONTEXT/Component/Hide All Components", false, priority = 301)]
         private static void HideAll(MenuCommand menuCommand)
         {
             var gameObject = (menuCommand.context as Component).gameObject;
@@ -179,10 +199,10 @@ namespace Toolbox.Editor
                 components[i].hideFlags |= HideFlags.HideInInspector;
             }
 
-            EditorUtility.SetDirty(gameObject);
+            InternalEditorUtility.RepaintAllViews();
         }
 
-        [MenuItem("CONTEXT/Component/Show All Components", false, priority = 302)]
+        //[MenuItem("CONTEXT/Component/Show All Components", false, priority = 302)]
         private static void ShowAll(MenuCommand menuCommand)
         {
             var gameObject = (menuCommand.context as Component).gameObject;
@@ -195,7 +215,7 @@ namespace Toolbox.Editor
                 components[i].hideFlags &= ~HideFlags.HideInInspector;
             }
 
-            EditorUtility.SetDirty(gameObject);
+            InternalEditorUtility.RepaintAllViews();
         }
     }
 }
