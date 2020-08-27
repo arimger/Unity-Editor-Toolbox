@@ -3,7 +3,8 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Use this attribute on <see cref="Enum"/> fields marked with the <see cref="FlagsAttribute"/>.
+    /// Allows to pick multiple enum values and crates a proper result mask.
+    /// Supported types: any <see cref="Enum"/> with the <see cref="FlagsAttribute"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class EnumFlagAttribute : PropertyAttribute

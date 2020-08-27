@@ -3,9 +3,10 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Will clamp numeric value type properties (<see cref="int"/>, <see cref="float"/>, <see cref="double"/>).
+    /// Will clamp numeric value.
+    /// Supported types: <see cref="int"/>, <see cref="float"/>, <see cref="double"/>.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class ClampAttribute : PropertyAttribute
     {
         public ClampAttribute(float minValue, float maxValue)

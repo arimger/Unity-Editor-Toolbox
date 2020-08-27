@@ -6,12 +6,6 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(ProgressBarAttribute))]
     public class ProgressBarAttributeDrawer : ToolboxNativePropertyDrawer
     {
-        /// <summary>
-        /// Draws validated property.
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var attribute = Attribute;
@@ -51,17 +45,14 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="ProgressBarAttribute"/>.
-        /// </summary>
         private ProgressBarAttribute Attribute => attribute as ProgressBarAttribute;
 
 
         private static class Style
         {
-            internal static readonly float height = EditorGUIUtility.singleLineHeight;
-            internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
+            internal static readonly float rowHeight = EditorGUIUtility.singleLineHeight;
             internal static readonly float barHeight = EditorGUIUtility.singleLineHeight * 1.25f;
+            internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
             internal static readonly float offset = 4.0f;
 
             internal static readonly Color backgroundColor = Color.grey;

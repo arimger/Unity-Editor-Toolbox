@@ -2,7 +2,11 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    /// <summary>
+    /// Draws progress bar.
+    /// Supported types: <see cref="int"/>, <see cref="float"/>, <see cref="double"/>.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class ProgressBarAttribute : PropertyAttribute
     {
         public ProgressBarAttribute(string name = "", float minValue = 0, float maxValue = 100)

@@ -2,7 +2,7 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class BroadcastButtonAttribute : ButtonAttribute
     {
         public BroadcastButtonAttribute(string methodName, string label = null, ButtonActivityType type = ButtonActivityType.Everything) 

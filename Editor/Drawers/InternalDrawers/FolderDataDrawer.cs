@@ -14,18 +14,24 @@ namespace Toolbox.Editor.Drawers
 
         private void DrawFolderByNameIcon(Rect rect)
         {
-            GUI.DrawTexture(rect, Style.folderTexture);
+            GUI.DrawTexture(rect, Style.folderIcon);
         }
 
         private void DrawFolderByPathIcon(Rect rect)
         {
             const float doubleIconOffsetRatio = 1.5f;
 
-            GUI.DrawTexture(rect, Style.folderTexture);
+            GUI.DrawTexture(rect, Style.folderIcon);
 
             rect.y += Style.spacing;
             rect.x += Style.spacing * doubleIconOffsetRatio;
-            GUI.DrawTexture(rect, Style.folderTexture);
+            GUI.DrawTexture(rect, Style.folderIcon);
+        }
+
+        private void DrawLabelWarningIcon(Rect rect)
+        {
+            GUI.DrawTexture(rect, Style.folderIcon);
+            GUI.DrawTexture(rect, Style.warningIcon);
         }
 
 
@@ -94,7 +100,16 @@ namespace Toolbox.Editor.Drawers
 #endif
                 if (isPathBased)
                 {
-                    DrawFolderByPathIcon(typeIconRect);
+                    //NOTE: if path property is bigger than typical row height it means that associated value is invalid
+                    var isValid = EditorGUI.GetPropertyHeight(pathProperty) <= Style.height;
+                    if (isValid)
+                    {
+                        DrawFolderByPathIcon(typeIconRect);
+                    }
+                    else
+                    {
+                        DrawLabelWarningIcon(typeIconRect);
+                    }
                 }
                 else
                 {
@@ -186,8 +201,8 @@ namespace Toolbox.Editor.Drawers
                          largeFolderIconRect.y + Style.smallFolderHeight / 2 - Style.spacing, Style.smallFolderWidth, Style.smallFolderHeight);
 
             //draw default folder icons
-            GUI.DrawTexture(largeFolderIconRect, Style.folderTexture, ScaleMode.ScaleToFit);
-            GUI.DrawTexture(smallFolderIconRect, Style.folderTexture, ScaleMode.ScaleToFit);
+            GUI.DrawTexture(largeFolderIconRect, Style.folderIcon, ScaleMode.ScaleToFit);
+            GUI.DrawTexture(smallFolderIconRect, Style.folderIcon, ScaleMode.ScaleToFit);
 
             if (largeIconProperty.objectReferenceValue)
             {
@@ -220,7 +235,8 @@ namespace Toolbox.Editor.Drawers
             internal const float smallFolderWidth = ToolboxEditorProject.Style.minFolderWidth;
             internal const float smallFolderHeight = ToolboxEditorProject.Style.minFolderHeight;
 
-            internal static readonly Texture2D folderTexture;
+            internal static readonly Texture2D folderIcon;
+            internal static readonly Texture2D warningIcon;
 
             internal static readonly GUIStyle folderLabelStyle;
             internal static readonly GUIStyle largeIconPickerStyle;
@@ -231,7 +247,8 @@ namespace Toolbox.Editor.Drawers
 
             static Style()
             {
-                folderTexture = EditorGUIUtility.FindTexture("Folder Icon");
+                folderIcon = EditorGUIUtility.FindTexture("Folder Icon");
+                warningIcon = EditorGUIUtility.FindTexture("console.warnicon.sml");
 
                 folderLabelStyle = new GUIStyle(EditorStyles.foldout)
                 {

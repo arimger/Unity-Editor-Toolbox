@@ -2,7 +2,11 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    /// <summary>
+    /// Hides property label.
+    /// Supported types: all.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class HideLabelAttribute : PropertyAttribute
     { }
 }

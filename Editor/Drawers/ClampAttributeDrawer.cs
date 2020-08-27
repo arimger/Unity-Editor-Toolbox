@@ -36,9 +36,6 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="ClampAttribute"/>.
-        /// </summary>
         private ClampAttribute Attribute => attribute as ClampAttribute;
     }
 }

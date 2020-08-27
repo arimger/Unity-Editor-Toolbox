@@ -2,7 +2,11 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    /// <summary>
+    /// Replaces old label with <see cref="NewLabel"/> value.
+    /// Supported types: all.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class NewLabelAttribute : PropertyAttribute
     {
         public NewLabelAttribute(string newLabel, string oldLabel = null)

@@ -49,15 +49,15 @@ namespace Toolbox.Editor
         private readonly GUIContent propertyLabel;
 
         /// <summary>
-        /// This flag determines whenever property has custom <see cref="PropertyDrawer"/>.
+        /// This flag determines whenever property has a custom <see cref="PropertyDrawer"/>.
         /// </summary>
         private readonly bool hasNativePropertyDrawer;
         /// <summary>
-        /// This flag determines whenever property has custom <see cref="ToolboxTargetTypeDrawer"/> for its type, <see cref="ToolboxPropertyDrawer{T}"/> or <see cref="ToolboxCollectionDrawer{T}"/>.
+        /// This flag determines whenever property has a custom <see cref="ToolboxTargetTypeDrawer"/> for its type, <see cref="ToolboxPropertyDrawer{T}"/> or <see cref="ToolboxCollectionDrawer{T}"/>.
         /// </summary>
         private readonly bool hasToolboxPropertyDrawer;
         /// <summary>
-        /// This flag determines whenever property has custom <see cref="ToolboxTargetTypeDrawer"/>.
+        /// This flag determines whenever property has a custom <see cref="ToolboxTargetTypeDrawer"/>.
         /// </summary>
         private readonly bool hasToolboxTargetTypeDrawer;
 
@@ -75,9 +75,7 @@ namespace Toolbox.Editor
             //after this we have to retrieve (if possible) all Toolbox-related data - ToolboxAttributes
 
             //get field info associated with this property, this property is needed for custom attributes
-            propertyFieldInfo = property.GetFieldInfo(out propertyType);
-
-            if (propertyFieldInfo == null)
+            if ((propertyFieldInfo = property.GetFieldInfo(out propertyType)) == null)
             {
                 return;
             }
@@ -157,7 +155,6 @@ namespace Toolbox.Editor
 
             if (conditionState == PropertyCondition.NonValid)
             {
-                // :)
                 goto Finish;
             }
 
@@ -168,26 +165,31 @@ namespace Toolbox.Editor
             }
 
             //get property drawer for single property or draw it in default way
-            if (hasToolboxPropertyDrawer)
+            if (hasToolboxPropertyDrawer && !hasNativePropertyDrawer)
             {
                 if (hasToolboxTargetTypeDrawer)
                 {
-                    //draw property based on associated type drawer
+                    //draw target property using associated type drawer
                     ToolboxDrawerModule.GetTargetTypeDrawer(propertyType).OnGui(property, propertyLabel);
                 }
                 else if (property.isArray)
                 {
-                    //draw array property by its collection drawer
+                    //draw array property using associated collection drawer
                     ToolboxDrawerModule.GetCollectionDrawer(propertyArrayAttribute)?.OnGui(property, propertyLabel, propertyArrayAttribute);
                 }
                 else
                 {
-                    //draw single property by its property drawer
+                    //draw single property using associated property drawer
                     ToolboxDrawerModule.GetPropertyDrawer(propertySingleAttribute)?.OnGui(property, propertyLabel, propertySingleAttribute);
                 }
             }
             else
             {
+                if (hasToolboxPropertyDrawer)
+                {
+                    //TODO: warning
+                }
+
                 OnGuiDefault();
             }
 

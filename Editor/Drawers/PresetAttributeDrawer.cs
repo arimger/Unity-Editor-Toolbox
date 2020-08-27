@@ -12,12 +12,12 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var targetObject = property.GetDeclaringObject();
-            var presetValues = targetObject.GetType().GetField(Attribute.PresetPropertyName, ReflectionUtility.allPossibleFieldsBinding);
+            var presetValues = targetObject.GetType().GetField(Attribute.PresetFieldName, ReflectionUtility.allPossibleFieldsBinding);
           
             if (presetValues == null)
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    "Cannot find relative preset field (" + Attribute.PresetPropertyName + "). Property will be drawn in the standard way.");
+                    "Cannot find relative preset field (" + Attribute.PresetFieldName + "). Property will be drawn in the standard way.");
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
@@ -75,7 +75,7 @@ namespace Toolbox.Editor.Drawers
             else
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property, 
-                    "Preset field (" + Attribute.PresetPropertyName + ") has to be a one-dimensional collection(array or list). Property will be drawn in the standard way.");
+                    "Preset field (" + Attribute.PresetFieldName + ") has to be a one-dimensional collection(array or list). Property will be drawn in the standard way.");
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }

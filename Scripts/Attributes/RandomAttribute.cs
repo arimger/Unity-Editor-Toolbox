@@ -2,7 +2,11 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    /// <summary>
+    /// Draws additional button which allows to recalculate the target value.
+    /// Supported types: <see cref="int"/>, <see cref="float"/>, <see cref="double"/>.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class RandomAttribute : PropertyAttribute
     {
         public RandomAttribute(float minValue, float maxValue)

@@ -3,7 +3,8 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// This attribute will cause an additional help box if an associated property is null. Allowed only on <see cref="Object"/> type properties.
+    /// Draws a information box if the associated value is null.
+    /// Supported types: any <see cref="Object"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class NotNullAttribute : PropertyAttribute

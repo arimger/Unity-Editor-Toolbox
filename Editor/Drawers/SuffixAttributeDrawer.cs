@@ -6,12 +6,6 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(SuffixAttribute))]
     public class SuffixAttributeDrawer : ToolboxNativePropertyDrawer
     {
-        /// <summary>
-        /// Draws validated property.
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var propertyLabel = new GUIContent(property.displayName);
@@ -30,21 +24,12 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// Returns current height needed by this drawer.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
-        /// <returns></returns>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return EditorGUI.GetPropertyHeight(property, label);
         }
 
 
-        /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="SuffixAttribute"/>.
-        /// </summary>
         private SuffixAttribute Attribute => attribute as SuffixAttribute;
     }
 }

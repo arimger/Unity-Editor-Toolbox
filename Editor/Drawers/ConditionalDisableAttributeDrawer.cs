@@ -15,6 +15,11 @@ namespace Toolbox.Editor.Drawers
         }
 
 
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return true;
+        }
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return EditorGUI.GetPropertyHeight(property);

@@ -643,7 +643,7 @@ namespace Toolbox.Editor.Internal
         {
             rect.xMax -= Style.padding;
             rect.xMin += Draggable 
-                ? Style.handleArea 
+                ? Style.handleSpace 
                 : Style.padding;
             return rect;
         }
@@ -688,24 +688,25 @@ namespace Toolbox.Editor.Internal
         }
 
         /// <summary>
-        /// Default Footer behaviour.
+        /// Draws the default Footer.
         /// </summary>
         public void DrawStandardFooter(Rect rect)
         {
             //set button area rect
-            rect = new Rect(rect.xMax - Style.buttonArea, rect.y, Style.buttonArea, rect.height);
+            rect = new Rect(rect.xMax - Style.buttonSpace, rect.y, Style.buttonSpace, rect.height);
+
             //set rect properties from style
             var width = Style.buttonWidth;
             var height = Style.buttonHeight;
             var margin = Style.buttonMargin;
             var padding = Style.buttonPadding;
+
             //set proper rect for each buttons
             var addRect = new Rect(rect.xMin + margin, rect.y - padding, width, height);
-            var removeRect = new Rect(rect.xMax - width - margin, rect.y - padding, width, height);
 
             EditorGUI.BeginDisabledGroup(List.hasMultipleDifferentValues);
             EditorGUI.BeginDisabledGroup(onCanAddCallback != null && !onCanAddCallback(this));
-            if (GUI.Button(addRect, onAddDropdownCallback != null ? Style.iconToolbarDrop : Style.iconToolbarAdd, Style.footerButton))
+            if (GUI.Button(addRect, onAddDropdownCallback != null ? Style.iconToolbarDrop : Style.iconToolbarAdd, Style.addRemoveButton))
             {
                 if (onAddDropdownCallback != null)
                 {
@@ -723,8 +724,11 @@ namespace Toolbox.Editor.Internal
                 onChangedCallback?.Invoke(this);
             }
             EditorGUI.EndDisabledGroup();
+
+            var removeRect = new Rect(rect.xMax - width - margin, rect.y - padding, width, height);
+
             EditorGUI.BeginDisabledGroup((onCanRemoveCallback != null && !onCanRemoveCallback(this) || Index < 0 || Index >= Count));
-            if (GUI.Button(removeRect, Style.iconToolbarRemove, Style.footerButton))
+            if (GUI.Button(removeRect, Style.iconToolbarRemove, Style.addRemoveButton))
             {
                 if (onRemoveCallback != null)
                 {
@@ -742,13 +746,13 @@ namespace Toolbox.Editor.Internal
         }
 
         /// <summary>
-        /// Draws Footer default background.
+        /// Draws the default Footer background.
         /// </summary>
         public void DrawStandardFooterBackground(Rect rect)
         {
             if (Event.current.type == EventType.Repaint)
             {
-                Style.footerBackground.Draw(new Rect(rect.xMax - Style.buttonArea, rect.y, Style.buttonArea, rect.height), false, false, false, false);
+                Style.footerBackground.Draw(new Rect(rect.xMax - Style.buttonSpace, rect.y, Style.buttonSpace, rect.height), false, false, false, false);
             }
         }
 
@@ -791,7 +795,7 @@ namespace Toolbox.Editor.Internal
         }
 
         /// <summary>
-        /// Draws default Header background.
+        /// Draws the default Header background.
         /// </summary>
         /// <param name="rect"></param>
         public void DrawStandardHeaderBackground(Rect rect)
@@ -803,7 +807,7 @@ namespace Toolbox.Editor.Internal
         }
 
         /// <summary>
-        /// Draw default Element.
+        /// Draws the default Element.
         /// </summary>
         public void DrawStandardElement(Rect rect, SerializedProperty element, bool selected, bool focused, bool draggable)
         {
@@ -816,29 +820,31 @@ namespace Toolbox.Editor.Internal
             }
 
             var displayContent = new GUIContent(displayName);
-            EditorGUIUtility.labelWidth -= Style.handleArea;
+            EditorGUIUtility.labelWidth -= Style.handleSpace;
             EditorGUI.PropertyField(rect, element, displayContent, element.isExpanded);
-            EditorGUIUtility.labelWidth += Style.handleArea;
+            EditorGUIUtility.labelWidth += Style.handleSpace;
         }
 
         /// <summary>
-        /// Draws default DraggingHandle.
+        /// Draws the default DraggingHandle.
         /// </summary>
         public void DrawStandardElementDraggingHandle(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
-            if (Event.current.type != EventType.Repaint) return;
-            if (draggable)
+            if (Event.current.type == EventType.Repaint)
             {
-                rect.height = Style.handleHeight;
-                rect.width = Style.handleWidth;
-                rect.y += (Style.handleHeight + rect.height) / 2 - Style.handleOffset;
-                rect.x += Style.handleWidth / 2;
-                Style.draggingHandle.Draw(rect, false, false, false, false);
+                if (draggable)
+                {
+                    rect.height = Style.handleHeight;
+                    rect.width = Style.handleWidth;
+                    rect.y += (Style.handleHeight + rect.height) / 2 - Style.handleOffset;
+                    rect.x += Style.handleWidth / 2;
+                    Style.dragButtonHandle.Draw(rect, false, false, false, false);
+                }
             }
         }
 
         /// <summary>
-        /// Draws default Element background.
+        /// Draws the default Element background.
         /// </summary>
         public void DrawStandardElementBackground(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
@@ -856,12 +862,13 @@ namespace Toolbox.Editor.Internal
                     rect.height += padding;
                     rect.y -= padding / 2;
                 }
+
                 Style.elementBackground.Draw(rect, false, selected, selected, focused);
             }
         }
 
         /// <summary>
-        /// Draw default Element.
+        /// Draw the default none-Element.
         /// </summary>
         public void DrawStandardNoneElement(Rect rect, bool draggable)
         {
@@ -989,9 +996,9 @@ namespace Toolbox.Editor.Internal
             get; private set;
         }
 
-
+         
         /// <summary>
-        /// Static representation of standard list style.
+        /// Static representation of the standard list style.
         /// Provides all needed <see cref="GUIStyle"/>s, paddings, widths, heights, etc.
         /// </summary>
         internal static class Style
@@ -1004,7 +1011,7 @@ namespace Toolbox.Editor.Internal
             internal static readonly float padding = 6;
             internal static readonly float sizeArea = 19;
 
-            internal static readonly float buttonArea = 60;
+            internal static readonly float buttonSpace = 60;
             internal static readonly float buttonWidth = 25;
             internal static readonly float buttonHeight = 13;
             internal static readonly float buttonMargin = 4;
@@ -1014,7 +1021,7 @@ namespace Toolbox.Editor.Internal
             internal static readonly float buttonPadding = 3;
 #endif
 
-            internal static readonly float handleArea = 40;
+            internal static readonly float handleSpace = 40;
             internal static readonly float handleWidth = 15;
             internal static readonly float handleHeight = 7;
 #if UNITY_2019_3_OR_NEWER
@@ -1030,8 +1037,8 @@ namespace Toolbox.Editor.Internal
             internal static readonly GUIContent arraySizeFieldContent;
 
             internal static readonly GUIStyle sizeLabel;
-            internal static readonly GUIStyle footerButton;
-            internal static readonly GUIStyle draggingHandle;
+            internal static readonly GUIStyle addRemoveButton;
+            internal static readonly GUIStyle dragButtonHandle;
             internal static readonly GUIStyle headerBackground;
             internal static readonly GUIStyle middleBackground;
             internal static readonly GUIStyle footerBackground;
@@ -1050,8 +1057,8 @@ namespace Toolbox.Editor.Internal
                     alignment = TextAnchor.MiddleRight
                 };
 
-                footerButton = new GUIStyle("RL FooterButton");
-                draggingHandle = new GUIStyle("RL DragHandle");
+                addRemoveButton = new GUIStyle("RL FooterButton");
+                dragButtonHandle = new GUIStyle("RL DragHandle");
                 headerBackground = new GUIStyle("RL Header");
                 middleBackground = new GUIStyle("RL Background");
                 footerBackground = new GUIStyle("RL Footer");

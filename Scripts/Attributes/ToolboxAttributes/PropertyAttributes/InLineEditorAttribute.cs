@@ -3,7 +3,8 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Draw editors associated to <see cref="Object"/> property.
+    /// Draws an associated built-in Editor.
+    /// Supported types: any <see cref="Object"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class InLineEditorAttribute : ToolboxPropertyAttribute

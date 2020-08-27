@@ -9,11 +9,11 @@ namespace Toolbox.Editor.Drawers
         {
             if (!string.IsNullOrEmpty(attribute.Label))
             {
-                //draw group label for whole section
+                //draw group label for the whole section
                 EditorGUILayout.BeginHorizontal(Style.headerBackgroundStyle);
                 EditorGUILayout.LabelField(attribute.Label, Style.headerStyle);
                 EditorGUILayout.EndHorizontal();
-                //remove additional space between header and vertical group
+                //remove additional space between controls
                 GUILayout.Space(-Style.spacing * 2);
             }
 

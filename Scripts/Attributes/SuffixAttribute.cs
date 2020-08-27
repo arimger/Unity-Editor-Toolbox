@@ -2,7 +2,11 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    /// <summary>
+    /// Draws an additional suffix label.
+    /// Supported types: all.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class SuffixAttribute : PropertyAttribute
     {
         public SuffixAttribute(string suffixLabel)

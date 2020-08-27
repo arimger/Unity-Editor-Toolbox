@@ -27,18 +27,14 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// Draws validated property.
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             //current stored path validation
             if (!IsPathValid(property.stringValue, Attribute.RelativePath))
             {
-                var helpBoxRect = new Rect(position.x, position.y, position.width, Style.boxHeight);
+                var helpBoxRect = new Rect(position.x, 
+                                           position.y, 
+                                           position.width, Style.boxHeight);
                 EditorGUI.HelpBox(helpBoxRect, "Provided directory does not exist.", MessageType.Warning);
                 position.y += Style.boxHeight + Style.spacing + Style.spacing;
             }

@@ -35,7 +35,9 @@ namespace Toolbox.Editor
                 ToolboxEditorProject.RepaintProjectOverlay();
                 return;
             }
-			
+
+            var validateData = !IsInitialized;
+
 			//enable/disable core function
 			ToolboxEditorProject.IsOverlayAllowed = settings.UseToolboxProject;
 			
@@ -45,7 +47,7 @@ namespace Toolbox.Editor
             ToolboxEditorProject.SmallIconPaddingRatio = settings.SmallIconPadding;
 
             ToolboxEditorProject.RemoveCustomFolders();
-			
+
 			//create custom folders using stored data
             for (var i = 0; i < settings.CustomFoldersCount; i++)
             {
@@ -99,17 +101,10 @@ namespace Toolbox.Editor
             }
         }
 
-        internal static bool InitializeSettings(ToolboxEditorSettings settings)
-        {
-            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(settings, out string guid, out long id);
-
-            return InitializeSettings(guid);
-        }
-
-        internal static bool InitializeSettings(string assetGuid)
+        internal static bool InitializeSettings(string settingsGuid)
         {           
-            SettingsGuid = assetGuid;
-            SettingsPath = AssetDatabase.GUIDToAssetPath(assetGuid);
+            SettingsGuid = settingsGuid;
+            SettingsPath = AssetDatabase.GUIDToAssetPath(settingsGuid);
 
             //try to get proper settings asset from the provided guid
             if (Settings = AssetDatabase.LoadAssetAtPath<ToolboxEditorSettings>(SettingsPath))

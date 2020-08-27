@@ -2,14 +2,18 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    /// <summary>
+    /// Allows to pick values based on the provided preset collection.
+    /// Supported types: any.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class PresetAttribute : PropertyAttribute
     {
-        public PresetAttribute(string presetPropertyName)
+        public PresetAttribute(string presetFieldName)
         {
-            PresetPropertyName = presetPropertyName;
+            PresetFieldName = presetFieldName;
         }
 
-        public string PresetPropertyName { get; private set; }
+        public string PresetFieldName { get; private set; }
     }
 }

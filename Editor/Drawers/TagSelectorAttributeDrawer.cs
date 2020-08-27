@@ -21,9 +21,10 @@ namespace Toolbox.Editor.Drawers
                 "<None>"
             };
             tags.AddRange(InternalEditorUtility.tags);
-            var propertyString = property.stringValue;
+            var value = property.stringValue;
             var index = -1;
-            if (propertyString == "")
+
+            if (value == "")
             {
                 index = 0;
             }
@@ -31,7 +32,7 @@ namespace Toolbox.Editor.Drawers
             {
                 for (int i = 1; i < tags.Count; i++)
                 {
-                    if (tags[i] == propertyString)
+                    if (tags[i] == value)
                     {
                         index = i;
                         break;
