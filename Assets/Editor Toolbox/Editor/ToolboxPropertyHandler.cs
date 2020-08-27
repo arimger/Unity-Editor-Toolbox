@@ -74,14 +74,14 @@ namespace Toolbox.Editor
             //first of all we have to retrieve native data like field info, custom native drawer, etc.
             //after this we have to retrieve (if possible) all Toolbox-related data - ToolboxAttributes
 
+            //set basic content for handled property
+            propertyLabel = new GUIContent(property.displayName);
+
             //get field info associated with this property, this property is needed for custom attributes
             if ((propertyFieldInfo = property.GetFieldInfo(out propertyType)) == null)
             {
                 return;
             }
-
-            //set basic content for handled property
-            propertyLabel = new GUIContent(property.displayName);
 
             //check if this property has built-in property drawer
             if (!(hasNativePropertyDrawer = property.HasCustomDrawer(propertyType)))
@@ -122,7 +122,7 @@ namespace Toolbox.Editor
             conditionAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxConditionAttribute>();
             //get all available decorator attributes
             decoratorAttributes = propertyFieldInfo.GetCustomAttributes<ToolboxDecoratorAttribute>()
-                .ToArray();
+                                                   .ToArray();
             //keep decorator attributes in proper order
             Array.Sort(decoratorAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
         }
@@ -164,8 +164,8 @@ namespace Toolbox.Editor
                 EditorGUI.BeginDisabledGroup(true);
             }
 
-            //get property drawer for single property or draw it in default way
-            if (hasToolboxPropertyDrawer && !hasNativePropertyDrawer)
+            //get property drawer for single property or draw it in the default way
+            if (hasToolboxPropertyDrawer && (!hasNativePropertyDrawer || property.isArray))
             {
                 if (hasToolboxTargetTypeDrawer)
                 {

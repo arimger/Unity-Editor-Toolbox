@@ -69,7 +69,6 @@ namespace Toolbox.Editor
                 }
 
                 var drawerInstance = Activator.CreateInstance(drawerType) as T;
-
                 if (drawersCollection.ContainsKey(targetAttributeType))
                 {
                     if (validationEnabled)
@@ -142,7 +141,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Creates all possible type-based drawers and add them ro proper collection.
+        /// Creates all possible type-based drawers and add them to the related collection.
         /// </summary>
         /// <param name="settings"></param>
         private static void CreateTargetTypeDrawers(IToolboxInspectorSettings settings)
@@ -162,11 +161,11 @@ namespace Toolbox.Editor
                 }
 
                 var drawerInstance = Activator.CreateInstance(drawerType) as ToolboxTargetTypeDrawer;
-                var targetTypes = drawerInstance.GetTargetType().GetAllChildClasses();
+                var allTargetTypes = drawerInstance.GetTargetType().GetAllChildClasses();
 
-                foreach (var type in targetTypes)
+                foreach (var type in allTargetTypes)
                 {
-                    if (targetTypes.Contains(type))
+                    if (allTargetTypes.Contains(type))
                     {
                         if (validationEnabled)
                         {
