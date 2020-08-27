@@ -3,9 +3,10 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Attribute will draw min-max slider based on <see cref="Vector2"/> value.
+    /// Draws min-max slider.
+    /// Supported types: <see cref="Vector2"/>.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class MinMaxSliderAttribute : PropertyAttribute
     {
         public MinMaxSliderAttribute(float minValue, float maxValue)

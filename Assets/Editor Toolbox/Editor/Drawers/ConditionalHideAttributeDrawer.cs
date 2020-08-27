@@ -12,6 +12,11 @@ namespace Toolbox.Editor.Drawers
         }
 
 
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            return true;
+        }
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return !IsConditionMet(property) ? EditorGUI.GetPropertyHeight(property) : -EditorGUIUtility.standardVerticalSpacing;

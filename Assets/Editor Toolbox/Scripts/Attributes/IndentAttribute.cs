@@ -2,7 +2,11 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    /// <summary>
+    /// Creates indent scope.
+    /// Supported types: all.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class IndentAttribute : PropertyAttribute
     {
         public IndentAttribute()

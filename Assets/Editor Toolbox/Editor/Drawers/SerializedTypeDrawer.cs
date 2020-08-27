@@ -112,31 +112,17 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// Checks if provided property has valid type.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.type == nameof(SerializedType);
         }
 
-        /// <summary>
-        /// Return current propety height.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
-        /// <returns></returns>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return EditorStyles.popup.CalcHeight(GUIContent.none, 0);
         }
 
 
-        /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="ClassTypeConstraintAttribute"/>.
-        /// </summary>
         private ClassTypeConstraintAttribute Attribute => attribute as ClassTypeConstraintAttribute;
     }
 }

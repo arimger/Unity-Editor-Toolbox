@@ -170,14 +170,6 @@ public int var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc15.png)
 
-#### BoxedHeaderAttribute
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc16.png)
-
-#### BoxedToggleAttribute
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc17.png)
-
 #### EnumFlagAttribute
 
 ```csharp
@@ -504,13 +496,3 @@ I decieded to move additional editors and tools to Gist.
 ### Prefab/GameObject Painter
 
 Check it out [HERE](https://gist.github.com/arimger/00842a217ea8ab03d4e1b81f11592cf3)
-
----
-
-### Field of View Generator
-
-Check it out [HERE](https://gist.github.com/arimger/f4ce98e9d3c5b0d4fb33a92e648f8442)
-
-### Grid Generator
-
-Check it out [HERE](https://gist.github.com/arimger/4c955744bb2e65f56e82117eed2e78cc)

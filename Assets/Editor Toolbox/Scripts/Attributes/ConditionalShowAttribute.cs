@@ -2,6 +2,10 @@
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// Shows associated field if provided condition is met.
+    /// Supported types: all.
+    /// </summary>
     [Obsolete("Use ShofIfAttribute instead.")]
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class ConditionalShowAttribute : ConditionalAttribute

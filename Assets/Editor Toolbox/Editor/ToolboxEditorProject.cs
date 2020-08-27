@@ -22,7 +22,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// All custom folders mapped to own path relative to the Asset directory.
+        /// All custom folders mapped to a path.
         /// </summary>
         private readonly static Dictionary<string, FolderData> pathBasedFoldersData = new Dictionary<string, FolderData>();
         /// <summary>
@@ -105,6 +105,7 @@ namespace Toolbox.Editor
             switch (data.Type)
             {
                 case FolderDataType.Path:
+                    //if (validationEnabled)
                     pathBasedFoldersData[data.Path] = data;
                     return;
                 case FolderDataType.Name:

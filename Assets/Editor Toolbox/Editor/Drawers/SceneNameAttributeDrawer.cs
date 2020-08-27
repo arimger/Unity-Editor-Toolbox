@@ -8,7 +8,10 @@ namespace Toolbox.Editor.Drawers
     {
         private static bool SceneExists(string sceneName)
         {
-            if (string.IsNullOrEmpty(sceneName)) return false;
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                return false;
+            }
 
             for (var i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings; i++)
             {
@@ -16,7 +19,10 @@ namespace Toolbox.Editor.Drawers
                 var lastSlash = scenePath.LastIndexOf("/");
                 var name = scenePath.Substring(lastSlash + 1, scenePath.LastIndexOf(".") - lastSlash - 1);
 
-                if (string.Compare(name, sceneName, true) == 0) return true;
+                if (string.Compare(name, sceneName, true) == 0)
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -29,13 +35,14 @@ namespace Toolbox.Editor.Drawers
 
             if (!SceneExists(property.stringValue))
             {
-                var helpBoxRect = new Rect(position.x, position.y, position.width, Style.height);
+                //set rect for the warning message vox
+                var helpBoxRect = new Rect(position.x, 
+                                           position.y, 
+                                           position.width, Style.boxHeight);
                 EditorGUI.HelpBox(helpBoxRect, warningMessage, MessageType.Warning);
 
-                //adjust property label height
-                position.height -= Style.height + Style.spacing * 2;
-                //adjust OY position for target property
-                position.y += Style.height + Style.spacing * 2;
+                //adjust rect for standard property field
+                position.y += Style.boxHeight + Style.spacing * 2;
             }
 
             EditorGUI.PropertyField(position, property, label, property.isExpanded);
@@ -52,7 +59,7 @@ namespace Toolbox.Editor.Drawers
             if (!SceneExists(property.stringValue))
             {         
                 //set additional height as help box height + 2x spacing between properties
-                return base.GetPropertyHeight(property, label) + Style.height + Style.spacing * 2;
+                return base.GetPropertyHeight(property, label) + Style.boxHeight + Style.spacing * 2;
             }
 
             return base.GetPropertyHeight(property, label);
@@ -61,7 +68,8 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal static readonly float height = EditorGUIUtility.singleLineHeight * 1.25f * 2;
+            internal static readonly float rowHeight = EditorGUIUtility.singleLineHeight;
+            internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.5f;
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
             internal static readonly float padding = 5.0f;
         }

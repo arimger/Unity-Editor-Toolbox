@@ -16,6 +16,7 @@ namespace Toolbox.Editor
             texture.filterMode = FilterMode.Point;
             texture.hideFlags = HideFlags.HideAndDontSave;
             texture.Apply();
+
             return texture;
         }
     }

@@ -48,9 +48,6 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="RandomAttribute"/>.
-        /// </summary>
         private RandomAttribute Attribute => attribute as RandomAttribute;
 
 

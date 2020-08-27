@@ -9,7 +9,7 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginChangeCheck();
-            EditorGUI.PropertyField(position, property);
+            EditorGUI.PropertyField(position, property, label);
 
             if (!EditorGUI.EndChangeCheck() || property.objectReferenceValue == null)
             {

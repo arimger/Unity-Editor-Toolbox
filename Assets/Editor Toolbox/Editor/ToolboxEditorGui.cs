@@ -7,7 +7,7 @@ namespace Toolbox.Editor
     using Toolbox.Editor.Internal;
 
     /// <summary>
-    /// This class contains all useful and ready to use Editor controls.
+    /// Contains useful and ready-to-use Editor controls.
     /// </summary>
     public static partial class ToolboxEditorGui
     {
@@ -60,7 +60,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Creates asset preview using provided asset object.
+        /// Creates asset preview for given <see cref="Object"/>. Uses built-in layouting system.
         /// </summary>
         /// <param name="texture"></param>
         /// <param name=""></param>
@@ -176,32 +176,62 @@ namespace Toolbox.Editor
             GUI.DrawTexture(rect, texture, scaleMode, alphaBlend);
         }
 
+
+        internal static class Style
+        {
+            internal static readonly float height = EditorGUIUtility.singleLineHeight;
+            internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
+
+            internal static readonly Color standardLineColor = new Color(0.3f, 0.3f, 0.3f);
+
+            internal static readonly GUIStyle boxedSkinStyle;
+            internal static readonly GUIStyle labelSkinStyle;
+            internal static readonly GUIStyle buttonSkinStyle;
+            internal static readonly GUIStyle miniButtonStyle;
+
+            internal static readonly GUIContent warningContent;
+
+            static Style()
+            {
+                boxedSkinStyle = new GUIStyle(GUI.skin.box);
+                labelSkinStyle = new GUIStyle(GUI.skin.label);
+                buttonSkinStyle = new GUIStyle(GUI.skin.button);
+                miniButtonStyle = new GUIStyle(EditorStyles.miniButton);
+
+                warningContent = EditorGUIUtility.IconContent("console.warnicon.sml");
+            }
+        }
+    }
+
+    public static partial class ToolboxEditorGui
+    {
+
         /// <summary>
-        /// Draws <see cref="ReorderableList"/> as drawer list instace used in <see cref="ToolboxEditorSettings"/>.
+        /// Draws <see cref="ReorderableList"/> as drawer list instace used within the <see cref="ToolboxEditorSettingsEditor"/> class.
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="titleLabel"></param>
+        /// <param name="drawersList"></param>
+        /// <param name="drawersTitle"></param>
         /// <param name="assignButtonLabel"></param>
         /// <param name="foldoutStyle"></param>
         /// <returns></returns>
-        internal static bool DrawDrawerList(ReorderableList list, string titleLabel, string assignButtonLabel, GUIStyle foldoutStyle)
+        internal static bool DrawDrawerList(ReorderableList drawersList, string drawersTitle, string assignButtonLabel, GUIStyle foldoutStyle)
         {
             GUILayout.BeginHorizontal();
-            var expanded = DrawListFoldout(list, foldoutStyle, titleLabel);
+            var expanded = DrawListFoldout(drawersList, foldoutStyle, drawersTitle);
             GUILayout.FlexibleSpace();
             var pressed = GUILayout.Button(assignButtonLabel, Style.miniButtonStyle);
             GUILayout.EndHorizontal();
 
             if (expanded)
             {
-                list.DoLayoutList();
+                drawersList.DoLayoutList();
             }
 
             return pressed;
         }
 
         /// <summary>
-        /// Draws <see cref="ReorderableList"/> with additional foldout.
+        /// Draws <see cref="ReorderableList"/> with an additional foldout.
         /// </summary>
         /// <param name="list"></param>
         /// <param name="style"></param>
@@ -212,7 +242,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws <see cref="ReorderableList"/> with additional foldout and custom label.
+        /// Draws <see cref="ReorderableList"/> with an additional foldout and a custom label.
         /// </summary>
         /// <param name="list"></param>
         /// <param name="style"></param>
@@ -235,7 +265,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Creates <see cref="ReorderableList"/> using non-standard(box style) background.
+        /// Creates <see cref="ReorderableList"/> using a non-standard(box style) background.
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
@@ -275,7 +305,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Creates <see cref="ReorderableList"/> using non-standard(lined style) background.
+        /// Creates <see cref="ReorderableList"/> using a non-standard(lined style) background.
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
@@ -308,7 +338,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Creates <see cref="ReorderableList"/> with provided <see cref="ListStyle"/> type.
+        /// Creates <see cref="ReorderableList"/> using provided <see cref="ListStyle"/> type.
         /// </summary>
         /// <param name="property"></param>
         /// <param name="style"></param>
@@ -323,40 +353,7 @@ namespace Toolbox.Editor
                 default: return null;
             }
         }
-
-
-        /// <summary>
-        /// Custom style representation.
-        /// </summary>
-        internal static class Style
-        {
-            internal static readonly float height = EditorGUIUtility.singleLineHeight;
-            internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
-
-            /// <summary>
-            /// Default color used in vertical line drawing.
-            /// </summary>
-            internal static readonly Color standardLineColor = new Color(0.3f, 0.3f, 0.3f);
-
-            internal static readonly GUIStyle boxedSkinStyle;
-            internal static readonly GUIStyle labelSkinStyle;
-            internal static readonly GUIStyle buttonSkinStyle;
-            internal static readonly GUIStyle miniButtonStyle;
-
-            internal static readonly GUIContent warningContent;
-
-            static Style()
-            {
-                boxedSkinStyle = new GUIStyle(GUI.skin.box);
-                labelSkinStyle = new GUIStyle(GUI.skin.label);
-                buttonSkinStyle = new GUIStyle(GUI.skin.button);
-                miniButtonStyle = new GUIStyle(EditorStyles.miniButton);
-
-                warningContent = EditorGUIUtility.IconContent("console.warnicon.sml");
-            }
-        }
     }
-
 
     public static partial class ToolboxEditorGui
     {                
@@ -368,6 +365,7 @@ namespace Toolbox.Editor
 
         /// <summary>
         /// Draws property using additional <see cref="PropertyDrawer"/>s and <see cref="Drawers.ToolboxAttributeDrawer"/>s.
+        /// Uses built-in layouting system.
         /// </summary>
         /// <param name="property"></param>
         public static void DrawLayoutToolboxProperty(SerializedProperty property)
@@ -377,6 +375,7 @@ namespace Toolbox.Editor
 
         /// <summary>
         /// Draws property in default way but children will support Toolbox drawers.
+        /// Uses built-in layouting system.
         /// </summary>
         /// <param name="property"></param>
         public static void DrawLayoutDefaultProperty(SerializedProperty property)
@@ -386,6 +385,7 @@ namespace Toolbox.Editor
 
         /// <summary>
         /// Draws property in default way but children will support Toolbox drawers.
+        /// Uses built-in layouting system.
         /// </summary>
         /// <param name="property"></param>
         public static void DrawLayoutDefaultProperty(SerializedProperty property, GUIContent label)
@@ -433,7 +433,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws property in native-default way.
+        /// Draws property in native-default way. Uses built-in layouting system.
         /// </summary>
         /// <param name="property"></param>
         /// <param name="label"></param>
@@ -443,7 +443,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws property in native-default way.
+        /// Draws property in native-default way. Uses built-in layouting system.
         /// </summary>
         /// <param name="property"></param>
         /// <param name="label"></param>
@@ -453,7 +453,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws provided property as a warning label.
+        /// Draws provided property as a warning label. Uses built-in layouting system.
         /// </summary>
         public static void DrawLayoutEmptyProperty(SerializedProperty property)
         {
@@ -461,7 +461,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws provided property as a warning label.
+        /// Draws provided property as a warning label. Uses built-in layouting system.
         /// </summary>
         public static void DrawLayoutEmptyProperty(SerializedProperty property, GUIContent label)
         {
@@ -481,9 +481,9 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawEmptyProperty(Rect position, SerializedProperty property, GUIContent label)
         {
-            const float iconHeight = 20.0f;
             const float iconWidth = 20.0f;
-
+            const float iconHeight = 20.0f;
+            
             position.width = iconWidth;
             position.height = iconHeight;
 

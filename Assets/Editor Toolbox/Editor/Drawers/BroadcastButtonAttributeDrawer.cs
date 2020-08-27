@@ -25,9 +25,6 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="BroadcastButtonAttribute"/>.
-        /// </summary>
         private BroadcastButtonAttribute Attribute => attribute as BroadcastButtonAttribute;
 
 

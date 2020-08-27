@@ -447,7 +447,7 @@ MonoBehaviour:
   var29: 1
   var30: 2
   var31: 3
-  var32: 0
+  var1: 0
   stringValue: sho
   var33: 0
   enumValue: 97
@@ -577,12 +577,12 @@ MonoBehaviour:
     classReference: System.Collections.ArrayList, mscorlib
   var11: Im read only
   var12: 0
-  enumFlag1: 35
+  enumFlag1: 39
   enumFlag2: 198
   var13: {fileID: 0}
   randomValue: -6.175682
   directory: Editor Toolbox/Editors
-  sceneName: SampleScene
+  sceneName: SampleScen
   presetTarget: 3
   enumSearch: 8
   clampedValue: 4.699999809265137
@@ -591,11 +591,11 @@ MonoBehaviour:
   vector3: {x: 1, y: 0, z: 1}
   prefab: {fileID: 0}
   hexColor: 234CE0FF
-  direction3d: {x: 0, y: 0, z: 0}
+  direction3d: {x: 0, y: 1, z: 0}
   direction2d: {x: 0, y: 1}
 --- !u!4 &959025299
 Transform:
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}

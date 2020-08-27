@@ -2,7 +2,7 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class InstanceButtonAttribute : ButtonAttribute
     {
         public InstanceButtonAttribute(Type instanceType, string methodName, string label = null,

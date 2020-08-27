@@ -26,6 +26,9 @@ namespace Toolbox.Editor.Drawers
                     break;
             }
 
+            position.yMin += EditorGUIUtility.standardVerticalSpacing / 2;
+            position.yMax -= EditorGUIUtility.standardVerticalSpacing / 2;
+
             EditorGUI.BeginDisabledGroup(!isValid);
             if (GUI.Button(position, GetLabel()))
             {

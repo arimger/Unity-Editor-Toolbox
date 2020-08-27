@@ -4,9 +4,9 @@ namespace UnityEngine
 {
     /// <summary>
     /// Marks field as read-only.
-    /// Use <see cref="DisableAttribute"/> to work together with any additional <see cref="ToolboxPropertyAttribute"/>.
+    /// Supported types: all.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class ReadOnlyFieldAttribute : PropertyAttribute
     { }
 }

@@ -6,12 +6,6 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(AssetPreviewAttribute))]
     public class AssetPreviewAttributeDrawer : ToolboxNativePropertyDrawer
     {
-        /// <summary>
-        /// Creates optional property label and asset preview if it is possible.
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             if (Attribute.UseLabel)
@@ -57,22 +51,11 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// Checks if provided property is valid.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.ObjectReference;
         }
 
-        /// <summary>
-        /// Overall property height, depending on label visibility + preview height.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
-        /// <returns></returns>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             //return native height 
@@ -93,9 +76,6 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="AssetPreviewAttribute"/>.
-        /// </summary>
         private AssetPreviewAttribute Attribute => attribute as AssetPreviewAttribute;
 
 

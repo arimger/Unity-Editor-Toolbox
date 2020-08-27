@@ -24,7 +24,7 @@ namespace Toolbox.Editor.Drawers
         {
             var key = property.GetPropertyKey();
 
-            if (!listInstances.TryGetValue(key, out ReorderableList list))
+            if (!listInstances.TryGetValue(key, out var list))
             {
                 listInstances[key] = list = ToolboxEditorGui.CreateList(property,
                     attribute.ListStyle,

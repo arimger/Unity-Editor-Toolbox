@@ -7,26 +7,26 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(LabelAttribute attribute)
         {
-            var areaStyle = GetAreaStyle(attribute.SkinStyle);
-            var fontStyle = GetFontStyle(attribute.FontStyle);
+            var spaceStyle = GetSpaceStyle(attribute.SkinStyle);
+            var labelStyle = GetLabelStyle(attribute.FontStyle);
 
-            fontStyle.alignment = attribute.Alignment;
-            fontStyle.fontStyle = attribute.FontStyle;
+            labelStyle.alignment = attribute.Alignment;
+            labelStyle.fontStyle = attribute.FontStyle;
 
             var content = GetContent(attribute);
 
-            EditorGUILayout.BeginVertical(areaStyle);
-            EditorGUILayout.LabelField(content, fontStyle);
+            EditorGUILayout.BeginVertical(spaceStyle);
+            EditorGUILayout.LabelField(content, labelStyle);
             EditorGUILayout.EndVertical();
         }
 
 
-        private static GUIStyle GetFontStyle(FontStyle style)
+        private static GUIStyle GetLabelStyle(FontStyle style)
         {
             return Style.labelStyle;
         }
 
-        private static GUIStyle GetAreaStyle(SkinStyle style)
+        private static GUIStyle GetSpaceStyle(SkinStyle style)
         {
             switch (style)
             {

@@ -6,12 +6,6 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]
     public class MinMaxSliderAttributeDrawer : ToolboxNativePropertyDrawer
     {
-        /// <summary>
-        /// Draws validated property.
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var labelWidth = EditorGUIUtility.labelWidth;
@@ -23,6 +17,7 @@ namespace Toolbox.Editor.Drawers
             var yValue = property.vector2Value.y;
 
             var labelRect = new Rect(position.x, position.y, labelWidth, position.height);
+
             var minFieldRect = new Rect(position.xMin + labelWidth, position.y, fieldWidth, position.height);
             var maxFieldRect = new Rect(position.xMax - fieldWidth, position.y, fieldWidth, position.height);
             //set slider rect between min and max fields + additional padding
@@ -62,15 +57,9 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="MinMaxSliderAttribute"/>.
-        /// </summary>
         private MinMaxSliderAttribute Attribute => attribute as MinMaxSliderAttribute;
 
 
-        /// <summary>
-        /// Static representation of slider style.
-        /// </summary>
         private static class Style
         {
             internal static readonly float height = EditorGUIUtility.singleLineHeight;

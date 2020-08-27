@@ -86,10 +86,13 @@ namespace Toolbox.Editor.Routine
             }
         }
 
+
         internal WeakReference owner;
+
         private IEnumerator routine;
         private YieldProcessor processor;
         private bool isDone;
+
 
         internal EditorCoroutine(IEnumerator routine)
         {
@@ -105,6 +108,7 @@ namespace Toolbox.Editor.Routine
             this.routine = routine;
             EditorApplication.update += MoveNext;
         }
+
 
         internal void MoveNext()
         {
@@ -124,6 +128,7 @@ namespace Toolbox.Editor.Routine
         }
 
         private static Stack<IEnumerator> kIEnumeratorProcessingStack = new Stack<IEnumerator>(32);
+
         private bool ProcessIEnumeratorRecursive(IEnumerator enumerator)
         {
             var root = enumerator;

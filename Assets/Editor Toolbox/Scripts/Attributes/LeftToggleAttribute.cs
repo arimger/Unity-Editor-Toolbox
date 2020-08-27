@@ -3,10 +3,10 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Allows to pick a built-in tag value.
-    /// Supported types: <see cref="string"/>.
+    /// Draws the left-ordered toggle.
+    /// Supported types: <see cref="bool"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public class TagSelectorAttribute : PropertyAttribute
+    public class LeftToggleAttribute : PropertyAttribute
     { }
 }

@@ -7,32 +7,32 @@ public class SampleBehaviour1 : MonoBehaviour
     [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
           "Check the SampleBehaviour1.cs script for more details.", Order = -1)]
 
-    [BoxedHeader("1")]
+    [Label("1", skinStyle:SkinStyle.Box)]
 
     [Help("You can provide more information in HelpBoxes.", Order = 100)]
     public int var1;
 
-    [BoxedHeader("2")]
+    [Label("2", skinStyle: SkinStyle.Box)]
 
     [TagSelector]
     public string targetTag;
 
-    [BoxedHeader("3")]
+    [Label("3", skinStyle: SkinStyle.Box)]
 
     [ProgressBar(minValue:10.0f, maxValue:50.0f, Color = "#234DEA")]
     public float progressBar = 25.4f;
 
-    [BoxedHeader("4")]
+    [Label("4", skinStyle: SkinStyle.Box)]
 
     [NewLabel("float")]
     public float newLabel = 25.4f;
 
-    [BoxedHeader("5")]
+    [Label("5", skinStyle: SkinStyle.Box)]
 
     [MinMaxSlider(10.0f, 100.0f)]
     public Vector2 var2;
 
-    [BoxedHeader("6")]
+    [Label("6", skinStyle: SkinStyle.Box)]
 
     [Indent(1)]
     public int var3 = 1;
@@ -41,7 +41,7 @@ public class SampleBehaviour1 : MonoBehaviour
     [Indent(3)]
     public int var5 = 3;
 
-    [BoxedHeader("7")]
+    [Label("7", skinStyle: SkinStyle.Box)]
     
     [HideLabel]
     public bool toggle1;
@@ -49,7 +49,7 @@ public class SampleBehaviour1 : MonoBehaviour
     [ConditionalHide(nameof(toggle1), true)] //ConditionalShow
     public float var6;
 
-    [BoxedHeader("8")]
+    [Label("8", skinStyle: SkinStyle.Box)]
 
     [HideLabel]
     public bool toggle2;
@@ -57,7 +57,7 @@ public class SampleBehaviour1 : MonoBehaviour
     [ConditionalDisable(nameof(toggle2), true)] //ConditionalEnable
     public float var7;
 
-    [BoxedHeader("9")]
+    [Label("9", skinStyle: SkinStyle.Box)]
 
     [InstanceButton(typeof(SampleBehaviour1), nameof(ResetVar8), 
                                         "Use this button to reset var8 using this instance[in Play mode]", ButtonActivityType.OnPlayMode, order = 100)]
@@ -81,29 +81,29 @@ public class SampleBehaviour1 : MonoBehaviour
         Debug.Log("Var8 resetted");
     }
 
-    [BoxedHeader("10")]
+    [Label("10", skinStyle: SkinStyle.Box)]
 
     [Suffix("kg")]
     public float var10;
 
-    [BoxedHeader("11")]
+    [Label("11", skinStyle: SkinStyle.Box)]
 
     [ClassExtends(typeof(Object)), Tooltip("This variable is able to serialize Type.")]
     public SerializedType type1;
     [ClassImplements(typeof(System.Collections.ICollection))]
     public SerializedType type2;
 
-    [BoxedHeader("12")]
+    [Label("12", skinStyle: SkinStyle.Box)]
 
     [ReadOnlyField]
     public string var11 = "Im read only";
 
-    [BoxedHeader("13")]
+    [Label("13", skinStyle: SkinStyle.Box)]
 
-    [BoxedToggle]
+    [LeftToggle]
     public bool var12;
 
-    [BoxedHeader("14")]
+    [Label("14", skinStyle: SkinStyle.Box)]
 
     [EnumFlag]
     public FlagExample enumFlag1 = FlagExample.Flag1 | FlagExample.Flag2;
@@ -126,66 +126,66 @@ public class SampleBehaviour1 : MonoBehaviour
         Everything = ~0
     }
 
-    [BoxedHeader("15")]
+    [Label("15", skinStyle: SkinStyle.Box)]
 
     [NotNull]
     public Transform var13;
 
-    [BoxedHeader("16")]
+    [Label("16", skinStyle: SkinStyle.Box)]
 
     [Random(-10.0f, 10.0f)]
     public float randomValue;
 
-    [BoxedHeader("17")]
+    [Label("17", skinStyle: SkinStyle.Box)]
 
     [Directory]
     public string directory;
 
-    [BoxedHeader("18")]
+    [Label("18", skinStyle: SkinStyle.Box)]
 
     [SceneName]
     public string sceneName;
 
-    [BoxedHeader("19")]
+    [Label("19", skinStyle: SkinStyle.Box)]
 
     [Preset(nameof(presetValues)), Tooltip("Pick value")]
     public int presetTarget;
 
     private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
 
-    [BoxedHeader("20")]
+    [Label("20", skinStyle: SkinStyle.Box)]
 
     [SearchableEnum]
     public KeyCode enumSearch;
 
-    [BoxedHeader("21")]
+    [Label("21", skinStyle: SkinStyle.Box)]
 
     [Clamp(0.0f, 11.2f)]
     public double clampedValue;
 
-    [BoxedHeader("22")]
+    [Label("22", skinStyle: SkinStyle.Box)]
 
     [Password]
     public string password;
 
-    [BoxedHeader("23")]
+    [Label("23", skinStyle: SkinStyle.Box)]
 
     [Vector2Range(0, 1)]
     public Vector2 vector2;
     [Vector3Range(0, 1)]
     public Vector3 vector3;
 
-    [BoxedHeader("24")]
+    [Label("24", skinStyle: SkinStyle.Box)]
 
     [PrefabReference]
     public GameObject prefab;
 
-    [BoxedHeader("25")]
+    [Label("25", skinStyle: SkinStyle.Box)]
 
     [HexColor]
     public string hexColor;
 
-    [BoxedHeader("26")]
+    [Label("26", skinStyle: SkinStyle.Box)]
 
     [Vector3Direction]
     public Vector3 direction3d;

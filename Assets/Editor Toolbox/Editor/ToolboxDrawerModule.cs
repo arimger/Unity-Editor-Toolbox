@@ -28,6 +28,9 @@ namespace Toolbox.Editor
         private readonly static Type collectionDrawerBase = typeof(ToolboxCollectionDrawer<>);
         private readonly static Type conditionDrawerBase  = typeof(ToolboxConditionDrawer<>);
 
+        /// <summary>
+        /// Collection of specific drawers associated to particular <see cref="object"/> types.
+        /// </summary>
         private readonly static Dictionary<Type, ToolboxTargetTypeDrawer> targetTypeDrawers = new Dictionary<Type, ToolboxTargetTypeDrawer>();
 
         private readonly static Dictionary<Type, ToolboxDecoratorDrawerBase> decoratorDrawers  = new Dictionary<Type, ToolboxDecoratorDrawerBase>();
@@ -47,9 +50,9 @@ namespace Toolbox.Editor
         private static IToolboxInspectorSettings settings;
 
         /// <summary>
-        /// Determines if any invalid settings should be logged into console.
+        /// Determines if any invalid settings should be logged into the Console Window.
         /// </summary>
-        private static bool validateSettings = true;
+        private static bool validationEnabled = true;
 
 
         /// <summary>
@@ -69,7 +72,7 @@ namespace Toolbox.Editor
 
                 if (drawersCollection.ContainsKey(targetAttributeType))
                 {
-                    if (validateSettings)
+                    if (validationEnabled)
                     {
                         ToolboxEditorLog.LogError("Attribute:" + targetAttributeType + " is associated to more than one ToolboxDrawer.");
                     }
@@ -84,7 +87,7 @@ namespace Toolbox.Editor
             {
                 if (drawerType == null)
                 {
-                    if (validateSettings)
+                    if (validationEnabled)
                     {
                         ToolboxEditorLog.LogWarning("One of assigned drawer types in the " + nameof(ToolboxEditorSettings) + " is empty.");
                     }
@@ -150,13 +153,14 @@ namespace Toolbox.Editor
                 var drawerType = settings.GetTargetTypeDrawerTypeAt(i);
                 if (drawerType == null)
                 {
-                    if (validateSettings)
+                    if (validationEnabled)
                     {
                         ToolboxEditorLog.LogWarning("One of assigned drawer types in the " + nameof(ToolboxEditorSettings) + " is empty.");
                     }
                     
                     continue;
                 }
+
                 var drawerInstance = Activator.CreateInstance(drawerType) as ToolboxTargetTypeDrawer;
                 var targetTypes = drawerInstance.GetTargetType().GetAllChildClasses();
 
@@ -164,13 +168,14 @@ namespace Toolbox.Editor
                 {
                     if (targetTypes.Contains(type))
                     {
-                        if (validateSettings)
+                        if (validationEnabled)
                         {
                             ToolboxEditorLog.LogError("Type:" + type + " is associated to more than one ToolboxDrawer.");
                         }
                         
                         continue;              
                     }
+
                     targetTypeDrawers[type] = drawerInstance;
                 }
             }
@@ -213,7 +218,7 @@ namespace Toolbox.Editor
             CreateAttributeDrawers(settings);
             CreateTargetTypeDrawers(settings);
 
-            validateSettings = false;
+            validationEnabled = false;
         }
 
 
@@ -230,7 +235,7 @@ namespace Toolbox.Editor
 
         internal static ToolboxTargetTypeDrawer GetTargetTypeDrawer(Type propertyType)
         {
-            if (!targetTypeDrawers.TryGetValue(propertyType, out ToolboxTargetTypeDrawer drawer))
+            if (!targetTypeDrawers.TryGetValue(propertyType, out var drawer))
             {
                 return null;
             }
@@ -240,7 +245,7 @@ namespace Toolbox.Editor
 
         internal static ToolboxDecoratorDrawerBase GetDecoratorDrawer<T>(T attribute) where T : ToolboxDecoratorAttribute
         {
-            if (!decoratorDrawers.TryGetValue(attribute.GetType(), out ToolboxDecoratorDrawerBase drawer))
+            if (!decoratorDrawers.TryGetValue(attribute.GetType(), out var drawer))
             {
                 ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
                 return null;
@@ -251,7 +256,7 @@ namespace Toolbox.Editor
 
         internal static ToolboxPropertyDrawerBase GetPropertyDrawer<T>(T attribute) where T : ToolboxPropertyAttribute
         {
-            if (!propertyDrawers.TryGetValue(attribute.GetType(), out ToolboxPropertyDrawerBase drawer))
+            if (!propertyDrawers.TryGetValue(attribute.GetType(), out var drawer))
             {
                 ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
                 return null;
@@ -262,7 +267,7 @@ namespace Toolbox.Editor
 
         internal static ToolboxPropertyDrawerBase GetCollectionDrawer<T>(T attribute) where T : ToolboxCollectionAttribute
         {
-            if (!collectionDrawers.TryGetValue(attribute.GetType(), out ToolboxPropertyDrawerBase drawer))
+            if (!collectionDrawers.TryGetValue(attribute.GetType(), out var drawer))
             {
                 ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
                 return null;
@@ -273,7 +278,7 @@ namespace Toolbox.Editor
 
         internal static ToolboxConditionDrawerBase GetConditionDrawer<T>(T attribute) where T : ToolboxConditionAttribute
         {
-            if (!conditionDrawers.TryGetValue(attribute.GetType(), out ToolboxConditionDrawerBase drawer))
+            if (!conditionDrawers.TryGetValue(attribute.GetType(), out var drawer))
             {
                 ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
                 return null;
@@ -286,7 +291,7 @@ namespace Toolbox.Editor
         {
             var key = property.GetPropertyKey();
 
-            if (!propertyHandlers.TryGetValue(key, out ToolboxPropertyHandler propertyHandler))
+            if (!propertyHandlers.TryGetValue(key, out var propertyHandler))
             {
                 return propertyHandlers[key] = propertyHandler = new ToolboxPropertyHandler(property);
             }
