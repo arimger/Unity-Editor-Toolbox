@@ -6,7 +6,7 @@ namespace UnityEngine
     /// Draws an associated built-in Editor.
     /// Supported types: any <see cref="Object"/>.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class InLineEditorAttribute : ToolboxPropertyAttribute
     {
         public InLineEditorAttribute(bool drawHeader = false, bool drawPreview = true, bool drawSettings = false)

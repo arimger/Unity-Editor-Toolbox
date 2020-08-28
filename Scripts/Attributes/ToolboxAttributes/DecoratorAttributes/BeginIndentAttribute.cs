@@ -3,9 +3,9 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Begins indentation group in inspector. Use the <seealso cref="EndIndentAttribute"/> on serialized property to end this group.
+    /// Begins indentation group. Has to be closed by the <see cref="EndIndentAttribute"/>.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class BeginIndentAttribute : ToolboxDecoratorAttribute
     {
         public BeginIndentAttribute(int indentToAdd = 1)

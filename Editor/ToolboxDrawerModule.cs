@@ -18,7 +18,7 @@ namespace Toolbox.Editor
             InspectorUtility.OnEditorReload += ClearHandlers;
         }
 
-
+        //NOTE: unfortunately there is no valid, non-reflection way to check if property has a custom drawer
         private static readonly MethodInfo getDrawerTypeForTypeMethod = typeof(UnityEditor.Editor).Assembly
                                                                                                   .GetType("UnityEditor.ScriptAttributeUtility")
                                                                                                   .GetMethod("GetDrawerTypeForType", BindingFlags.NonPublic | BindingFlags.Static);
@@ -259,55 +259,75 @@ namespace Toolbox.Editor
 
         internal static ToolboxDecoratorDrawerBase GetDecoratorDrawer<T>(T attribute) where T : ToolboxDecoratorAttribute
         {
-            if (decoratorDrawers.TryGetValue(attribute.GetType(), out var drawer))
+            return GetDecoratorDrawer(attribute.GetType());
+        }
+
+        internal static ToolboxDecoratorDrawerBase GetDecoratorDrawer(Type attributeType)
+        {
+            if (decoratorDrawers.TryGetValue(attributeType, out var drawer))
             {
                 return drawer;
 
             }
             else
             {
-                ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
+                ToolboxEditorLog.AttributeNotSupportedWarning(attributeType);
                 return null;
-            }     
+            }
         }
 
         internal static ToolboxPropertyDrawerBase GetPropertyDrawer<T>(T attribute) where T : ToolboxPropertyAttribute
         {
-            if (propertyDrawers.TryGetValue(attribute.GetType(), out var drawer))
+            return GetPropertyDrawer(attribute.GetType());
+        }
+
+        internal static ToolboxPropertyDrawerBase GetPropertyDrawer(Type attributeType)
+        {
+            if (propertyDrawers.TryGetValue(attributeType, out var drawer))
             {
                 return drawer;
             }
             else
             {
-                ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
+                ToolboxEditorLog.AttributeNotSupportedWarning(attributeType);
                 return null;
             }
         }
 
         internal static ToolboxPropertyDrawerBase GetCollectionDrawer<T>(T attribute) where T : ToolboxCollectionAttribute
         {
-            if (collectionDrawers.TryGetValue(attribute.GetType(), out var drawer))
+            return GetCollectionDrawer(attribute.GetType());
+        }
+
+        internal static ToolboxPropertyDrawerBase GetCollectionDrawer(Type attributeType)
+        {
+            if (collectionDrawers.TryGetValue(attributeType, out var drawer))
             {
                 return drawer;
             }
             else
             {
-                ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
+                ToolboxEditorLog.AttributeNotSupportedWarning(attributeType);
                 return null;
-            }     
+            }
         }
 
         internal static ToolboxConditionDrawerBase GetConditionDrawer<T>(T attribute) where T : ToolboxConditionAttribute
         {
-            if (conditionDrawers.TryGetValue(attribute.GetType(), out var drawer))
+            return GetConditionDrawer(attribute.GetType());
+        }
+
+        internal static ToolboxConditionDrawerBase GetConditionDrawer(Type attributeType)
+        {
+            if (conditionDrawers.TryGetValue(attributeType, out var drawer))
             {
                 return drawer;
             }
             else
             {
-                ToolboxEditorLog.AttributeNotSupportedWarning(attribute);
+                ToolboxEditorLog.AttributeNotSupportedWarning(attributeType);
                 return null;
-            }    
+            }
         }
 
         internal static List<Type> GetAllPossibleTargetTypeDrawers()

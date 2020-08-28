@@ -47,9 +47,6 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="BoxedHeaderAttribute"/>.
-        /// </summary>
         private InstanceButtonAttribute Attribute => attribute as InstanceButtonAttribute;
 
 

@@ -2,7 +2,7 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class ImageAreaAttribute : ToolboxDecoratorAttribute
     {
         public ImageAreaAttribute(string url) : this(url, 100.0f)

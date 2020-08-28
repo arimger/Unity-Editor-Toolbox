@@ -2,7 +2,10 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
+    /// <summary>
+    /// Extended version of the built-in <see cref="HeaderAttribute"/>.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class LabelAttribute : ToolboxDecoratorAttribute
     {
         public LabelAttribute(string label, FontStyle fontStyle = FontStyle.Bold, SkinStyle skinStyle = SkinStyle.Normal)

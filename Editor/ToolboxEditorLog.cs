@@ -45,7 +45,12 @@ namespace Toolbox.Editor
 
         public static void AttributeNotSupportedWarning(Attribute attribute)
         {
-            LogWarning(attribute.GetType() + " is not supported. Assign it in the " + nameof(ToolboxEditorSettings) + ".");
+            AttributeNotSupportedWarning(attribute.GetType());
+        }
+
+        public static void AttributeNotSupportedWarning(Type attributeType)
+        {
+            LogWarning(attributeType + " is not supported. Assign it in the " + nameof(ToolboxEditorSettings) + ".");
         }
 
         public static void PropertyNotFoundWarning(SerializedProperty property, string propertyName)

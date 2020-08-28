@@ -5,7 +5,7 @@ namespace UnityEngine
     /// <summary>
     /// Marks associated field as read-only.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class DisableAttribute : ToolboxConditionAttribute
     { }
 }

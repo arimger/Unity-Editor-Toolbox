@@ -6,7 +6,7 @@ namespace UnityEngine
     /// Draws collection in form of the reorderable list.
     /// Supported types: any <see cref="System.Collections.IList"/>.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class ReorderableListAttribute : ToolboxCollectionAttribute
     {
         public ReorderableListAttribute(ListStyle style = ListStyle.Round, string elementLabel = null,  bool fixedSize = false, bool draggable = true)
