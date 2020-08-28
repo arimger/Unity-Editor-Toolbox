@@ -5,7 +5,7 @@ namespace UnityEngine
     /// <summary>
     /// Hides property if provided condition is met.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class HideIfAttribute : ComparisonAttribute
     {
         public HideIfAttribute(string comparedPropertyName, object comparedValue) : base(comparedPropertyName, comparedValue)

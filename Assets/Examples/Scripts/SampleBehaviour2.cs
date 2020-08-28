@@ -27,7 +27,7 @@ public class SampleBehaviour2 : MonoBehaviour
     public int var19;
     [EndGroup]
     [Line()]
-    [Line(Color = "#9800FF")]
+    [Line(HexColor = "#9800FF")]
     public int var20;
 
     [Label("3", skinStyle: SkinStyle.Box)]

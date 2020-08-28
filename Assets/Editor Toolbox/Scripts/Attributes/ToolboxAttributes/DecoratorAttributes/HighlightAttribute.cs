@@ -2,7 +2,7 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class HighlightAttribute : ToolboxDecoratorAttribute
     {
         public HighlightAttribute(float r, float g, float b)
@@ -10,6 +10,14 @@ namespace UnityEngine
             Color = new Color(r, g, b);
         }
 
-        public Color Color { get; private set; }
+        public HighlightAttribute(string hexColor)
+        {
+            if (ColorUtility.TryParseHtmlString(hexColor, out var color))
+            {
+                Color = color;
+            }
+        }
+
+        public Color Color { get; private set; } = Color.white;
     }
 }

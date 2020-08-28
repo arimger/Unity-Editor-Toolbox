@@ -19,7 +19,7 @@ namespace UnityEngine
 
         public Color GetBarColor()
         {
-            if (ColorUtility.TryParseHtmlString(Color, out var color))
+            if (ColorUtility.TryParseHtmlString(HexColor, out var color))
             {
                 return color;
             }
@@ -31,7 +31,7 @@ namespace UnityEngine
 
         public string Name { get; private set; }
 
-        public string Color { get; set; }
+        public string HexColor { get; set; }
 
         public float MinValue { get; private set; }
 

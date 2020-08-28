@@ -2,7 +2,7 @@
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public abstract class ComparisonAttribute : ToolboxConditionAttribute
     {
         public ComparisonAttribute(string comparedPropertyName, object comparedConditionValue)

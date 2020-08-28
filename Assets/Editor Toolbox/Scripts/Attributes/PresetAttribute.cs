@@ -4,7 +4,7 @@ namespace UnityEngine
 {
     /// <summary>
     /// Allows to pick values based on the provided preset collection.
-    /// Supported types: any.
+    /// Supported types: all.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class PresetAttribute : PropertyAttribute

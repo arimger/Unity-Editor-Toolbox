@@ -20,21 +20,20 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Clears and destroys particular editor by the provided key.
+        /// Clears and destroys particular editor mapped to the provided key.
         /// </summary>
         /// <param name="key"></param>
         private void ClearEditor(string key)
         {
-            if (editorInstances.TryGetValue(key, out Editor editor))
+            if (editorInstances.TryGetValue(key, out var editor))
             {
+                editorInstances.Remove(key);
                 Object.DestroyImmediate(editor);
             }
-
-            editorInstances.Remove(key);
         }
 
         /// <summary>
-        /// Clears and destroys all available editor instances in the <see cref="editorInstances"/> collection.
+        /// Clears and destroys all previously instantiated editor instances.
         /// </summary>
         private void ClearEditors()
         {
@@ -51,7 +50,7 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
-        private void HandleEditorPrewarm(Editor editor, InLineEditorAttribute attribute)
+        private void OnEditorGuiSafe(Editor editor, InLineEditorAttribute attribute)
         {
             if (!attribute.DrawHeader)
             {
@@ -74,16 +73,16 @@ namespace Toolbox.Editor.Drawers
 
             //prevent custom editors for overriding label width
             var labelWidth = EditorGUIUtility.labelWidth;
-            HandleEditorDrawing(editor, attribute);
+            OnEditorGuiDraw(editor, attribute);
             EditorGUIUtility.labelWidth = labelWidth;
         }
 
         /// <summary>
-        /// Draws the inlined editor using the provided <see cref="Editor"/> object.
+        /// Draws the inlined version of the <see cref="Editor"></see>.
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
-        private void HandleEditorDrawing(Editor editor, InLineEditorAttribute attribute)
+        private void OnEditorGuiDraw(Editor editor, InLineEditorAttribute attribute)
         {
             //draw header if needed
             if (attribute.DrawHeader)
@@ -122,8 +121,7 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Handles the property drawing process and tries to create a inlined version of <see cref="Editor"/>
-        /// for <see cref="Object"/> associated to this property.
+        /// Handles the property drawing process and tries to create a inlined version of the <see cref="Editor"/>.
         /// </summary>
         /// <param name="property"></param>
         /// <param name="attribute"></param>
@@ -145,7 +143,7 @@ namespace Toolbox.Editor.Drawers
             }
 
             //get (or create) editor for this property
-            if (!editorInstances.TryGetValue(key, out Editor editor))
+            if (!editorInstances.TryGetValue(key, out var editor))
             {
                 editorInstances[key] = editor = Editor.CreateEditor(property.objectReferenceValue);
             }
@@ -153,7 +151,7 @@ namespace Toolbox.Editor.Drawers
             if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, new GUIContent(property.objectReferenceValue.GetType().Name + " Inspector Preview"), true, Style.foldoutStyle))
             {                
                 //draw and prewarm inlined editor   
-                HandleEditorPrewarm(editor, attribute);
+                OnEditorGuiSafe(editor, attribute);
             }
         }
 

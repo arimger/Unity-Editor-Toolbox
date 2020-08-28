@@ -3,9 +3,9 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Creates thin, horizontal line in the Inspector Window.
+    /// Creates thin, horizontal line.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class LineAttribute : ToolboxDecoratorAttribute
     {
         public LineAttribute(float thickness = 0.75f, float padding = 6.0f)
@@ -18,7 +18,7 @@ namespace UnityEngine
 
         public Color GetLineColor()
         {
-            if (ColorUtility.TryParseHtmlString(Color, out var color))
+            if (ColorUtility.TryParseHtmlString(HexColor, out var color))
             {
                 return color;
             }
@@ -32,6 +32,6 @@ namespace UnityEngine
 
         public float Padding { get; private set; }
 
-        public string Color { get; set; }
+        public string HexColor { get; set; }
     }
 }

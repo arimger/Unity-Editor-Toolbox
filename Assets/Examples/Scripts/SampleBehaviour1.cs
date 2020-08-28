@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Runtime.CompilerServices;
+using UnityEngine;
 
 [ExecuteAlways]
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 1")]
@@ -19,7 +20,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("3", skinStyle: SkinStyle.Box)]
 
-    [ProgressBar(minValue:10.0f, maxValue:50.0f, Color = "#234DEA")]
+    [ProgressBar(minValue:10.0f, maxValue:50.0f, HexColor = "#234DEA")]
     public float progressBar = 25.4f;
 
     [Label("4", skinStyle: SkinStyle.Box)]

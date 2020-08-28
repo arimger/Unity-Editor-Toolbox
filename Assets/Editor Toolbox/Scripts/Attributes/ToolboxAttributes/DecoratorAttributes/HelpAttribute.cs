@@ -5,7 +5,7 @@ namespace UnityEngine
     /// <summary>
     /// Draws a HelpBox within the Inspector Window above this field.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class HelpAttribute : ToolboxDecoratorAttribute
     {        
         public HelpAttribute(string text, UnityMessageType type = UnityMessageType.Info)

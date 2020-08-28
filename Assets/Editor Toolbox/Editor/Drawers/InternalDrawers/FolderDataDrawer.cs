@@ -122,14 +122,14 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.indentLevel++;
 
             var rawPropertyHeight = propertyPosition.height + Style.spacing;
-            var sumPropertyHeight = rawPropertyHeight;
+            var summaryFieldHeight = rawPropertyHeight;
 
             propertyPosition.y += rawPropertyHeight;
-            sumPropertyHeight += rawPropertyHeight;
+            summaryFieldHeight += rawPropertyHeight;
             //draw folder data type property
             EditorGUI.PropertyField(propertyPosition, typeProperty, false);
             propertyPosition.y += rawPropertyHeight;
-            sumPropertyHeight += rawPropertyHeight;
+            summaryFieldHeight += rawPropertyHeight;
 
             //decide what property should be drawn depending on folder data type
             if (isPathBased)
@@ -137,24 +137,24 @@ namespace Toolbox.Editor.Drawers
                 propertyPosition.height = EditorGUI.GetPropertyHeight(pathProperty);
                 EditorGUI.PropertyField(propertyPosition, pathProperty, false);
                 propertyPosition.y += propertyPosition.height + Style.spacing;
-                sumPropertyHeight += propertyPosition.height + Style.spacing;
+                summaryFieldHeight += propertyPosition.height + Style.spacing;
                 propertyPosition.height = Style.height;
             }
             else
             {
                 EditorGUI.PropertyField(propertyPosition, nameProperty, false);
                 propertyPosition.y += rawPropertyHeight;
-                sumPropertyHeight += rawPropertyHeight;
+                summaryFieldHeight += rawPropertyHeight;
             }
 
             //draw tooltip property
             EditorGUI.PropertyField(propertyPosition, toolProperty, false);
             propertyPosition.y += rawPropertyHeight;
-            sumPropertyHeight += rawPropertyHeight;
+            summaryFieldHeight += rawPropertyHeight;
 
             //adjust rect for folder icons + button strip
             propertyPosition.y += Style.spacing;
-            propertyPosition.x += Style.iconsPadding;
+            propertyPosition.x += Style.padding;
             propertyPosition.width = Style.largeFolderWidth;
 
             //draw normal icon property picker
@@ -193,10 +193,10 @@ namespace Toolbox.Editor.Drawers
                 }                
             }
 
-            position.x += Style.iconsPadding;
+            position.x += Style.padding;
 
             //adjust rect for each icon
-            var largeFolderIconRect = new Rect(position.x, position.yMin + sumPropertyHeight, Style.largeFolderWidth, Style.largeFolderHeight);
+            var largeFolderIconRect = new Rect(position.x, position.yMin + summaryFieldHeight, Style.largeFolderWidth, Style.largeFolderHeight);
             var smallFolderIconRect = new Rect(position.x + Style.largeFolderWidth, 
                          largeFolderIconRect.y + Style.smallFolderHeight / 2 - Style.spacing, Style.smallFolderWidth, Style.smallFolderHeight);
 
@@ -227,7 +227,7 @@ namespace Toolbox.Editor.Drawers
             internal static readonly float height = EditorGUIUtility.singleLineHeight;
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
 
-            internal const float iconsPadding = 12.0f;
+            internal const float padding = 12.0f;
 
             internal const float largeFolderWidth = ToolboxEditorProject.Style.maxFolderWidth;
             internal const float largeFolderHeight = ToolboxEditorProject.Style.maxFolderHeight;

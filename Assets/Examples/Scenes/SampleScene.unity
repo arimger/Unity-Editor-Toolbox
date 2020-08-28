@@ -438,7 +438,7 @@ MonoBehaviour:
   var26: {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
   vars1: 01000000020000000300000004000000
   var27:
-    i: 8
+    i: 2
     strings:
     - Respawn
     - MainCamera
@@ -583,7 +583,7 @@ MonoBehaviour:
   randomValue: -6.175682
   directory: Editor Toolbox/Editors
   sceneName: SampleScen
-  presetTarget: 3
+  presetTarget: 4
   enumSearch: 8
   clampedValue: 4.699999809265137
   password: password
