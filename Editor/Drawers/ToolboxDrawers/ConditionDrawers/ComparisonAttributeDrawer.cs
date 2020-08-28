@@ -7,7 +7,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, T attribute)
         {
-            var propertyToCheck = property.serializedObject.FindProperty(attribute.ComparedPropertyName);
+            var propertyToCheck = property.GetSibiling(attribute.ComparedPropertyName);
             if (propertyToCheck == null)
             {
                 ToolboxEditorLog.PropertyNotFoundWarning(property, attribute.ComparedPropertyName);
