@@ -438,7 +438,7 @@ MonoBehaviour:
   var26: {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
   vars1: 01000000020000000300000004000000
   var27:
-    i: 3
+    i: 8
     strings:
     - Respawn
     - MainCamera
@@ -595,7 +595,7 @@ MonoBehaviour:
   direction2d: {x: 0, y: 1}
 --- !u!4 &959025299
 Transform:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}

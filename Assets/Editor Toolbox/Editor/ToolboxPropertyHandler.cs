@@ -35,16 +35,16 @@ namespace Toolbox.Editor
         private readonly ToolboxConditionAttribute conditionAttribute;
 
         /// <summary>
-        /// Type associated to <see cref="property"/>
+        /// Field Type associated to <see cref="property"/>.
         /// </summary>
         private readonly Type propertyType;
         /// <summary>
-        /// Field info associated to <see cref="property"/>.
+        /// Field Info associated to <see cref="property"/>.
         /// </summary>
         private readonly FieldInfo propertyFieldInfo;
 
         /// <summary>
-        /// Property label conent based on display name and optional tooltip.
+        /// Property label conent based on the display name and optional tooltip.
         /// </summary>
         private readonly GUIContent propertyLabel;
 
@@ -84,12 +84,13 @@ namespace Toolbox.Editor
             }
 
             //check if this property has built-in property drawer
-            if (!(hasNativePropertyDrawer = property.HasCustomDrawer(propertyType)))
+            if (!(hasNativePropertyDrawer = ToolboxDrawerModule.HasCustomTypeDrawer(propertyType)))
             {
                 var propertyAttributes = propertyFieldInfo.GetCustomAttributes<PropertyAttribute>();
                 foreach (var attribute in propertyAttributes)
                 {
-                    if (hasNativePropertyDrawer = property.HasCustomDrawer(attribute.GetType()))
+                    var attributeType = attribute.GetType();
+                    if (hasNativePropertyDrawer = ToolboxDrawerModule.HasCustomTypeDrawer(attributeType))
                     {
                         break;
                     }

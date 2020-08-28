@@ -67,7 +67,7 @@ public class SampleBehaviour2 : MonoBehaviour
     public class SampleNestedClass
     {
         public int i = 0;
-        [ReorderableList, TagSelector]
+        [DisableIf(nameof(i), 1), ReorderableList, TagSelector]
         public string[] strings;
     }
 

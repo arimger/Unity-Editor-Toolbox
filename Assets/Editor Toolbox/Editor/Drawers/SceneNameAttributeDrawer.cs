@@ -42,7 +42,7 @@ namespace Toolbox.Editor.Drawers
                 EditorGUI.HelpBox(helpBoxRect, warningMessage, MessageType.Warning);
 
                 //adjust rect for standard property field
-                position.y += Style.boxHeight + Style.spacing * 2;
+                position.yMin += Style.boxHeight + Style.spacing * 2;
             }
 
             EditorGUI.PropertyField(position, property, label, property.isExpanded);

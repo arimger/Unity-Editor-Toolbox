@@ -10,170 +10,6 @@ namespace Toolbox.Editor
 {
     public static partial class PropertyUtility
     {
-        public static SerializedProperty GetSibiling(this SerializedProperty property, string propertyPath)
-        {
-            return property.depth == 0 || property.GetParent() == null
-                ? property.serializedObject.FindProperty(propertyPath)
-                : property.GetParent().FindPropertyRelative(propertyPath);
-        }
-
-        public static SerializedProperty GetParent(this SerializedProperty property)
-        {
-            if (property.depth == 0)
-            {
-                return null;
-            }
-
-            var path = property.propertyPath.Replace(".Array.data[", "[");
-            var elements = path.Split('.');
-
-            SerializedProperty parent = null;
-
-            for (int i = 0; i < elements.Length - 1; i++)
-            {
-                var element = elements[i];
-                var index = -1;
-                if (element.Contains("["))
-                {
-                    index = Convert.ToInt32(element
-                        .Substring(element.IndexOf("[", StringComparison.Ordinal))
-                        .Replace("[", "").Replace("]", ""));
-                    element = element
-                        .Substring(0, element.IndexOf("[", StringComparison.Ordinal));
-                }
-
-                parent = i == 0 ? property.serializedObject.FindProperty(element) : parent.FindPropertyRelative(element);
-
-                if (index >= 0) parent = parent.GetArrayElementAtIndex(index);
-            }
-
-            return parent;
-        }
-
-        public static SerializedProperty GetArray(this SerializedProperty element)
-        {
-            var elements = element.propertyPath.Replace("Array.data[", "[").Split('.');
-
-            if (!elements[elements.Length - 1].Contains("["))
-            {
-                return null;
-            }
-
-            for (int i = elements.Length - 1; i >= 0; i--)
-            {
-                if (elements[i].Contains("[")) continue;
-                return element.GetSibiling(elements[i]);
-            }
-
-            return null;
-        }
-
-        public static T GetAttribute<T>(this SerializedProperty property) where T : Attribute
-        {
-            return GetFieldInfoFromProperty(property, out var type).GetCustomAttribute<T>(true);
-        }
-
-        public static T[] GetAttributes<T>(this SerializedProperty property) where T : Attribute
-        {
-            return (T[])GetFieldInfoFromProperty(property, out var type).GetCustomAttributes(typeof(T), true);
-        }
-
-        public static Object GetTargetObject(this SerializedProperty property)
-        {
-            return property.serializedObject.targetObject;
-        }
-
-
-        private static bool IsBuiltInNumericProperty(SerializedProperty property)
-        {
-            switch (property.propertyType)
-            {
-                case SerializedPropertyType.Bounds:
-                case SerializedPropertyType.BoundsInt:
-                case SerializedPropertyType.Rect:
-                case SerializedPropertyType.RectInt:
-                case SerializedPropertyType.Quaternion:
-                case SerializedPropertyType.Vector2:
-                case SerializedPropertyType.Vector2Int:
-                case SerializedPropertyType.Vector3:
-                case SerializedPropertyType.Vector3Int:
-                case SerializedPropertyType.Vector4:
-                    return true;
-            }
-
-            return false;
-        }
-
-        private static bool IsSerializableArrayType(Type type)
-        {
-            return typeof(IList).IsAssignableFrom(type);
-        }
-
-        private static bool IsSerializableArrayField(FieldInfo fieldInfo)
-        {
-            return IsSerializableArrayType(fieldInfo.FieldType);
-        }
-
-        private static bool IsSerializableArrayElement(SerializedProperty property)
-        {
-            return property.propertyPath.EndsWith("]");
-        }
-
-        private static bool IsSerializableArrayElement(SerializedProperty property, Type type)
-        {
-            return !property.isArray && IsSerializableArrayType(type);
-        }
-
-        private static bool IsSerializableArrayElement(SerializedProperty property, FieldInfo fieldInfo)
-        {
-            return !property.isArray && IsSerializableArrayType(fieldInfo.FieldType);
-        }
-
-        private static int GetPropertyElementIndex(SerializedProperty element)
-        {
-            const int indexPosition = 2;
-            var indexChar = element.propertyPath[element.propertyPath.Length - indexPosition];
-            return indexChar - '0';
-        }
-
-        private static string[] GetPropertyFieldTree(SerializedProperty property)
-        {
-            //unfortunately, we have to remove hard coded array properties since it's useless data
-            return property.propertyPath.Replace("Array.data[", "[").Split('.').Where(field => field[0] != '[').ToArray();            
-        }
-    }
-
-    public static partial class PropertyUtility
-    {
-        [InitializeOnLoadMethod]
-        private static void SetUpReflectionMethods()
-        {
-            builtInPropertyUtilityType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.ScriptAttributeUtility");
-
-            //TODO: handle this case:
-            //NOTE: in Unity 2019.3 it should be GetDrawerTypeForPropertyAndType
-            getDrawerTypeForPropertyMethod = builtInPropertyUtilityType.GetMethod("GetDrawerTypeForType",
-                BindingFlags.NonPublic | BindingFlags.Static);
-            getFieldInfoForPropertyMethod = builtInPropertyUtilityType.GetMethod("GetFieldInfoFromProperty",
-                BindingFlags.NonPublic | BindingFlags.Static);
-        }
-
-
-        /// <summary>
-        /// Native utility class used to handle <see cref="SerializedProperty"/> data.
-        /// </summary>
-        private static Type builtInPropertyUtilityType;
-
-        /// <summary>
-        /// Method returns the drawer type related to provided property type.
-        /// </summary>
-        private static MethodInfo getDrawerTypeForPropertyMethod;
-        /// <summary>
-        /// Method returns the field info associated to provided property.
-        /// </summary>
-        private static MethodInfo getFieldInfoForPropertyMethod;
-
-
         /// <summary>
         /// Creates and returns unique (hash based) key for this property.
         /// </summary>
@@ -353,24 +189,6 @@ namespace Toolbox.Editor
             }
         }
 
-        /// <summary>
-        /// Determines if property has any associated drawer (built-in or custom one).
-        /// </summary>
-        /// <param name="drawerType"></param>
-        /// <returns></returns>
-        internal static bool HasCustomDrawer(this SerializedProperty property, Type drawerType)
-        {
-            if (IsBuiltInNumericProperty(property))
-            {
-                return true;
-            }
-
-            var parameters = new object[] { drawerType };
-            var result = getDrawerTypeForPropertyMethod.Invoke(null, parameters) as Type;
-            return result != null && typeof(PropertyDrawer).IsAssignableFrom(result);
-        }
-
-
         internal static Type GetScriptTypeFromProperty(SerializedProperty property)
         {
             var scriptProperty = property.serializedObject.FindProperty(Defaults.scriptPropertyName);
@@ -388,13 +206,19 @@ namespace Toolbox.Editor
             return scriptInstance.GetClass();
         }
 
-        //TODO: resign from reflection
+
+        internal static FieldInfo GetFieldInfo(this SerializedProperty property)
+        {
+            return GetFieldInfo(property, out var type);
+        }
+
         internal static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType)
         {
-            var parameters = new object[] { property, null };
-            var result = getFieldInfoForPropertyMethod.Invoke(null, parameters);
-            propertyType = parameters[1] as Type;
-            return result as FieldInfo;
+            //var parameters = new object[] { property, null };
+            //var result = getFieldInfoForPropertyMethod.Invoke(null, parameters);
+            //propertyType = parameters[1] as Type;
+            //return result as FieldInfo;
+            return GetFieldInfoFromProperty(property, out propertyType);
         }
 
         internal static FieldInfo GetFieldInfoFromProperty(SerializedProperty property, out Type type)
@@ -453,6 +277,137 @@ namespace Toolbox.Editor
         internal static class Defaults
         {
             internal static readonly string scriptPropertyName = "m_Script";
+        }
+    }
+
+    public static partial class PropertyUtility
+    {
+        public static SerializedProperty GetSibiling(this SerializedProperty property, string propertyPath)
+        {
+            return property.depth == 0 || property.GetParent() == null
+                ? property.serializedObject.FindProperty(propertyPath)
+                : property.GetParent().FindPropertyRelative(propertyPath);
+        }
+
+        public static SerializedProperty GetParent(this SerializedProperty property)
+        {
+            if (property.depth == 0)
+            {
+                return null;
+            }
+
+            var path = property.propertyPath.Replace(".Array.data[", "[");
+            var elements = path.Split('.');
+
+            SerializedProperty parent = null;
+
+            for (var i = 0; i < elements.Length - 1; i++)
+            {
+                var element = elements[i];
+                var index = -1;
+                if (element.Contains("["))
+                {
+                    index = Convert.ToInt32(element
+                        .Substring(element.IndexOf("[", StringComparison.Ordinal))
+                        .Replace("[", "").Replace("]", ""));
+                    element = element
+                        .Substring(0, element.IndexOf("[", StringComparison.Ordinal));
+                }
+
+                parent = i == 0 ? property.serializedObject.FindProperty(element) : parent.FindPropertyRelative(element);
+
+                if (index >= 0) parent = parent.GetArrayElementAtIndex(index);
+            }
+
+            return parent;
+        }
+
+        public static SerializedProperty GetArray(this SerializedProperty element)
+        {
+            var elements = element.propertyPath.Replace("Array.data[", "[").Split('.');
+
+            if (!elements[elements.Length - 1].Contains("["))
+            {
+                return null;
+            }
+
+            for (int i = elements.Length - 1; i >= 0; i--)
+            {
+                if (elements[i].Contains("[")) continue;
+                return element.GetSibiling(elements[i]);
+            }
+
+            return null;
+        }
+
+
+        public static T   GetAttribute<T>(this SerializedProperty property) where T : Attribute
+        {
+            return GetFieldInfoFromProperty(property, out var type).GetCustomAttribute<T>(true);
+        }
+
+        public static T[] GetAttributes<T>(this SerializedProperty property) where T : Attribute
+        {
+            return (T[])GetFieldInfoFromProperty(property, out var type).GetCustomAttributes(typeof(T), true);
+        }
+
+
+        internal static bool IsBuiltInNumericProperty(SerializedProperty property)
+        {
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.Bounds:
+                case SerializedPropertyType.BoundsInt:
+                case SerializedPropertyType.Rect:
+                case SerializedPropertyType.RectInt:
+                case SerializedPropertyType.Quaternion:
+                case SerializedPropertyType.Vector2:
+                case SerializedPropertyType.Vector2Int:
+                case SerializedPropertyType.Vector3:
+                case SerializedPropertyType.Vector3Int:
+                case SerializedPropertyType.Vector4:
+                    return true;
+            }
+
+            return false;
+        }
+
+        internal static bool IsSerializableArrayType(Type type)
+        {
+            return typeof(IList).IsAssignableFrom(type);
+        }
+
+        internal static bool IsSerializableArrayField(FieldInfo fieldInfo)
+        {
+            return IsSerializableArrayType(fieldInfo.FieldType);
+        }
+
+        internal static bool IsSerializableArrayElement(SerializedProperty property)
+        {
+            return property.propertyPath.EndsWith("]");
+        }
+
+        internal static bool IsSerializableArrayElement(SerializedProperty property, Type type)
+        {
+            return !property.isArray && IsSerializableArrayType(type);
+        }
+
+        internal static bool IsSerializableArrayElement(SerializedProperty property, FieldInfo fieldInfo)
+        {
+            return !property.isArray && IsSerializableArrayType(fieldInfo.FieldType);
+        }
+
+        internal static int GetPropertyElementIndex(SerializedProperty element)
+        {
+            const int indexPosition = 2;
+            var indexChar = element.propertyPath[element.propertyPath.Length - indexPosition];
+            return indexChar - '0';
+        }
+
+        internal static string[] GetPropertyFieldTree(SerializedProperty property)
+        {
+            //unfortunately, we have to remove hard coded array properties since it's useless data
+            return property.propertyPath.Replace("Array.data[", "[").Split('.').Where(field => field[0] != '[').ToArray();
         }
     }
 }
