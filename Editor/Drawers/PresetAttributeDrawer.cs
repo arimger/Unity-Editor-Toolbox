@@ -10,9 +10,15 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(PresetAttribute))]
     public class PresetAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeightSafe(property, label);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | 
+            //we want to cache all possible fields 
+            const BindingFlags bindingFlags = BindingFlags.Instance  | BindingFlags.Static | 
                                               BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly;
 
             var targetObject = property.GetDeclaringObject();
@@ -60,10 +66,15 @@ namespace Toolbox.Editor.Drawers
 
                     if (EditorGUI.EndChangeCheck())
                     {
-                        //udpate property value
+                        //udpate property value using previously cached FieldInfo and picked value
+                        //there is no cleaner way to do it, since we don't really know what kind of 
+                        //serialized property we are updating
+
                         property.serializedObject.Update(); 
                         property.SetProperValue(fieldInfo, values[index]);
                         property.serializedObject.ApplyModifiedProperties();
+
+                        //handle situation when we update multiple different values
                         property.serializedObject.SetIsDifferentCacheDirty();
                     }
                     EditorGUI.EndProperty();
@@ -83,12 +94,6 @@ namespace Toolbox.Editor.Drawers
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
-        }
-
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return base.GetPropertyHeight(property, label);
         }
 
 

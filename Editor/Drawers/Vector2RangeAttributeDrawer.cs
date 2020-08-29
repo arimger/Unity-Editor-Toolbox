@@ -6,6 +6,11 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(Vector2RangeAttribute))]
     public class Vector2RangeAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeightSafe(property, label);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var attribute = (Vector2RangeAttribute)base.attribute;
@@ -20,6 +25,7 @@ namespace Toolbox.Editor.Drawers
                 vectorData.x = Mathf.Clamp(vectorData.x, attribute.Min, attribute.Max);
                 vectorData.y = Mathf.Clamp(vectorData.y, attribute.Min, attribute.Max);
 
+                property.serializedObject.Update();
                 property.vector2Value = vectorData;
                 property.serializedObject.ApplyModifiedProperties();
             }
@@ -29,11 +35,6 @@ namespace Toolbox.Editor.Drawers
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.Vector2;
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return EditorGUIUtility.wideMode ? EditorGUIUtility.singleLineHeight : EditorGUIUtility.singleLineHeight * 2;
         }
     }
 }

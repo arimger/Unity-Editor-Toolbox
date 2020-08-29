@@ -6,6 +6,11 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(ProgressBarAttribute))]
     public class ProgressBarAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return Style.barHeight;
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var attribute = Attribute;
@@ -39,11 +44,6 @@ namespace Toolbox.Editor.Drawers
         {
             return property.propertyType == SerializedPropertyType.Float ||
                    property.propertyType == SerializedPropertyType.Integer;
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return Style.barHeight;
         }
 
 

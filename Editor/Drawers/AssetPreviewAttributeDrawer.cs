@@ -6,6 +6,25 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(AssetPreviewAttribute))]
     public class AssetPreviewAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            //return native height 
+            if (!property.objectReferenceValue)
+            {
+                return base.GetPropertyHeightSafe(property, label);
+            }
+
+            //set additional height as preview + 2x spacing + 2x frame offset
+            var additionalHeight = Attribute.Height + Style.frameSize * 2 + Style.spacing * 2;
+            if (!Attribute.UseLabel)
+            {
+                //adjust height to old label position
+                additionalHeight -= Style.height;
+            }
+
+            return Style.height + additionalHeight;
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             if (Attribute.UseLabel)
@@ -54,25 +73,6 @@ namespace Toolbox.Editor.Drawers
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.ObjectReference;
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            //return native height 
-            if (!IsPropertyValid(property) || property.objectReferenceValue == null)
-            {
-                return Style.height;
-            }
-
-            //set additional height as preview + 2x spacing + 2x frame offset
-            var additionalHeight = Attribute.Height + Style.frameSize * 2 + Style.spacing * 2;
-            if (!Attribute.UseLabel)
-            {
-                //adjust height to old label position
-                additionalHeight -= Style.height;
-            }
-
-            return Style.height + additionalHeight;
         }
 
 

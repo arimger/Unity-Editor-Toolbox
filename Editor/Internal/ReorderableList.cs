@@ -457,9 +457,6 @@ namespace Toolbox.Editor.Internal
 
                     if (Draggable)
                     {
-                        //TODO: do it cleaner;
-                        //prevent expanded height
-                        //List.GetArrayElementAtIndex(Index).isExpanded = false;
                         //if we can drag, set the hot control and start dragging (storing the offset)
                         dragOffset = (currentEvent.mousePosition.y - listRect.y) - GetElementYOffset(Index);
                         UpdateDraggedY(listRect);
@@ -491,7 +488,7 @@ namespace Toolbox.Editor.Internal
                     if (!Draggable)
                     {
                         //if mouse up was on the same index as mouse down we fire a mouse up callback (useful if for beginning renaming on mouseup)
-                        if (onMouseUpCallback != null && IsMouseInsideActiveElement(listRect))
+                        if (onMouseUpCallback != null && IsMouseInActiveElement(listRect))
                         {
                             //set the keyboard control
                             onMouseUpCallback(this);
@@ -519,9 +516,12 @@ namespace Toolbox.Editor.Internal
                             //if the target index is different than the current index
                             if (List != null)
                             {
-                                List.MoveArrayElement(Index, targetIndex);
-                                List.serializedObject.ApplyModifiedProperties();
                                 List.serializedObject.Update();
+                                List.MoveArrayElement(Index, targetIndex);
+
+                                //unfortunately it will break any EditorGUI.BeginCheck() scope
+                                //it has to be called since we edited the array property
+                                List.serializedObject.ApplyModifiedProperties(); 
                             }
 
                             var oldActiveElement = Index;
@@ -562,7 +562,7 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-        private bool IsMouseInsideActiveElement(Rect listRect)
+        private bool IsMouseInActiveElement(Rect listRect)
         {
             //cache current event
             var evt = Event.current;
@@ -603,21 +603,6 @@ namespace Toolbox.Editor.Internal
             return GetElementHeight(index) + ElementSpacing;
         }
 
-        private float GetElementYOffset(int index)
-        {
-            return GetElementYOffset(index, -1);
-        }
-
-        private float GetElementYOffset(int index, int skipIndex)
-        {
-            var offset = 0.0f;
-            for (int i = 0; i < index; i++)
-            {
-                if (i != skipIndex) offset += GetRowHeight(i);
-            }
-            return offset;
-        }
-
         private float GetElementHeight(int index, bool includeChildren = true)
         {
             if (elementHeightCallback == null)
@@ -637,6 +622,21 @@ namespace Toolbox.Editor.Internal
                 listHeight += GetElementYOffset(arraySize - 1) + GetRowHeight(arraySize - 1);
             }
             return listHeight;
+        }
+
+        private float GetElementYOffset(int index)
+        {
+            return GetElementYOffset(index, -1);
+        }
+
+        private float GetElementYOffset(int index, int skipIndex)
+        {
+            var offset = 0.0f;
+            for (int i = 0; i < index; i++)
+            {
+                if (i != skipIndex) offset += GetRowHeight(i);
+            }
+            return offset;
         }
 
         private Rect GetContentRect(Rect rect)
@@ -917,9 +917,11 @@ namespace Toolbox.Editor.Internal
                 var smallerArraySize = List.arraySize;
                 foreach (var targetObject in List.serializedObject.targetObjects)
                 {
-                    var serializedObject = new SerializedObject(targetObject);
-                    var property = serializedObject.FindProperty(List.propertyPath);
-                    smallerArraySize = Math.Min(property.arraySize, smallerArraySize);
+                    using (var serializedObject = new SerializedObject(targetObject))
+                    {
+                        var property = serializedObject.FindProperty(List.propertyPath);
+                        smallerArraySize = Math.Min(property.arraySize, smallerArraySize);
+                    }    
                 }
                 //return smalest array size
                 return smallerArraySize;

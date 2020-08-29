@@ -6,6 +6,11 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(RandomAttribute))]
     public class RandomAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeightSafe(property, label);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             //adjust field width to the random button
@@ -40,11 +45,6 @@ namespace Toolbox.Editor.Drawers
         {
             return property.propertyType == SerializedPropertyType.Float ||
                    property.propertyType == SerializedPropertyType.Integer;
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return base.GetPropertyHeight(property, label);
         }
 
 

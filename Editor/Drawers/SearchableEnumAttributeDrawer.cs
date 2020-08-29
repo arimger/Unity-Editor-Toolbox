@@ -11,6 +11,11 @@ namespace Toolbox.Editor.Drawers
         private static EditorWindow lastSearchableWindow;
 
 
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeightSafe(property, label);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             //prepare pick button label

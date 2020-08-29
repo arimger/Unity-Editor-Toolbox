@@ -6,6 +6,11 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(Vector3RangeAttribute))]
     public class Vector3RangeAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeightSafe(property, label);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var attribute = (Vector3RangeAttribute)base.attribute;
@@ -21,6 +26,7 @@ namespace Toolbox.Editor.Drawers
                 vectorData.y = Mathf.Clamp(vectorData.y, attribute.Min, attribute.Max);
                 vectorData.z = Mathf.Clamp(vectorData.z, attribute.Min, attribute.Max);
 
+                property.serializedObject.Update();
                 property.vector3Value = vectorData;
                 property.serializedObject.ApplyModifiedProperties();
             }
@@ -30,11 +36,6 @@ namespace Toolbox.Editor.Drawers
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.Vector3;
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return EditorGUIUtility.wideMode ? EditorGUIUtility.singleLineHeight : EditorGUIUtility.singleLineHeight * 2;
         }
     }
 }

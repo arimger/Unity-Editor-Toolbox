@@ -49,11 +49,16 @@ namespace Toolbox.Editor.Drawers
             var enumValues = Enum.GetValues(propertyType);
             var enumNames = Enum.GetNames(propertyType);
             var enumSum = 0;
+
             //get all proper enum values except 0(nothing) and ~0(everything)
             for (var i = 0; i < enumValues.Length; i++)
             {
                 var value = (int)enumValues.GetValue(i);
-                if (value == 0 || value == ~0) continue;
+                if (value == 0 || value == ~0)
+                {
+                    continue;
+                }
+
                 buttonsToDisplay.Add(i);
                 enumSum += value;
             }
@@ -72,16 +77,23 @@ namespace Toolbox.Editor.Drawers
             const int nothing = 0;
 
             //store current enum value if possible
-            var enumValue = property.hasMultipleDifferentValues ? 0 : property.intValue == -1 ? enumSum : property.intValue;
+            var enumValue = property.hasMultipleDifferentValues 
+                ? 0 
+                : property.intValue == -1 ? enumSum : property.intValue;
+
+
+            var isFull = enumValue == enumSum;
+            var isNone = enumValue == nothing &&
+                         !property.hasMultipleDifferentValues;
 
             //create "Nothing" button
             buttonPosition.height = Style.minEnumRowButtonHeight;
             buttonPosition.width /= 2;
             buttonPosition.width -= Style.spacing / 2;
-            enumValue = GUI.Toggle(buttonPosition, enumValue == nothing, "Nothing", Style.toggleStyle) ? nothing : enumValue;
+            enumValue = GUI.Toggle(buttonPosition, isNone, "Nothing", Style.toggleStyle) ? nothing : enumValue;
             //create "Everything" button
             buttonPosition.x += buttonPosition.width + Style.spacing;
-            enumValue = GUI.Toggle(buttonPosition, enumValue == enumSum, "Everything", Style.toggleStyle) ? enumSum : enumValue;
+            enumValue = GUI.Toggle(buttonPosition, isFull, "Everything", Style.toggleStyle) ? enumSum : enumValue;
 
             //set basic rect for first button
             buttonPosition = position;
@@ -132,6 +144,12 @@ namespace Toolbox.Editor.Drawers
         }
 
 
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            //NOTE: caching additional height like this will cause 1 frame delay 
+            return base.GetPropertyHeightSafe(property, label) + additionalHeight;
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         { 
             switch (Attribute.Style)
@@ -151,12 +169,6 @@ namespace Toolbox.Editor.Drawers
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.Enum;
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            //NOTE: caching additional height like this will cause 1 frame delay 
-            return base.GetPropertyHeight(property, label) + additionalHeight;
         }
 
  
