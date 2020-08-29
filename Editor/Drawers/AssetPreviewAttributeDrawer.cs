@@ -35,13 +35,13 @@ namespace Toolbox.Editor.Drawers
 
                 Style.textureStyle.normal.background = previewTexture;
                 //set additional height as preview + 2x spacing + 2x frame offset
-                position.height = height + Style.frameSize;
                 position.width = width + Style.frameSize + indent;
+                position.height = height + Style.frameSize;       
                 position.y += Style.height + Style.spacing;
                 //draw frame
                 EditorGUI.LabelField(position, GUIContent.none, Style.backgroundStyle);
-                position.height = height;
                 position.width = width + indent;
+                position.height = height;
                 //adjust image to frame center
                 position.y += Style.frameSize / 2;
                 position.x += Style.frameSize / 2;

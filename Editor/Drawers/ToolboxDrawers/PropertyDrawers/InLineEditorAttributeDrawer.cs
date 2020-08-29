@@ -1,11 +1,7 @@
 ﻿using System.Collections.Generic;
-#if !UNITY_2019_1_OR_NEWER
-using System.Reflection;
-#endif
 
 using UnityEngine;
 using UnityEditor;
-using UnityEditorInternal;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -55,24 +51,13 @@ namespace Toolbox.Editor.Drawers
             if (!attribute.DrawHeader)
             {
                 //force the expanded inspector if a header is not expected
-                if (!InternalEditorUtility.GetIsInspectorExpanded(editor.target))
-                {
-                    InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
-                    //NOTE: in older versions editor's foldouts are based on the m_IsVisible field and the Awake() method
-#if !UNITY_2019_1_OR_NEWER
-                    const string isVisibleFieldName = "m_IsVisible";
-                    var isVisible = editor.GetType().GetField(isVisibleFieldName,
-                        BindingFlags.Instance | BindingFlags.NonPublic);
-                    if (isVisible != null)
-                    {
-                        isVisible.SetValue(editor, true);
-                    }
-#endif
-                }
+                InspectorUtility.SetIsEditorExpanded(editor, true);
             }
 
-            //prevent custom editors for overriding label width
-            var labelWidth = EditorGUIUtility.labelWidth;
+            var labelWidth = 0.0f;
+
+            //prevent custom editors for overriding the label width
+            labelWidth = EditorGUIUtility.labelWidth;
             OnEditorGuiDraw(editor, attribute);
             EditorGUIUtility.labelWidth = labelWidth;
         }
@@ -127,30 +112,43 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, InLineEditorAttribute attribute)
         {
-            var key = property.GetPropertyKey();
+            var propertyKey = property.GetPropertyKey();
 
+            //create a standard property field
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(property, label, property.isExpanded);
             if (EditorGUI.EndChangeCheck())
             {
-                ClearEditor(key);
+                ClearEditor(propertyKey);
                 return;
             }
 
-            if (property.objectReferenceValue == null)
+            //NOTE: multiple different Editors are not supported
+            if (property.hasMultipleDifferentValues)
             {
                 return;
             }
 
-            //get (or create) editor for this property
-            if (!editorInstances.TryGetValue(key, out var editor))
+            var propertyValue = property.objectReferenceValue;
+            if (propertyValue == null)
             {
-                editorInstances[key] = editor = Editor.CreateEditor(property.objectReferenceValue);
+                return;
             }
 
-            if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, new GUIContent(property.objectReferenceValue.GetType().Name + " Inspector Preview"), true, Style.foldoutStyle))
-            {                
-                //draw and prewarm inlined editor   
+            //get (or create) editor for the current property
+            if (!editorInstances.TryGetValue(propertyKey, out var editor))
+            {
+                editor = Editor.CreateEditor(propertyValue);
+                if (editor.HasPreviewGUI())
+                {
+                    editor.ReloadPreviewInstances();
+                }
+                editorInstances[propertyKey] = editor;
+            }
+
+            if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "Inspector Preview", true, Style.foldoutStyle))
+            {
+                //draw and prewarm the inlined editor   
                 OnEditorGuiSafe(editor, attribute);
             }
         }
@@ -194,7 +192,7 @@ namespace Toolbox.Editor.Drawers
                 };
 
                 previewStyle = new GUIStyle();
-                previewStyle.normal.background = TextureUtility.CreatePersistantTexture(Color.clear);
+                previewStyle.normal.background = GraphicsUtility.CreatePersistantTexture(Color.clear);
             }
         }
     }

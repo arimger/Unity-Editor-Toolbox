@@ -538,7 +538,7 @@ namespace Toolbox.Editor
                 layerLabelStyle.normal.textColor = textColor;
 
                 backgroundStyle = new GUIStyle();
-                backgroundStyle.normal.background = TextureUtility.CreatePersistantTexture(labelColor);
+                backgroundStyle.normal.background = GraphicsUtility.CreatePersistantTexture(labelColor);
 
                 headerLabelStyle = new GUIStyle(EditorStyles.boldLabel)
                 {
