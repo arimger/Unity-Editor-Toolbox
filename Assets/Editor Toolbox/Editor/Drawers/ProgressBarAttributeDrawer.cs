@@ -15,12 +15,14 @@ namespace Toolbox.Editor.Drawers
             var color = attribute.GetBarColor();         
             var minValue = attribute.MinValue;
             var maxValue = attribute.MaxValue;
-            var barText = !string.IsNullOrEmpty(attribute.Name)
-                ? attribute.Name + " " + value + "|" + maxValue : value + "|" + maxValue;
+
+            var valueText = property.hasMultipleDifferentValues ? "-" : value.ToString();
+            var labelText = !string.IsNullOrEmpty(attribute.Name)
+                ? attribute.Name + " " + valueText + "|" + maxValue : valueText + "|" + maxValue;
 
             value = Mathf.Clamp(value, minValue, maxValue);
 
-            var fillValue = value / (maxValue - minValue);
+            var fillValue = (value - minValue) / (maxValue - minValue);
             var fillRect = new Rect(position.x + Style.offset / 2, 
                                     position.y + Style.offset / 2,
                                    (position.width  - Style.offset) * fillValue, 
@@ -29,7 +31,7 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.DrawRect(position, Style.backgroundColor);
             EditorGUI.DrawRect(fillRect, color);
             position.y -= Style.barHeight / 4;
-            EditorGUI.DropShadowLabel(position, barText);
+            EditorGUI.DropShadowLabel(position, labelText);
         }
 
 

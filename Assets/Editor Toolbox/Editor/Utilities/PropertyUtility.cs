@@ -119,29 +119,29 @@ namespace Toolbox.Editor
             }
 
             var targets = property.serializedObject.targetObjects;
-            var isElement = IsSerializableArrayElement(property, fieldInfo);
+            var element = IsSerializableArrayElement(property, fieldInfo);
 
             for (var i = 0; i < targets.Length; i++)
             {
                 var targetObject = targets[i];
-                var target = property.GetDeclaringObject(targetObject);
+                var targetParent = property.GetDeclaringObject(targetObject);
 
                 //record undo action, it will mark serialized component as dirty
                 Undo.RecordObject(targetObject, "Set " + fieldInfo.Name);
 
                 //handle situation when property is an array element
-                if (isElement)
+                if (element)
                 {
                     var index = GetPropertyElementIndex(property);
-                    var list = fieldInfo.GetValue(target) as IList;
+                    var list = fieldInfo.GetValue(targetParent) as IList;
 
                     list[index] = value;
-                    fieldInfo.SetValue(target, list);
+                    fieldInfo.SetValue(targetParent, list);
                 }
                 //return fieldInfo value based on property's target object
                 else
                 {
-                    fieldInfo.SetValue(target, value);
+                    fieldInfo.SetValue(targetParent, value);
                 }
 
                 if (callOnValidate)
@@ -214,10 +214,6 @@ namespace Toolbox.Editor
 
         internal static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType)
         {
-            //var parameters = new object[] { property, null };
-            //var result = getFieldInfoForPropertyMethod.Invoke(null, parameters);
-            //propertyType = parameters[1] as Type;
-            //return result as FieldInfo;
             return GetFieldInfoFromProperty(property, out propertyType);
         }
 

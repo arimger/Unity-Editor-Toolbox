@@ -2,7 +2,7 @@
 
 namespace Toolbox.Editor
 {
-    internal static class TextureUtility
+    internal static class GraphicsUtility
     {
         public static Texture2D CreatePersistantTexture()
         {

@@ -9,7 +9,12 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             label = EditorGUI.BeginProperty(position, label, property);
-            property.boolValue = EditorGUI.ToggleLeft(position, label, property.boolValue);
+            EditorGUI.BeginChangeCheck();
+            var value = EditorGUI.ToggleLeft(position, label, property.boolValue);
+            if (EditorGUI.EndChangeCheck())
+            {
+                property.boolValue = value;
+            }
             EditorGUI.EndProperty();
         }
 

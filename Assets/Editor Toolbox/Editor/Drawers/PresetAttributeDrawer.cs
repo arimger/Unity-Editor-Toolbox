@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Reflection;
 
 using UnityEngine;
 using UnityEditor;
@@ -11,8 +12,11 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
+            const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | 
+                                              BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly;
+
             var targetObject = property.GetDeclaringObject();
-            var presetValues = targetObject.GetType().GetField(Attribute.PresetFieldName, ReflectionUtility.allPossibleFieldsBinding);
+            var presetValues = targetObject.GetType().GetField(Attribute.PresetFieldName, bindingFlags);
           
             if (presetValues == null)
             {

@@ -5,10 +5,12 @@ using System.Reflection;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
+    using Object = UnityEngine.Object;
+    using Editor = UnityEditor.Editor;
+
     internal static partial class InspectorUtility
     {
         [InitializeOnLoadMethod]
@@ -18,15 +20,14 @@ namespace Toolbox.Editor
         }
 
 
-        private static readonly Type inspectorType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
-
-
         /// <summary>
         /// Forces the available Inspector Windows to repaint. 
         /// </summary>
         internal static void RepaintInspectors()
         {
-            var windows = Resources.FindObjectsOfTypeAll(inspectorType);
+            var windows = Resources.FindObjectsOfTypeAll(typeof(Editor)
+                                   .Assembly
+                                   .GetType("UnityEditor.InspectorWindow"));
             if (windows == null || windows.Length == 0)
             {
                 return;
@@ -63,9 +64,39 @@ namespace Toolbox.Editor
             }
         }
 
+        /// <summary>
+        /// Returns the visibility of the <see cref="Editor"/>.
+        /// </summary>
+        /// <param name="editor"></param>
+        /// <returns></returns>
+        internal static bool GetIsEditorExpanded(Editor editor)
+        {
+            return InternalEditorUtility.GetIsInspectorExpanded(editor.target);
+        }
+
+        /// <summary>
+        /// Adjusts the visibility of the <see cref="Editor"/> using provided value.
+        /// </summary>
+        /// <param name="editor"></param>
+        /// <param name="value"></param>
+        internal static void SetIsEditorExpanded(Editor editor, bool value)
+        {
+            InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
+            //NOTE: in older versions editor's foldouts are based on the m_IsVisible field and the Awake() method
+#if !UNITY_2019_1_OR_NEWER
+            const string isVisibleFieldName = "m_IsVisible";
+            var isVisible = editor.GetType().GetField(isVisibleFieldName,
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            if (isVisible != null)
+            {
+                isVisible.SetValue(editor, true);
+            }
+#endif
+        }
+
 
         internal static bool IsDefaultScriptProperty(SerializedProperty property)
-        {
+        { 
             return IsDefaultScriptPropertyByPath(property.propertyPath);
         }
 
@@ -78,7 +109,6 @@ namespace Toolbox.Editor
         {
             return propertyType == "PPtr<MonoScript>";
         }
-
 
         internal static bool IsDefaultObjectIcon(string name)
         {
@@ -111,14 +141,18 @@ namespace Toolbox.Editor
             for (var i = 0; i < selectedGameObjects.Length; i++)
             {
                 var componentsOfSelectedTransforms = selectedGameObjects[i].GetComponents<Component>();
-
+                
                 for (var j = 0; j < componentsOfSelectedTransforms.Length; j++)
                 {
                     if (componentsOfSelectedTransforms[j] is Transform)
+                    {
                         continue;
+                    }
 
                     if (componentsOfSelectedTransforms[j] == null || copiedComponents.Contains(componentsOfSelectedTransforms[j]))
+                    {
                         continue;
+                    }
 
                     copiedComponents.Add(componentsOfSelectedTransforms[j]);
                 }
@@ -144,8 +178,8 @@ namespace Toolbox.Editor
                 for (int j = 0; j < copiedComponents.Count; j++)
                 {
                     var component = copiedComponents[j];
-                    UnityEditorInternal.ComponentUtility.CopyComponent(component);
-                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(gameObject);
+                    ComponentUtility.CopyComponent(component);
+                    ComponentUtility.PasteComponentAsNew(gameObject);
                 }
             }
 
