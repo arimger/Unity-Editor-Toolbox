@@ -6,6 +6,17 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(NotNullAttribute))]
     public class NotNullAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            if (property.objectReferenceValue)
+            {
+                return base.GetPropertyHeightSafe(property, label);
+            }
+
+            //set additional height as help box height + 2x spacing between properties
+            return base.GetPropertyHeightSafe(property, label) + Style.boxHeight + Style.spacing * 2;
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             //set up proper height for this property field
@@ -35,17 +46,6 @@ namespace Toolbox.Editor.Drawers
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.ObjectReference;
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            if (!IsPropertyValid(property) || property.objectReferenceValue)
-            {
-                return base.GetPropertyHeight(property, label);
-            }
-
-            //set additional height as help box height + 2x spacing between properties
-            return base.GetPropertyHeight(property, label) + Style.boxHeight + Style.spacing * 2;
         }
 
 

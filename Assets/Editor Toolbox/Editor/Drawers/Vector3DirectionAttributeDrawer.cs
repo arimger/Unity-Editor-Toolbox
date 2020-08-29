@@ -27,6 +27,11 @@ namespace Toolbox.Editor.Drawers
         };
 
 
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeightSafe(property, label);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var index = ArrayUtility.FindIndex(directionValues, direction => direction == property.vector3Value);
@@ -53,11 +58,6 @@ namespace Toolbox.Editor.Drawers
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.Vector3;
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return EditorGUIUtility.singleLineHeight;
         }
     }
 }

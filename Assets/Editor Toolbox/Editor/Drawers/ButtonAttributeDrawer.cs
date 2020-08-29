@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ButtonAttribute))]
-    public abstract class ButtonAttributeDrawer : ToolboxNativeDecoratorDrawer
+    public abstract class ButtonAttributeDrawer : DecoratorDrawer
     {
         public override void OnGUI(Rect position)
         {

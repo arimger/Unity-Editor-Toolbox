@@ -9,7 +9,20 @@ namespace Toolbox.Editor.Drawers
     public abstract class ToolboxNativePropertyDrawer : PropertyDrawer
     {
         /// <summary>
-        /// Safe GUI method. Provided property is previously validated by the <see cref="IsPropertyValid(SerializedProperty)"/> method.
+        /// Safe equivalent of the <see cref="GetPropertyHeight"/> method.
+        /// Provided property is previously validated by the <see cref="IsPropertyValid(SerializedProperty)"/> method.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        protected virtual float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label);
+        }
+
+        /// <summary>
+        /// Safe equivalent of the <see cref="OnGUI"/> method.
+        /// Provided property is previously validated by the <see cref="IsPropertyValid(SerializedProperty)"/> method.
         /// </summary>
         /// <param name="position"></param>
         /// <param name="property"></param>
@@ -21,7 +34,26 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Native OnGUI call to draw provided property.
+        /// Native call to return the expected height.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        public override sealed float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            if (IsPropertyValid(property))
+            {
+                return GetPropertyHeightSafe(property, label);
+
+            }
+            else
+            {
+                return base.GetPropertyHeight(property, label);
+            }
+        }
+
+        /// <summary>
+        /// Native call to draw the provided property.
         /// </summary>
         /// <param name="position"></param>
         /// <param name="property"></param>

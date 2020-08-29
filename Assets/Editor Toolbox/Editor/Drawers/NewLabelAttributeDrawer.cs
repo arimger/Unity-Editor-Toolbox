@@ -6,6 +6,11 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(NewLabelAttribute))]
     public class NewLabelAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeightSafe(property, label);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var newLabel = new GUIContent(Attribute.NewLabel);
@@ -16,12 +21,6 @@ namespace Toolbox.Editor.Drawers
             label.text = property.displayName.Replace(oldLabel.text, newLabel.text);
             EditorGUI.PropertyField(position, property, label, property.isExpanded);
             EditorGUI.EndProperty();
-        }
-
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return EditorGUI.GetPropertyHeight(property, label);
         }
 
 

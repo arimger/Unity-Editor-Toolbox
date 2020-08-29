@@ -6,6 +6,11 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(HideLabelAttribute))]
     public class HideLabelAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeightSafe(property, label);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.PropertyField(position, property, GUIContent.none, property.isExpanded);
@@ -15,11 +20,6 @@ namespace Toolbox.Editor.Drawers
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return true;
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return EditorGUI.GetPropertyHeight(property, label);
         }
     }
 }

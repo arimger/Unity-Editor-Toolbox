@@ -34,6 +34,11 @@ namespace Toolbox.Editor.Drawers
             GUI.DrawTexture(rect, Style.warningIcon);
         }
 
+        private int GetSelectorHash(SerializedProperty property)
+        {
+            return property.propertyPath.GetHashCode() + property.serializedObject.GetHashCode();
+        }
+
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {            
@@ -157,11 +162,12 @@ namespace Toolbox.Editor.Drawers
             propertyPosition.x += Style.padding;
             propertyPosition.width = Style.largeFolderWidth;
 
+            var selectorHash = GetSelectorHash(property);
+
             //draw normal icon property picker
             if (GUI.Button(propertyPosition, Style.largeIconPickerContent, Style.largeIconPickerStyle))
             {
-                var propertyHash = property.propertyPath.GetHashCode() + property.serializedObject.GetHashCode();
-                EditorGUIUtility.ShowObjectPicker<Texture>(largeIconProperty.objectReferenceValue, false, null, propertyHash + largeIconPickedId);
+                EditorGUIUtility.ShowObjectPicker<Texture>(largeIconProperty.objectReferenceValue, false, null, selectorHash + largeIconPickedId);
             }
 
             propertyPosition.x += Style.largeFolderWidth;
@@ -170,8 +176,7 @@ namespace Toolbox.Editor.Drawers
             //draw small icon property picker
             if (GUI.Button(propertyPosition, Style.smallIconPickerContent, Style.smallIconPickerStyle))
             {
-                var propertyHash = property.propertyPath.GetHashCode() + property.serializedObject.GetHashCode();
-                EditorGUIUtility.ShowObjectPicker<Texture>(smallIconProperty.objectReferenceValue, false, null, propertyHash + smallIconPickedId);
+                EditorGUIUtility.ShowObjectPicker<Texture>(smallIconProperty.objectReferenceValue, false, null, selectorHash + smallIconPickedId);
             }
 
             //catch object selection event and assign it to proper property
@@ -179,18 +184,27 @@ namespace Toolbox.Editor.Drawers
             {
                 //get proper action id by removing unique property hash code
                 var rawPickId = EditorGUIUtility.GetObjectPickerControlID();
-                var controlId = rawPickId - property.propertyPath.GetHashCode() - property.serializedObject.GetHashCode();
+                var controlId = rawPickId - selectorHash;
+
+                //determine the target property using predefined values
+                SerializedProperty iconProperty = null;
                 switch (controlId)
                 {
                     case largeIconPickedId:
-                        largeIconProperty.objectReferenceValue = EditorGUIUtility.GetObjectPickerObject();
-                        largeIconProperty.serializedObject.ApplyModifiedProperties();
+                        iconProperty = largeIconProperty;
                         break;
                     case smallIconPickedId:
-                        smallIconProperty.objectReferenceValue = EditorGUIUtility.GetObjectPickerObject();
-                        smallIconProperty.serializedObject.ApplyModifiedProperties();
+                        iconProperty = smallIconProperty;
                         break;
-                }                
+                }
+
+                //update the previously picked property
+                if (iconProperty != null)
+                {
+                    iconProperty.serializedObject.Update();
+                    iconProperty.objectReferenceValue = EditorGUIUtility.GetObjectPickerObject();
+                    iconProperty.serializedObject.ApplyModifiedProperties();
+                }
             }
 
             position.x += Style.padding;

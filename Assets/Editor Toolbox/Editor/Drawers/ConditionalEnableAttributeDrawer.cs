@@ -9,6 +9,11 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(ConditionalEnableAttribute))]
     public class ConditionalEnableAttributeDrawer : ConditionalAttributeDrawer
     {
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeightSafe(property, label);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var disable = !IsConditionMet(property);
@@ -21,11 +26,6 @@ namespace Toolbox.Editor.Drawers
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return true;
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return EditorGUI.GetPropertyHeight(property);
         }
     }
 }

@@ -6,6 +6,11 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(SuffixAttribute))]
     public class SuffixAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeightSafe(property, label);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var propertyLabel = new GUIContent(property.displayName);
@@ -21,12 +26,6 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.LabelField(suffixRect, suffixLabel, suffixStyle);
             //draw standard property field
             EditorGUI.PropertyField(position, property, propertyLabel, property.isExpanded);
-        }
-
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return EditorGUI.GetPropertyHeight(property, label);
         }
 
 

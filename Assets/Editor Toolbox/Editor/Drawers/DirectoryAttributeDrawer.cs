@@ -8,12 +8,6 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(DirectoryAttribute))]
     public class DirectoryAttributeDrawer : ToolboxNativePropertyDrawer
     {
-        /// <summary>
-        /// Checks if provided path exist. Depends on relative path and the <see cref="Application.dataPath"/> property.
-        /// </summary>
-        /// <param name="propertyPath"></param>
-        /// <param name="assetRelativePath"></param>
-        /// <returns></returns>
         private static bool IsPathValid(string propertyPath, string assetRelativePath)
         {
             var projectRelativePath = Application.dataPath + "/";
@@ -26,6 +20,18 @@ namespace Toolbox.Editor.Drawers
             return Directory.Exists(projectRelativePath + propertyPath);
         }
 
+
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            //validate property type and serialized path
+            if (IsPathValid(property.stringValue, Attribute.RelativePath))
+            {
+                return base.GetPropertyHeightSafe(property, label);
+            }
+
+            //return adjusted height
+            return base.GetPropertyHeightSafe(property, label) + Style.boxHeight + Style.spacing * 2;
+        }
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -45,6 +51,7 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.PropertyField(position, property, label);
             position.x = position.xMax + Style.spacing;
             position.width = Style.directoryButtonWidth;
+
             //create additional pick directory button
             if (GUI.Button(position, Style.directoryButtonLabel, Style.directoryButtonStyle))
             {
@@ -56,9 +63,11 @@ namespace Toolbox.Editor.Drawers
                     projectRelativePath += assetRelativePath + "/";
                 }
 
-                //NOTE: we have to exit GUI since EditorUtility methods will break layouting system
+                property.serializedObject.Update();
                 property.stringValue = EditorUtility.OpenFolderPanel("Pick directory", "Assets/" + assetRelativePath, "").Replace(projectRelativePath, "");
                 property.serializedObject.ApplyModifiedProperties();
+
+                //NOTE: we have to exit GUI since EditorUtility methods will break layouting system
                 GUIUtility.ExitGUI();
             }
         }
@@ -69,22 +78,7 @@ namespace Toolbox.Editor.Drawers
             return property.propertyType == SerializedPropertyType.String;
         }
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            //validate property type and serialized path
-            if (!IsPropertyValid(property) || IsPathValid(property.stringValue, Attribute.RelativePath))
-            {
-                return base.GetPropertyHeight(property, label);
-            }
 
-            //return adjusted height
-            return base.GetPropertyHeight(property, label) + Style.boxHeight + Style.spacing * 2;
-        }
-
-
-        /// <summary>
-        /// A wrapper which returns the PropertyDrawer.attribute field as a <see cref="DirectoryAttribute"/>.
-        /// </summary>
         private DirectoryAttribute Attribute => attribute as DirectoryAttribute;
 
 

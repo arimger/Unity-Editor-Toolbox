@@ -6,8 +6,8 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    [CustomPropertyDrawer(typeof(SerializedType))]
     [CustomPropertyDrawer(typeof(ClassTypeConstraintAttribute), true)]
+    [CustomPropertyDrawer(typeof(SerializedType))]
     public sealed class SerializedTypeDrawer : ToolboxNativePropertyDrawer
     {
         /// <summary>
@@ -55,12 +55,11 @@ namespace Toolbox.Editor.Drawers
         private readonly static Dictionary<Type, List<Type>> filteredTypes = new Dictionary<Type, List<Type>>();
 
 
-        /// <summary>
-        /// Draws property using provided <see cref="Rect"/>.
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return EditorStyles.popup.CalcHeight(GUIContent.none, 0);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var refAttribute = Attribute;
@@ -115,11 +114,6 @@ namespace Toolbox.Editor.Drawers
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.type == nameof(SerializedType);
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return EditorStyles.popup.CalcHeight(GUIContent.none, 0);
         }
 
 

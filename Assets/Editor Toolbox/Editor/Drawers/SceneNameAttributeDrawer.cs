@@ -29,6 +29,17 @@ namespace Toolbox.Editor.Drawers
         }
 
 
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            if (!SceneExists(property.stringValue))
+            {
+                //set additional height as help box height + 2x spacing between properties
+                return base.GetPropertyHeightSafe(property, label) + Style.boxHeight + Style.spacing * 2;
+            }
+
+            return base.GetPropertyHeightSafe(property, label);
+        }
+
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             const string warningMessage = "Scene does not exist. Check available Scenes in Build options.";
@@ -52,17 +63,6 @@ namespace Toolbox.Editor.Drawers
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.String;
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            if (!SceneExists(property.stringValue))
-            {         
-                //set additional height as help box height + 2x spacing between properties
-                return base.GetPropertyHeight(property, label) + Style.boxHeight + Style.spacing * 2;
-            }
-
-            return base.GetPropertyHeight(property, label);
         }
 
 
