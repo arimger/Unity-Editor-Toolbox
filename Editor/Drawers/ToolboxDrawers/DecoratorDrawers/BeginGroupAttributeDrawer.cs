@@ -20,7 +20,7 @@ namespace Toolbox.Editor.Drawers
                 GUILayout.Space(Style.labelOffset);
             }
 
-            ToolboxEditorGui.BeginVerticalLayout(Style.groupBackgroundStyle);
+            ToolboxEditorLayout.BeginVertical(Style.groupBackgroundStyle);
         }
 
 

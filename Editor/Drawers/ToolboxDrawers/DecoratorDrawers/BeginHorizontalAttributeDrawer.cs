@@ -7,10 +7,11 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(BeginHorizontalAttribute attribute)
         {
-            //set new label width for this area
+            //set a new label width for this area
             EditorGUIUtility.labelWidth = EditorGUIUtility.currentViewWidth * attribute.LabelToWdithRatio;
-            //begin horizontal group
-            EditorGUILayout.BeginHorizontal();
+
+            //begin horizontal group using internal utilities
+            ToolboxEditorLayout.BeginHorizontal();
         }
     }
 }
