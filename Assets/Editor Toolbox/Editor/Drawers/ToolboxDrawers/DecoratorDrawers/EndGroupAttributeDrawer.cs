@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -7,7 +6,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiEndSafe(EndGroupAttribute attribute)
         {          
-            EditorGUILayout.EndVertical();
+            ToolboxEditorGui.CloseVerticalLayout();
         }
     }
 }

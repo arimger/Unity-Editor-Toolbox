@@ -357,7 +357,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Returns and creates (if needed) <see cref="ToolboxPropertyHandler"/> for given property.
+        /// Returns and/or creates (if needed) <see cref="ToolboxPropertyHandler"/> for given property.
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>

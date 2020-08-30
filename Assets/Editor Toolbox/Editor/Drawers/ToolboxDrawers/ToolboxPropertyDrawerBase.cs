@@ -37,7 +37,7 @@ namespace Toolbox.Editor.Drawers
 
         public override sealed void OnGui(SerializedProperty property, GUIContent label)
         {
-            OnGui(property, label, property.GetAttribute<T>());
+            OnGui(property, label, PropertyUtility.GetAttribute<T>(property));
         }
 
         public override sealed void OnGui(SerializedProperty property, GUIContent label, ToolboxAttribute attribute)

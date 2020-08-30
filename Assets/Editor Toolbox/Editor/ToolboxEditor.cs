@@ -40,14 +40,14 @@ namespace Toolbox.Editor
         /// </summary>
         public virtual void DrawCustomInspector()
         {
-            var expanded = true;
+            var isExpanded = true;
 
             serializedObject.Update();
 
             var property = serializedObject.GetIterator();
-            if (property.NextVisible(expanded))
+            if (property.NextVisible(isExpanded))
             {
-                expanded = false;
+                isExpanded = false;
 
                 var disable = InspectorUtility.IsDefaultScriptProperty(property);
 
@@ -55,7 +55,7 @@ namespace Toolbox.Editor
                 EditorGUILayout.PropertyField(property);
                 EditorGUI.EndDisabledGroup();
 
-                while (property.NextVisible(expanded))
+                while (property.NextVisible(isExpanded))
                 {
                     DrawCustomProperty(property.Copy());
                 }

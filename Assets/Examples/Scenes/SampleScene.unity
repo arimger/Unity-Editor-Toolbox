@@ -423,6 +423,7 @@ MonoBehaviour:
   - {fileID: 977748987}
   - {fileID: 661896457}
   - {fileID: 977748987}
+  y: 0
   var14: 317
   var15: 8
   var16: -45
@@ -430,6 +431,7 @@ MonoBehaviour:
   var18: 0
   var19: 18
   var20: 34
+  x: 0
   var21: {fileID: 977748988}
   var22: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
   var23: {fileID: 2800000, guid: 944a8e7523b24474383ee2dc61c3bbf1, type: 3}

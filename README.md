@@ -111,22 +111,22 @@ public float var1 = 36.0f;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc7.png)
 
-#### ConditionalHideAttribute
+#### ConditionalShowAttribute & ConditionalHideAttribute
 
 ```csharp
 public bool toggle;
-[ConditionalHide(nameof(toggle), true)]
+[ConditionalShow(nameof(toggle), true)]
 public float var1;
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc9.png)
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc8.png)
 
-#### ConditionalDisableAttribute
+#### ConditionalEnableAttribute & ConditionalDisableAttribute
 
 ```csharp
 public bool toggle;
-[ConditionalDisable(nameof(toggle), true)]
+[ConditionalEnable(nameof(toggle), true)]
 public float var1;
 ```
 
@@ -263,7 +263,7 @@ public KeyCode enumSearch;
 public double var1;
 ```
 
-#### Vector2DirectionAttribute&Vector3DirectionAttribute
+#### Vector2DirectionAttribute & Vector3DirectionAttribute
 
 ```csharp
 [Vector2Direction]

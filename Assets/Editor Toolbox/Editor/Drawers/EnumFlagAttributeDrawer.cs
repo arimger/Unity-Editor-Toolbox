@@ -82,7 +82,6 @@ namespace Toolbox.Editor.Drawers
                 : property.intValue == -1 ? enumSum : property.intValue;
 
 
-            var isFull = enumValue == enumSum;
             var isNone = enumValue == nothing &&
                          !property.hasMultipleDifferentValues;
 
@@ -93,6 +92,9 @@ namespace Toolbox.Editor.Drawers
             enumValue = GUI.Toggle(buttonPosition, isNone, "Nothing", Style.toggleStyle) ? nothing : enumValue;
             //create "Everything" button
             buttonPosition.x += buttonPosition.width + Style.spacing;
+
+            var isFull = enumValue == enumSum;
+
             enumValue = GUI.Toggle(buttonPosition, isFull, "Everything", Style.toggleStyle) ? enumSum : enumValue;
 
             //set basic rect for first button

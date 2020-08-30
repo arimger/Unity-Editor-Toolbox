@@ -15,7 +15,9 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [Label("2", skinStyle: SkinStyle.Box)]
 
-    [BeginGroup("Custom group")]
+    [BeginGroup("Parent group")]
+    public int y;
+    [BeginGroup("Nested group")]
     public int var14;
     [Separator] //or [Line]
     public int var15;
@@ -29,7 +31,8 @@ public class SampleBehaviour2 : MonoBehaviour
     [Line()]
     [Line(HexColor = "#9800FF")]
     public int var20;
-
+    [EndGroup]
+    public int x;
     [Label("3", skinStyle: SkinStyle.Box)]
 
     [InLineEditor]
