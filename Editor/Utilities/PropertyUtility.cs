@@ -337,16 +337,31 @@ namespace Toolbox.Editor
         }
 
 
-        public static T   GetAttribute<T>(this SerializedProperty property) where T : Attribute
+        public static T GetAttribute<T>(SerializedProperty property) where T : Attribute
         {
-            return GetFieldInfoFromProperty(property, out var type).GetCustomAttribute<T>(true);
+            return GetAttribute<T>(property, GetFieldInfoFromProperty(property, out var type));
         }
 
-        public static T[] GetAttributes<T>(this SerializedProperty property) where T : Attribute
+        public static T GetAttribute<T>(SerializedProperty property, FieldInfo fieldInfo) where T : Attribute
         {
-            return (T[])GetFieldInfoFromProperty(property, out var type).GetCustomAttributes(typeof(T), true);
+            return fieldInfo.GetCustomAttribute<T>(true);
         }
 
+        public static T[] GetAttributes<T>(SerializedProperty property) where T : Attribute
+        {
+            return GetAttributes<T>(property, GetFieldInfoFromProperty(property, out var type));
+        }
+
+        public static T[] GetAttributes<T>(SerializedProperty property, FieldInfo fieldInfo) where T : Attribute
+        {
+            return (T[])fieldInfo.GetCustomAttributes(typeof(T), true);
+        }
+
+
+        internal static bool IsLastSerializedProperty(SerializedProperty property)
+        {
+            return !property.Copy().NextVisible(false);
+        }
 
         internal static bool IsBuiltInNumericProperty(SerializedProperty property)
         {

@@ -14,5 +14,7 @@ namespace UnityEngine
         }
 
         public string Label { get; private set; }
+
+        public bool HasLabel => !string.IsNullOrEmpty(Label);
     }
 }

@@ -7,40 +7,38 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(BeginGroupAttribute attribute)
         {
-            if (!string.IsNullOrEmpty(attribute.Label))
+            if (attribute.HasLabel)
             {
-                EditorGUILayout.BeginHorizontal(Style.headerBackgroundStyle);
+                var groupLabel = attribute.Label;
+
+                EditorGUILayout.BeginHorizontal(Style.labelBackgroundStyle);
                 //draw group label for the whole section
-                EditorGUILayout.LabelField(attribute.Label, Style.headerStyle);
+                EditorGUILayout.LabelField(groupLabel, Style.labelStyle);
                 EditorGUILayout.EndHorizontal();
+
                 //remove additional space between controls
-                GUILayout.Space(-Style.spacing * 2);
+                GUILayout.Space(Style.labelOffset);
             }
 
-            EditorGUILayout.BeginVertical(Style.sectionBackgroundStyle);
+            ToolboxEditorGui.BeginVerticalLayout(Style.groupBackgroundStyle);
         }
 
 
         private static class Style
         {
-            internal static readonly float spacing = 2.5f;
+            internal static readonly float labelOffset = -5.0f;
 
-            internal static readonly GUIStyle headerStyle;
-            internal static readonly GUIStyle headerBackgroundStyle;
-            internal static readonly GUIStyle sectionBackgroundStyle;
-            internal static readonly GUIStyle foldoutStyle;
+            internal static readonly GUIStyle labelStyle;
+            internal static readonly GUIStyle labelBackgroundStyle;
+            internal static readonly GUIStyle groupBackgroundStyle;
 
             static Style()
             {
-                headerStyle = new GUIStyle(EditorStyles.boldLabel);
-                headerBackgroundStyle = new GUIStyle(GUI.skin.box);
-                sectionBackgroundStyle = new GUIStyle(GUI.skin.box)
+                labelStyle = new GUIStyle(EditorStyles.boldLabel);
+                labelBackgroundStyle = new GUIStyle(GUI.skin.box);
+                groupBackgroundStyle = new GUIStyle(GUI.skin.box)
                 {
                     padding = new RectOffset(13, 12, 5, 5)
-                };
-                foldoutStyle = new GUIStyle(EditorStyles.foldout)
-                {
-                    fontStyle = FontStyle.Bold
                 };
             }
         }

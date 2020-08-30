@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+
+using UnityEngine;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
@@ -179,9 +182,6 @@ namespace Toolbox.Editor
 
         internal static class Style
         {
-            internal static readonly float height = EditorGUIUtility.singleLineHeight;
-            internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
-
             internal static readonly Color standardLineColor = new Color(0.3f, 0.3f, 0.3f);
 
             internal static readonly GUIStyle boxedSkinStyle;
@@ -205,7 +205,6 @@ namespace Toolbox.Editor
 
     public static partial class ToolboxEditorGui
     {
-
         /// <summary>
         /// Draws <see cref="ReorderableList"/> as drawer list instace used within the <see cref="ToolboxEditorSettingsEditor"/> class.
         /// </summary>
@@ -315,17 +314,17 @@ namespace Toolbox.Editor
             {
                 drawHeaderBackgroundCallback = (Rect rect) =>
                 {
-                    rect.y -= Style.spacing;
+                    rect.y -= EditorGUIUtility.standardVerticalSpacing;
                     DrawLine(rect);
                 },
                 drawMiddleBackgroundCallback = (Rect rect) =>
                 {
-                    rect.y -= Style.spacing * 2;
+                    rect.y -= EditorGUIUtility.standardVerticalSpacing * 2;
                     DrawLine(rect);
                 },
                 drawFooterBackgroundCallback = (Rect rect) =>
                 {
-                    rect.y -= Style.spacing * 2 - rect.height;
+                    rect.y -= EditorGUIUtility.standardVerticalSpacing * 2 - rect.height;
                     DrawLine(rect);
                 },
 #if UNITY_2019_3_OR_NEWER
@@ -356,9 +355,15 @@ namespace Toolbox.Editor
     }
 
     public static partial class ToolboxEditorGui
-    {                
-        [System.Obsolete]
+    {
+        [Obsolete]
         public static void DrawToolboxProperty(Rect position, SerializedProperty property)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        [Obsolete]
+        public static void DrawToolboxProperty(Rect position, SerializedProperty property, GUIContent label)
         {
             throw new System.NotImplementedException();
         }
@@ -465,7 +470,7 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawLayoutEmptyProperty(SerializedProperty property, GUIContent label)
         {
-            DrawEmptyProperty(GUILayoutUtility.GetRect(1, Style.height), property, label);
+            DrawEmptyProperty(GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight), property, label);
         }
 
         /// <summary>
@@ -481,21 +486,74 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawEmptyProperty(Rect position, SerializedProperty property, GUIContent label)
         {
-            const float iconWidth = 20.0f;
-            const float iconHeight = 20.0f;
-            
-            position.width = iconWidth;
-            position.height = iconHeight;
+            var xMin = position.xMin;
+            var xMax = position.xMax;
+            var yMin = position.yMin;
+            var yMax = position.yMax;
+
+            var dim = position.height + EditorGUIUtility.standardVerticalSpacing * 2;
+            position.width = dim;
+            position.height = dim;
 
             EditorGUI.LabelField(position, Style.warningContent);
 
-            position.x += iconWidth;
-            position.width = EditorGUIUtility.currentViewWidth - iconWidth;
-            position.height = EditorGUIUtility.singleLineHeight;
+            position.xMin = xMin + position.width;
+            position.xMax = xMax;
+            position.yMin = yMin;
+            position.yMax = yMax;
 
             var content = label ?? new GUIContent(property.displayName);
 
             EditorGUI.LabelField(position, content);
+        }
+    }
+
+    public static partial class ToolboxEditorGui
+    {
+        private static readonly Stack<IDisposable> verticalScopes = new Stack<IDisposable>();
+
+
+        internal static void BeginVerticalLayout()
+        {
+            BeginVerticalLayout(null);
+        }
+
+        internal static void BeginVerticalLayout(GUIStyle style, params GUILayoutOption[] options)
+        {
+            EditorGUILayout.BeginVertical(style, options);
+            //verticalScopes.Push(new EditorGUILayout.VerticalScope(style, options));
+        }
+
+        internal static void CloseVerticalLayout()
+        {
+            EditorGUILayout.EndVertical();
+           
+            //if (verticalScopes.Count == 0)
+            //{
+            //    //TODO: warning
+            //    return;
+            //}
+
+            //verticalScopes.Pop().Dispose();
+        }
+
+
+        private static readonly Stack<IDisposable> horizontalScopes = new Stack<IDisposable>();
+
+
+        internal static void BeginHorizontalLayout()
+        {
+            BeginHorizontalLayout(null);
+        }
+
+        internal static void BeginHorizontalLayout(GUIStyle style, params GUILayoutOption[] options)
+        {
+            EditorGUILayout.BeginHorizontal(style, options);
+        }
+
+        internal static void CloseHorizontalLayout()
+        {
+            EditorGUILayout.EndHorizontal();
         }
     }
 }
