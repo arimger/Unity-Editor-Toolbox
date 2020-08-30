@@ -33,6 +33,7 @@ public class SampleBehaviour2 : MonoBehaviour
     public int var20;
     [EndGroup]
     public int x;
+
     [Label("3", skinStyle: SkinStyle.Box)]
 
     [InLineEditor]

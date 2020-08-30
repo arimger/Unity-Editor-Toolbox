@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEditor;
@@ -505,55 +504,6 @@ namespace Toolbox.Editor
             var content = label ?? new GUIContent(property.displayName);
 
             EditorGUI.LabelField(position, content);
-        }
-    }
-
-    public static partial class ToolboxEditorGui
-    {
-        private static readonly Stack<IDisposable> verticalScopes = new Stack<IDisposable>();
-
-
-        internal static void BeginVerticalLayout()
-        {
-            BeginVerticalLayout(null);
-        }
-
-        internal static void BeginVerticalLayout(GUIStyle style, params GUILayoutOption[] options)
-        {
-            EditorGUILayout.BeginVertical(style, options);
-            //verticalScopes.Push(new EditorGUILayout.VerticalScope(style, options));
-        }
-
-        internal static void CloseVerticalLayout()
-        {
-            EditorGUILayout.EndVertical();
-           
-            //if (verticalScopes.Count == 0)
-            //{
-            //    //TODO: warning
-            //    return;
-            //}
-
-            //verticalScopes.Pop().Dispose();
-        }
-
-
-        private static readonly Stack<IDisposable> horizontalScopes = new Stack<IDisposable>();
-
-
-        internal static void BeginHorizontalLayout()
-        {
-            BeginHorizontalLayout(null);
-        }
-
-        internal static void BeginHorizontalLayout(GUIStyle style, params GUILayoutOption[] options)
-        {
-            EditorGUILayout.BeginHorizontal(style, options);
-        }
-
-        internal static void CloseHorizontalLayout()
-        {
-            EditorGUILayout.EndHorizontal();
         }
     }
 }

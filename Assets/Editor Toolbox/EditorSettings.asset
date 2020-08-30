@@ -50,6 +50,7 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.HelpAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HighlightAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.ImageAreaAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.IndentAreaAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.LabelAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.LineAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox-Editor
@@ -65,4 +66,4 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.HideIfAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.ShowIfAttributeDrawer, Toolbox-Editor
   targetTypeDrawerHandlers: []
-  needsUpdate: 0
+  needsUpdate: 1
