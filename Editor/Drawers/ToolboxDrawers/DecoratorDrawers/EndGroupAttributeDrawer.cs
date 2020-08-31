@@ -6,7 +6,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiEndSafe(EndGroupAttribute attribute)
         {
-            ToolboxEditorLayout.EndVertical();
+            ToolboxLayoutHelper.EndVertical();
         }
     }
 }

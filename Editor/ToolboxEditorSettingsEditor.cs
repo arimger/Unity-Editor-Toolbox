@@ -73,10 +73,8 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws all needed inspector controls.
         /// </summary>
-        public override void OnInspectorGUI()
+        public override void DrawCustomInspector()
         {
-            const float lineTickiness = 1.0f;
-
             serializedObject.Update();
 
             //forcing validation is usefull when target field is edited directly
@@ -92,7 +90,7 @@ namespace Toolbox.Editor
                 EditorGUILayout.Space();
 
                 EditorGUI.BeginDisabledGroup(!useToolboxHierarchyProperty.boolValue);
-                if (ToolboxEditorGui.DrawListFoldout(rowDataItemsList, Style.classicListFoldoutStyle))
+                if (ToolboxEditorGui.DrawListFoldout(rowDataItemsList, Style.normalListFoldoutStyle))
                 {
                     rowDataItemsList.ElementLabel = "Position";
                     rowDataItemsList.DoLayoutList();
@@ -106,7 +104,7 @@ namespace Toolbox.Editor
             }
             else
             {
-                GUILayout.Space(-lineTickiness);
+                GUILayout.Space(-Style.spacing / 2);
             }
 
             //handle project settings section (focused on customized folder icons)
@@ -162,7 +160,7 @@ namespace Toolbox.Editor
                 EditorGUILayout.Space();
 
                 //draw custom icons list
-                if (ToolboxEditorGui.DrawListFoldout(customFoldersList, Style.classicListFoldoutStyle))
+                if (ToolboxEditorGui.DrawListFoldout(customFoldersList, Style.normalListFoldoutStyle))
                 {
                     customFoldersList.DoLayoutList();
                 }
@@ -174,7 +172,7 @@ namespace Toolbox.Editor
             }
             else
             {
-                GUILayout.Space(-lineTickiness);
+                GUILayout.Space(-Style.spacing / 2);
             }
 
             //handle drawers settings section
@@ -231,7 +229,7 @@ namespace Toolbox.Editor
             }
             else
             {
-                GUILayout.Space(-lineTickiness);
+                GUILayout.Space(-Style.spacing / 2);
             }
 
             if (currentTarget.NeedsUpdate || forceValidation)
@@ -253,8 +251,7 @@ namespace Toolbox.Editor
             internal static readonly GUIStyle usualHeaderStyle;
             internal static readonly GUIStyle settingsFoldoutStyle;
             internal static readonly GUIStyle drawerListFoldoutStyle;
-            internal static readonly GUIStyle classicListFoldoutStyle;
-            internal static readonly GUIStyle settingsVersionLabelStyle;
+            internal static readonly GUIStyle normalListFoldoutStyle;
 
             internal static readonly GUIContent projectSettingsContent = new GUIContent("Project Settings",
                 EditorGUIUtility.IconContent("Project").image);
@@ -300,10 +297,7 @@ namespace Toolbox.Editor
                 {
                     fontSize = 10
                 };
-                classicListFoldoutStyle = new GUIStyle(EditorStyles.foldout)
-                { };
-
-                settingsVersionLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
+                normalListFoldoutStyle = new GUIStyle(EditorStyles.foldout);
             }
         }
     }

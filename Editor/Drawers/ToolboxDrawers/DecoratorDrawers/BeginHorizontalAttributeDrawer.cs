@@ -11,7 +11,7 @@ namespace Toolbox.Editor.Drawers
             EditorGUIUtility.labelWidth = EditorGUIUtility.currentViewWidth * attribute.LabelToWdithRatio;
 
             //begin horizontal group using internal utilities
-            ToolboxEditorLayout.BeginHorizontal();
+            ToolboxLayoutHelper.BeginHorizontal();
         }
     }
 }
