@@ -18,7 +18,7 @@ namespace Toolbox.Editor
             InspectorUtility.OnEditorReload += ClearHandlers;
         }
 
-        //NOTE: unfortunately there is no valid, non-reflection way to check if property has a custom drawer
+        //NOTE: unfortunately there is no valid, non-reflection way to check if property has a custom native drawer
         private static readonly MethodInfo getDrawerTypeForTypeMethod = typeof(UnityEditor.Editor).Assembly
                                                                                                   .GetType("UnityEditor.ScriptAttributeUtility")
                                                                                                   .GetMethod("GetDrawerTypeForType", BindingFlags.NonPublic | BindingFlags.Static);
@@ -147,6 +147,8 @@ namespace Toolbox.Editor
         /// <param name="settings"></param>
         private static void CreateTargetTypeDrawers(IToolboxInspectorSettings settings)
         {
+            var childrenTypesMap = new Dictionary<ToolboxTargetTypeDrawer, List<Type>>();
+
             targetTypeDrawers.Clear();
             for (var i = 0; i < settings.TargetTypeDrawersCount; i++)
             {
@@ -162,23 +164,44 @@ namespace Toolbox.Editor
                 }
 
                 var drawerInstance = Activator.CreateInstance(drawerType) as ToolboxTargetTypeDrawer;
-                var allTargetTypes = drawerInstance.GetTargetType().GetAllChildClasses();
-
-                foreach (var type in allTargetTypes)
+                var targetBaseType = drawerInstance.GetTargetType();
+                if (targetBaseType != null)
                 {
-                    if (allTargetTypes.Contains(type))
+                    if (targetTypeDrawers.ContainsKey(targetBaseType))
                     {
                         if (validationEnabled)
                         {
-                            ToolboxEditorLog.LogError("Type:" + type + " is associated to more than one ToolboxDrawer.");
+                            ToolboxEditorLog.LogError("Type:" + targetBaseType + " is associated to more than one ToolboxDrawer.");
                         }
 
                         continue;
                     }
 
-                    targetTypeDrawers[type] = drawerInstance;
+                    targetTypeDrawers[targetBaseType] = drawerInstance;
+
+                    if (drawerInstance.UseForChildren())
+                    {
+                        childrenTypesMap[drawerInstance] = targetBaseType.GetAllChildClasses();
+                    }
                 }
             }
+
+            foreach (var typesMap in childrenTypesMap)
+            {
+                var typeDrawer = typesMap.Key;
+                var targetTypes = typesMap.Value;
+                
+                for (var i = 0; i < targetTypes.Count; i++)
+                {
+                    var targetType = targetTypes[i];
+                    if (targetTypeDrawers.ContainsKey(targetType))
+                    {
+                        continue;
+                    }
+
+                    targetTypeDrawers[targetType] = typeDrawer;
+                }
+            }            
         }
 
 

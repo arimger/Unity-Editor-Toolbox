@@ -17,7 +17,7 @@ namespace Toolbox.Editor
     {
         static ToolboxLayoutHelper()
         {
-            //ensure that on the frame begining we are not within the Inspector Window
+            //ensure that on the begining of a frame we are not within the Inspector Window
             EditorApplication.update += () =>
             {
                 inEditorLayout = false;

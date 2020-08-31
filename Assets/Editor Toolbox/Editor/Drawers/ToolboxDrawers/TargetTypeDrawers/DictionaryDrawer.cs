@@ -18,5 +18,10 @@ namespace Toolbox.Editor.Drawers
         {
             return typeof(SerializedDictionary<,>);
         }
+
+        public override bool UseForChildren()
+        {
+            return false;
+        }
     }
 }
