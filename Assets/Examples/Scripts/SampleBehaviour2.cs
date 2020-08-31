@@ -59,7 +59,7 @@ public class SampleBehaviour2 : MonoBehaviour
     [InLineEditor]
     public Mesh var25;
 
-    [InLineEditor(drawHeader: true, drawPreview: true)]
+    [InLineEditor(drawPreview: true)]
     public GameObject var26;
 
     [Label("4", skinStyle: SkinStyle.Box)]

@@ -1,28 +1,27 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using System;
+
+using UnityEditor;
 
 namespace Toolbox.Editor
 {
+    using Object = UnityEngine.Object;
+    using Editor = UnityEditor.Editor;
+
     /// <summary>
     /// Base editor class.
     /// </summary>
     [CustomEditor(typeof(Object), true, isFallback = true)]
     [CanEditMultipleObjects]
-    public class ToolboxEditor : UnityEditor.Editor
+    public class ToolboxEditor : Editor
     {
         /// <summary>
         /// Inspector GUI re-draw call.
         /// </summary>
-        public override void OnInspectorGUI()
+        public override sealed void OnInspectorGUI()
         {
-            if (!ToolboxDrawerModule.ToolboxDrawersAllowed)
-            {
-                DrawDefaultInspector();
-            }
-            else
-            {
-                DrawCustomInspector();
-            }            
+            OnBeginToolboxEditor?.Invoke(this);
+            DrawCustomInspector();
+            OnAfterToolboxEditor?.Invoke(this);
         }
 
 
@@ -40,28 +39,39 @@ namespace Toolbox.Editor
         /// </summary>
         public virtual void DrawCustomInspector()
         {
-            var isExpanded = true;
-
-            serializedObject.Update();
-
-            var property = serializedObject.GetIterator();
-            if (property.NextVisible(isExpanded))
+            if (ToolboxDrawerModule.ToolboxDrawersAllowed)
             {
-                isExpanded = false;
+                var isExpanded = true;
 
-                var disable = InspectorUtility.IsDefaultScriptProperty(property);
+                serializedObject.Update();
 
-                EditorGUI.BeginDisabledGroup(disable);
-                EditorGUILayout.PropertyField(property);
-                EditorGUI.EndDisabledGroup();
-
-                while (property.NextVisible(isExpanded))
+                var property = serializedObject.GetIterator();
+                if (property.NextVisible(isExpanded))
                 {
-                    DrawCustomProperty(property.Copy());
-                }
-            }
+                    isExpanded = false;
 
-            serializedObject.ApplyModifiedProperties();
+                    var isScript = InspectorUtility.IsDefaultScriptProperty(property);
+
+                    EditorGUI.BeginDisabledGroup(isScript);
+                    EditorGUILayout.PropertyField(property);
+                    EditorGUI.EndDisabledGroup();
+
+                    while (property.NextVisible(isExpanded))
+                    {
+                        DrawCustomProperty(property.Copy());
+                    }
+                }
+
+                serializedObject.ApplyModifiedProperties();
+            }
+            else
+            {
+                DrawDefaultInspector();
+            }
         }
+
+
+        public static event Action<Editor> OnBeginToolboxEditor;
+        public static event Action<Editor> OnAfterToolboxEditor;
     }
 }

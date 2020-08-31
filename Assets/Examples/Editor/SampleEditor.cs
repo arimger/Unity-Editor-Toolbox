@@ -11,9 +11,9 @@ public class SampleEditor : ToolboxEditor
     private void OnDisable()
     { }
 
-    public override void OnInspectorGUI()
+    public override void DrawCustomInspector()
     {
-        base.OnInspectorGUI();
+        base.DrawCustomInspector();
 
         EditorGUILayout.Space();
         EditorGUILayout.Space();
