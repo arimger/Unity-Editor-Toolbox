@@ -10,5 +10,6 @@ namespace Toolbox.Editor.Drawers
         public abstract void OnGui(SerializedProperty property, GUIContent label);
 
         public abstract Type GetTargetType();
+        public abstract bool UseForChildren();
     }
 }

@@ -66,4 +66,4 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.HideIfAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.ShowIfAttributeDrawer, Toolbox-Editor
   targetTypeDrawerHandlers: []
-  needsUpdate: 1
+  needsUpdate: 0

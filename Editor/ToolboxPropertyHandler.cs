@@ -61,6 +61,8 @@ namespace Toolbox.Editor
         /// </summary>
         private readonly bool hasToolboxTargetTypeDrawer;
 
+        private readonly bool isArray;
+
 
         /// <summary>
         /// Constructor prepares all property-related data for custom drawing.
@@ -83,6 +85,8 @@ namespace Toolbox.Editor
                 return;
             }
 
+            isArray = property.isArray && property.propertyType == SerializedPropertyType.Generic;
+
             //check if this property has built-in property drawer
             if (!(hasNativePropertyDrawer = ToolboxDrawerModule.HasCustomTypeDrawer(propertyType)))
             {
@@ -99,7 +103,7 @@ namespace Toolbox.Editor
 
             if (!(hasToolboxTargetTypeDrawer = ToolboxDrawerModule.HasTargetTypeDrawer(propertyType)))
             {
-                if (property.isArray)
+                if (isArray)
                 {
                     //get collection drawer associated to this array
                     propertyArrayAttribute = propertyFieldInfo.GetCustomAttribute<ToolboxCollectionAttribute>();
@@ -168,14 +172,14 @@ namespace Toolbox.Editor
             }
 
             //get property drawer for single property or draw it in the default way
-            if (hasToolboxPropertyDrawer && (!hasNativePropertyDrawer || property.isArray))
+            if (hasToolboxPropertyDrawer && (!hasNativePropertyDrawer || isArray))
             {
                 if (hasToolboxTargetTypeDrawer)
                 {
                     //draw target property using associated type drawer
                     ToolboxDrawerModule.GetTargetTypeDrawer(propertyType).OnGui(property, propertyLabel);
                 }
-                else if (property.isArray)
+                else if (isArray)
                 {
                     //draw array property using associated collection drawer
                     ToolboxDrawerModule.GetCollectionDrawer(propertyArrayAttribute)?.OnGui(property, propertyLabel, propertyArrayAttribute);
