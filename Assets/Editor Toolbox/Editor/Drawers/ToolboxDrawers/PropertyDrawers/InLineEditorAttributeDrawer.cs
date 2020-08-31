@@ -48,18 +48,20 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         private void OnEditorGuiSafe(Editor editor, InLineEditorAttribute attribute)
         {
-            if (!attribute.DrawHeader)
-            {
-                //force the expanded inspector if a header is not expected
-                InspectorUtility.SetIsEditorExpanded(editor, true);
-            }
+            //force the expanded inspector since a header is not expected
+            InspectorUtility.SetIsEditorExpanded(editor, true);
 
             var labelWidth = 0.0f;
+            var fieldWidth = 0.0f;
 
-            //prevent custom editors for overriding the label width
+            //prevent custom editors for overriding the internal properties
             labelWidth = EditorGUIUtility.labelWidth;
+            fieldWidth = EditorGUIUtility.fieldWidth;
+
             OnEditorGuiDraw(editor, attribute);
+
             EditorGUIUtility.labelWidth = labelWidth;
+            EditorGUIUtility.fieldWidth = fieldWidth;
         }
 
         /// <summary>
@@ -69,12 +71,6 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         private void OnEditorGuiDraw(Editor editor, InLineEditorAttribute attribute)
         {
-            //draw header if needed
-            if (attribute.DrawHeader)
-            {
-                editor.DrawHeader();
-            }
-
             //begin editor inside vertical group
             EditorGUILayout.BeginVertical(Style.inlinedStyle);
             EditorGUILayout.BeginVertical();

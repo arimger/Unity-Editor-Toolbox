@@ -9,13 +9,21 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class InLineEditorAttribute : ToolboxPropertyAttribute
     {
-        public InLineEditorAttribute(bool drawHeader = false, bool drawPreview = true, bool drawSettings = false)
+        public InLineEditorAttribute(bool drawPreview = true, bool drawSettings = false)
         {
-            DrawHeader = drawHeader;
             DrawPreview = drawPreview;
             DrawSettings = drawSettings;
         }
 
+        [Obsolete("Drawing the inlined header is no longer supported.")]
+        public InLineEditorAttribute(bool drawHeader, bool drawPreview = true, bool drawSettings = false)
+        {
+            DrawHeader = false;
+            DrawPreview = drawPreview;
+            DrawSettings = drawSettings;
+        }
+
+        [Obsolete]
         public bool DrawHeader { get; private set; }
 
         public bool DrawPreview { get; private set; }
