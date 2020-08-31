@@ -18,6 +18,7 @@ namespace Toolbox.Editor
             InspectorUtility.OnEditorReload += ClearHandlers;
         }
 
+        //TODO:
         //NOTE: unfortunately there is no valid, non-reflection way to check if property has a custom native drawer
         private static readonly MethodInfo getDrawerTypeForTypeMethod = typeof(UnityEditor.Editor).Assembly
                                                                                                   .GetType("UnityEditor.ScriptAttributeUtility")
@@ -151,7 +152,7 @@ namespace Toolbox.Editor
 
             targetTypeDrawers.Clear();
             for (var i = 0; i < settings.TargetTypeDrawersCount; i++)
-            {
+            {    
                 var drawerType = settings.GetTargetTypeDrawerTypeAt(i);
                 if (drawerType == null)
                 {
