@@ -211,11 +211,13 @@ namespace Toolbox.Editor
                 }
             }
 
+            //finally adjust available rect to the created content
             if (contentRect.xMin < rect.xMin)
             {
                 rect.xMin = contentRect.xMin;
             }
 
+            //draw a horiozntal line but only if it is expected
             if (DrawHorizontalLines)
             {
                 EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
@@ -224,6 +226,7 @@ namespace Toolbox.Editor
             contentRect.xMax = contentRect.xMin;
             contentRect.xMin = rect.xMin;
 
+            //create an empty label field which will serve as a tooltip
             EditorGUI.LabelField(contentRect, new GUIContent(string.Empty, label));
         }
 

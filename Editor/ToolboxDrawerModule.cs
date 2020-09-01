@@ -189,7 +189,7 @@ namespace Toolbox.Editor
 
             foreach (var typesMap in childrenTypesMap)
             {
-                var typeDrawer = typesMap.Key;
+                var typesDrawer = typesMap.Key;
                 var targetTypes = typesMap.Value;
                 
                 for (var i = 0; i < targetTypes.Count; i++)
@@ -200,7 +200,7 @@ namespace Toolbox.Editor
                         continue;
                     }
 
-                    targetTypeDrawers[targetType] = typeDrawer;
+                    targetTypeDrawers[targetType] = typesDrawer;
                 }
             }            
         }
