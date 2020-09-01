@@ -21,7 +21,7 @@ namespace Toolbox.Editor.Drawers
                 }
                 else
                 {
-                    ToolboxEditorLog.AttributeUsageWarning(attribute, property, propertyName + " has to be boolean value property.");
+                    ToolboxEditorLog.AttributeUsageWarning(attribute, property, propertyName + " has to be a boolean value property.");
                 }
             }
             else

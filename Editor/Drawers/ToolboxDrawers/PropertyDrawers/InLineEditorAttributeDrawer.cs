@@ -188,7 +188,7 @@ namespace Toolbox.Editor.Drawers
                 };
 
                 previewStyle = new GUIStyle();
-                previewStyle.normal.background = GraphicsUtility.CreatePersistantTexture(Color.clear);
+                previewStyle.normal.background = EditorGuiUtility.CreatePersistantTexture();
             }
         }
     }

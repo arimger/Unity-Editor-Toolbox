@@ -95,32 +95,6 @@ namespace Toolbox.Editor
         }
 
 
-        internal static bool IsDefaultScriptProperty(SerializedProperty property)
-        { 
-            return IsDefaultScriptPropertyByPath(property.propertyPath);
-        }
-
-        internal static bool IsDefaultScriptPropertyByPath(string propertyPath)
-        {
-            return propertyPath == "m_Script";
-        }
-
-        internal static bool IsDefaultScriptPropertyByType(string propertyType)
-        {
-            return propertyType == "PPtr<MonoScript>";
-        }
-
-        internal static bool IsDefaultObjectIcon(string name)
-        {
-            return name == "GameObject Icon";
-        }
-
-        internal static bool IsDefaultPrefabIcon(string name)
-        {
-            return name == "Prefab Icon";
-        }
-
-
         /// <summary>
         /// Event fired every time when the inspector window is fully rebuilt.
         /// </summary>

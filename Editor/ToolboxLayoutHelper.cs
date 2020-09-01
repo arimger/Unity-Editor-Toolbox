@@ -9,8 +9,8 @@ namespace Toolbox.Editor
     using Editor = UnityEditor.Editor;
 
     /// <summary>
-    /// Utility class to handle and validate creation of <see cref="GUILayout"/> and <see cref="EditorGUILayout"/> groups.
-    /// Can be used only within the Toolbox Editors.
+    /// Helper class to handle and validate creation of <see cref="GUILayout"/> and <see cref="EditorGUILayout"/> groups.
+    /// Remark: can be used only within the Toolbox Editors.
     /// </summary>
     [InitializeOnLoad]
     internal static class ToolboxLayoutHelper

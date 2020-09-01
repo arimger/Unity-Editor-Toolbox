@@ -145,8 +145,7 @@ namespace Toolbox.Editor
             //get only one condition attribute to valdiate state of this property
             conditionAttribute = fieldInfo.GetCustomAttribute<ToolboxConditionAttribute>();
             //get all available decorator attributes
-            decoratorAttributes = fieldInfo.GetCustomAttributes<ToolboxDecoratorAttribute>()
-                                                   .ToArray();
+            decoratorAttributes = fieldInfo.GetCustomAttributes<ToolboxDecoratorAttribute>().ToArray();
             //keep decorator attributes in proper order
             Array.Sort(decoratorAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
         }

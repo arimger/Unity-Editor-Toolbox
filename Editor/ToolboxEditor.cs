@@ -50,7 +50,7 @@ namespace Toolbox.Editor
                 {
                     isExpanded = false;
 
-                    var isScript = InspectorUtility.IsDefaultScriptProperty(property);
+                    var isScript = PropertyUtility.IsDefaultScriptProperty(property);
 
                     EditorGUI.BeginDisabledGroup(isScript);
                     EditorGUILayout.PropertyField(property);
