@@ -21,6 +21,16 @@ namespace Toolbox.Editor
     public static class ToolboxEditorHierarchy
     {
         /// <summary>
+        /// Possible types of the GameObject label.
+        /// </summary>
+        internal enum LabelType
+        {
+            Empty,
+            Header,
+            Default
+        }
+
+        /// <summary>
         /// Delegate used in label element drawing process.
         /// </summary>
         /// <param name="gameObject"></param>
@@ -92,29 +102,19 @@ namespace Toolbox.Editor
                     currentItemIndex = 0;
                 }
 
-                var name = gameObject.name;
-                if (name.StartsWith("#") && name.Length > 1)
+                var type = GetLabelType(gameObject, out var label);
+                //draw label using one of the possible forms
+                switch (type)
                 {
-                    var label = name.Remove(0, 2);
-                    var prefix = name[1];
-
-                    switch (prefix)
-                    {
-                        case 'e':
-                            DrawEmptyItemLabel(gameObject, rect, label, currentItemIndex);
-                            break;
-                        case 'h':
-                            DrawHeaderItemLabel(gameObject, rect, label, currentItemIndex);
-                            break;
-                        default:
-                            DrawDefaultItemLabel(gameObject, rect, label, currentItemIndex);
-                            break;
-                    }
-                }
-                else
-                {
-                    //draw the current object in default way
-                    DrawDefaultItemLabel(gameObject, rect, name, currentItemIndex);
+                    case LabelType.Empty:
+                        DrawEmptyItemLabel(gameObject, rect, label, currentItemIndex);
+                        break;
+                    case LabelType.Header:
+                        DrawHeaderItemLabel(gameObject, rect, label, currentItemIndex);
+                        break;
+                    case LabelType.Default:
+                        DrawDefaultItemLabel(gameObject, rect, label, currentItemIndex);
+                        break;
                 }
 
                 //increment index after drawing
@@ -157,18 +157,8 @@ namespace Toolbox.Editor
             EditorGUI.DrawRect(new Rect(rect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
             //prepare content for the associated label
-            var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
-            if (content.image)
-            {
-                var iconName = content.image.name;
-                if (InspectorUtility.IsDefaultObjectIcon(iconName) ||
-                    InspectorUtility.IsDefaultPrefabIcon(iconName))
-                {
-                    content.image = null;
-                }
-            }
+            var content = EditorGuiUtility.GetObjectContent(gameObject, typeof(GameObject));
             content.text = label;
-            content.tooltip = string.Empty;
 
             //draw custom label field for the provided GameObject
             EditorGUI.LabelField(rect, content, Style.headerLabelStyle);
@@ -233,12 +223,8 @@ namespace Toolbox.Editor
 
         private static Rect DrawIcon(GameObject gameObject, Rect rect)
         {
-            //get specific icon for this gameObject
-            var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
-            var contentIcon = content.image;
             var contentRect = rect;
-
-            contentRect.width = Style.iconWidth;
+            contentRect.width = Style.minWidth;
 #if UNITY_2018_1_OR_NEWER
             contentRect.x = rect.xMax - contentRect.width;
 #else
@@ -250,31 +236,35 @@ namespace Toolbox.Editor
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
 
-            //ignore situations when the provided icon is default or prefab one
-            if (InspectorUtility.IsDefaultObjectIcon(contentIcon.name) ||
-                InspectorUtility.IsDefaultPrefabIcon(contentIcon.name))
+            //get specific icon for this gameObject
+            var content = EditorGuiUtility.GetObjectContent(gameObject, typeof(GameObject));
+            if (content.image)
             {
-                return contentRect;
+                //draw the specific icon 
+                GUI.Label(contentRect, content.image);
             }
 
-            //draw specific icon 
-            GUI.Label(contentRect, contentIcon);
             return contentRect;
         }
 
         private static Rect DrawToggle(GameObject gameObject, Rect rect)
         {
-            rect = new Rect(rect.x + rect.width - Style.toggleWidth, rect.y, Style.toggleWidth, rect.height);
+            var contentRect = new Rect(rect.x + rect.width - Style.minWidth, rect.y, Style.minWidth, rect.height);
 
             if (Event.current.type == EventType.Repaint)
             {
-                Style.backgroundStyle.Draw(rect, false, false, false, false);
+                Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
 
             var content = new GUIContent(string.Empty, "Enable/disable GameObject");
-            var result = GUI.Toggle(new Rect(rect.x + Style.padding, rect.y, rect.width, rect.height), gameObject.activeSelf, content);
             //NOTE: using EditorGUI.Toggle will cause bug and deselect all hierarchy toggles when you will pick multi-selected property in inspector
-            if (rect.Contains(Event.current.mousePosition))
+            var result = GUI.Toggle(new Rect(contentRect.x + Style.padding,
+                                             contentRect.y,
+                                             contentRect.width,
+                                             contentRect.height), 
+                                             gameObject.activeSelf, content);
+
+            if (contentRect.Contains(Event.current.mousePosition))
             {
                 if (result != gameObject.activeSelf)
                 {
@@ -283,17 +273,13 @@ namespace Toolbox.Editor
                 }
             }
 
-            return rect;
+            return contentRect;
         }
 
         private static Rect DrawLayer(GameObject gameObject, Rect rect)
         {
-            const int edDefaultLayout = 0;
-            const int irDefaultLayout = 2;
-            const int uiDefaultLayout = 5;
-
             //adjust rect for the layer field
-            var contentRect = new Rect(rect.x + rect.width - Style.layerWidth, rect.y, Style.layerWidth, rect.height);
+            var contentRect = new Rect(rect.x + rect.width - Style.minWidth, rect.y, Style.minWidth, rect.height);
 
             if (Event.current.type == EventType.Repaint)
             {
@@ -308,13 +294,13 @@ namespace Toolbox.Editor
             //adjust the layer label to known layer values
             switch (layerMask)
             {
-                case edDefaultLayout:
+                //keep the default layer as an empty label
+                case 0:
                     contentText = string.Empty;
                     break;
-                case uiDefaultLayout:
+                //for UI elements we can use the full name
+                case 5:
                     contentText = layerName;
-                    break;
-                case irDefaultLayout:
                     break;
             }
             var content = new GUIContent(contentText, layerName + " layer");
@@ -326,16 +312,9 @@ namespace Toolbox.Editor
 
         private static Rect DrawTag(GameObject gameObject, Rect rect)
         {
-            const string defaultUnityTag = "Untagged";
-
             //prepare content based on the GameObject's tag
-            var contentTag = gameObject.tag;
-            var contentText = gameObject.tag;
-            if (contentTag == defaultUnityTag)
-            {
-                contentText = string.Empty;
-            }
-            var content = new GUIContent(contentText, contentTag);
+            var tagName = gameObject.tag; 
+            var content = new GUIContent(tagName == "Untagged" ? string.Empty : tagName, tagName);
 
             if (Event.current.type == EventType.Repaint)
             {
@@ -349,12 +328,12 @@ namespace Toolbox.Editor
 
         private static Rect DrawScript(GameObject gameObject, Rect rect)
         {
-            rect = new Rect(rect.x + rect.width - Style.iconWidth, rect.y, Style.iconWidth, rect.height);
+            var contentRect = new Rect(rect.x + rect.width - Style.minWidth, rect.y, Style.minWidth, rect.height);
 
             var tooltip = string.Empty;
             var texture = Style.componentIcon;
 
-            if (rect.Contains(Event.current.mousePosition))
+            if (contentRect.Contains(Event.current.mousePosition))
             {
                 var components = gameObject.GetComponents<Component>();
                 if (components.Length > 1)
@@ -369,20 +348,20 @@ namespace Toolbox.Editor
                     }
 
                     //create tooltip for the basic rect
-                    GUI.Label(rect, new GUIContent(string.Empty, tooltip));
+                    GUI.Label(contentRect, new GUIContent(string.Empty, tooltip));
 
                     //adjust rect to all icons
-                    rect.xMin -= Style.iconWidth * (components.Length - 2);
+                    contentRect.xMin -= Style.minWidth * (components.Length - 2);
 
                     //draw standard background
                     if (Event.current.type == EventType.Repaint)
                     {
-                        Style.backgroundStyle.Draw(rect, false, false, false, false);
+                        Style.backgroundStyle.Draw(contentRect, false, false, false, false);
                     }
 
-                    var iconRect = rect;
-                    iconRect.xMin = rect.xMin;
-                    iconRect.xMax = rect.xMin + Style.iconWidth;
+                    var iconRect = contentRect;
+                    iconRect.xMin = contentRect.xMin;
+                    iconRect.xMax = contentRect.xMin + Style.minWidth;
 
                     //iterate over available components
                     for (var i = 1; i < components.Length; i++)
@@ -393,10 +372,10 @@ namespace Toolbox.Editor
                         //draw icon for the current component
                         GUI.Label(iconRect, new GUIContent(content.image));
                         //adjust rect for the next icon
-                        iconRect.x += Style.iconWidth;
+                        iconRect.x += Style.minWidth;
                     }
 
-                    return rect;
+                    return contentRect;
                 }
                 else
                 {
@@ -407,11 +386,11 @@ namespace Toolbox.Editor
 
             if (Event.current.type == EventType.Repaint)
             {
-                Style.backgroundStyle.Draw(rect, false, false, false, false);
+                Style.backgroundStyle.Draw(contentRect, false, false, false, false);
             }
 
-            GUI.Label(rect, new GUIContent(texture, tooltip));
-            return rect;
+            GUI.Label(contentRect, new GUIContent(texture, tooltip));
+            return contentRect;
         }
 
 
@@ -423,6 +402,31 @@ namespace Toolbox.Editor
         private static bool IsFirstGameObject(GameObject gameObject)
         {
             return gameObject.transform.parent == null && gameObject.transform.GetSiblingIndex() == 0;
+        }
+
+        private static LabelType GetLabelType(GameObject gameObject, out string label)
+        {
+            var type = LabelType.Default;
+            var name = gameObject.name;
+            if (name.StartsWith("#") && name.Length > 1)
+            {
+                //try to find an associated command
+                switch (name[1])
+                {
+                    case 'e':
+                        type = LabelType.Empty;
+                        break;
+                    case 'h':
+                        type = LabelType.Header;
+                        break;
+                }
+                //remove unnecessary part of the name
+                name = name.Remove(0, 2);
+            }
+
+            label = name;
+            //return last cached type
+            return type;
         }
 
 
@@ -497,14 +501,11 @@ namespace Toolbox.Editor
         internal static class Style
         {
             internal static readonly float padding = 2.0f;
+            internal static readonly float minWidth = 17.0f;
             internal static readonly float maxWidth = 55.0f;
-            internal static readonly float maxHeight = 16.0f;
+            internal static readonly float minHeight = 16.0f;
+            internal static readonly float maxHeight = 17.0f;
             internal static readonly float lineWidth = 1.0f;
-            internal static readonly float lineOffset = 2.0f;
-            internal static readonly float iconWidth = 17.0f;
-            internal static readonly float iconHeight = 17.0f;
-            internal static readonly float layerWidth = 17.0f;
-            internal static readonly float toggleWidth = 17.0f;
 
             internal static readonly Color textColor = new Color(0.35f, 0.35f, 0.35f);
             internal static readonly Color lineColor = new Color(0.59f, 0.59f, 0.59f);
@@ -541,7 +542,7 @@ namespace Toolbox.Editor
                 layerLabelStyle.normal.textColor = textColor;
 
                 backgroundStyle = new GUIStyle();
-                backgroundStyle.normal.background = GraphicsUtility.CreatePersistantTexture(labelColor);
+                backgroundStyle.normal.background = EditorGuiUtility.CreatePersistantTexture(labelColor);
 
                 headerLabelStyle = new GUIStyle(EditorStyles.boldLabel)
                 {

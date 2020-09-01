@@ -10,7 +10,7 @@ namespace Toolbox.Editor
             {
                 if (ToolboxManager.SettingsGuid == AssetDatabase.AssetPathToGUID(assetPath))
                 {
-                    ToolboxManager.InitializeSettings((string)null);
+                    ToolboxManager.InitializeSettings(null);
                 }
             }
 

@@ -408,6 +408,21 @@ namespace Toolbox.Editor
             return !property.isArray && IsSerializableArrayType(fieldInfo.FieldType);
         }
 
+        internal static bool IsDefaultScriptProperty(SerializedProperty property)
+        {
+            return IsDefaultScriptPropertyByPath(property.propertyPath);
+        }
+
+        internal static bool IsDefaultScriptPropertyByPath(string propertyPath)
+        {
+            return propertyPath == "m_Script";
+        }
+
+        internal static bool IsDefaultScriptPropertyByType(string propertyType)
+        {
+            return propertyType == "PPtr<MonoScript>";
+        }
+
         internal static int GetPropertyElementIndex(SerializedProperty element)
         {
             const int indexPosition = 2;

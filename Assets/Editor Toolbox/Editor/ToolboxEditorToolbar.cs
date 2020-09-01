@@ -5,8 +5,8 @@ using System.Collections;
 using System.Reflection;
 
 using UnityEngine;
-using Object = UnityEngine.Object;
 using UnityEditor;
+using Object = UnityEngine.Object;
 
 #if UNITY_2019_1_OR_NEWER
 using UnityEngine.UIElements;
