@@ -13,19 +13,9 @@ public static class SampleToolbar
     /// </summary>
     private readonly static string mySampleSceneName = "SampleScene";
 
-    /// <summary>
-    /// Collection of all <see cref="ToolbarButton"/>s needed in custom scene.
-    /// </summary>
-    private readonly static ToolbarButton[] myCustomButtons = new ToolbarButton[4];
-
 
     static SampleToolbar()
     {
-        myCustomButtons[0] = new ToolbarButton(() => Debug.Log("Toolbar Test 1"), new GUIContent("1"));
-        myCustomButtons[1] = new ToolbarButton(() => Debug.Log("Toolbar Test 2"), new GUIContent("2"));
-        myCustomButtons[2] = new ToolbarButton(() => Debug.Log("Toolbar Test 3"), new GUIContent("3"));
-        myCustomButtons[3] = new ToolbarButton(() => Debug.Log("Toolbar Test 4"), new GUIContent("4"));
-
         EditorSceneManager.sceneOpened -= SceneOpenedCallback;
         EditorSceneManager.sceneOpened += SceneOpenedCallback;
 
@@ -56,14 +46,71 @@ public static class SampleToolbar
     /// <param name="mode"></param>
     private static void SceneOpenedCallback(Scene scene, OpenSceneMode mode)
     {
-        ToolboxEditorToolbar.RemoveToolbarButtons();
-
-        if (scene.name == mySampleSceneName)
+        ToolboxEditorToolbar.OnToolbarGui -= OnToolbarGui;
+        if (scene.name != mySampleSceneName)
         {
-            foreach (var button in myCustomButtons)
-            {
-                ToolboxEditorToolbar.AddToolbarButton(button);
-            }
+            return;
+        }
+        ToolboxEditorToolbar.OnToolbarGui += OnToolbarGui;
+    }
+
+
+    /// <summary>
+    /// Layout-based GUI call.
+    /// </summary>
+    private static void OnToolbarGui()
+    {
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button("1", Style.commandLeftStyle))
+        {
+            Debug.Log("1");
+        }
+        if (GUILayout.Button(Style.sampleContent1, Style.commandMidStyle))
+        {
+            Debug.Log("2");
+        }
+        if (GUILayout.Button(Style.sampleContent2, Style.commandMidStyle))
+        {
+            Debug.Log("3");
+        }
+        if (GUILayout.Button("4", Style.commandRightStyle))
+        {
+            Debug.Log("3");
+        }
+    }
+
+
+    private static class Style
+    {
+        internal static readonly GUIStyle commandMidStyle = new GUIStyle("CommandMid")
+        {
+            fontSize = 12,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleCenter,
+            imagePosition = ImagePosition.ImageAbove
+        };
+        internal static readonly GUIStyle commandLeftStyle = new GUIStyle("CommandLeft")
+        {
+            fontSize = 12,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleCenter,
+            imagePosition = ImagePosition.ImageAbove
+        };
+        internal static readonly GUIStyle commandRightStyle = new GUIStyle("CommandRight")
+        {
+            fontSize = 12,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleCenter,
+            imagePosition = ImagePosition.ImageAbove
+        };
+
+        internal static readonly GUIContent sampleContent1;
+        internal static readonly GUIContent sampleContent2;
+
+        static Style()
+        {
+            sampleContent1 = EditorGUIUtility.IconContent("_Help");
+            sampleContent2 = EditorGUIUtility.IconContent("AssemblyLock");
         }
     }
 }
