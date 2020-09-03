@@ -66,4 +66,4 @@ MonoBehaviour:
   listPropertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
   targetTypeDrawerHandlers: []
-  needsUpdate: 0
+  needsUpdate: 1
