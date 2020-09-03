@@ -17,7 +17,7 @@ namespace Toolbox.Editor.Drawers
         }
 
         public override sealed PropertyCondition OnGuiValidate(SerializedProperty property, ToolboxAttribute attribute)
-        {
+        {           
             return OnGuiValidate(property, attribute as T);         
         }
 

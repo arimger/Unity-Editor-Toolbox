@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor
 {
+    using Editor = UnityEditor.Editor;
+
     public enum HierarchyObjectDataItem
     {
         Icon,
@@ -167,7 +170,6 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws label as whole.
         /// Creates separation lines and content based on the <see cref="allowedDrawContentCallbacks"/> collection.
         /// </summary>
         /// <param name="gameObject"></param>
@@ -186,7 +188,7 @@ namespace Toolbox.Editor
             {
                 //draw first the callback element in proper rect
                 //we have to adjust a given rect to our purpose
-                contentRect = new Rect(contentRect.xMax - Style.maxWidth, rect.y, Style.maxWidth, contentRect.height);
+                contentRect = new Rect(contentRect.xMax - Style.maxWidth, rect.y, Style.maxWidth, rect.height);
                 contentRect = allowedDrawContentCallbacks[0](gameObject, contentRect);
 
                 EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
@@ -404,6 +406,12 @@ namespace Toolbox.Editor
             return gameObject.transform.parent == null && gameObject.transform.GetSiblingIndex() == 0;
         }
 
+        /// <summary>
+        /// Determines valid <see cref="LabelType"/> using GameObject's name property.
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
         private static LabelType GetLabelType(GameObject gameObject, out string label)
         {
             var type = LabelType.Default;
@@ -453,6 +461,28 @@ namespace Toolbox.Editor
 
             //set proper selection
             Selection.activeObject = headerGameObject;
+        }
+        [Obsolete]
+        private static void HandleHeaderObject(Editor editor)
+        {
+            if (editor.targets.Length > 1)
+            {
+                return;
+            }
+
+            if (editor.target.name.StartsWith("#h"))
+            {
+                var target = editor.target as GameObject;
+                EditorGUILayout.LabelField("Hierachy Header Object", Style.remarkLabelStyle);
+                editor.serializedObject.Update();
+                target.tag = "EditorOnly";
+                editor.serializedObject.ApplyModifiedProperties();
+            }
+        }
+        [Obsolete]
+        private static void HandleHeaderObject(GameObject gameObject)
+        {
+            throw new NotImplementedException();
         }
 
 
@@ -516,8 +546,9 @@ namespace Toolbox.Editor
 #endif
             internal static readonly GUIStyle normalLabelStyle;
             internal static readonly GUIStyle layerLabelStyle;
-            internal static readonly GUIStyle backgroundStyle;
+            internal static readonly GUIStyle remarkLabelStyle;
             internal static readonly GUIStyle headerLabelStyle;
+            internal static readonly GUIStyle backgroundStyle;
 
             internal static readonly Texture componentIcon;
             internal static readonly Texture transformIcon;
@@ -541,13 +572,15 @@ namespace Toolbox.Editor
                 };
                 layerLabelStyle.normal.textColor = textColor;
 
-                backgroundStyle = new GUIStyle();
-                backgroundStyle.normal.background = EditorGuiUtility.CreatePersistantTexture(labelColor);
+                remarkLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
 
                 headerLabelStyle = new GUIStyle(EditorStyles.boldLabel)
                 {
                     alignment = TextAnchor.MiddleCenter
                 };
+
+                backgroundStyle = new GUIStyle();
+                backgroundStyle.normal.background = EditorGuiUtility.CreatePersistantTexture(labelColor);
 
                 componentIcon = EditorGUIUtility.IconContent("cs Script Icon").image;
                 transformIcon = EditorGUIUtility.IconContent("Transform Icon").image;

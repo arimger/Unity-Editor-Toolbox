@@ -54,10 +54,6 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.LabelAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.LineAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox-Editor
-  propertyDrawerHandlers:
-  - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
-  collectionDrawerHandlers:
-  - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
   conditionDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.DisableAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.DisableIfAttributeDrawer, Toolbox-Editor
@@ -65,5 +61,9 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.HideAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HideIfAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.ShowIfAttributeDrawer, Toolbox-Editor
+  fieldPropertyDrawerHandlers:
+  - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
+  arrayPropertyDrawerHandlers:
+  - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
   targetTypeDrawerHandlers: []
   needsUpdate: 0

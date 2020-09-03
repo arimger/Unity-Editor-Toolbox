@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
 {
-    public abstract class ToolboxCollectionDrawer<T> : ToolboxPropertyDrawerBase<T> where T : ToolboxCollectionAttribute
+    public abstract class ToolboxArrayPropertyDrawer<T> : ToolboxPropertyDrawer<T> where T : ToolboxArrayPropertyAttribute
     {
         public override bool IsPropertyValid(SerializedProperty property)
         {

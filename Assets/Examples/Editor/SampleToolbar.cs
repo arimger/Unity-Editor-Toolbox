@@ -75,7 +75,7 @@ public static class SampleToolbar
         }
         if (GUILayout.Button("4", Style.commandRightStyle))
         {
-            Debug.Log("3");
+            Debug.Log("4");
         }
     }
 

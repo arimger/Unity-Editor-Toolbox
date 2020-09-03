@@ -217,7 +217,7 @@ namespace Toolbox.Editor
             return GetFieldInfoFromProperty(property, out propertyType);
         }
 
-        internal static FieldInfo GetFieldInfoFromProperty(SerializedProperty property, out Type type)
+        public static FieldInfo GetFieldInfoFromProperty(SerializedProperty property, out Type type)
         {
             var classType = GetScriptTypeFromProperty(property);
             if (classType == null)
@@ -229,7 +229,7 @@ namespace Toolbox.Editor
             return GetFieldInfoFromProperty(classType, property.propertyPath, out type);
         }
 
-        internal static FieldInfo GetFieldInfoFromProperty(Type host, string fieldPath, out Type type)
+        public static FieldInfo GetFieldInfoFromProperty(Type host, string fieldPath, out Type type)
         {
             FieldInfo field = null;
             type = host;

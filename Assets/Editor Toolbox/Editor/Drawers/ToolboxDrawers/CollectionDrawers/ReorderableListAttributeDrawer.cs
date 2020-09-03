@@ -7,7 +7,7 @@ namespace Toolbox.Editor.Drawers
 {
     using Toolbox.Editor.Internal;
 
-    public class ReorderableListAttributeDrawer : ToolboxCollectionDrawer<ReorderableListAttribute>
+    public class ReorderableListAttributeDrawer : ToolboxArrayPropertyDrawer<ReorderableListAttribute>
     {
         /// <summary>
         /// Collection of all stored <see cref="ReorderableList"/> instances.

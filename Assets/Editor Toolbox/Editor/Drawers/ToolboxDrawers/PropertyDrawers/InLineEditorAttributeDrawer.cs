@@ -7,7 +7,7 @@ namespace Toolbox.Editor.Drawers
 {
     using Editor = UnityEditor.Editor;
 
-    public class InLineEditorAttributeDrawer : ToolboxPropertyDrawer<InLineEditorAttribute>
+    public class InLineEditorAttributeDrawer : ToolboxFieldPropertyDrawer<InLineEditorAttribute>
     {
         /// <summary>
         /// Collection of all stored <see cref="Editor"/> instances.

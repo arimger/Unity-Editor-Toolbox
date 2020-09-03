@@ -7,7 +7,7 @@ namespace UnityEngine
     /// Supported types: any <see cref="Object"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public class InLineEditorAttribute : ToolboxPropertyAttribute
+    public class InLineEditorAttribute : ToolboxFieldPropertyAttribute
     {
         public InLineEditorAttribute(bool drawPreview = true, bool drawSettings = false)
         {
