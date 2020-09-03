@@ -34,9 +34,9 @@ public class SampleDrawer : ToolboxDecoratorDrawer<SampleAttribute>
 
 ### Custom Condition Drawer
 
-### Custom Field Property Drawer
+### Custom Self Property Drawer
 
-### Custom Array Property Drawer
+### Custom List Property Drawer
 
 ### Custom Target Type Drawer
 
@@ -75,33 +75,32 @@ using Toolbox.Editor;
 [CustomEditor(typeof(SampleBehaviour2))]
 public class SampleEditor : ToolboxEditor
 {
-    private void OnEnable()
-    { }
+	private void OnEnable()
+	{ }
 
-    private void OnDisable()
-    { }
+	private void OnDisable()
+	{ }
 
-    public override void DrawCustomInspector()
-    {
-        base.DrawCustomInspector();
+	public override void DrawCustomInspector()
+	{
+		base.DrawCustomInspector();
 
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("This label is created in the custom Editor. You can freely extend Toolbox-based Editors by inheriting from the <b>ToolboxEditor</b> class.", Style.labelStyle);
-    }
+		EditorGUILayout.Space();
+		EditorGUILayout.LabelField("This label is created in the custom Editor. You can freely extend Toolbox-based Editors by inheriting from the <b>ToolboxEditor</b> class.", Style.labelStyle);
+	}
 
+	private static class Style
+	{
+		internal static readonly GUIStyle labelStyle;
 
-    private static class Style
-    {
-        internal static readonly GUIStyle labelStyle;
-
-        static Style()
-        {
-            labelStyle = new GUIStyle(EditorStyles.helpBox)
-            {
-                richText = true,
-                fontSize = 14
-            };
-        }
-    }
+		static Style()
+		{
+			labelStyle = new GUIStyle(EditorStyles.helpBox)
+			{
+				richText = true,
+				fontSize = 14
+			};
+		}
+	}
 }
 ```

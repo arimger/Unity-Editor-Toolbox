@@ -27,8 +27,8 @@ namespace Toolbox.Editor
 
         private ReorderableList decoratorDrawerHandlersList;
         private ReorderableList conditionDrawerHandlersList;
-        private ReorderableList fieldPropertyDrawerHandlersList;
-        private ReorderableList arrayPropertyDrawerHandlersList;     
+        private ReorderableList selfPropertyDrawerHandlersList;
+        private ReorderableList listPropertyDrawerHandlersList;     
         private ReorderableList targetTypeDrawerHandlersList;
 
         private ToolboxEditorSettings currentTarget;
@@ -54,8 +54,8 @@ namespace Toolbox.Editor
 
             decoratorDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("decoratorDrawerHandlers"));
             conditionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("conditionDrawerHandlers"));
-            fieldPropertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("fieldPropertyDrawerHandlers"));
-            arrayPropertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("arrayPropertyDrawerHandlers"));
+            selfPropertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("selfPropertyDrawerHandlers"));
+            listPropertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("listPropertyDrawerHandlers"));
             targetTypeDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("targetTypeDrawerHandlers"));
 
             currentTarget = target as ToolboxEditorSettings;
@@ -81,7 +81,7 @@ namespace Toolbox.Editor
             var forceValidation = false;
 
             //handle hierarchy settings section
-            if (hierarchySettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.settingsFoldoutStyle))
+            if (hierarchySettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.bigSectionFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
@@ -107,7 +107,7 @@ namespace Toolbox.Editor
             }
 
             //handle project settings section (focused on customized folder icons)
-            if (projectSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.settingsFoldoutStyle))
+            if (projectSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.bigSectionFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
@@ -149,7 +149,7 @@ namespace Toolbox.Editor
 
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Reset", Style.miniButtonStyle, Style.resetButtonOptions))
+                if (GUILayout.Button("Reset", Style.smallButtonStyle, Style.resetButtonOptions))
                 {
                     currentTarget.ResetIconProperties();
                     forceValidation = true;
@@ -175,7 +175,7 @@ namespace Toolbox.Editor
             }
 
             //handle drawers settings section
-            if (inspectorSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(inspectorSettingsEnabled, Style.drawersSettingsContent, true, Style.settingsFoldoutStyle))
+            if (inspectorSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(inspectorSettingsEnabled, Style.inspectorSettingsContent, true, Style.bigSectionFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.Space();
@@ -200,15 +200,15 @@ namespace Toolbox.Editor
                     forceValidation = true;
                 }
 
-                if (ToolboxEditorGui.DrawDrawerList(fieldPropertyDrawerHandlersList, "Field Property Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
+                if (ToolboxEditorGui.DrawDrawerList(selfPropertyDrawerHandlersList, "Self Property Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
-                    currentTarget.SetAllPossibleFieldPropertyDrawers();
+                    currentTarget.SetAllPossibleSelfPropertyDrawers();
                     forceValidation = true;
                 }
 
-                if (ToolboxEditorGui.DrawDrawerList(arrayPropertyDrawerHandlersList, "Array Property Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
+                if (ToolboxEditorGui.DrawDrawerList(listPropertyDrawerHandlersList, "List Property Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
-                    currentTarget.SetAllPossibleArrayPropertyDrawers();
+                    currentTarget.SetAllPossibleListPropertyDrawers();
                     forceValidation = true;
                 }
 
@@ -244,22 +244,19 @@ namespace Toolbox.Editor
         {
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
 
-            internal static readonly GUIStyle miniButtonStyle;
-            internal static readonly GUIStyle smallLabelStyle;
+            internal static readonly GUIStyle smallButtonStyle;
             internal static readonly GUIStyle smallHeaderStyle;
             internal static readonly GUIStyle usualHeaderStyle;
-            internal static readonly GUIStyle settingsFoldoutStyle;
+            internal static readonly GUIStyle bigSectionFoldoutStyle;
             internal static readonly GUIStyle drawerListFoldoutStyle;
             internal static readonly GUIStyle normalListFoldoutStyle;
 
+            internal static readonly GUIContent inspectorSettingsContent = new GUIContent("Inspector Settings",
+                EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
             internal static readonly GUIContent projectSettingsContent = new GUIContent("Project Settings",
                 EditorGUIUtility.IconContent("Project").image);
-            internal static readonly GUIContent drawersSettingsContent = new GUIContent("Drawers Settings",
-                EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
             internal static readonly GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings",
                 EditorGUIUtility.IconContent("UnityEditor.HierarchyWindow").image);
-
-            internal static readonly GUIContent applyButtonContent = new GUIContent("Reload references", "Apply all reference-based changes");
 
             internal static readonly GUILayoutOption[] resetButtonOptions = new GUILayoutOption[]
             {
@@ -268,19 +265,14 @@ namespace Toolbox.Editor
 
             static Style()
             {
-                miniButtonStyle = new GUIStyle(EditorStyles.miniButton);
-                smallLabelStyle = new GUIStyle(EditorStyles.label)
-                {
-                    fontSize = 10
-                };
-
+                smallButtonStyle = new GUIStyle(EditorStyles.miniButton);
                 smallHeaderStyle = new GUIStyle(EditorStyles.boldLabel)
                 {
                     fontSize = 10
                 };
                 usualHeaderStyle = new GUIStyle(EditorStyles.boldLabel);
 
-                settingsFoldoutStyle = new GUIStyle(EditorStyles.foldout)
+                bigSectionFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontStyle = FontStyle.Bold,
                     alignment = TextAnchor.MiddleLeft,
@@ -291,7 +283,6 @@ namespace Toolbox.Editor
 #endif
                     fontSize = 11
                 };
-
                 drawerListFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     fontSize = 10

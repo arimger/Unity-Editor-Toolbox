@@ -43,34 +43,34 @@ namespace Toolbox.Editor
     {
         void SetAllPossibleDecoratorDrawers();
         void SetAllPossibleConditionDrawers();
-        void SetAllPossibleFieldPropertyDrawers();
-        void SetAllPossibleArrayPropertyDrawers();
+        void SetAllPossibleSelfPropertyDrawers();
+        void SetAllPossibleListPropertyDrawers();
         void SetAllPossibleTargetTypeDrawers();
 
         void AddDecoratorDrawerHandler(SerializedType drawerReference);
         void AddConditionDrawerHandler(SerializedType drawerReference);
-        void AddFieldPropertyDrawerHandler(SerializedType drawerReference);
-        void AddArrayPropertyDrawerHandler(SerializedType drawerReference);
+        void AddSelfPropertyDrawerHandler(SerializedType drawerReference);
+        void AddListPropertyDrawerHandler(SerializedType drawerReference);
         void AddTargetTypeDrawerHandler(SerializedType drawerReference);
 
         void RemoveDecoratorDrawerHandler(SerializedType drawerReference);
         void RemoveConditionDrawerHandler(SerializedType drawerReference);
-        void RemoveFieldPropertyDrawerHandler(SerializedType drawerReference);
-        void RemoveArrayPropertyDrawerHandler(SerializedType drawerReference);
+        void RemoveSelfPropertyDrawerHandler(SerializedType drawerReference);
+        void RemoveListPropertyDrawerHandler(SerializedType drawerReference);
         void RemoveTargetTypeDrawerHandler(SerializedType drawerReference);
 
         Type GetDecoratorDrawerTypeAt(int index);
         Type GetConditionDrawerTypeAt(int index);
-        Type GetFieldPropertyDrawerTypeAt(int index);
-        Type GetArrayPropertyDrawerTypeAt(int index);
+        Type GetSelfPropertyDrawerTypeAt(int index);
+        Type GetListPropertyDrawerTypeAt(int index);
         Type GetTargetTypeDrawerTypeAt(int index);
 
         bool UseToolboxDrawers { get; }
 
         int DecoratorDrawersCount { get; }
         int ConditionDrawersCount { get; }
-        int FieldPropertyDrawersCount { get; }
-        int ArrayPropertyDrawersCount { get; }
+        int SelfPropertyDrawersCount { get; }
+        int ListPropertyDrawersCount { get; }
         int TargetTypeDrawersCount { get; }
     }
 
@@ -106,10 +106,10 @@ namespace Toolbox.Editor
         private List<SerializedType> decoratorDrawerHandlers;
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxConditionDrawer<>))]
         private List<SerializedType> conditionDrawerHandlers;
-        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxFieldPropertyDrawer<>))]
-        private List<SerializedType> fieldPropertyDrawerHandlers;
-        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxArrayPropertyDrawer<>))]
-        private List<SerializedType> arrayPropertyDrawerHandlers;
+        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxSelfPropertyDrawer<>))]
+        private List<SerializedType> selfPropertyDrawerHandlers;
+        [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxListPropertyDrawer<>))]
+        private List<SerializedType> listPropertyDrawerHandlers;
 
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxTargetTypeDrawer))]
         private List<SerializedType> targetTypeDrawerHandlers;
@@ -222,25 +222,25 @@ namespace Toolbox.Editor
             }
         }
 
-        public void SetAllPossibleFieldPropertyDrawers()
+        public void SetAllPossibleSelfPropertyDrawers()
         {
-            fieldPropertyDrawerHandlers?.Clear();
+            selfPropertyDrawerHandlers?.Clear();
 
-            var types = ToolboxDrawerModule.GetAllPossibleFieldPropertyDrawers();
+            var types = ToolboxDrawerModule.GetAllPossibleSelfPropertyDrawers();
             for (var i = 0; i < types.Count; i++)
             {
-                AddFieldPropertyDrawerHandler(new SerializedType(types[i]));
+                AddSelfPropertyDrawerHandler(new SerializedType(types[i]));
             }
         }
 
-        public void SetAllPossibleArrayPropertyDrawers()
+        public void SetAllPossibleListPropertyDrawers()
         {
-            arrayPropertyDrawerHandlers?.Clear();
+            listPropertyDrawerHandlers?.Clear();
 
-            var types = ToolboxDrawerModule.GetAllPossibleArrayPropertyDrawers();
+            var types = ToolboxDrawerModule.GetAllPossibleListPropertyDrawers();
             for (var i = 0; i < types.Count; i++)
             {
-                AddArrayPropertyDrawerHandler(new SerializedType(types[i]));
+                AddListPropertyDrawerHandler(new SerializedType(types[i]));
             }
         }
 
@@ -275,24 +275,24 @@ namespace Toolbox.Editor
             conditionDrawerHandlers.Add(drawerReference);
         }
 
-        public void AddFieldPropertyDrawerHandler(SerializedType drawerReference)
+        public void AddSelfPropertyDrawerHandler(SerializedType drawerReference)
         {
-            if (fieldPropertyDrawerHandlers == null)
+            if (selfPropertyDrawerHandlers == null)
             {
-                fieldPropertyDrawerHandlers = new List<SerializedType>();
+                selfPropertyDrawerHandlers = new List<SerializedType>();
             }
 
-            fieldPropertyDrawerHandlers.Add(drawerReference);
+            selfPropertyDrawerHandlers.Add(drawerReference);
         }
 
-        public void AddArrayPropertyDrawerHandler(SerializedType drawerReference)
+        public void AddListPropertyDrawerHandler(SerializedType drawerReference)
         {
-            if (arrayPropertyDrawerHandlers == null)
+            if (listPropertyDrawerHandlers == null)
             {
-                arrayPropertyDrawerHandlers = new List<SerializedType>();
+                listPropertyDrawerHandlers = new List<SerializedType>();
             }
 
-            arrayPropertyDrawerHandlers.Add(drawerReference);
+            listPropertyDrawerHandlers.Add(drawerReference);
         }
 
         public void AddTargetTypeDrawerHandler(SerializedType drawerReference)
@@ -315,14 +315,14 @@ namespace Toolbox.Editor
             conditionDrawerHandlers?.Remove(drawerReference);
         }
 
-        public void RemoveFieldPropertyDrawerHandler(SerializedType drawerReference)
+        public void RemoveSelfPropertyDrawerHandler(SerializedType drawerReference)
         {
-            fieldPropertyDrawerHandlers?.Remove(drawerReference);
+            selfPropertyDrawerHandlers?.Remove(drawerReference);
         }
 
-        public void RemoveArrayPropertyDrawerHandler(SerializedType drawerReference)
+        public void RemoveListPropertyDrawerHandler(SerializedType drawerReference)
         {
-            arrayPropertyDrawerHandlers?.Remove(drawerReference);
+            listPropertyDrawerHandlers?.Remove(drawerReference);
         }
 
         public void RemoveTargetTypeDrawerHandler(SerializedType drawerReference)
@@ -340,14 +340,14 @@ namespace Toolbox.Editor
             return conditionDrawerHandlers[index].Type;
         }
 
-        public Type GetFieldPropertyDrawerTypeAt(int index)
+        public Type GetSelfPropertyDrawerTypeAt(int index)
         {
-            return fieldPropertyDrawerHandlers[index].Type;
+            return selfPropertyDrawerHandlers[index].Type;
         }
 
-        public Type GetArrayPropertyDrawerTypeAt(int index)
+        public Type GetListPropertyDrawerTypeAt(int index)
         {
-            return arrayPropertyDrawerHandlers[index].Type;
+            return listPropertyDrawerHandlers[index].Type;
         }
 
         public Type GetTargetTypeDrawerTypeAt(int index)
@@ -426,9 +426,9 @@ namespace Toolbox.Editor
 
         public int ConditionDrawersCount => conditionDrawerHandlers != null ? conditionDrawerHandlers.Count : 0;
 
-        public int FieldPropertyDrawersCount => fieldPropertyDrawerHandlers != null ? fieldPropertyDrawerHandlers.Count : 0;
+        public int SelfPropertyDrawersCount => selfPropertyDrawerHandlers != null ? selfPropertyDrawerHandlers.Count : 0;
 
-        public int ArrayPropertyDrawersCount => arrayPropertyDrawerHandlers != null ? arrayPropertyDrawerHandlers.Count : 0;
+        public int ListPropertyDrawersCount => listPropertyDrawerHandlers != null ? listPropertyDrawerHandlers.Count : 0;
 
         public int TargetTypeDrawersCount => targetTypeDrawerHandlers != null ? targetTypeDrawerHandlers.Count : 0;
 

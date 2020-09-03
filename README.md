@@ -345,33 +345,6 @@ public int var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc39.PNG)
 
-#### ReorderableListAttribute
-
-```csharp
-[ReorderableList(ListStyle.Round)]
-public List<string> standardStyleList;
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc7.png)
-
-#### InLineEditorAttribute
-
-```csharp
-[InLineEditor]
-public Transform var1;
-```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc32.png)
-```csharp
-[InLineEditor]
-public AudioClip var1;
-```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc36.png)
-```csharp
-[InLineEditor(drawPreview:true)]
-public Material var1;
-```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc37.png)
-
 #### ToolboxConditionDrawers
 
 Enable/disable or show/hide properties using custom conditions. You can use them together with any other type of drawer.
@@ -395,6 +368,24 @@ public int[] vars1 = new [] { 1, 2, 3, 4 };
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc19.png)
+
+#### InLineEditorAttribute
+
+```csharp
+[InLineEditor]
+public Transform var1;
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc32.png)
+```csharp
+[InLineEditor]
+public AudioClip var1;
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc36.png)
+```csharp
+[InLineEditor(drawPreview:true)]
+public Material var1;
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc37.png)
 
 ## Reorderable List
 
