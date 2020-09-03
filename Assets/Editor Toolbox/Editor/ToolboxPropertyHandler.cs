@@ -50,7 +50,7 @@ namespace Toolbox.Editor
         private readonly GUIContent label;
 
         /// <summary>
-        /// Determines whenever property is an generic array.
+        /// Determines whenever property is an array/list.
         /// </summary>
         private readonly bool isArray;
         /// <summary>
@@ -120,12 +120,12 @@ namespace Toolbox.Editor
             if (isArray)
             {
                 //get collection drawer associated to this array
-                propertyAttribute = fieldInfo.GetCustomAttribute<ToolboxArrayPropertyAttribute>();
+                propertyAttribute = fieldInfo.GetCustomAttribute<ToolboxListPropertyAttribute>();
             }
             else
             {
                 //get property drawer associated to this field
-                propertyAttribute = fieldInfo.GetCustomAttribute<ToolboxFieldPropertyAttribute>();
+                propertyAttribute = fieldInfo.GetCustomAttribute<ToolboxSelfPropertyAttribute>();
             }
 
             //check if property has a custom attribute-related drawer
@@ -197,8 +197,8 @@ namespace Toolbox.Editor
                 {
                     //draw target property using the associated attribute
                     var propertyDrawer = isArray
-                        ? ToolboxDrawerModule.GetArrayPropertyDrawer(propertyAttribute.GetType())
-                        : ToolboxDrawerModule.GetFieldPropertyDrawer(propertyAttribute.GetType());
+                        ? ToolboxDrawerModule.GetListPropertyDrawer(propertyAttribute.GetType())
+                        : ToolboxDrawerModule.GetSelfPropertyDrawer(propertyAttribute.GetType());
                     propertyDrawer?.OnGui(property, label, propertyAttribute);
                 }
                 else
