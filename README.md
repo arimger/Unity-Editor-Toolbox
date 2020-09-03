@@ -461,10 +461,10 @@ using Toolbox.Editor;
 [UnityEditor.InitializeOnLoad]
 public static class MyEditorUtility
 {
-    static MyEditorUtility()
-    {
+	static MyEditorUtility()
+	{
 		ToolboxEditorToolbar.OnToolbarGui += OnToolbarGui;
-    }
+	}
 	
 	private static void OnToolbarGui()
 	{
@@ -484,6 +484,10 @@ public static class MyEditorUtility
 		if (GUILayout.Button("4", Style.commandRightStyle))
 		{
 			Debug.Log("4");
+		}
+		if (GUILayout.Button("5", Style.commandRightStyle))
+		{
+			Debug.Log("5");
 		}
 	}
 }
