@@ -241,7 +241,7 @@ namespace Toolbox.Editor
         /// <param name="property"></param>
         public void OnGuiDefault()
         {
-            //all "single" properties and all properties with custom native drawers should be drawn in the standard way
+            //all "single" properties and all properties with custom native drawers should be drawn in the default way
             if (!property.hasVisibleChildren || hasNativePropertyDrawer)
             {
                 ToolboxEditorGui.DrawLayoutNativeProperty(property, label);

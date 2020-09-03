@@ -10,47 +10,50 @@ using UnityEngine;
 namespace Toolbox.Editor.Internal
 {
     /// <summary>
-    /// Searchable popup content that allows user to filter items using provided string value.
+    /// Searchable popup content that allows user to filter items using a provided string value.
     /// </summary>
     public class SearchablePopup : PopupWindowContent
     {
         public static void Show(Rect activatorRect, int current, string[] options, Action<int> onSelect)
         { 
-            PopupWindow.Show(activatorRect, new SearchablePopup(options, current, onSelect));
+            PopupWindow.Show(activatorRect, new SearchablePopup(current, options, onSelect));
         }
 
 
         private readonly Action<int> onSelect;
 
-        private readonly SearchList searchList;
+        private readonly SearchArray searchArray;
         private readonly SearchField searchField;
 
         private readonly int startIndex;
 
-
+        private int optionIndex = -1;
         private int scrollIndex = -1;
-        private int hoverIndex = -1;
-
+        
         private Vector2 scroll;
 
         private Rect toolbarRect;
         private Rect contentRect;
 
 
-        private SearchablePopup(string[] options, int startIndex, Action<int> onSelect)
+        private SearchablePopup(int startIndex, string[] options, Action<int> onSelect)
         {
-            searchList = new SearchList(options);
+            this.startIndex = startIndex;
+
+            searchArray = new SearchArray(options);
             searchField = new SearchField();
 
             this.onSelect = onSelect;
-            this.startIndex = startIndex;
+            this.onSelect += (i) =>
+            {
+                editorWindow.Close();
+            };
         }
 
 
-        private void MakeSelection(int index)
+        private void SelectItem(int index)
         {
             onSelect(index);
-            editorWindow.Close();
         }
 
         private void HandleKeyboard()
@@ -62,25 +65,25 @@ namespace Toolbox.Editor.Internal
                 if (currentEvent.keyCode == KeyCode.DownArrow)
                 {
                     GUI.FocusControl(null);
-                    hoverIndex = Mathf.Min(searchList.ItemsCount - 1, hoverIndex + 1);
-                    scrollIndex = hoverIndex;
+                    optionIndex = Mathf.Min(searchArray.ItemsCount - 1, optionIndex + 1);
+                    scrollIndex = optionIndex;
                     currentEvent.Use();
                 }
 
                 if (currentEvent.keyCode == KeyCode.UpArrow)
                 {
                     GUI.FocusControl(null);
-                    hoverIndex = Mathf.Max(0, hoverIndex - 1);
-                    scrollIndex = hoverIndex;
+                    optionIndex = Mathf.Max(0, optionIndex - 1);
+                    scrollIndex = optionIndex;
                     currentEvent.Use();
                 }
 
                 if (currentEvent.keyCode == KeyCode.Return)
                 {
                     GUI.FocusControl(null);
-                    if (hoverIndex >= 0 && hoverIndex < searchList.ItemsCount)
+                    if (optionIndex >= 0 && optionIndex < searchArray.ItemsCount)
                     {
-                        MakeSelection(searchList.GetItemAt(hoverIndex).index);
+                        SelectItem(searchArray.GetItemAt(optionIndex).index);
                     }
                     currentEvent.Use();
                 }
@@ -105,46 +108,46 @@ namespace Toolbox.Editor.Internal
             rect.yMin += Style.spacing;
             rect.yMax -= Style.spacing;
 
-            searchList.Search(searchField.OnGUI(rect, searchList.Filter, Style.searchBoxStyle, Style.enabledCancelButtonStyle, Style.disabledCancelButtonStyle));
+            searchArray.Search(searchField.OnGUI(rect, searchArray.Filter, Style.searchBoxStyle, Style.showCancelButtonStyle, Style.hideCancelButtonStyle));
         }
 
         private void DrawContent(Rect rect)
         {
             var currentEvent = Event.current;
 
-            var contentRect = new Rect(0, 0, rect.width - Style.scrollbarStyle.fixedWidth, searchList.ItemsCount * Style.height);
-            var optionRect = new Rect(0, 0, rect.width, Style.height);
+            var contentRect = new Rect(0, 0, rect.width - Style.scrollbarStyle.fixedWidth, searchArray.ItemsCount * Style.height);
+            var elementRect = new Rect(0, 0, rect.width, Style.height);
 
             scroll = GUI.BeginScrollView(rect, scroll, contentRect);
 
-            for (var i = 0; i < searchList.ItemsCount; i++)
+            for (var i = 0; i < searchArray.ItemsCount; i++)
             {
                 if (currentEvent.type == EventType.Repaint && scrollIndex == i)
                 {
-                    GUI.ScrollTo(optionRect);
+                    GUI.ScrollTo(elementRect);
                     scrollIndex = -1;
                 }
-                if (optionRect.Contains(currentEvent.mousePosition))
+                if (elementRect.Contains(currentEvent.mousePosition))
                 {
                     if (currentEvent.type == EventType.MouseMove || currentEvent.type == EventType.ScrollWheel)
                     {
-                        hoverIndex = i;
+                        optionIndex = i;
                     }
                     if (currentEvent.type == EventType.MouseDown)
                     {
-                        MakeSelection(searchList.GetItemAt(i).index);
+                        SelectItem(searchArray.GetItemAt(i).index);
                     }
                 }
 
-                if (hoverIndex == i)
+                if (optionIndex == i)
                 {
-                    GUI.Box(optionRect, GUIContent.none, Style.selectionStyle);
+                    GUI.Box(elementRect, GUIContent.none, Style.selectionStyle);
                 }
 
-                optionRect.xMin += Style.indent;
-                GUI.Label(optionRect, searchList.GetItemAt(i).label);
-                optionRect.xMin -= Style.indent;
-                optionRect.y = optionRect.yMax;
+                elementRect.xMin += Style.indent;
+                GUI.Label(elementRect, searchArray.GetItemAt(i).label);
+                elementRect.xMin -= Style.indent;
+                elementRect.y = elementRect.yMax;
             }
 
             GUI.EndScrollView();
@@ -163,26 +166,25 @@ namespace Toolbox.Editor.Internal
 
         public override void OnGUI(Rect rect)
         {
-            //set toolbar rect based on built-in toolbar style
+            //set toolbar rect based on the built-in toolbar style
             toolbarRect = new Rect(0, 0, rect.width, Style.toolbarStyle.fixedHeight);
-            //set content rect adjusted to toolbar
+            //set content rect adjusted to the toolbar container
             contentRect = Rect.MinMaxRect(0, toolbarRect.yMax, rect.xMax, rect.yMax);
 
             HandleKeyboard();
             DrawToolbar(toolbarRect);
             DrawContent(contentRect);
+            //additionally disable all GUI controls
             GUI.enabled = false;
         }
 
 
-        /// <summary>
-        /// Helper class used in options filtering.
-        /// </summary>
-        private class SearchList
+        private class SearchArray
         {
             public struct Item
             {
                 public int index;
+
                 public string label;
 
                 public Item(int index, string label)
@@ -193,12 +195,11 @@ namespace Toolbox.Editor.Internal
             }
 
 
+            private readonly List<Item> items;
             private readonly string[] options;
 
-            private readonly List<Item> items;
 
-
-            public SearchList(string[] options)
+            public SearchArray(string[] options)
             {
                 this.options = options;
                 items = new List<Item>();
@@ -215,7 +216,7 @@ namespace Toolbox.Editor.Internal
 
                 items.Clear();
 
-                for (int i = 0; i < options.Length; i++)
+                for (var i = 0; i < options.Length; i++)
                 {
                     if (string.IsNullOrEmpty(filter) || options[i].ToLower().Contains(filter.ToLower()))
                     {
@@ -242,30 +243,25 @@ namespace Toolbox.Editor.Internal
             }
 
 
-            public int OptionsCount => options.Length;
-
             public int ItemsCount => items.Count;
 
             public string Filter { get; private set; }
         }
 
 
-        /// <summary>
-        /// Custom styling.
-        /// </summary>
         internal static class Style
         {
-            internal static readonly float padding = 6.0f;
-            internal static readonly float spacing = 2.0f;
             internal static readonly float indent = 8.0f;
             internal static readonly float height = EditorGUIUtility.singleLineHeight;
-
+            internal static readonly float padding = 6.0f;
+            internal static readonly float spacing = 2.0f;
+     
             internal static GUIStyle toolbarStyle;
             internal static GUIStyle scrollbarStyle;
             internal static GUIStyle selectionStyle;
             internal static GUIStyle searchBoxStyle;
-            internal static GUIStyle enabledCancelButtonStyle;
-            internal static GUIStyle disabledCancelButtonStyle;
+            internal static GUIStyle showCancelButtonStyle;
+            internal static GUIStyle hideCancelButtonStyle;
 
             static Style()
             {
@@ -273,8 +269,8 @@ namespace Toolbox.Editor.Internal
                 scrollbarStyle = new GUIStyle(GUI.skin.verticalScrollbar);
                 selectionStyle = new GUIStyle("SelectionRect");
                 searchBoxStyle = new GUIStyle("ToolbarSeachTextField");
-                enabledCancelButtonStyle = new GUIStyle("ToolbarSeachCancelButton");
-                disabledCancelButtonStyle = new GUIStyle("ToolbarSeachCancelButtonEmpty");
+                showCancelButtonStyle = new GUIStyle("ToolbarSeachCancelButton");
+                hideCancelButtonStyle = new GUIStyle("ToolbarSeachCancelButtonEmpty");
             }
         }
     }

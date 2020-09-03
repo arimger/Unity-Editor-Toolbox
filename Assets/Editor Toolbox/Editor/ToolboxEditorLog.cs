@@ -18,90 +18,90 @@ namespace Toolbox.Editor
         }
 
 
-        public static void AttributeUsageWarning(Attribute attribute, string message)
+        internal static void AttributeUsageWarning(Attribute attribute, string message)
         {
             LogWarning(attribute.GetType().Name + ": " + message);
         }
 
-        public static void AttributeUsageWarning(Attribute attribute, SerializedProperty property, string message)
+        internal static void AttributeUsageWarning(Attribute attribute, SerializedProperty property, string message)
         {
             LogWarning(attribute.GetType().Name + ": " + GetPropertyLocation(property) + ": " + message);
         }
 
-        public static void WrongAttributeUsageWarning(Attribute attribute, SerializedProperty property)
+        internal static void WrongAttributeUsageWarning(Attribute attribute, SerializedProperty property)
         {
             AttributeUsageWarning(attribute, property, "Associated attribute cannot be used on this property.");
         }
 
-        public static void WrongAttributeUsageWarning(Attribute attribute, SerializedProperty property, Type targetType)
+        internal static void WrongAttributeUsageWarning(Attribute attribute, SerializedProperty property, Type targetType)
         {
             WrongAttributeUsageWarning(attribute, property, targetType.ToString());
         }
 
-        public static void WrongAttributeUsageWarning(Attribute attribute, SerializedProperty property, string targetType)
+        internal static void WrongAttributeUsageWarning(Attribute attribute, SerializedProperty property, string targetType)
         {
             AttributeUsageWarning(attribute, property, "Associated attribute can be used only on " + targetType + " type properties.");
         }
 
-        public static void AttributeNotSupportedWarning(Attribute attribute)
+        internal static void AttributeNotSupportedWarning(Attribute attribute)
         {
             AttributeNotSupportedWarning(attribute.GetType());
         }
 
-        public static void AttributeNotSupportedWarning(Type attributeType)
+        internal static void AttributeNotSupportedWarning(Type attributeType)
         {
             LogWarning(attributeType + " is not supported. Assign it in the " + nameof(ToolboxEditorSettings) + ".");
         }
 
-        public static void PropertyNotFoundWarning(SerializedProperty property, string propertyName)
+        internal static void PropertyNotFoundWarning(SerializedProperty property, string propertyName)
         {
             LogWarning(GetPropertyLocation(property) + ": Property " + propertyName + " not found.");
         }
 
-        public static void TypeNotSupportedWarning(SerializedProperty property, Type type)
+        internal static void TypeNotSupportedWarning(SerializedProperty property, Type type)
         {
             TypeNotSupportedWarning(property, type.Name);
         }
 
-        public static void TypeNotSupportedWarning(SerializedProperty property, string type)
+        internal static void TypeNotSupportedWarning(SerializedProperty property, string type)
         {
             LogWarning(GetPropertyLocation(property) + ": " + type + " value type is not supported in comparison.");
         }
 
-        public static void PropertyLocation(SerializedProperty property)
+        internal static void PropertyLocation(SerializedProperty property)
         {
             LogMessage(GetPropertyLocation(property));
         }
 
-        public static void PrefabExpectedWarning()
+        internal static void PrefabExpectedWarning()
         {
             PrefabExpectedWarning(null);
         }
 
-        public static void PrefabExpectedWarning(Object referenceObject)
+        internal static void PrefabExpectedWarning(Object referenceObject)
         {
             var name = referenceObject ? referenceObject.name : "object";
             LogWarning(name + " should be a prefab.");
         }
 
-        public static void KitInitializationMessage()
+        internal static void KitInitializationMessage()
         {
             LogWarning("Settings initialization needed. Go to Edit/Project Settings.../Editor Toolbox and pick an existing Settings file or create new. ");
         }
 
 
-        public static void LogMessage(string message)
+        internal static void LogMessage(string message)
         {
             Debug.LogFormat(format, tag, message);
         }
 
-        public static void LogWarning(string message)
+        internal static void LogWarning(string message)
         {
             Debug.LogWarningFormat(format, tag, message);
         }
 
 
-        public static void LogError(string message)
+        internal static void LogError(string message)
         {
             Debug.LogErrorFormat(format, tag, message);
         }     

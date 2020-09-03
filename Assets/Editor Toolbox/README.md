@@ -481,7 +481,7 @@ public static class MyEditorUtility
 		{
 			Debug.Log("3");
 		}
-		if (GUILayout.Button("4", Style.commandRightStyle))
+		if (GUILayout.Button("4", Style.commandMidStyle))
 		{
 			Debug.Log("4");
 		}

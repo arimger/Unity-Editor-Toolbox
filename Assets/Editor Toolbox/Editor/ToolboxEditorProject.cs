@@ -22,11 +22,11 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// All custom folders mapped to a path.
+        /// All custom folders linked to a path.
         /// </summary>
         private readonly static Dictionary<string, FolderData> pathBasedFoldersData = new Dictionary<string, FolderData>();
         /// <summary>
-        /// All custom folders mapped to a name.
+        /// All custom folders linked to a name.
         /// </summary>
         private readonly static Dictionary<string, FolderData> nameBasedFoldersData = new Dictionary<string, FolderData>();
 
@@ -278,6 +278,7 @@ namespace Toolbox.Editor
         [SerializeField]
         private FolderDataType type;
 
+        //NOTE: HideIf attribute is override by custom FolderDataDrawer
         [SerializeField, HideIf(nameof(type), FolderDataType.Name)]
         private string name;
         [SerializeField, HideIf(nameof(type), FolderDataType.Path), Directory, Tooltip("Relative path from Assets directory.")]

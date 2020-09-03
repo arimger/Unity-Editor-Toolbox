@@ -1022,7 +1022,6 @@ namespace Toolbox.Editor.Internal
 #else
             internal static readonly float buttonPadding = 3;
 #endif
-
             internal static readonly float handleSpace = 40;
             internal static readonly float handleWidth = 15;
             internal static readonly float handleHeight = 7;
