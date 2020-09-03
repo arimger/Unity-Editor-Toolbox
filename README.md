@@ -367,7 +367,7 @@ public AudioClip var1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc36.png)
 ```csharp
-[InLineEditor(drawHeader:false, drawPreview:true)]
+[InLineEditor(drawPreview:true)]
 public Material var1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc37.png)
@@ -472,12 +472,29 @@ public static class MyEditorUtility
 {
     static MyEditorUtility()
     {
-        ToolboxEditorToolbar.AddToolbarButton(new ToolbarButton(() => Debug.Log("1"), new GUIContent("1")));
-        ToolboxEditorToolbar.AddToolbarButton(new ToolbarButton(() => Debug.Log("2"), new GUIContent("2")));
-        ToolboxEditorToolbar.AddToolbarButton(new ToolbarButton(() => Debug.Log("3"), new GUIContent("3")));
-        ToolboxEditorToolbar.AddToolbarButton(new ToolbarButton(() => Debug.Log("4"), new GUIContent("4")));
-        ToolboxEditorToolbar.AddToolbarButton(new ToolbarButton(() => Debug.Log("5"), new GUIContent("5")));
+		ToolboxEditorToolbar.OnToolbarGui += OnToolbarGui;
     }
+	
+	private static void OnToolbarGui()
+	{
+		GUILayout.FlexibleSpace();
+		if (GUILayout.Button("1", Style.commandLeftStyle))
+		{
+			Debug.Log("1");
+		}
+		if (GUILayout.Button("2", Style.commandMidStyle))
+		{
+			Debug.Log("2");
+		}
+		if (GUILayout.Button("3", Style.commandMidStyle))
+		{
+			Debug.Log("3");
+		}
+		if (GUILayout.Button("4", Style.commandRightStyle))
+		{
+			Debug.Log("4");
+		}
+	}
 }
 ```
 

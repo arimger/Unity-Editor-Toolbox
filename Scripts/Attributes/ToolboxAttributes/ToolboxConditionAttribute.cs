@@ -3,6 +3,6 @@
 namespace UnityEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public class ToolboxConditionAttribute : ToolboxAttribute
+    public abstract class ToolboxConditionAttribute : ToolboxAttribute
     { }
 }

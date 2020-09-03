@@ -25,11 +25,10 @@ namespace Toolbox.Editor
         private ReorderableList rowDataItemsList;
         private ReorderableList customFoldersList;
 
-        private ReorderableList propertyDrawerHandlersList;
         private ReorderableList decoratorDrawerHandlersList;
-        private ReorderableList collectionDrawerHandlersList;
         private ReorderableList conditionDrawerHandlersList;
-
+        private ReorderableList fieldPropertyDrawerHandlersList;
+        private ReorderableList arrayPropertyDrawerHandlersList;     
         private ReorderableList targetTypeDrawerHandlersList;
 
         private ToolboxEditorSettings currentTarget;
@@ -53,10 +52,10 @@ namespace Toolbox.Editor
             rowDataItemsList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("rowDataItems"));
             customFoldersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("customFolders"));
 
-            propertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("propertyDrawerHandlers"));
             decoratorDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("decoratorDrawerHandlers"));
             conditionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("conditionDrawerHandlers"));
-            collectionDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("collectionDrawerHandlers"));
+            fieldPropertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("fieldPropertyDrawerHandlers"));
+            arrayPropertyDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("arrayPropertyDrawerHandlers"));
             targetTypeDrawerHandlersList = ToolboxEditorGui.CreateLinedList(serializedObject.FindProperty("targetTypeDrawerHandlers"));
 
             currentTarget = target as ToolboxEditorSettings;
@@ -195,21 +194,21 @@ namespace Toolbox.Editor
                     forceValidation = true;
                 }
 
-                if (ToolboxEditorGui.DrawDrawerList(propertyDrawerHandlersList, "Property Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
-                {
-                    currentTarget.SetAllPossiblePropertyDrawers();
-                    forceValidation = true;
-                }
-
-                if (ToolboxEditorGui.DrawDrawerList(collectionDrawerHandlersList, "Collection Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
-                {
-                    currentTarget.SetAllPossibleCollectionDrawers();
-                    forceValidation = true;
-                }
-
                 if (ToolboxEditorGui.DrawDrawerList(conditionDrawerHandlersList, "Condition Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
                     currentTarget.SetAllPossibleConditionDrawers();
+                    forceValidation = true;
+                }
+
+                if (ToolboxEditorGui.DrawDrawerList(fieldPropertyDrawerHandlersList, "Field Property Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
+                {
+                    currentTarget.SetAllPossibleFieldPropertyDrawers();
+                    forceValidation = true;
+                }
+
+                if (ToolboxEditorGui.DrawDrawerList(arrayPropertyDrawerHandlersList, "Array Property Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
+                {
+                    currentTarget.SetAllPossibleArrayPropertyDrawers();
                     forceValidation = true;
                 }
 

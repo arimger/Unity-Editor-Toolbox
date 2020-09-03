@@ -7,7 +7,7 @@ namespace UnityEngine
     /// Supported types: any <see cref="System.Collections.IList"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public class ReorderableListAttribute : ToolboxCollectionAttribute
+    public class ReorderableListAttribute : ToolboxArrayPropertyAttribute
     {
         public ReorderableListAttribute(ListStyle style = ListStyle.Round, string elementLabel = null,  bool fixedSize = false, bool draggable = true)
         {

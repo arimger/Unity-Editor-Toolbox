@@ -9,7 +9,6 @@ using UnityEngine;
 
 public class SampleAttribute : ToolboxDecoratorAttribute
 { }
-
 ```
 
 ```csharp
@@ -23,21 +22,21 @@ public class SampleDrawer : ToolboxDecoratorDrawer<SampleAttribute>
 		//draw something before property
 	}
 	
-    protected override void OnGuiEndSafe(SampleAttribute attribute)
-    {
+	protected override void OnGuiEndSafe(SampleAttribute attribute)
+	{
 		//draw something after property
 		
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Label created in the custom decorator Drawer.");
-    }
+		EditorGUILayout.Space();
+		EditorGUILayout.LabelField("Label created in the custom decorator Drawer.");
+	}
 }
 ```
 
-### Custom Property Drawer
-
-### Custom Collection Drawer
-
 ### Custom Condition Drawer
+
+### Custom Field Property Drawer
+
+### Custom Array Property Drawer
 
 ### Custom Target Type Drawer
 
@@ -48,8 +47,8 @@ using UnityEngine;
 
 public class IntDrawer : ToolboxTargetTypeDrawer
 {
-    public override void OnGui(SerializedProperty property, GUIContent label)
-    {
+	public override void OnGui(SerializedProperty property, GUIContent label)
+	{
 		EditorGUILayout.LabelField("You can create a custom drawer for all single types");
 		EditorGUILayout.PropertyField(property, label);
 	}
@@ -60,7 +59,7 @@ public class IntDrawer : ToolboxTargetTypeDrawer
 	}
 	
 	public override bool UseForChildren()
-    {
+	{
 		return false;
 	}
 }

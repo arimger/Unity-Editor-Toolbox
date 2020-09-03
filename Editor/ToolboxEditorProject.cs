@@ -252,7 +252,7 @@ namespace Toolbox.Editor
             /// </summary>
             internal const float maxFolderWidth = 64.0f;
             /// <summary>
-            /// Value used in versions before 2019.3+ to determine maximal height of th folder icon.
+            /// Value used in versions before 2019.3+ to determine maximal height of the folder icon.
             /// </summary>
             internal const float maxFolderHeight = 64.0f;
             /// <summary>

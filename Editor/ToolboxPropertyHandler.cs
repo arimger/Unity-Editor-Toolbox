@@ -30,25 +30,22 @@ namespace Toolbox.Editor
         private readonly SerializedProperty property;
 
         /// <summary>
-        /// All associated <see cref="ToolboxDecoratorAttribute"/>s.
-        /// </summary>
-        private readonly ToolboxDecoratorAttribute[] decoratorAttributes;
-
-        /// <summary>
         /// First cached <see cref="ToolboxPropertyAttribute"/>.
         /// </summary>
-        private readonly ToolboxPropertyAttribute propertyFieldAttribute;
-        /// <summary>
-        /// First cached <see cref="ToolboxCollectionAttribute"/>.
-        /// </summary>
-        private readonly ToolboxCollectionAttribute propertyArrayAttribute;
+        private readonly ToolboxPropertyAttribute propertyAttribute;
+
         /// <summary>
         /// First cached <see cref="ToolboxConditionAttribute"/>.
         /// </summary>
         private readonly ToolboxConditionAttribute conditionAttribute;
 
         /// <summary>
-        /// Property label conent based on the display name and optional tooltip.
+        /// All associated <see cref="ToolboxDecoratorAttribute"/>s.
+        /// </summary>
+        private readonly ToolboxDecoratorAttribute[] decoratorAttributes;
+
+        /// <summary>
+        /// Property label content based on the display name and optional tooltip.
         /// </summary>
         private readonly GUIContent label;
 
@@ -67,18 +64,21 @@ namespace Toolbox.Editor
         private readonly bool hasNativePropertyDrawer;
        
         /// <summary>
-        /// Determines whenever property has a custom <see cref="ToolboxTargetTypeDrawer"/> for its type, <see cref="ToolboxPropertyDrawer{T}"/> or <see cref="ToolboxCollectionDrawer{T}"/>.
+        /// Determines whenever property has a custom <see cref="ToolboxTargetTypeDrawer"/> for its type or <see cref="ToolboxPropertyDrawer{T}"/>.
         /// </summary>
         private readonly bool hasToolboxPropertyDrawer;
         /// <summary>
-        /// Determines whenever property has a custom <see cref="ToolboxAttributeDrawer"/>.
+        /// Determines whenever property has a custom <see cref="ToolboxPropertyDrawer{T}"/>.
         /// </summary>
-        private readonly bool hasToolboxAttributeDrawer;
+        private readonly bool hasToolboxPropertyAttributeDrawer;
         /// <summary>
         /// Determines whenever property has a custom <see cref="ToolboxTargetTypeDrawer"/>.
         /// </summary>
-        private readonly bool hasToolboxTargetTypeDrawer;
-        
+        private readonly bool hasToolboxPropertyTargetTypeDrawer;
+
+        private readonly bool hasToolboxConditionDrawer;
+        private readonly bool hasToolboxDecoratorDrawer;
+
 
         /// <summary>
         /// Constructor prepares all property-related data for custom drawing.
@@ -104,13 +104,13 @@ namespace Toolbox.Editor
             isArray = property.isArray && property.propertyType == SerializedPropertyType.Generic;
 
             //check if this property has built-in property drawer
-            if (!(hasNativePropertyDrawer = ToolboxDrawerModule.HasCustomTypeDrawer(type)))
+            if (!(hasNativePropertyDrawer = ToolboxDrawerModule.HasNativeTypeDrawer(type)))
             {
                 var propertyAttributes = fieldInfo.GetCustomAttributes<PropertyAttribute>();
                 foreach (var attribute in propertyAttributes)
                 {
                     var attributeType = attribute.GetType();
-                    if (hasNativePropertyDrawer = ToolboxDrawerModule.HasCustomTypeDrawer(attributeType))
+                    if (hasNativePropertyDrawer = ToolboxDrawerModule.HasNativeTypeDrawer(attributeType))
                     {
                         break;
                     }
@@ -120,21 +120,20 @@ namespace Toolbox.Editor
             if (isArray)
             {
                 //get collection drawer associated to this array
-                propertyArrayAttribute = fieldInfo.GetCustomAttribute<ToolboxCollectionAttribute>();
+                propertyAttribute = fieldInfo.GetCustomAttribute<ToolboxArrayPropertyAttribute>();
             }
             else
             {
                 //get property drawer associated to this field
-                propertyFieldAttribute = fieldInfo.GetCustomAttribute<ToolboxPropertyAttribute>();
+                propertyAttribute = fieldInfo.GetCustomAttribute<ToolboxFieldPropertyAttribute>();
             }
 
-            //check if property has a custom type drawer
-            hasToolboxTargetTypeDrawer = ToolboxDrawerModule.HasTargetTypeDrawer(type);
             //check if property has a custom attribute-related drawer
-            hasToolboxAttributeDrawer = propertyFieldAttribute != null || 
-                                        propertyArrayAttribute != null;
+            hasToolboxPropertyAttributeDrawer = propertyAttribute != null;
+            //check if property has a custom type drawer
+            hasToolboxPropertyTargetTypeDrawer = ToolboxDrawerModule.HasTargetTypeDrawer(type);
 
-            hasToolboxPropertyDrawer = hasToolboxAttributeDrawer || hasToolboxTargetTypeDrawer;
+            hasToolboxPropertyDrawer = hasToolboxPropertyAttributeDrawer || hasToolboxPropertyTargetTypeDrawer;
 
             //validate child property using the associated FieldInfo
             if (isChild = (property.name != fieldInfo.Name))
@@ -144,15 +143,18 @@ namespace Toolbox.Editor
 
             //get only one condition attribute to valdiate state of this property
             conditionAttribute = fieldInfo.GetCustomAttribute<ToolboxConditionAttribute>();
+            hasToolboxConditionDrawer = conditionAttribute != null;
+
             //get all available decorator attributes
             decoratorAttributes = fieldInfo.GetCustomAttributes<ToolboxDecoratorAttribute>().ToArray();
-            //keep decorator attributes in proper order
+            hasToolboxDecoratorDrawer = decoratorAttributes != null && decoratorAttributes.Length > 0;
+            //keep decorator attributes in the proper order
             Array.Sort(decoratorAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
         }
 
 
         /// <summary>
-        /// Draw property using Unity's layouting system and cached <see cref="ToolboxAttributeDrawer"/>s.
+        /// Draw property using built-in layout system and cached <see cref="ToolboxAttributeDrawer"/>s.
         /// </summary>
         public void OnGuiLayout()
         {
@@ -160,18 +162,18 @@ namespace Toolbox.Editor
             //using custom attributes and information about native drawers
             //we can use associated ToolboxDrawers or/and draw property in the default way
 
-            //begin all needed decorator drawers in proper order
-            if (decoratorAttributes != null)
+            //begin all needed decorator drawers in the proper order
+            if (hasToolboxDecoratorDrawer)
             {
                 for (var i = 0; i < decoratorAttributes.Length; i++)
                 {
                     ToolboxDrawerModule.GetDecoratorDrawer(decoratorAttributes[i])?.OnGuiBegin(decoratorAttributes[i]);
                 }
             }
-
+            
             //handle condition attribute(only one allowed)
             var conditionState = PropertyCondition.Valid;
-            if (conditionAttribute != null)
+            if (hasToolboxConditionDrawer)
             {
                 conditionState = ToolboxDrawerModule.GetConditionDrawer(conditionAttribute)?.OnGuiValidate(property, conditionAttribute) ?? conditionState;
             }
@@ -191,23 +193,18 @@ namespace Toolbox.Editor
             if (hasToolboxPropertyDrawer && (!hasNativePropertyDrawer || isArray))
             {
                 //NOTE: attribute-related drawers have priority 
-                if (hasToolboxAttributeDrawer)
+                if (hasToolboxPropertyAttributeDrawer)
                 {
-                    if (isArray)
-                    {
-                        //draw array property using associated collection drawer
-                        ToolboxDrawerModule.GetCollectionDrawer(propertyArrayAttribute)?.OnGui(property, label, propertyArrayAttribute);
-                    }
-                    else
-                    {
-                        //draw single property using associated property drawer
-                        ToolboxDrawerModule.GetPropertyDrawer(propertyFieldAttribute)?.OnGui(property, label, propertyFieldAttribute);
-                    }
+                    //draw target property using the associated attribute
+                    var propertyDrawer = isArray
+                        ? ToolboxDrawerModule.GetArrayPropertyDrawer(propertyAttribute.GetType())
+                        : ToolboxDrawerModule.GetFieldPropertyDrawer(propertyAttribute.GetType());
+                    propertyDrawer?.OnGui(property, label, propertyAttribute);
                 }
                 else
                 {
-                    //draw target property using associated type drawer
-                    ToolboxDrawerModule.GetTargetTypeDrawer(type).OnGui(property, label);
+                    //draw target property using the associated type drawer
+                    ToolboxDrawerModule.GetTargetTypeDrawer(type)?.OnGui(property, label);
                 }
             }
             else
@@ -215,7 +212,7 @@ namespace Toolbox.Editor
                 if (hasToolboxPropertyDrawer)
                 {
                     //TODO: warning
-                    //NOTE: since property has custom drawer it will override any Toolbox-related one
+                    //NOTE: since property has a custom drawer it will override any Toolbox-related one
                 }
 
                 OnGuiDefault();
@@ -228,8 +225,8 @@ namespace Toolbox.Editor
             }
 
             Finish:
-            //end all needed decorator drawers in proper order
-            if (decoratorAttributes != null)
+            //end all needed decorator drawers in the proper order
+            if (hasToolboxDecoratorDrawer)
             {
                 for (var i = decoratorAttributes.Length - 1; i >= 0; i--)
                 {
