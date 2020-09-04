@@ -246,11 +246,11 @@ namespace Toolbox.Editor
         /// Determines if property has any associated drawer (built-in or custom one).
         /// This method does not take into account <see cref="ToolboxDrawer"/>s.
         /// </summary>
-        /// <param name="propertyType"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
-        internal static bool HasNativeTypeDrawer(Type propertyType)
+        internal static bool HasNativeTypeDrawer(Type type)
         {
-            var parameters = new object[] { propertyType };
+            var parameters = new object[] { type };
             var result = getDrawerTypeForTypeMethod.Invoke(null, parameters) as Type;
             return result != null && typeof(PropertyDrawer).IsAssignableFrom(result);
         }
@@ -402,7 +402,7 @@ namespace Toolbox.Editor
         //TODO:
         //NOTE: unfortunately there is no valid, non-reflection way to check if property has a custom native drawer
         private readonly static MethodInfo getDrawerTypeForTypeMethod =
-            ReflectionUtility.GetMethod("UnityEditor.ScriptAttributeUtility", "GetDrawerTypeForType",
+            ReflectionUtility.GetEditorMethod("UnityEditor.ScriptAttributeUtility", "GetDrawerTypeForType",
                 BindingFlags.NonPublic | BindingFlags.Static);
     }
 }

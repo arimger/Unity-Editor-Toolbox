@@ -32,8 +32,8 @@ Unity 2018.x or newer
 ## Table Of Contents
 
 - [Attributes&Drawers](#drawers)
-	- [Old-system Drawers](#nativedrawers)
-	- [New-system Drawers](#toolboxdrawers)
+	- [Regular Drawers](#regulardrawers)
+	- [Toolbox Drawers](#toolboxdrawers)
 - [Reorderable List](#reorderable-list)
 - [Editor Extensions](#editor-extensions)
 	- [Hierarchy](#hierarchy)
@@ -56,7 +56,7 @@ Each module is described in its respective section.
 
 ## Attributes&Drawers <a name="drawers"></a>
 
-### Native Drawers <a name="nativedrawers"></a>
+### Regular Drawers <a name="regulardrawers"></a>
 
 Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associated **PropertyAttribute**.
 
