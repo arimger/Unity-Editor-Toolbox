@@ -40,8 +40,8 @@ namespace Toolbox.Editor
             var content = EditorGUIUtility.ObjectContent(target, targetType);
             if (content.image && clearDefaults)
             {
-                content.image = IsDefaultObjectIcon(content.image) ? null : content.image;
-                content.image = IsDefaultPrefabIcon(content.image) ? null : content.image;
+                content.image = IsDefaultObjectIcon(content.image.name) || 
+                                IsDefaultPrefabIcon(content.image.name) ? null : content.image;
             }
 
             return content;
@@ -54,7 +54,7 @@ namespace Toolbox.Editor
 
         public static bool IsDefaultObjectIcon(string name)
         {
-            return name == "GameObject Icon";
+            return name == "GameObject Icon" || name == "d_GameObject Icon";
         }
 
         public static bool IsDefaultObjectIcon(Texture texture)
@@ -64,7 +64,7 @@ namespace Toolbox.Editor
 
         public static bool IsDefaultPrefabIcon(string name)
         {
-            return name == "Prefab Icon";
+            return name == "Prefab Icon" || name == "d_Prefab Icon";
         }
 
         public static bool IsDefaultPrefabIcon(Texture texture)

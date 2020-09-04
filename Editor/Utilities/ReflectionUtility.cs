@@ -7,7 +7,7 @@ namespace Toolbox.Editor
         private readonly static Assembly editorAssembly = typeof(UnityEditor.Editor).Assembly;
 
 
-        internal static MethodInfo GetMethod(string classType, string methodName, BindingFlags falgs)
+        internal static MethodInfo GetEditorMethod(string classType, string methodName, BindingFlags falgs)
         {
             return editorAssembly.GetType(classType).GetMethod(methodName, falgs);
         }

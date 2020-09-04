@@ -159,12 +159,13 @@ namespace Toolbox.Editor
             EditorGUI.DrawRect(new Rect(rect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
             EditorGUI.DrawRect(new Rect(rect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
 
-            //prepare content for the associated label
-            var content = EditorGuiUtility.GetObjectContent(gameObject, typeof(GameObject));
-            content.text = label;
+            //try to retrive a content for the provided GameObject
+            var iconContent = EditorGuiUtility.GetObjectContent(gameObject, typeof(GameObject));
+            //prepare content for the associated (fixed) label
+            var itemContent = new GUIContent(label, iconContent.image);
 
-            //draw custom label field for the provided GameObject
-            EditorGUI.LabelField(rect, content, Style.headerLabelStyle);
+            //draw a custom label field for the provided GameObject
+            EditorGUI.LabelField(rect, itemContent, Style.headerLabelStyle);
 
             EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
         }
@@ -536,9 +537,11 @@ namespace Toolbox.Editor
             internal static readonly float minHeight = 16.0f;
             internal static readonly float maxHeight = 17.0f;
             internal static readonly float lineWidth = 1.0f;
-
-            internal static readonly Color textColor = new Color(0.35f, 0.35f, 0.35f);
-            internal static readonly Color lineColor = new Color(0.59f, 0.59f, 0.59f);
+#if UNITY_2019_3_OR_NEWER
+            internal static readonly Color lineColor = EditorGUIUtility.isProSkin ? new Color(0.15f, 0.15f, 0.15f) : new Color(0.69f, 0.69f, 0.69f);
+#else
+            internal static readonly Color lineColor = EditorGUIUtility.isProSkin ? new Color(0.15f, 0.15f, 0.15f) : new Color(0.59f, 0.59f, 0.59f);
+#endif
 #if UNITY_2019_3_OR_NEWER
             internal static readonly Color labelColor = EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f) : new Color(0.909f, 0.909f, 0.909f);
 #else
@@ -557,20 +560,26 @@ namespace Toolbox.Editor
             {
                 normalLabelStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
-                    fontSize = 8,
+#if UNITY_2019_3_OR_NEWER
+                    fontSize = 9
+#else
+                    fontSize = 8
+#endif
                 };
-                normalLabelStyle.normal.textColor = textColor;
 
                 layerLabelStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
+#if UNITY_2019_3_OR_NEWER
+                    fontSize = 9,
+#else
                     fontSize = 8,
+#endif
 #if UNITY_2019_3_OR_NEWER
                     alignment = TextAnchor.MiddleCenter
 #else
                     alignment = TextAnchor.UpperCenter
 #endif
                 };
-                layerLabelStyle.normal.textColor = textColor;
 
                 remarkLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
 
