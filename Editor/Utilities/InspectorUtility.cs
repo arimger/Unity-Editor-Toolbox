@@ -8,8 +8,8 @@ using UnityEngine;
 
 namespace Toolbox.Editor
 {
-    using Object = UnityEngine.Object;
     using Editor = UnityEditor.Editor;
+    using Object = UnityEngine.Object;
 
     internal static partial class InspectorUtility
     {
@@ -82,7 +82,7 @@ namespace Toolbox.Editor
         internal static void SetIsEditorExpanded(Editor editor, bool value)
         {
             InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
-            //NOTE: in older versions editor's foldouts are based on the m_IsVisible field and the Awake() method
+            //NOTE: in older versions Editor's foldouts are based on the m_IsVisible field and the Awake() method
 #if !UNITY_2019_1_OR_NEWER
             const string isVisibleFieldName = "m_IsVisible";
             var isVisible = editor.GetType().GetField(isVisibleFieldName,
@@ -115,7 +115,7 @@ namespace Toolbox.Editor
             for (var i = 0; i < selectedGameObjects.Length; i++)
             {
                 var componentsOfSelectedTransforms = selectedGameObjects[i].GetComponents<Component>();
-                
+
                 for (var j = 0; j < componentsOfSelectedTransforms.Length; j++)
                 {
                     if (componentsOfSelectedTransforms[j] is Transform)
@@ -184,17 +184,24 @@ namespace Toolbox.Editor
             }
 
             //show display dialog and make sure user knows consequences 
-            if (visibleCount <= 1 && !EditorUtility.DisplayDialog("Hide Warning", 
+            if (visibleCount <= 1 && !EditorUtility.DisplayDialog("Hide Warning",
                                                                   "Do you really want to hide the last visible component?", "Yes", "Cancel"))
             {
                 return;
             }
 
             component.hideFlags |= HideFlags.HideInInspector;
+
+#if UNITY_2019_3_OR_NEWER
+            //force component to be dirst (will cause additional repaint for new releases)
+            EditorUtility.SetDirty(component);
+#endif
+            //repaint the Editor
             InternalEditorUtility.RepaintAllViews();
         }
 
         //[MenuItem("CONTEXT/Component/Hide All Components", false, priority = 301)]
+        [Obsolete]
         private static void HideAll(MenuCommand menuCommand)
         {
             var gameObject = (menuCommand.context as Component).gameObject;
@@ -211,6 +218,7 @@ namespace Toolbox.Editor
         }
 
         //[MenuItem("CONTEXT/Component/Show All Components", false, priority = 302)]
+        [Obsolete]
         private static void ShowAll(MenuCommand menuCommand)
         {
             var gameObject = (menuCommand.context as Component).gameObject;
