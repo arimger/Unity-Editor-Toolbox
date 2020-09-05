@@ -763,16 +763,21 @@ namespace Toolbox.Editor.Internal
         {
             var label = EditorGUI.BeginProperty(rect, new GUIContent(List.displayName), List);
 
-            //adjust OY position to middle of the conent
-            rect.y = rect.y + (rect.height - Style.sizeLabel.fixedHeight) / 2;
+            var diff = rect.height - Style.sizeLabel.fixedHeight;
+            var oldY = rect.y;
 
+            //adjust OY position to middle of the conent
+            rect.y += diff / 2;
+   
             //display the property label using preprocessed name by BeginProperty method
             EditorGUI.LabelField(rect, label);
 
+            //adjust OY position to middle of the conent
+            rect.y = oldY;
+            rect.yMin += diff / 2;
+            rect.yMax -= diff / 2;
             //adjust OX position and width for the size property
-            var width = Style.sizeArea;
-            rect.xMin = rect.xMax - width;
-            rect.width = width;
+            rect.xMin = rect.xMax - Style.sizeArea;
 
             //display array size property without indentation
             using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
@@ -1055,7 +1060,10 @@ namespace Toolbox.Editor.Internal
 
                 sizeLabel = new GUIStyle(EditorStyles.miniTextField)
                 {
-                    alignment = TextAnchor.MiddleRight
+                    alignment = TextAnchor.MiddleRight,
+#if UNITY_2019_3_OR_NEWER
+                    fixedHeight = 14.0f
+#endif
                 };
 
                 addRemoveButton = new GUIStyle("RL FooterButton");

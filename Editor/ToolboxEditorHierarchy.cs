@@ -543,7 +543,7 @@ namespace Toolbox.Editor
             internal static readonly Color lineColor = EditorGUIUtility.isProSkin ? new Color(0.15f, 0.15f, 0.15f) : new Color(0.59f, 0.59f, 0.59f);
 #endif
 #if UNITY_2019_3_OR_NEWER
-            internal static readonly Color labelColor = EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f) : new Color(0.909f, 0.909f, 0.909f);
+            internal static readonly Color labelColor = EditorGUIUtility.isProSkin ? new Color(0.31f, 0.31f, 0.31f) : new Color(0.909f, 0.909f, 0.909f);
 #else
             internal static readonly Color labelColor = EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f) : new Color(0.855f, 0.855f, 0.855f);
 #endif
