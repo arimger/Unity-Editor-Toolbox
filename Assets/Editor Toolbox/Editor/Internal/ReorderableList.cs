@@ -1062,7 +1062,8 @@ namespace Toolbox.Editor.Internal
                 {
                     alignment = TextAnchor.MiddleRight,
 #if UNITY_2019_3_OR_NEWER
-                    fixedHeight = 14.0f
+                    fixedHeight = 14.0f,
+                    //fontSize = 10
 #endif
                 };
 
