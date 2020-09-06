@@ -184,7 +184,7 @@ namespace Toolbox.Editor.Internal
             //create the rect for individual elements in the list
             var itemElementRect = middleRect;
             var dragElementRect = middleRect;
-            //the content rect is what we will actually draw into -- it doesn't include the drag handle or padding
+            //the content rect is what we will actually draw into - it doesn't include the drag handle or padding
             var elementContentRect = itemElementRect;
 
             //handle empty list 
@@ -250,7 +250,7 @@ namespace Toolbox.Editor.Internal
 
                     if (targetSeen)
                     {
-                        elementY += GetElementHeight(Index, true);
+                        elementY += GetRowHeight(Index);
                     }
 
                     itemElementRect.y = elementY;
@@ -276,10 +276,11 @@ namespace Toolbox.Editor.Internal
                     }
 
                     elementContentRect = itemElementRect;
-                    elementContentRect.xMin += Style.itemPaddingMin;
-                    elementContentRect.xMax -= Style.itemPaddingMax;
+                    //adjust element's rect to the dragging handle
+                    elementContentRect.xMin += Style.handleSpace;
+                    elementContentRect.xMax -= Style.padding;
 
-                    EditorGUIUtility.labelWidth -= Style.itemPaddingMin;
+                    EditorGUIUtility.labelWidth -= Style.handleSpace;
                     //draw the actual element
                     if (drawElementCallback != null)
                     {
@@ -289,7 +290,7 @@ namespace Toolbox.Editor.Internal
                     {
                         DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(nonDragTargetIndices[i]), false, false, Draggable);
                     }
-                    EditorGUIUtility.labelWidth += Style.itemPaddingMin;
+                    EditorGUIUtility.labelWidth += Style.handleSpace;
                 }
 
                 //finally get the position of the active element
@@ -320,10 +321,11 @@ namespace Toolbox.Editor.Internal
                 }
 
                 elementContentRect = itemElementRect;
-                elementContentRect.xMin += Style.itemPaddingMin;
-                elementContentRect.xMax -= Style.itemPaddingMax;
+                //adjust element's rect to the dragging handle
+                elementContentRect.xMin += Style.handleSpace;
+                elementContentRect.xMax -= Style.padding;
 
-                EditorGUIUtility.labelWidth -= Style.itemPaddingMin;
+                EditorGUIUtility.labelWidth -= Style.handleSpace;
                 //draw the active element
                 if (drawElementCallback != null)
                 {
@@ -333,7 +335,7 @@ namespace Toolbox.Editor.Internal
                 {
                     DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(Index), true, true, Draggable);
                 }
-                EditorGUIUtility.labelWidth += Style.itemPaddingMin;
+                EditorGUIUtility.labelWidth += Style.handleSpace;
             }
             else
             {
@@ -372,10 +374,11 @@ namespace Toolbox.Editor.Internal
                     }
 
                     elementContentRect = itemElementRect;
-                    elementContentRect.xMin += Style.itemPaddingMin;
-                    elementContentRect.xMax -= Style.itemPaddingMax;
+                    //adjust element's rect to the dragging handle
+                    elementContentRect.xMin += Style.handleSpace;
+                    elementContentRect.xMax -= Style.padding;
 
-                    EditorGUIUtility.labelWidth -= Style.itemPaddingMin;
+                    EditorGUIUtility.labelWidth -= Style.handleSpace;
                     //do the callback for the element
                     if (drawElementCallback != null)
                     {
@@ -385,7 +388,7 @@ namespace Toolbox.Editor.Internal
                     {
                         DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(i), activeElement, focusedElement, Draggable);
                     }
-                    EditorGUIUtility.labelWidth += Style.itemPaddingMin;
+                    EditorGUIUtility.labelWidth += Style.handleSpace;
                 }
             }
 
@@ -437,7 +440,11 @@ namespace Toolbox.Editor.Internal
             switch (currentEvent.GetTypeForControl(id))
             {
                 case EventType.KeyDown:
-                    if (GUIUtility.keyboardControl != id) return;
+                    if (GUIUtility.keyboardControl != id)
+                    {
+                        return;
+                    }
+
                     //if we have keyboard focus, arrow through the list
                     if (currentEvent.keyCode == KeyCode.DownArrow)
                     {
@@ -529,7 +536,7 @@ namespace Toolbox.Editor.Internal
                     {
                         //what will be the index of this if we release?
                         var targetIndex = CalculateRowIndex();
-                        if (Index != targetIndex)
+                        if (targetIndex != Index)
                         {
                             //if the target index is different than the current index
                             if (List != null)
@@ -582,11 +589,9 @@ namespace Toolbox.Editor.Internal
 
         private bool IsMouseInActiveElement(Rect listRect)
         {
-            //cache current event
-            var evt = Event.current;
-            var mouseRowIndex = GetRowIndex(evt.mousePosition.y - listRect.y);
+            var mouseRowIndex = GetRowIndex(Event.current.mousePosition.y - listRect.y);
             //check if mouse position is inside current row rect 
-            return mouseRowIndex == Index && GetRowRect(mouseRowIndex, listRect).Contains(evt.mousePosition);
+            return mouseRowIndex == Index && GetRowRect(mouseRowIndex, listRect).Contains(Event.current.mousePosition);
         }
 
         private bool IsCurrentElementExpanded()
@@ -838,17 +843,18 @@ namespace Toolbox.Editor.Internal
         }
 
         /// <summary>
-        /// Draws the default DraggingHandle.
+        /// Draws the default dragging Handle.
         /// </summary>
         public void DrawStandardElementDraggingHandle(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
             if (Event.current.type == EventType.Repaint)
             {
+                rect.width = Style.handleSpace;
                 //prepare rect for the handle texture draw
                 var xDiff = rect.width - Style.handleWidth;
-                rect.xMin += Style.handleWidth / 2;
+                rect.xMin += xDiff / 2;
                 rect.xMax = rect.xMin;
-                rect.xMax += Style.handleWidth;
+                rect.xMax += xDiff / 2;
 
                 var yDiff = rect.height - Style.handleHeight;
                 rect.yMin += yDiff / 2;
@@ -1043,10 +1049,9 @@ namespace Toolbox.Editor.Internal
 #else
             internal static readonly float buttonPadding = 3.0f;
 #endif
+            internal static readonly float handleSpace = 40.0f;
             internal static readonly float handleWidth = 15.0f;
             internal static readonly float handleHeight = 7.0f;
-            internal static readonly float itemPaddingMin = 40.0f;
-            internal static readonly float itemPaddingMax = 6.0f;
 
             internal static readonly GUIContent iconToolbarAdd;
             internal static readonly GUIContent iconToolbarDrop;
