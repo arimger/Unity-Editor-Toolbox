@@ -90,10 +90,14 @@ namespace Toolbox.Editor.Internal
 
             List = list;
 
-            if (List != null && List.editable == false) Draggable = false;
             if (List != null && List.isArray == false)
             {
                 throw new ArgumentException("Input elements should be an Array SerializedProperty.");
+            }
+
+            if (List != null && List.editable == false)
+            {
+                Draggable = false;
             }
         }
 
@@ -116,227 +120,6 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-
-        private void DoListMiddle(Rect middleRect)
-        {
-            //how many elements? If none, make space for showing default line that shows no elements are present
-            var arraySize = Count;
-
-            //draw the background in repaint
-            if (Event.current.type == EventType.Repaint)
-            {
-                if (drawMiddleBackgroundCallback != null)
-                {
-                    drawMiddleBackgroundCallback?.Invoke(middleRect);
-                }
-                else
-                {
-                    Style.middleBackground.Draw(middleRect, false, false, false, false);
-                }
-            }
-
-            //resize to the area that we want to draw our elements into
-            middleRect.yMin += Style.padding;
-            middleRect.yMax -= Style.padding;
-
-            var elementY = 0.0f;
-            //create the rect for individual elements in the list
-            var elementRect = middleRect;
-            var dragElementRect = middleRect;
-            //the content rect is what we will actually draw into -- it doesn't include the drag handle or padding
-            var elementContentRect = elementRect;
-
-            //handle empty list 
-            if (List == null || List.isArray == false || arraySize == 0)
-            {
-                //there was no content, so we will draw an empty element
-                elementRect.y = middleRect.y;
-                //draw the background
-                if (drawElementBackgroundCallback == null)
-                {
-                    DrawStandardElementBackground(elementRect, -1, false, false, false);
-                }
-                else
-                {
-                    drawElementBackgroundCallback(elementRect, -1, false, false);
-                }
-
-                elementContentRect = elementRect;
-                elementContentRect.xMin += Style.padding;
-                elementContentRect.xMax -= Style.padding;
-
-                if (drawVoidedCallback == null)
-                {
-                    DrawStandardNoneElement(elementContentRect, Draggable);
-                }
-                else
-                {
-                    drawVoidedCallback(elementContentRect);
-                }
-
-                return;
-            }
-
-            //if there are elements, we need to draw them -- we will do this differently depending on if we are dragging or not
-            if (Event.current.type == EventType.Repaint && IsDragging)
-            {
-                //we are dragging, so we need to build the new list of target indices
-                var targetIndex = CalculateRowIndex();
-
-                nonDragTargetIndices.Clear();
-                for (int i = 0; i < arraySize; i++)
-                {
-                    if (i != Index) nonDragTargetIndices.Add(i);
-                }
-                nonDragTargetIndices.Insert(targetIndex, -1);
-
-                //now draw each element in the list (excluding the active element)
-                var targetSeen = false;
-                for (int i = 0; i < nonDragTargetIndices.Count; i++)
-                {
-                    if (nonDragTargetIndices[i] != -1)
-                    {
-                        //update the height of the element
-                        elementRect.height = GetElementHeight(i);
-                        dragElementRect.height = GetElementHeight(i, false);
-
-                        //update the position of the element
-                        elementY = middleRect.y + GetElementYOffset(nonDragTargetIndices[i], Index);
-
-                        if (targetSeen)
-                        {
-                            elementY += GetElementHeight(Index, true);
-                        }
-
-                        elementRect.y = elementY;
-                        dragElementRect.y = elementY;
-
-                        //draw the element background
-                        if (drawElementBackgroundCallback != null)
-                        {
-                            drawElementBackgroundCallback(elementRect, i, false, false);
-                        }
-                        else
-                        {
-                            DrawStandardElementBackground(elementRect, i, false, false, Draggable);
-                        }
-                        //draw dragging handle
-                        if (drawHandleCallback != null)
-                        {
-                            drawHandleCallback.Invoke(dragElementRect, i, false, false);
-                        }
-                        else
-                        {
-                            DrawStandardElementDraggingHandle(dragElementRect, i, false, false, Draggable);
-                        }
-
-                        elementContentRect = GetContentRect(elementRect);
-                        //draw the actual element
-                        if (drawElementCallback != null)
-                        {
-                            drawElementCallback(elementContentRect, nonDragTargetIndices[i], false, false);
-                        }
-                        else
-                        {
-                            DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(nonDragTargetIndices[i]), false, false, Draggable);
-                        }
-                    }
-                    else
-                    {
-                        targetSeen = true;
-                    }
-                }
-
-                //finally get the position of the active element
-                elementY = draggedY - dragOffset + middleRect.y;
-                elementRect.y = elementY;        
-                dragElementRect.y = elementY;
-                //adjust rect height to desired element
-                elementRect.height = GetElementHeight(Index);
-
-                //actually draw the element
-                if (drawElementBackgroundCallback != null)
-                {
-                    drawElementBackgroundCallback(elementRect, Index, true, true);
-                }
-                else
-                {
-                    DrawStandardElementBackground(elementRect, Index, true, true, Draggable);
-                }
-
-                //draw dragging handle
-                if (drawHandleCallback != null)
-                {
-                    drawHandleCallback.Invoke(dragElementRect, Index, true, true);
-                }
-                else
-                {
-                    DrawStandardElementDraggingHandle(dragElementRect, Index, true, true, Draggable);
-                }
-
-                elementContentRect = GetContentRect(elementRect);
-                //draw the active element
-                if (drawElementCallback != null)
-                {
-                    drawElementCallback(elementContentRect, Index, true, true);
-                }
-                else
-                {
-                    DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(Index), true, true, Draggable);
-                }
-            }
-            else
-            {
-                //if we aren't dragging, we just draw all of the elements in order
-                for (int i = 0; i < arraySize; i++)
-                {
-                    var activeElement = (i == Index);
-                    var focusedElement = (i == Index && HasKeyboardControl());
-
-                    //update the height of the element
-                    elementRect.height = GetElementHeight(i);
-                    dragElementRect.height = GetElementHeight(i, false);
-
-                    //update the position of the element
-                    elementY = middleRect.y + GetElementYOffset(i);
-                    elementRect.y = elementY;
-                    dragElementRect.y = elementY;
-
-                    //draw the background
-                    if (drawElementBackgroundCallback != null)
-                    {
-                        drawElementBackgroundCallback(elementRect, i, activeElement, focusedElement);
-                    }
-                    else
-                    {
-                        DrawStandardElementBackground(elementRect, i, activeElement, focusedElement, Draggable);
-                    }
-                    //draw dragging handle
-                    if (drawHandleCallback != null)
-                    {
-                        drawHandleCallback.Invoke(dragElementRect, i, activeElement, focusedElement);
-                    }
-                    else
-                    {
-                        DrawStandardElementDraggingHandle(dragElementRect, i, activeElement, focusedElement, Draggable);
-                    }
-
-                    elementContentRect = GetContentRect(elementRect);
-                    //do the callback for the element
-                    if (drawElementCallback != null)
-                    {
-                        drawElementCallback(elementContentRect, i, activeElement, focusedElement);
-                    }
-                    else
-                    {
-                        DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(i), activeElement, focusedElement, Draggable);
-                    }
-                }
-            }
-
-            //handle the interaction
-            DoDraggingAndSelection(middleRect);
-        }
 
         private void DoListHeader(Rect headerRect)
         {
@@ -373,6 +156,241 @@ namespace Toolbox.Editor.Internal
             {
                 DrawStandardHeader(headerRect);
             }
+        }
+
+        private void DoListMiddle(Rect middleRect)
+        {
+            //how many elements? If none, make space for showing default line that shows no elements are present
+            var arraySize = Count;
+
+            //draw the background in repaint
+            if (Event.current.type == EventType.Repaint)
+            {
+                if (drawMiddleBackgroundCallback != null)
+                {
+                    drawMiddleBackgroundCallback?.Invoke(middleRect);
+                }
+                else
+                {
+                    Style.middleBackground.Draw(middleRect, false, false, false, false);
+                }
+            }
+
+            //resize to the area that we want to draw our elements into
+            middleRect.yMin += Style.padding;
+            middleRect.yMax -= Style.padding;
+
+            var elementY = 0.0f;
+            //create the rect for individual elements in the list
+            var itemElementRect = middleRect;
+            var dragElementRect = middleRect;
+            //the content rect is what we will actually draw into -- it doesn't include the drag handle or padding
+            var elementContentRect = itemElementRect;
+
+            //handle empty list 
+            if (List == null || List.isArray == false || arraySize == 0)
+            {
+                //there was no content, so we will draw an empty element
+                itemElementRect.y = middleRect.y;
+                //draw the background
+                if (drawElementBackgroundCallback == null)
+                {
+                    DrawStandardElementBackground(itemElementRect, -1, false, false, false);
+                }
+                else
+                {
+                    drawElementBackgroundCallback(itemElementRect, -1, false, false);
+                }
+
+                elementContentRect = itemElementRect;
+                elementContentRect.xMin += Style.padding;
+                elementContentRect.xMax -= Style.padding;
+
+                if (drawVoidedCallback == null)
+                {
+                    DrawStandardNoneElement(elementContentRect, Draggable);
+                }
+                else
+                {
+                    drawVoidedCallback(elementContentRect);
+                }
+
+                return;
+            }
+
+            //if there are elements, we need to draw them - we will do this differently depending on if we are dragging or not
+            if (Event.current.type == EventType.Repaint && IsDragging)
+            {
+                //we are dragging, so we need to build the new list of target indices
+                var targetIndex = CalculateRowIndex();
+
+                nonDragTargetIndices.Clear();
+                for (int i = 0; i < arraySize; i++)
+                {
+                    if (i != Index) nonDragTargetIndices.Add(i);
+                }
+                nonDragTargetIndices.Insert(targetIndex, -1);
+
+                //now draw each element in the list (excluding the active element)
+                var targetSeen = false;
+                for (int i = 0; i < nonDragTargetIndices.Count; i++)
+                {
+                    if (nonDragTargetIndices[i] == -1)
+                    {
+                        targetSeen = true;
+                        continue;
+                    }
+
+                    //update the height of the element
+                    itemElementRect.height = GetElementHeight(i, false);
+                    dragElementRect.height = GetElementHeight(i, false);
+
+                    //update the position of the element
+                    elementY = middleRect.y + GetElementYOffset(nonDragTargetIndices[i], Index);
+
+                    if (targetSeen)
+                    {
+                        elementY += GetElementHeight(Index, true);
+                    }
+
+                    itemElementRect.y = elementY;
+                    dragElementRect.y = elementY;
+
+                    //draw the element background
+                    if (drawElementBackgroundCallback != null)
+                    {
+                        drawElementBackgroundCallback(itemElementRect, i, false, false);
+                    }
+                    else
+                    {
+                        DrawStandardElementBackground(itemElementRect, i, false, false, Draggable);
+                    }
+                    //draw the dragging handle
+                    if (drawHandleCallback != null)
+                    {
+                        drawHandleCallback.Invoke(dragElementRect, i, false, false);
+                    }
+                    else
+                    {
+                        DrawStandardElementDraggingHandle(dragElementRect, i, false, false, Draggable);
+                    }
+
+                    elementContentRect = itemElementRect;
+                    elementContentRect.xMin += Style.itemPaddingMin;
+                    elementContentRect.xMax -= Style.itemPaddingMax;
+
+                    EditorGUIUtility.labelWidth -= Style.itemPaddingMin;
+                    //draw the actual element
+                    if (drawElementCallback != null)
+                    {
+                        drawElementCallback(elementContentRect, nonDragTargetIndices[i], false, false);
+                    }
+                    else
+                    {
+                        DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(nonDragTargetIndices[i]), false, false, Draggable);
+                    }
+                    EditorGUIUtility.labelWidth += Style.itemPaddingMin;
+                }
+
+                //finally get the position of the active element
+                elementY = draggedY - dragOffset + middleRect.y;
+                itemElementRect.y = elementY;
+                dragElementRect.y = elementY;
+                //adjust rect height to desired element
+                itemElementRect.height = GetElementHeight(Index);
+
+                //actually draw the element
+                if (drawElementBackgroundCallback != null)
+                {
+                    drawElementBackgroundCallback(itemElementRect, Index, true, true);
+                }
+                else
+                {
+                    DrawStandardElementBackground(itemElementRect, Index, true, true, Draggable);
+                }
+
+                //draw the dragging handle
+                if (drawHandleCallback != null)
+                {
+                    drawHandleCallback.Invoke(dragElementRect, Index, true, true);
+                }
+                else
+                {
+                    DrawStandardElementDraggingHandle(dragElementRect, Index, true, true, Draggable);
+                }
+
+                elementContentRect = itemElementRect;
+                elementContentRect.xMin += Style.itemPaddingMin;
+                elementContentRect.xMax -= Style.itemPaddingMax;
+
+                EditorGUIUtility.labelWidth -= Style.itemPaddingMin;
+                //draw the active element
+                if (drawElementCallback != null)
+                {
+                    drawElementCallback(elementContentRect, Index, true, true);
+                }
+                else
+                {
+                    DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(Index), true, true, Draggable);
+                }
+                EditorGUIUtility.labelWidth += Style.itemPaddingMin;
+            }
+            else
+            {
+                //if we aren't dragging, we just draw all of the elements in order
+                for (int i = 0; i < arraySize; i++)
+                {
+                    var activeElement = (i == Index);
+                    var focusedElement = (i == Index && HasKeyboardControl());
+
+                    //update the height of the element
+                    itemElementRect.height = GetElementHeight(i);
+                    dragElementRect.height = GetElementHeight(i, false);
+
+                    //update the position of the element
+                    elementY = middleRect.y + GetElementYOffset(i);
+                    itemElementRect.y = elementY;
+                    dragElementRect.y = elementY;
+
+                    //draw the background
+                    if (drawElementBackgroundCallback != null)
+                    {
+                        drawElementBackgroundCallback(itemElementRect, i, activeElement, focusedElement);
+                    }
+                    else
+                    {
+                        DrawStandardElementBackground(itemElementRect, i, activeElement, focusedElement, Draggable);
+                    }
+                    //draw the dragging handle
+                    if (drawHandleCallback != null)
+                    {
+                        drawHandleCallback.Invoke(dragElementRect, i, activeElement, focusedElement);
+                    }
+                    else
+                    {
+                        DrawStandardElementDraggingHandle(dragElementRect, i, activeElement, focusedElement, Draggable);
+                    }
+
+                    elementContentRect = itemElementRect;
+                    elementContentRect.xMin += Style.itemPaddingMin;
+                    elementContentRect.xMax -= Style.itemPaddingMax;
+
+                    EditorGUIUtility.labelWidth -= Style.itemPaddingMin;
+                    //do the callback for the element
+                    if (drawElementCallback != null)
+                    {
+                        drawElementCallback(elementContentRect, i, activeElement, focusedElement);
+                    }
+                    else
+                    {
+                        DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(i), activeElement, focusedElement, Draggable);
+                    }
+                    EditorGUIUtility.labelWidth += Style.itemPaddingMin;
+                }
+            }
+
+            //handle the interaction
+            DoDraggingAndSelection(middleRect);
         }
 
         private void DoListFooter(Rect footerRect)
@@ -483,7 +501,7 @@ namespace Toolbox.Editor.Internal
                     UpdateDraggedY(listRect);
                     currentEvent.Use();
                     break;
-              
+
                 case EventType.MouseUp:
                     if (!Draggable)
                     {
@@ -521,7 +539,7 @@ namespace Toolbox.Editor.Internal
 
                                 //unfortunately it will break any EditorGUI.BeginCheck() scope
                                 //it has to be called since we edited the array property
-                                List.serializedObject.ApplyModifiedProperties(); 
+                                List.serializedObject.ApplyModifiedProperties();
                             }
 
                             var oldActiveElement = Index;
@@ -616,7 +634,7 @@ namespace Toolbox.Editor.Internal
         private float GetListElementHeight()
         {
             var arraySize = Count;
-            var listHeight = Style.padding + Style.padding;
+            var listHeight = Style.padding * 2;
             if (arraySize != 0)
             {
                 listHeight += GetElementYOffset(arraySize - 1) + GetRowHeight(arraySize - 1);
@@ -639,15 +657,6 @@ namespace Toolbox.Editor.Internal
             return offset;
         }
 
-        private Rect GetContentRect(Rect rect)
-        {
-            rect.xMax -= Style.padding;
-            rect.xMin += Draggable 
-                ? Style.handleSpace 
-                : Style.padding;
-            return rect;
-        }
-
         private Rect GetRowRect(int index, Rect listRect)
         {
             return new Rect(listRect.x, listRect.y + GetElementYOffset(index), listRect.width, GetElementHeight(index));
@@ -662,7 +671,7 @@ namespace Toolbox.Editor.Internal
             DoList(headerRect, middleRect, footerRect);
         }
 
-        public void DoNonLayoutList(Rect rect)
+        public void DoList(Rect rect)
         {
             var headerRect = new Rect(rect.x, rect.y, rect.width, HeaderHeight);
             var middleRect = new Rect(rect.x, headerRect.y + headerRect.height, rect.width, MiddleHeight);
@@ -768,7 +777,7 @@ namespace Toolbox.Editor.Internal
 
             //adjust OY position to middle of the conent
             rect.y += diff / 2;
-   
+
             //display the property label using preprocessed name by BeginProperty method
             EditorGUI.LabelField(rect, label);
 
@@ -784,8 +793,11 @@ namespace Toolbox.Editor.Internal
             {
                 var property = Size;
 
-                EditorGUI.BeginDisabledGroup(HasFixedSize);
-                EditorGUI.BeginProperty(rect, Style.arraySizeFieldContent, property);
+                using (new EditorGUI.DisabledScope(HasFixedSize))
+                {
+                    EditorGUI.BeginProperty(rect, Style.arraySizeFieldContent, property);
+                }
+
                 EditorGUI.BeginChangeCheck();
                 //cache a delayed size value using the delayed int field
                 var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, property.intValue, Style.sizeLabel), 0);
@@ -818,16 +830,11 @@ namespace Toolbox.Editor.Internal
         {
             const string standardElementName = "Element";
 
-            var displayName = element.displayName;          
-            if (ElementLabel != null)
-            {
-                displayName = element.displayName.Replace(standardElementName, ElementLabel);
-            }
+            var displayName = ElementLabel == null
+                ? element.displayName
+                : element.displayName.Replace(standardElementName, ElementLabel);
 
-            var displayContent = new GUIContent(displayName);
-            EditorGUIUtility.labelWidth -= Style.handleSpace;
-            EditorGUI.PropertyField(rect, element, displayContent, element.isExpanded);
-            EditorGUIUtility.labelWidth += Style.handleSpace;
+            EditorGUI.PropertyField(rect, element, new GUIContent(displayName), element.isExpanded);
         }
 
         /// <summary>
@@ -837,12 +844,21 @@ namespace Toolbox.Editor.Internal
         {
             if (Event.current.type == EventType.Repaint)
             {
-                if (draggable)
+                //prepare rect for the handle texture draw
+                var xDiff = rect.width - Style.handleWidth;
+                rect.xMin += Style.handleWidth / 2;
+                rect.xMax = rect.xMin;
+                rect.xMax += Style.handleWidth;
+
+                var yDiff = rect.height - Style.handleHeight;
+                rect.yMin += yDiff / 2;
+                rect.yMax -= yDiff / 2;
+#if UNITY_2019_3_OR_NEWER
+                rect.y += Style.spacing;
+#endif
+                //disable (if needed) and draw the handle
+                using (var scope = new EditorGUI.DisabledScope(!draggable))
                 {
-                    rect.height = Style.handleHeight;
-                    rect.width = Style.handleWidth;
-                    rect.y += (Style.handleHeight + rect.height) / 2 - Style.handleOffset;
-                    rect.x += Style.handleWidth / 2;
                     Style.dragButtonHandle.Draw(rect, false, false, false, false);
                 }
             }
@@ -864,8 +880,8 @@ namespace Toolbox.Editor.Internal
 #else
                     var padding = Style.spacing + Style.spacing / 2;
 #endif
-                    rect.height += padding;
-                    rect.y -= padding / 2;
+                    rect.yMax += padding / 2;
+                    rect.yMin -= padding / 2;
                 }
 
                 Style.elementBackground.Draw(rect, false, selected, selected, focused);
@@ -914,7 +930,7 @@ namespace Toolbox.Editor.Internal
             get
             {
                 if (!List.hasMultipleDifferentValues)
-                { 
+                {
                     return List.arraySize;
                 }
 
@@ -926,7 +942,7 @@ namespace Toolbox.Editor.Internal
                     {
                         var property = serializedObject.FindProperty(List.propertyPath);
                         smallerArraySize = Math.Min(property.arraySize, smallerArraySize);
-                    }    
+                    }
                 }
                 //return smalest array size
                 return smallerArraySize;
@@ -1003,7 +1019,7 @@ namespace Toolbox.Editor.Internal
             get; private set;
         }
 
-         
+
         /// <summary>
         /// Static representation of the standard list style.
         /// Provides all needed <see cref="GUIStyle"/>s, paddings, widths, heights, etc.
@@ -1013,28 +1029,24 @@ namespace Toolbox.Editor.Internal
 #if UNITY_2018_3_OR_NEWER
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
 #else
-            internal static readonly float spacing = 2;
+            internal static readonly float spacing = 2.0f;
 #endif
-            internal static readonly float padding = 6;
-            internal static readonly float sizeArea = 19;
+            internal static readonly float padding = 6.0f;
+            internal static readonly float sizeArea = 19.0f;
 
-            internal static readonly float buttonSpace = 60;
-            internal static readonly float buttonWidth = 25;
-            internal static readonly float buttonHeight = 13;
-            internal static readonly float buttonMargin = 4;
+            internal static readonly float buttonSpace = 60.0f;
+            internal static readonly float buttonWidth = 25.0f;
+            internal static readonly float buttonHeight = 13.0f;
+            internal static readonly float buttonMargin = 4.0f;
 #if UNITY_2019_3_OR_NEWER
-            internal static readonly float buttonPadding = 0;
+            internal static readonly float buttonPadding = 0.0f;
 #else
-            internal static readonly float buttonPadding = 3;
+            internal static readonly float buttonPadding = 3.0f;
 #endif
-            internal static readonly float handleSpace = 40;
-            internal static readonly float handleWidth = 15;
-            internal static readonly float handleHeight = 7;
-#if UNITY_2019_3_OR_NEWER
-            internal static readonly float handleOffset = 0;
-#else
-            internal static readonly float handleOffset = 2;
-#endif
+            internal static readonly float handleWidth = 15.0f;
+            internal static readonly float handleHeight = 7.0f;
+            internal static readonly float itemPaddingMin = 40.0f;
+            internal static readonly float itemPaddingMax = 6.0f;
 
             internal static readonly GUIContent iconToolbarAdd;
             internal static readonly GUIContent iconToolbarDrop;
@@ -1063,7 +1075,8 @@ namespace Toolbox.Editor.Internal
                     alignment = TextAnchor.MiddleRight,
 #if UNITY_2019_3_OR_NEWER
                     fixedHeight = 14.0f,
-                    //fontSize = 10
+                    //in newer releases, the font size has to be adjusted
+                    fontSize = 10
 #endif
                 };
 
