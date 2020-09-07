@@ -7,7 +7,7 @@ public class SampleBehaviour1 : MonoBehaviour
     [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
           "Check the SampleBehaviour1.cs script for more details.", Order = -1)]
 
-    [Label("1", skinStyle:SkinStyle.Box)]
+    [Label("1", skinStyle: SkinStyle.Box)]
 
     [Help("You can provide more information in HelpBoxes.", Order = 100)]
     public int var1;
@@ -19,7 +19,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("3", skinStyle: SkinStyle.Box)]
 
-    [ProgressBar(minValue:-10.0f, maxValue:50.0f, HexColor = "#234DEA")]
+    [ProgressBar(minValue: -10.0f, maxValue: 50.0f, HexColor = "#234DEA")]
     public float progressBar = 25.4f;
 
     [Label("4", skinStyle: SkinStyle.Box)]
@@ -42,7 +42,7 @@ public class SampleBehaviour1 : MonoBehaviour
     public int var5 = 3;
 
     [Label("7", skinStyle: SkinStyle.Box)]
-    
+
     [HideLabel]
     public bool toggle1;
     [Help("Use this toggle to show/hide property.", Order = 100)]
@@ -59,13 +59,13 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("9", skinStyle: SkinStyle.Box)]
 
-    [InstanceButton(typeof(SampleBehaviour1), nameof(ResetVar8), 
+    [InstanceButton(typeof(SampleBehaviour1), nameof(ResetVar8),
                                         "Use this button to reset var8 using this instance[in Play mode]", ButtonActivityType.OnPlayMode, order = 100)]
     [BroadcastButton(nameof(ResetVar8), "Use this button to reset var8 using broadcasting[in Edit mode]", ButtonActivityType.OnEditMode, order = 100)]
 
     [AssetPreview]
     public GameObject var8;
-    [AssetPreview(useLabel:false), Help("Who needs label?")]
+    [AssetPreview(useLabel: false), Help("Who needs label?")]
     public GameObject var9;
 
 #if UNITY_EDITOR

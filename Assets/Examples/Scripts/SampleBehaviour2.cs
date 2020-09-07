@@ -7,7 +7,8 @@ public class SampleBehaviour2 : MonoBehaviour
     [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
           "Check the SampleBehaviour2.cs script for more details.", Order = -1)]
 
-    [Label("Toolbox Attributes", skinStyle: SkinStyle.Box, Alignment = TextAnchor.MiddleCenter)]
+    [Label("Toolbox Attributes", skinStyle: SkinStyle.Box, Alignment = TextAnchor.MiddleCenter, Content = "UnityEditor.InspectorWindow")]
+
     [Label("1", skinStyle: SkinStyle.Box)]
 
     [ReorderableList(ListStyle.Boxed, elementLabel: "GameObject"), Tooltip("Sample List")]
@@ -41,7 +42,7 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [SpaceArea]
 
-    [InLineEditor(drawSettings:true)]
+    [InLineEditor(drawSettings: true)]
     public Material var22;
 
     [SpaceArea]

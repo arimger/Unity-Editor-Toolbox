@@ -392,7 +392,7 @@ namespace Toolbox.Editor
             }
             else
             {
-                return propertyHandlers[key] = propertyHandler = new ToolboxPropertyHandler(property);
+                return propertyHandlers[key] = new ToolboxPropertyHandler(property);
             } 
         }
 
