@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using UnityEditor;
 using UnityEngine;
@@ -11,6 +12,9 @@ namespace Toolbox.Editor
     /// </summary>
     internal static class EditorGuiUtility
     {
+        private static readonly Dictionary<string, Texture2D> loadedTextures = new Dictionary<string, Texture2D>();
+
+
         public static Texture2D CreatePersistantTexture()
         {
             return CreatePersistantTexture(Color.clear);
@@ -30,6 +34,18 @@ namespace Toolbox.Editor
             return texture;
         }
 
+        public static Texture2D GetEditorTexture(string path)
+        {
+            if (loadedTextures.TryGetValue(path, out var loadedTexture))
+            {
+                return loadedTexture;              
+            }
+            else
+            {
+                return loadedTextures[path] = EditorGUIUtility.Load(path) as Texture2D;
+            }         
+        }
+
         public static GUIContent GetObjectContent(Object target, Type targetType)
         {
             return GetObjectContent(target, targetType, true);
@@ -45,11 +61,6 @@ namespace Toolbox.Editor
             }
 
             return content;
-        }
-
-        public static Texture2D GetIconContent(string name)
-        {
-            return EditorGUIUtility.IconContent(name).image as Texture2D;
         }
 
         public static bool IsDefaultObjectIcon(string name)
