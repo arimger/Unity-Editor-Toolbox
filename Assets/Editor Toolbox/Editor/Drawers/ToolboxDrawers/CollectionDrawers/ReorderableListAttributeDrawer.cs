@@ -30,7 +30,8 @@ namespace Toolbox.Editor.Drawers
                     attribute.ListStyle,
                     attribute.ElementLabel,
                     attribute.FixedSize,
-                    attribute.Draggable);
+                    attribute.Draggable,
+                    attribute.HasHeader);
             }
 
             list.DoLayoutList(); 

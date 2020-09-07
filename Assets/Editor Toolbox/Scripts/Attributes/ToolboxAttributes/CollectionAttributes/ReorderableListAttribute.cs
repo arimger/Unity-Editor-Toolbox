@@ -17,6 +17,8 @@ namespace UnityEngine
             ElementLabel = elementLabel;
         }
 
+        public bool HasHeader { get; set; } = true;
+
         public bool Draggable { get; private set; }
 
         public bool FixedSize { get; private set; }

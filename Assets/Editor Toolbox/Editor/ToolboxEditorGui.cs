@@ -1,7 +1,7 @@
 ﻿using System;
 
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
@@ -257,9 +257,9 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        public static ReorderableList CreateRoundList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true)
+        public static ReorderableList CreateRoundList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true)
         {
-            return new ReorderableList(property, elementLabel, draggable, true, fixedSize);
+            return new ReorderableList(property, elementLabel, draggable, hasHeader, fixedSize);
         }
 
         /// <summary>
@@ -267,9 +267,9 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        public static ReorderableList CreateBoxedList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true)
+        public static ReorderableList CreateBoxedList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true)
         {
-            return new ReorderableList(property, elementLabel, draggable, true, fixedSize)
+            return new ReorderableList(property, elementLabel, draggable, hasHeader, fixedSize)
             {
                 drawHeaderBackgroundCallback = (Rect rect) =>
                 {
@@ -307,9 +307,9 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        public static ReorderableList CreateLinedList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true)
+        public static ReorderableList CreateLinedList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true)
         {
-            return new ReorderableList(property, elementLabel, draggable, true, fixedSize)
+            return new ReorderableList(property, elementLabel, draggable, hasHeader, fixedSize)
             {
                 drawHeaderBackgroundCallback = (Rect rect) =>
                 {
@@ -341,13 +341,13 @@ namespace Toolbox.Editor
         /// <param name="property"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        public static ReorderableList CreateList(SerializedProperty property, ListStyle style, string elementLabel = null, bool fixedSize = false, bool draggable = true)
+        public static ReorderableList CreateList(SerializedProperty property, ListStyle style, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true)
         {
             switch (style)
             {
-                case ListStyle.Boxed: return CreateBoxedList(property, elementLabel, fixedSize, draggable);
-                case ListStyle.Lined: return CreateLinedList(property, elementLabel, fixedSize, draggable);
-                case ListStyle.Round: return CreateRoundList(property, elementLabel, fixedSize, draggable);
+                case ListStyle.Boxed: return CreateBoxedList(property, elementLabel, fixedSize, draggable, hasHeader);
+                case ListStyle.Lined: return CreateLinedList(property, elementLabel, fixedSize, draggable, hasHeader);
+                case ListStyle.Round: return CreateRoundList(property, elementLabel, fixedSize, draggable, hasHeader);
                 default: return null;
             }
         }

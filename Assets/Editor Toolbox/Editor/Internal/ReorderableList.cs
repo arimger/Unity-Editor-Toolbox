@@ -142,10 +142,10 @@ namespace Toolbox.Editor.Internal
             }
 
             //apply the padding to get the internal rect
-            headerRect.height -= Style.spacing;
             headerRect.xMin += Style.padding;
             headerRect.xMax -= Style.padding;
-            headerRect.y += Style.spacing / 2;
+            headerRect.yMin -= Style.spacing / 2;
+            headerRect.yMax += Style.spacing / 2;
 
             //perform the default or overridden callback
             if (drawHeaderCallback != null)
