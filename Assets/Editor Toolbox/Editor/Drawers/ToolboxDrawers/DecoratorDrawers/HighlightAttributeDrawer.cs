@@ -9,12 +9,15 @@ namespace Toolbox.Editor.Drawers
         {
             Style.SetHighlightColor(attribute.Color);
 
-            EditorGUILayout.BeginVertical(Style.highlightStyle);
+            //NOTE: Space(0) will force the Horizontal group to keep old indent
+            EditorGUILayout.BeginHorizontal(Style.highlightStyle);
+            GUILayout.Space(0);
         }
 
         protected override void OnGuiEndSafe(HighlightAttribute attribute)
         {
-            EditorGUILayout.EndVertical();
+            GUILayout.Space(0);
+            EditorGUILayout.EndHorizontal();
         }
 
 
