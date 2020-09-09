@@ -801,17 +801,15 @@ namespace Toolbox.Editor.Internal
                 using (new EditorGUI.DisabledScope(HasFixedSize))
                 {
                     EditorGUI.BeginProperty(rect, Style.arraySizeFieldContent, property);
+                    EditorGUI.BeginChangeCheck();
+                    //cache a delayed size value using the delayed int field
+                    var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, property.intValue, Style.sizeLabel), 0);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        property.intValue = sizeValue;
+                    }
+                    EditorGUI.EndProperty();
                 }
-
-                EditorGUI.BeginChangeCheck();
-                //cache a delayed size value using the delayed int field
-                var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, property.intValue, Style.sizeLabel), 0);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    property.intValue = sizeValue;
-                }
-                EditorGUI.EndProperty();
-                EditorGUI.EndDisabledGroup();
             }
             EditorGUI.EndProperty();
         }
