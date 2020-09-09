@@ -9,7 +9,7 @@ namespace Toolbox.Editor.Drawers
         {
             Style.SetHighlightColor(attribute.Color);
 
-            //NOTE: Space(0) will force the Horizontal group to keep old indent
+            //NOTE: Space(0) will force the Horizontal group to keep the old indent
             EditorGUILayout.BeginHorizontal(Style.highlightStyle);
             GUILayout.Space(0);
         }

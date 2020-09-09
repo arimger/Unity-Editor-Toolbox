@@ -23,7 +23,7 @@ namespace Toolbox.Editor
 
         private static void ManageInspectorCore(IToolboxInspectorSettings settings)
         {
-            //setup all available drawers using internal module
+            //setup all available drawers using the internal module
             ToolboxDrawerModule.UpdateDrawers(settings);
         }
 
@@ -38,7 +38,7 @@ namespace Toolbox.Editor
 
             var validateData = !IsInitialized;
 
-			//enable/disable core function
+			//enable/disable the core GUI function
 			ToolboxEditorProject.IsOverlayAllowed = settings.UseToolboxProject;
 			
             ToolboxEditorProject.LargeIconScale = settings.LargeIconScale;
@@ -66,9 +66,9 @@ namespace Toolbox.Editor
                 return;
             }
 			
-			//enable/disable core function
+			//enable/disable the core GUI function
 			ToolboxEditorHierarchy.IsOverlayAllowed = settings.UseToolboxHierarchy;
-			
+		
             ToolboxEditorHierarchy.DrawHorizontalLines = settings.DrawHorizontalLines;
             ToolboxEditorHierarchy.DrawSeparationLines = true;
 
