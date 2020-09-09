@@ -11,6 +11,7 @@ namespace UnityEngine
         public BeginGroupAttribute(string label = null)
         {
             Label = label;
+            Order = 1000;
         }
 
         public string Label { get; private set; }

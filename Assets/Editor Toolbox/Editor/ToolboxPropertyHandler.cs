@@ -89,13 +89,13 @@ namespace Toolbox.Editor
             this.property = property;
 
             //here starts preparation of all needed data for this handler
-            //first of all we have to retrieve native data like field info, custom native drawer, etc.
+            //first of all we have to retrieve the native data like FieldInfo, custom native drawer, etc.
             //after this we have to retrieve (if possible) all Toolbox-related data - ToolboxAttributes
 
-            //set basic content for handled property
+            //set basic content for the handled property
             label = new GUIContent(property.displayName);
 
-            //get field info associated with this property, this property is needed for custom attributes
+            //get FieldInfo associated to this property, it is needed to cache custom attributes
             if ((fieldInfo = property.GetFieldInfo(out type)) == null)
             {
                 return;
@@ -128,9 +128,9 @@ namespace Toolbox.Editor
                 propertyAttribute = fieldInfo.GetCustomAttribute<ToolboxSelfPropertyAttribute>();
             }
 
-            //check if property has a custom attribute-related drawer
+            //check if property has a custom attribute drawer
             hasToolboxPropertyAttributeDrawer = propertyAttribute != null;
-            //check if property has a custom type drawer
+            //check if property has a custom target type drawer
             hasToolboxPropertyTargetTypeDrawer = ToolboxDrawerModule.HasTargetTypeDrawer(type);
 
             hasToolboxPropertyDrawer = hasToolboxPropertyAttributeDrawer || hasToolboxPropertyTargetTypeDrawer;
@@ -148,7 +148,7 @@ namespace Toolbox.Editor
             //get all available decorator attributes
             decoratorAttributes = fieldInfo.GetCustomAttributes<ToolboxDecoratorAttribute>().ToArray();
             hasToolboxDecoratorDrawer = decoratorAttributes != null && decoratorAttributes.Length > 0;
-            //keep decorator attributes in the proper order
+            //keep decorator attributes in the order
             Array.Sort(decoratorAttributes, (a1, a2) => a1.Order.CompareTo(a2.Order));
         }
 
