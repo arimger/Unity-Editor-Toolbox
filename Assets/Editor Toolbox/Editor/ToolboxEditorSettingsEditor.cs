@@ -84,6 +84,7 @@ namespace Toolbox.Editor
             if (hierarchySettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.bigSectionFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
+                EditorGUI.BeginChangeCheck();
                 EditorGUILayout.Space();
                 EditorGUILayout.PropertyField(useToolboxHierarchyProperty);
                 EditorGUILayout.Space();
@@ -99,6 +100,10 @@ namespace Toolbox.Editor
                 EditorGUI.EndDisabledGroup();
 
                 EditorGUILayout.Space();
+                if (EditorGUI.EndChangeCheck())
+                {
+                    //hierarchy settings changed
+                }
                 EditorGUI.indentLevel--;
             }
             else
@@ -110,6 +115,7 @@ namespace Toolbox.Editor
             if (projectSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.bigSectionFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
+                EditorGUI.BeginChangeCheck();
                 EditorGUILayout.Space();
                 EditorGUILayout.PropertyField(useToolboxFoldersProperty);
                 EditorGUILayout.Space();
@@ -123,8 +129,8 @@ namespace Toolbox.Editor
                 var x = 0.0f;
                 var y = 0.0f;
 
-                const float minPadding = -1.2f;
-                const float maxPadding = +1.2f;
+                const float minPadding = -1.5f;
+                const float maxPadding = +1.5f;
 
                 EditorGUI.BeginChangeCheck();
                 x = EditorGUILayout.Slider(new GUIContent("X"), largeIconPaddingProperty.vector2Value.x, minPadding, maxPadding);
@@ -167,6 +173,10 @@ namespace Toolbox.Editor
                 EditorGUI.EndDisabledGroup();
 
                 EditorGUILayout.Space();
+                if (EditorGUI.EndChangeCheck())
+                {
+                    //project settings changed
+                }
                 EditorGUI.indentLevel--;
             }
             else
@@ -178,6 +188,7 @@ namespace Toolbox.Editor
             if (inspectorSettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(inspectorSettingsEnabled, Style.inspectorSettingsContent, true, Style.bigSectionFoldoutStyle))
             {
                 EditorGUI.indentLevel++;
+                EditorGUI.BeginChangeCheck();
                 EditorGUILayout.Space();
                 EditorGUILayout.PropertyField(useToolboxDrawersProperty);
                 EditorGUILayout.Space();
@@ -224,6 +235,10 @@ namespace Toolbox.Editor
                 EditorGUI.EndDisabledGroup();
 
                 EditorGUILayout.Space();
+                if (EditorGUI.EndChangeCheck())
+                {
+                    //inspectors settings changed
+                }
                 EditorGUI.indentLevel--;
             }
             else
@@ -251,12 +266,12 @@ namespace Toolbox.Editor
             internal static readonly GUIStyle drawerListFoldoutStyle;
             internal static readonly GUIStyle normalListFoldoutStyle;
 
-            internal static readonly GUIContent inspectorSettingsContent = new GUIContent("Inspector Settings",
-                EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
-            internal static readonly GUIContent projectSettingsContent = new GUIContent("Project Settings",
-                EditorGUIUtility.IconContent("Project").image);
             internal static readonly GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings",
                 EditorGUIUtility.IconContent("UnityEditor.HierarchyWindow").image);
+            internal static readonly GUIContent projectSettingsContent = new GUIContent("Project Settings",
+                EditorGUIUtility.IconContent("Project").image);
+            internal static readonly GUIContent inspectorSettingsContent = new GUIContent("Inspector Settings",
+                EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
 
             internal static readonly GUILayoutOption[] resetButtonOptions = new GUILayoutOption[]
             {

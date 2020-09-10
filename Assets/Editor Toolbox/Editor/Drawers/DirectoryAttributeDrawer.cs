@@ -55,20 +55,21 @@ namespace Toolbox.Editor.Drawers
             //create additional pick directory button
             if (GUI.Button(position, Style.directoryButtonLabel, Style.directoryButtonStyle))
             {
-                var assetRelativePath = Attribute.RelativePath;
-                var projectRelativePath = Application.dataPath + "/";
+                var assetsRelativePath = Attribute.RelativePath;
+                var deviceRelativePath = Application.dataPath + "/";
 
-                if (!string.IsNullOrEmpty(assetRelativePath))
+                if (!string.IsNullOrEmpty(assetsRelativePath))
                 {
-                    projectRelativePath += assetRelativePath + "/";
+                    deviceRelativePath += assetsRelativePath + "/";
                 }
 
                 property.serializedObject.Update();
-                property.stringValue = EditorUtility.OpenFolderPanel("Pick directory", "Assets/" + assetRelativePath, "").Replace(projectRelativePath, "");
+                property.stringValue = EditorUtility.OpenFolderPanel("Pick directory", "Assets/" + assetsRelativePath, "").Replace(deviceRelativePath, "");
                 property.serializedObject.ApplyModifiedProperties();
 
-                //NOTE: we have to exit GUI since EditorUtility methods will break layouting system
-                GUIUtility.ExitGUI();
+                //NOTE1: we have to exit GUI since the EditorUtility.OpenFolderPanel method will break layouting system
+                //NOTE2: it seams to be fixed in new releases
+                //GUIUtility.ExitGUI();
             }
         }
 
