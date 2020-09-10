@@ -170,8 +170,8 @@ namespace Toolbox.Editor.Drawers
                 EditorGUIUtility.ShowObjectPicker<Texture>(largeIconProperty.objectReferenceValue, false, null, selectorHash + largeIconPickedId);
             }
 
-            propertyPosition.x += Style.largeFolderWidth;
-            propertyPosition.width = Style.smallFolderWidth;
+            propertyPosition.xMin = propertyPosition.xMax;
+            propertyPosition.xMax = propertyPosition.xMin + Style.smallFolderWidth;
 
             //draw small icon property picker
             if (GUI.Button(propertyPosition, Style.smallIconPickerContent, Style.smallIconPickerStyle))
@@ -204,15 +204,23 @@ namespace Toolbox.Editor.Drawers
                     iconProperty.serializedObject.Update();
                     iconProperty.objectReferenceValue = EditorGUIUtility.GetObjectPickerObject();
                     iconProperty.serializedObject.ApplyModifiedProperties();
+                    //force GUI to changed state
+                    GUI.changed = true;
                 }
             }
 
             position.x += Style.padding;
 
             //adjust rect for each icon
-            var largeFolderIconRect = new Rect(position.x, position.yMin + summaryFieldHeight, Style.largeFolderWidth, Style.largeFolderHeight);
+            var largeFolderIconRect = new Rect(position.x,
+                                               position.yMin + summaryFieldHeight, 
+                                               Style.largeFolderWidth, 
+                                               Style.largeFolderHeight);
             var smallFolderIconRect = new Rect(position.x + Style.largeFolderWidth, 
-                         largeFolderIconRect.y + Style.smallFolderHeight / 2 - Style.spacing, Style.smallFolderWidth, Style.smallFolderHeight);
+                                               //adjust small rect to the large one
+                                               largeFolderIconRect.y + Style.smallFolderHeight / 2 - Style.spacing, 
+                                               Style.smallFolderWidth, 
+                                               Style.smallFolderHeight);
 
             //draw default folder icons
             GUI.DrawTexture(largeFolderIconRect, Style.folderIcon, ScaleMode.ScaleToFit);

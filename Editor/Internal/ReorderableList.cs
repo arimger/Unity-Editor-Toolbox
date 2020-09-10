@@ -110,9 +110,10 @@ namespace Toolbox.Editor.Internal
         /// <param name="footerRect"></param>
         private void DoList(Rect headerRect, Rect midderRect, Rect footerRect)
         {
-            var indentCounter = -EditorGUI.indentLevel;
+            var fixedIndent = -EditorGUI.indentLevel;
 
-            using (new EditorGUI.IndentLevelScope(indentCounter))
+            //make sure there is no indent while drawing
+            using (new EditorGUI.IndentLevelScope(fixedIndent))
             {
                 DoListHeader(headerRect);
                 DoListMiddle(midderRect);
@@ -241,9 +242,10 @@ namespace Toolbox.Editor.Internal
                         continue;
                     }
 
+                    var height = GetElementHeight(i, false);
                     //update the height of the element
-                    itemElementRect.height = GetElementHeight(i, false);
-                    dragElementRect.height = GetElementHeight(i, false);
+                    itemElementRect.height = height;
+                    dragElementRect.height = height;
 
                     //update the position of the element
                     elementY = middleRect.y + GetElementYOffset(nonDragTargetIndices[i], Index);
@@ -345,9 +347,10 @@ namespace Toolbox.Editor.Internal
                     var activeElement = (i == Index);
                     var focusedElement = (i == Index && HasKeyboardControl());
 
+                    var height = GetElementHeight(i);
                     //update the height of the element
-                    itemElementRect.height = GetElementHeight(i);
-                    dragElementRect.height = GetElementHeight(i, false);
+                    itemElementRect.height = height;
+                    dragElementRect.height = height;
 
                     //update the position of the element
                     elementY = middleRect.y + GetElementYOffset(i);
@@ -542,11 +545,13 @@ namespace Toolbox.Editor.Internal
                             if (List != null)
                             {
                                 List.serializedObject.Update();
+                                //reorganize the target array and move current selected element
                                 List.MoveArrayElement(Index, targetIndex);
 
                                 //unfortunately it will break any EditorGUI.BeginCheck() scope
                                 //it has to be called since we edited the array property
                                 List.serializedObject.ApplyModifiedProperties();
+                                GUI.changed = true;
                             }
 
                             var oldActiveElement = Index;
@@ -793,23 +798,19 @@ namespace Toolbox.Editor.Internal
             //adjust OX position and width for the size property
             rect.xMin = rect.xMax - Style.sizeArea;
 
-            //display array size property without indentation
-            using (new EditorGUI.IndentLevelScope(-EditorGUI.indentLevel))
+            using (new EditorGUI.DisabledScope(HasFixedSize))
             {
                 var property = Size;
 
-                using (new EditorGUI.DisabledScope(HasFixedSize))
+                EditorGUI.BeginProperty(rect, Style.arraySizeFieldContent, property);
+                EditorGUI.BeginChangeCheck();
+                //cache a delayed size value using the delayed int field
+                var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, property.intValue, Style.sizeLabel), 0);
+                if (EditorGUI.EndChangeCheck())
                 {
-                    EditorGUI.BeginProperty(rect, Style.arraySizeFieldContent, property);
-                    EditorGUI.BeginChangeCheck();
-                    //cache a delayed size value using the delayed int field
-                    var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, property.intValue, Style.sizeLabel), 0);
-                    if (EditorGUI.EndChangeCheck())
-                    {
-                        property.intValue = sizeValue;
-                    }
-                    EditorGUI.EndProperty();
+                    property.intValue = sizeValue;
                 }
+                EditorGUI.EndProperty();
             }
             EditorGUI.EndProperty();
         }
@@ -847,6 +848,9 @@ namespace Toolbox.Editor.Internal
         {
             if (Event.current.type == EventType.Repaint)
             {
+                //keep the dragging handle in the 1 row
+                rect.yMax = rect.yMin + Style.rowHeight;
+
                 rect.width = Style.handleSpace;
                 //prepare rect for the handle texture draw
                 var xDiff = rect.width - Style.handleWidth;
@@ -1008,7 +1012,7 @@ namespace Toolbox.Editor.Internal
         } = "Element";
 
         /// <summary>
-        /// Serialized Array.size property.
+        /// Serialized 'Array.size' property.
         /// </summary>
         public SerializedProperty Size
         {
@@ -1016,7 +1020,7 @@ namespace Toolbox.Editor.Internal
         }
 
         /// <summary>
-        /// Associated list property.
+        /// Associated array property.
         /// </summary>
         public SerializedProperty List
         {
@@ -1037,6 +1041,7 @@ namespace Toolbox.Editor.Internal
 #endif
             internal static readonly float padding = 6.0f;
             internal static readonly float sizeArea = 19.0f;
+            internal static readonly float rowHeight = EditorGUIUtility.singleLineHeight;
 
             internal static readonly float buttonSpace = 60.0f;
             internal static readonly float buttonWidth = 25.0f;
