@@ -292,7 +292,11 @@ namespace Toolbox.Editor
                 smallButtonStyle = new GUIStyle(EditorStyles.miniButton);
                 smallHeaderStyle = new GUIStyle(EditorStyles.boldLabel)
                 {
+#if UNITY_2019_3_OR_NEWER
+                    fontSize = 11
+#else
                     fontSize = 10
+#endif
                 };
                 usualHeaderStyle = new GUIStyle(EditorStyles.boldLabel);
 
@@ -302,14 +306,19 @@ namespace Toolbox.Editor
                     alignment = TextAnchor.MiddleLeft,
 #if UNITY_2019_3_OR_NEWER
                     contentOffset = new Vector2(0, 0),
+                    fontSize = 12
 #else
                     contentOffset = new Vector2(0, -spacing),
-#endif
                     fontSize = 11
+#endif
                 };
                 drawerListFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
+#if UNITY_2019_3_OR_NEWER
+                    fontSize = 11
+#else
                     fontSize = 10
+#endif
                 };
                 normalListFoldoutStyle = new GUIStyle(EditorStyles.foldout);
             }
