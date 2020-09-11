@@ -13,9 +13,9 @@ namespace Toolbox.Editor
         private static Editor globalSettingsEditor;
 
 
-        private static void ForceSettingsUpdate()
+        private static void ForceModulesUpdate()
         {
-            //perform separated data models update
+            //perform separated modules update
             ManageInspectorCore(Settings);
             ManageProjectCore(Settings);
             ManageHierarchyCore(Settings);
@@ -38,9 +38,9 @@ namespace Toolbox.Editor
 
             var validateData = !IsInitialized;
 
-			//enable/disable the core GUI function
-			ToolboxEditorProject.IsOverlayAllowed = settings.UseToolboxProject;
-			
+            //enable/disable the core GUI function
+            ToolboxEditorProject.IsOverlayAllowed = settings.UseToolboxProject;
+
             ToolboxEditorProject.LargeIconScale = settings.LargeIconScale;
             ToolboxEditorProject.SmallIconScale = settings.SmallIconScale;
             ToolboxEditorProject.LargeIconPaddingRatio = settings.LargeIconPadding;
@@ -48,7 +48,7 @@ namespace Toolbox.Editor
 
             ToolboxEditorProject.RemoveCustomFolders();
 
-			//create custom folders using stored data
+            //create custom folders using stored data
             for (var i = 0; i < settings.CustomFoldersCount; i++)
             {
                 ToolboxEditorProject.CreateCustomFolder(settings.GetCustomFolderAt(i));
@@ -65,16 +65,16 @@ namespace Toolbox.Editor
                 ToolboxEditorHierarchy.RepaintHierarchyOverlay();
                 return;
             }
-			
-			//enable/disable the core GUI function
-			ToolboxEditorHierarchy.IsOverlayAllowed = settings.UseToolboxHierarchy;
-		
+
+            //enable/disable the core GUI function
+            ToolboxEditorHierarchy.IsOverlayAllowed = settings.UseToolboxHierarchy;
+
             ToolboxEditorHierarchy.DrawHorizontalLines = settings.DrawHorizontalLines;
             ToolboxEditorHierarchy.DrawSeparationLines = true;
 
             ToolboxEditorHierarchy.RemoveAllowedHierarchyContentCallbacks();
 
-			//create custom drawers using stored data
+            //create custom drawers using stored data
             for (var i = 0; i < settings.RowDataItemsCount; i++)
             {
                 ToolboxEditorHierarchy.CreateAllowedHierarchyContentCallbacks(settings.GetRowDataItemAt(i));
@@ -102,25 +102,24 @@ namespace Toolbox.Editor
         }
 
         internal static bool InitializeSettings(string settingsGuid)
-        {           
+        {
             SettingsGuid = settingsGuid;
             SettingsPath = AssetDatabase.GUIDToAssetPath(settingsGuid);
 
             //try to get proper settings asset from the provided guid
             if (Settings = AssetDatabase.LoadAssetAtPath<ToolboxEditorSettings>(SettingsPath))
             {
-                Settings.AddOnSettingsUpdatedListener(() =>
-                {
-                    //update associated utitilies after validation 
-                    ForceSettingsUpdate();
-                });
+                //subscribe to all related events
+                Settings.OnHierarchySettingsChanged += () => ManageHierarchyCore(Settings);
+                Settings.OnProjectSettingsChanged += () => ManageProjectCore(Settings);
+                Settings.OnInspectorSettingsChanged += () => ManageInspectorCore(Settings);
                 //initialize core functionalities
-                Settings.ForceUpdate();
+                Settings.Validate();
                 return true;
             }
             else
             {
-                ForceSettingsUpdate();
+                ForceModulesUpdate();
                 return false;
             }
         }
@@ -164,7 +163,7 @@ namespace Toolbox.Editor
                     {
                         var settingsInstance = ScriptableObject.CreateInstance(settingsType);
 
-                        var directoryPath = EditorUtility.OpenFolderPanel("New Settings file location", "Assets", "");                      
+                        var directoryPath = EditorUtility.OpenFolderPanel("New Settings file location", "Assets", "");
                         var settingsPath = directoryPath.Substring(directoryPath.IndexOf("Assets/")) + "/" + settingsType + ".asset";
 
                         AssetDatabase.CreateAsset(settingsInstance, settingsPath);

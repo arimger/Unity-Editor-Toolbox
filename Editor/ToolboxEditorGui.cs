@@ -212,10 +212,10 @@ namespace Toolbox.Editor
         /// <param name="assignButtonLabel"></param>
         /// <param name="foldoutStyle"></param>
         /// <returns></returns>
-        internal static bool DrawDrawerList(ReorderableList drawersList, string drawersTitle, string assignButtonLabel, GUIStyle foldoutStyle)
+        internal static bool DoDrawerList(ReorderableList drawersList, string drawersTitle, string assignButtonLabel, GUIStyle foldoutStyle)
         {
             GUILayout.BeginHorizontal();
-            var expanded = DrawListFoldout(drawersList, foldoutStyle, drawersTitle);
+            var expanded = DoListFoldout(drawersList, foldoutStyle, drawersTitle);
             GUILayout.FlexibleSpace();
             var pressed = GUILayout.Button(assignButtonLabel, Style.miniButtonStyle);
             GUILayout.EndHorizontal();
@@ -234,9 +234,9 @@ namespace Toolbox.Editor
         /// <param name="list"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        internal static bool DrawListFoldout(ReorderableList list, GUIStyle style)
+        internal static bool DoListFoldout(ReorderableList list, GUIStyle style)
         {
-            return DrawListFoldout(list, style, list.List.displayName);
+            return DoListFoldout(list, style, list.List.displayName);
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace Toolbox.Editor
         /// <param name="list"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        internal static bool DrawListFoldout(ReorderableList list, GUIStyle style, string label)
+        internal static bool DoListFoldout(ReorderableList list, GUIStyle style, string label)
         {
             list.HasHeader = false;
             return list.List.isExpanded = EditorGUILayout.Foldout(list.List.isExpanded, label, true, style);
