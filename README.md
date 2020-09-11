@@ -389,7 +389,7 @@ public Material var1;
 
 ## Reorderable List
 
-Custom implementation of standard ReorderableList(UnityEditorInternal). Usable as an attribute in inspector fields or a single object in custom editors.
+Custom implementation of standard ReorderableList (UnityEditorInternal). Usable as an attribute in serialized fields or a single object in custom Editors.
 
 > Editor Toolbox/Editor/Internal/ReorderableList.cs
 

@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: EditorSettings
   m_EditorClassIdentifier: 
   useToolboxHierarchy: 1
-  useToolboxFolders: 1
-  useToolboxDrawers: 1
-  rowDataItems: 0000000001000000020000000300000004000000
   drawHorizontalLines: 1
+  rowDataItems: 0000000001000000020000000300000004000000
+  useToolboxFolders: 1
   largeIconScale: 0.8
   smallIconScale: 0.7
   largeIconPadding: {x: 0, y: 0.1}
@@ -40,6 +39,7 @@ MonoBehaviour:
     tooltip: 
     largeIcon: {fileID: 2800000, guid: 6315862a85e61a44e947fbd4b1b23e11, type: 3}
     smallIcon: {fileID: 2800000, guid: e99d63b63394eba4aaf10385704d0ef3, type: 3}
+  useToolboxDrawers: 1
   decoratorDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.BeginGroupAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox-Editor
@@ -66,4 +66,3 @@ MonoBehaviour:
   listPropertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
   targetTypeDrawerHandlers: []
-  needsUpdate: 1

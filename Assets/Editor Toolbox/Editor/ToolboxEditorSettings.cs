@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Toolbox.Editor
 {
@@ -79,15 +78,13 @@ namespace Toolbox.Editor
         [SerializeField]
         private bool useToolboxHierarchy = true;
         [SerializeField]
-        private bool useToolboxFolders = true;
-        [SerializeField]
-        private bool useToolboxDrawers = true;
+        private bool drawHorizontalLines = true;
 
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         private List<HierarchyObjectDataItem> rowDataItems = Defaults.rowDataItems;
 
         [SerializeField]
-        private bool drawHorizontalLines = true;
+        private bool useToolboxFolders = true;
 
         [SerializeField, Clamp(0.0f, float.MaxValue)]
         private float largeIconScale = Defaults.largeFolderIconScaleDefault;
@@ -102,6 +99,9 @@ namespace Toolbox.Editor
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         private List<FolderData> customFolders;
 
+        [SerializeField]
+        private bool useToolboxDrawers = true;
+
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxDecoratorDrawer<>))]
         private List<SerializedType> decoratorDrawerHandlers;
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxConditionDrawer<>))]
@@ -114,38 +114,104 @@ namespace Toolbox.Editor
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxTargetTypeDrawer))]
         private List<SerializedType> targetTypeDrawerHandlers;
 
-        [SerializeField, HideInInspector]
-        private bool needsUpdate;
+        private bool hierarchySettingsDirty;
+        private bool projectSettingsDirty;
+        private bool inspectorSettingsDirty;
 
-        private UnityEvent onSettingsUpdated = new UnityEvent();
+        internal event Action OnHierarchySettingsChanged;
+        internal event Action OnProjectSettingsChanged;
+        internal event Action OnInspectorSettingsChanged;
 
 
-        internal void OnValidate()
+        #region Methods: Internal/data validation
+
+        /// <summary>
+        /// Forces Hierarchy settings validation in the next <see cref="OnValidate"/> call.
+        /// </summary>
+        internal void SetHierarchySettingsDirty()
         {
-            needsUpdate = true;
+            hierarchySettingsDirty = true;
+        }
+        /// <summary>
+        /// Forces Project settings validation in the next <see cref="OnValidate"/> call.
+        /// </summary>
+        internal void SetProjectSettingsDirty()
+        {
+            projectSettingsDirty = true;
+        }
+        /// <summary>
+        /// Forces Inspector settings validation in the next <see cref="OnValidate"/> call.
+        /// </summary>
+        internal void SetInspectorSettingsDirty()
+        {
+            inspectorSettingsDirty = true;
         }
 
-        internal void ForceUpdate()
+
+        internal void ValidateHierarchySettings()
         {
-            needsUpdate = false;
-            onSettingsUpdated?.Invoke();
+            OnHierarchySettingsChanged?.Invoke();
+        }
+
+        internal void ValidateProjectSettings()
+        {
+            OnProjectSettingsChanged?.Invoke();
+        }
+
+        internal void ValidateInspectorSettings()
+        {
+            OnInspectorSettingsChanged?.Invoke();
+        }
+
+        internal void Validate()
+        {
+            ValidateHierarchySettings();
+            ValidateProjectSettings();
+            ValidateInspectorSettings();
         }
 
 
-        internal void AddOnSettingsUpdatedListener(UnityAction listener)
+        /// <summary>
+        /// Called internally by the Editor after any value change or the Undo/Redo operation.
+        /// </summary>
+        private void OnValidate()
         {
-            onSettingsUpdated.AddListener(listener);
+            //determine if any section was changed within the Editor
+            var settingsDirty = hierarchySettingsDirty || projectSettingsDirty || inspectorSettingsDirty;
+            if (settingsDirty)
+            {
+                //check exactly what settings are changed and apply them
+                if (hierarchySettingsDirty)
+                {
+                    ValidateHierarchySettings();
+                }
+
+                if (projectSettingsDirty)
+                {
+                    ValidateProjectSettings();
+                }
+
+                if (inspectorSettingsDirty)
+                {
+                    ValidateInspectorSettings();
+                }
+            }
+            else
+            {
+                //otherwise, that means:
+                // - Undo/Redo action is performed
+                // - this is the very first event
+                // - called internally by any class
+                Validate();
+            }
+
+            //clear additional flags
+            hierarchySettingsDirty = false;
+            projectSettingsDirty = false;
+            inspectorSettingsDirty = false;
         }
 
-        internal void RemoveOnSettingsUpdatedListener(UnityAction listener)
-        {
-            onSettingsUpdated.RemoveListener(listener);
-        }
-
-        internal void RemoveAllOnSettingsUpdatedListeners()
-        {
-            onSettingsUpdated.RemoveAllListeners();
-        }
+        #endregion
 
 
         public void AddRowDataItem(HierarchyObjectDataItem item)
@@ -356,7 +422,7 @@ namespace Toolbox.Editor
         }
 
 
-        public void ResetIconProperties()
+        public void ResetIconsRectProperties()
         {
             largeIconScale = Defaults.largeFolderIconScaleDefault;
             smallIconScale = Defaults.smallFolderIconScaleDefault;
@@ -374,6 +440,12 @@ namespace Toolbox.Editor
             set => useToolboxHierarchy = value;
         }
 
+        public bool DrawHorizontalLines
+        {
+            get => drawHorizontalLines;
+            set => drawHorizontalLines = value;
+        }
+
         public bool UseToolboxProject
         {
             get => useToolboxFolders;
@@ -384,12 +456,6 @@ namespace Toolbox.Editor
         {
             get => useToolboxDrawers;
             set => useToolboxDrawers = value;
-        }
-
-        public bool DrawHorizontalLines
-        {
-            get => drawHorizontalLines;
-            set => drawHorizontalLines = value;
         }
 
         public float LargeIconScale
@@ -431,9 +497,6 @@ namespace Toolbox.Editor
         public int ListPropertyDrawersCount => listPropertyDrawerHandlers != null ? listPropertyDrawerHandlers.Count : 0;
 
         public int TargetTypeDrawersCount => targetTypeDrawerHandlers != null ? targetTypeDrawerHandlers.Count : 0;
-
-
-        internal bool NeedsUpdate => needsUpdate;
 
 
         private static class Defaults

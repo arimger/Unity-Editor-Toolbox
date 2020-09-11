@@ -690,7 +690,7 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        #region Default interaction/draw methods
+        #region Methods: Default interaction/draw calls
 
         public void AddNewDefaultElement()
         {
@@ -785,8 +785,10 @@ namespace Toolbox.Editor.Internal
             var diff = rect.height - Style.sizeLabel.fixedHeight;
             var oldY = rect.y;
 
+#if !UNITY_2019_3_OR_NEWER
             //adjust OY position to middle of the conent
             rect.y += diff / 2;
+#endif
 
             //display the property label using preprocessed name by BeginProperty method
             EditorGUI.LabelField(rect, label);

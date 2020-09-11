@@ -14,9 +14,9 @@ namespace Toolbox.Editor
         private bool hierarchySettingsEnabled;
 
         private SerializedProperty useToolboxHierarchyProperty;
+        private SerializedProperty drawHorizontalLinesProperty;
         private SerializedProperty useToolboxFoldersProperty;
         private SerializedProperty useToolboxDrawersProperty;
-        private SerializedProperty drawHorizontalLinesProperty;
         private SerializedProperty largeIconScaleProperty;
         private SerializedProperty smallIconScaleProperty;
         private SerializedProperty largeIconPaddingProperty;
@@ -28,7 +28,7 @@ namespace Toolbox.Editor
         private ReorderableList decoratorDrawerHandlersList;
         private ReorderableList conditionDrawerHandlersList;
         private ReorderableList selfPropertyDrawerHandlersList;
-        private ReorderableList listPropertyDrawerHandlersList;     
+        private ReorderableList listPropertyDrawerHandlersList;
         private ReorderableList targetTypeDrawerHandlersList;
 
         private ToolboxEditorSettings currentTarget;
@@ -41,9 +41,9 @@ namespace Toolbox.Editor
             inspectorSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", false);
 
             useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
+            drawHorizontalLinesProperty = serializedObject.FindProperty("drawHorizontalLines");
             useToolboxDrawersProperty = serializedObject.FindProperty("useToolboxDrawers");
             useToolboxFoldersProperty = serializedObject.FindProperty("useToolboxFolders");
-            drawHorizontalLinesProperty = serializedObject.FindProperty("drawHorizontalLines");
             largeIconScaleProperty = serializedObject.FindProperty("largeIconScale");
             smallIconScaleProperty = serializedObject.FindProperty("smallIconScale");
             largeIconPaddingProperty = serializedObject.FindProperty("largeIconPadding");
@@ -74,11 +74,10 @@ namespace Toolbox.Editor
         /// </summary>
         public override void DrawCustomInspector()
         {
-            serializedObject.Update();
+            EditorGUIUtility.labelWidth = 0.0f;
+            EditorGUIUtility.fieldWidth = 0.0f;
 
-            //forcing validation is usefull when target field is edited directly
-            //NOTE: check InspectorUtility for more details
-            var forceValidation = false;
+            serializedObject.Update();
 
             //handle hierarchy settings section
             if (hierarchySettingsEnabled = ToolboxEditorGui.DrawLayoutHeaderFoldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.bigSectionFoldoutStyle))
@@ -90,7 +89,7 @@ namespace Toolbox.Editor
                 EditorGUILayout.Space();
 
                 EditorGUI.BeginDisabledGroup(!useToolboxHierarchyProperty.boolValue);
-                if (ToolboxEditorGui.DrawListFoldout(rowDataItemsList, Style.normalListFoldoutStyle))
+                if (ToolboxEditorGui.DoListFoldout(rowDataItemsList, Style.normalListFoldoutStyle))
                 {
                     rowDataItemsList.ElementLabel = "Position";
                     rowDataItemsList.DoLayoutList();
@@ -102,7 +101,7 @@ namespace Toolbox.Editor
                 EditorGUILayout.Space();
                 if (EditorGUI.EndChangeCheck())
                 {
-                    //hierarchy settings changed
+                    currentTarget.SetHierarchySettingsDirty();
                 }
                 EditorGUI.indentLevel--;
             }
@@ -157,15 +156,16 @@ namespace Toolbox.Editor
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Reset", Style.smallButtonStyle, Style.resetButtonOptions))
                 {
-                    currentTarget.ResetIconProperties();
-                    forceValidation = true;
+                    Undo.RecordObject(target, "Resetted icon properties");
+                    currentTarget.ResetIconsRectProperties();
+                    currentTarget.ValidateProjectSettings();
                 }
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.Space();
 
                 //draw custom icons list
-                if (ToolboxEditorGui.DrawListFoldout(customFoldersList, Style.normalListFoldoutStyle))
+                if (ToolboxEditorGui.DoListFoldout(customFoldersList, Style.normalListFoldoutStyle))
                 {
                     customFoldersList.DoLayoutList();
                 }
@@ -175,7 +175,7 @@ namespace Toolbox.Editor
                 EditorGUILayout.Space();
                 if (EditorGUI.EndChangeCheck())
                 {
-                    //project settings changed
+                    currentTarget.SetProjectSettingsDirty();
                 }
                 EditorGUI.indentLevel--;
             }
@@ -199,37 +199,46 @@ namespace Toolbox.Editor
 
                 const string assignButtonLabel = "Assign all possible";
 
-                if (ToolboxEditorGui.DrawDrawerList(decoratorDrawerHandlersList, "Decorator Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
+                var validateInspector = false;
+                if (ToolboxEditorGui.DoDrawerList(decoratorDrawerHandlersList, "Decorator Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
+                    Undo.RecordObject(target, "Assignment of multiple decorator drawers");
                     currentTarget.SetAllPossibleDecoratorDrawers();
-                    forceValidation = true;
+                    validateInspector = true;
                 }
 
-                if (ToolboxEditorGui.DrawDrawerList(conditionDrawerHandlersList, "Condition Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
+                if (ToolboxEditorGui.DoDrawerList(conditionDrawerHandlersList, "Condition Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
+                    Undo.RecordObject(target, "Assignment of multiple condition drawers");
                     currentTarget.SetAllPossibleConditionDrawers();
-                    forceValidation = true;
+                    validateInspector = true;
                 }
 
-                if (ToolboxEditorGui.DrawDrawerList(selfPropertyDrawerHandlersList, "Self Property Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
+                if (ToolboxEditorGui.DoDrawerList(selfPropertyDrawerHandlersList, "Property Drawers (Self)", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
+                    Undo.RecordObject(target, "Assignment of multiple self property drawers");
                     currentTarget.SetAllPossibleSelfPropertyDrawers();
-                    forceValidation = true;
+                    validateInspector = true;
                 }
 
-                if (ToolboxEditorGui.DrawDrawerList(listPropertyDrawerHandlersList, "List Property Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
+                if (ToolboxEditorGui.DoDrawerList(listPropertyDrawerHandlersList, "Property Drawers (List)", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
+                    Undo.RecordObject(target, "Assignment of multiple list property drawers");
                     currentTarget.SetAllPossibleListPropertyDrawers();
-                    forceValidation = true;
+                    validateInspector = true;
+                }
+
+                if (validateInspector)
+                {
+                    currentTarget.ValidateInspectorSettings();
                 }
 
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField("Type-based", Style.smallHeaderStyle);
 
-                if (ToolboxEditorGui.DrawDrawerList(targetTypeDrawerHandlersList, "Target Type Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
+                if (ToolboxEditorGui.DoDrawerList(targetTypeDrawerHandlersList, "Target Type Drawers", assignButtonLabel, Style.drawerListFoldoutStyle))
                 {
                     currentTarget.SetAllPossibleTargetTypeDrawers();
-                    forceValidation = true;
                 }
 
                 EditorGUI.EndDisabledGroup();
@@ -237,18 +246,13 @@ namespace Toolbox.Editor
                 EditorGUILayout.Space();
                 if (EditorGUI.EndChangeCheck())
                 {
-                    //inspectors settings changed
+                    currentTarget.SetInspectorSettingsDirty();
                 }
                 EditorGUI.indentLevel--;
             }
             else
             {
                 GUILayout.Space(-Style.spacing / 2);
-            }
-
-            if (currentTarget.NeedsUpdate || forceValidation)
-            {
-                currentTarget.ForceUpdate();
             }
 
             serializedObject.ApplyModifiedProperties();
@@ -266,8 +270,13 @@ namespace Toolbox.Editor
             internal static readonly GUIStyle drawerListFoldoutStyle;
             internal static readonly GUIStyle normalListFoldoutStyle;
 
+#if UNITY_2019_3_OR_NEWER
+            internal static readonly GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings",
+                EditorGUIUtility.IconContent("UnityEditor.SceneHierarchyWindow").image);
+#else
             internal static readonly GUIContent hierarchySettingsContent = new GUIContent("Hierarchy Settings",
                 EditorGUIUtility.IconContent("UnityEditor.HierarchyWindow").image);
+#endif
             internal static readonly GUIContent projectSettingsContent = new GUIContent("Project Settings",
                 EditorGUIUtility.IconContent("Project").image);
             internal static readonly GUIContent inspectorSettingsContent = new GUIContent("Inspector Settings",
