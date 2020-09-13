@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -10,7 +10,7 @@ namespace Toolbox.Editor.Drawers
     public class EnumFlagAttributeDrawer : ToolboxNativePropertyDrawer
     {
         private int maxButtonsInRow = 1;
-    
+
         private float minButtonsWidth;
         private float additionalHeight;
 
@@ -19,10 +19,10 @@ namespace Toolbox.Editor.Drawers
         {
             //get field info value from this property, works even on array elements
             var enumValue = property.GetProperValue(fieldInfo, targetObject) as Enum;
-            
-            //begin the popup property
+
+            //begin the true property
             label = EditorGUI.BeginProperty(position, label, property);
-            //draw the field label
+            //draw the prefix label
             position = EditorGUI.PrefixLabel(position, label);
 
             EditorGUI.BeginChangeCheck();
@@ -44,7 +44,7 @@ namespace Toolbox.Editor.Drawers
             var buttonPosition = EditorGUI.PrefixLabel(position, label);
 
             EditorGUI.BeginChangeCheck();
-         
+
             var propertyType = property.GetProperType(fieldInfo, targetObject);
             var enumValues = Enum.GetValues(propertyType);
             var enumNames = Enum.GetNames(propertyType);
@@ -65,7 +65,7 @@ namespace Toolbox.Editor.Drawers
 
             //in buttons states we will store all toggle values for all buttons + "Everything" and "Nothing"
             var buttonsCount = buttonsToDisplay.Count;
-            
+
             //check how many buttons can we draw in one row
             if (Event.current.type == EventType.Repaint)
             {
@@ -77,8 +77,8 @@ namespace Toolbox.Editor.Drawers
             const int nothing = 0;
 
             //store current enum value if possible
-            var enumValue = property.hasMultipleDifferentValues 
-                ? 0 
+            var enumValue = property.hasMultipleDifferentValues
+                ? 0
                 : property.intValue == -1 ? enumSum : property.intValue;
 
 
@@ -127,10 +127,10 @@ namespace Toolbox.Editor.Drawers
 
                 //cache index and enum value
                 var index = buttonsToDisplay[i];
-                var value = (int) enumValues.GetValue(index);
+                var value = (int)enumValues.GetValue(index);
 
                 //draw toggle for each enum value
-                enumValue = GUI.Toggle(buttonPosition, enumValue == (enumValue | value), enumNames[index], Style.toggleStyle) 
+                enumValue = GUI.Toggle(buttonPosition, enumValue == (enumValue | value), enumNames[index], Style.toggleStyle)
                     ? enumValue | value
                     : enumValue & ~value;
                 //adjust position for next button
@@ -153,7 +153,7 @@ namespace Toolbox.Editor.Drawers
         }
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
-        { 
+        {
             switch (Attribute.Style)
             {
                 case EnumStyle.Button:
@@ -173,7 +173,7 @@ namespace Toolbox.Editor.Drawers
             return property.propertyType == SerializedPropertyType.Enum;
         }
 
- 
+
         private EnumFlagAttribute Attribute => attribute as EnumFlagAttribute;
 
 

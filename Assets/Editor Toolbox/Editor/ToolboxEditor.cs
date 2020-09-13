@@ -4,8 +4,8 @@ using UnityEditor;
 
 namespace Toolbox.Editor
 {
-    using Object = UnityEngine.Object;
     using Editor = UnityEditor.Editor;
+    using Object = UnityEngine.Object;
 
     /// <summary>
     /// Base editor class.
@@ -41,21 +41,25 @@ namespace Toolbox.Editor
         {
             if (ToolboxDrawerModule.ToolboxDrawersAllowed)
             {
-                var isExpanded = true;
-
                 serializedObject.Update();
 
+                var isExpanded = true;
+
                 var property = serializedObject.GetIterator();
+                //enter to the 'Base' property
                 if (property.NextVisible(isExpanded))
                 {
                     isExpanded = false;
+                    var script = PropertyUtility.IsDefaultScriptProperty(property);
 
-                    var isScript = PropertyUtility.IsDefaultScriptProperty(property);
+                    //try to draw the first property (m_Script)
+                    using (new EditorGUI.DisabledScope(script))
+                    {
+                        DrawCustomProperty(property.Copy());
+                    }
 
-                    EditorGUI.BeginDisabledGroup(isScript);
-                    EditorGUILayout.PropertyField(property);
-                    EditorGUI.EndDisabledGroup();
-
+                    //iterate over all other serialized properties
+                    //NOTE: every child will be handled internally
                     while (property.NextVisible(isExpanded))
                     {
                         DrawCustomProperty(property.Copy());

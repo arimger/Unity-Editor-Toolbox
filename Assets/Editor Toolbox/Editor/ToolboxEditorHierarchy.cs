@@ -451,14 +451,14 @@ namespace Toolbox.Editor
             headerGameObject.name = "#hHeader";           
             headerGameObject.layer = 0;
             headerGameObject.tag = "EditorOnly";
-            headerGameObject.isStatic = true;
+            headerGameObject.isStatic = false;
 
             //ensure it gets reparented if this was a context click(otherwise does nothing) and fix name
             GameObjectUtility.EnsureUniqueNameForSibling(headerGameObject);
             GameObjectUtility.SetParentAndAlign(headerGameObject, parentGameObject);
 
             //register the creation in the undo system
-            Undo.RegisterCreatedObjectUndo(headerGameObject, "Create " + headerGameObject.name);
+            Undo.RegisterCreatedObjectUndo(headerGameObject, "Create a Header");
 
             //set proper selection
             Selection.activeObject = headerGameObject;

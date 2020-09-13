@@ -36,7 +36,7 @@ namespace Toolbox.Editor.Drawers
                 position.y += Style.boxHeight + Style.spacing * 2;
             }
 
-            //finally draw property
+            //finally draw the property
             GUI.backgroundColor = errorColor;
             EditorGUI.PropertyField(position, property, label, property.isExpanded);
             GUI.backgroundColor = cacheColor;

@@ -66,7 +66,7 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="texture"></param>
         /// <param name=""></param>
-        public static void DrawLayoutAssetPreview(Object asset, float width = 64, float height = 64)
+        public static void DrawLayoutAssetPreview(Object asset, float width = 64.0f, float height = 64.0f)
         {
             var previewTexture = AssetPreview.GetAssetPreview(asset);
 
@@ -87,7 +87,7 @@ namespace Toolbox.Editor
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            EditorGUILayout.BeginHorizontal(Style.boxedSkinStyle);
+            EditorGUILayout.BeginHorizontal(Style.box1Style);
             EditorGUI.LabelField(EditorGUILayout.GetControlRect(true, height, previewOptions), GUIContent.none, style);
             EditorGUILayout.EndHorizontal();
             GUILayout.FlexibleSpace();
@@ -95,42 +95,52 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
+        /// Creates asset preview for given <see cref="Object"/>.
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name=""></param>
+        [Obsolete]
+        public static void DrawAssetPreview(Rect rect, Object asset, float width = 64.0f, float height = 64.0f)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Draws header-like label in form of foldout. Uses built-in layouting system.
         /// </summary>
         /// <returns></returns>
-        public static bool DrawLayoutHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle foldoutStyle)
+        public static bool DrawLayoutHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle)
         {
-            const float headerHeight = 25.0f;
-
-            var rect = GUILayoutUtility.GetRect(1, headerHeight);
-            rect.xMin = 0;
+            var rect = GUILayoutUtility.GetRect(1, 30.0f);
+            rect.xMin = -1;
             rect.xMax = EditorGUIUtility.currentViewWidth;
 
-            return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, foldoutStyle);
+            return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, headerStyle);
         }
 
         /// <summary>
         /// Draws header-like label in form of foldout.
         /// </summary>
         /// <returns></returns>
-        public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle foldoutStyle)
+        public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle)
         {
-            const float xPadding = 15.0f;
-#if UNITY_2019_3_OR_NEWER
-            const float yPadding = 7.0f;
-#else
-            const float yPadding = 2.0f;
-#endif
-
+            //draw boxed background
             if (Event.current.type == EventType.Repaint)
             {
-                Style.boxedSkinStyle.Draw(rect, false, false, false, false);
+#if UNITY_2019_3_OR_NEWER
+                Style.box2Style.Draw(rect, false, false, false, false);
+#else
+                Style.box1Style.Draw(rect, false, false, false, false);
+#endif
             }
 
-            rect.xMin += xPadding;
-            rect.yMin -= yPadding - (rect.height - foldoutStyle.fontSize) / 2;
+            //create header label with additional padding
+            rect.xMin += 10.0f;
+            EditorGUI.LabelField(rect, label, headerStyle);
+            rect.xMin -= 10.0f;
 
-            return EditorGUI.Foldout(rect, foldout, label, toggleOnLabelClick, foldoutStyle);
+            //create final foldout without label and arrow
+            return EditorGUI.Foldout(rect, foldout, GUIContent.none, toggleOnLabelClick, Style.box0Style);
         }
 
         /// <summary>
@@ -183,19 +193,17 @@ namespace Toolbox.Editor
         {
             internal static readonly Color standardLineColor = new Color(0.3f, 0.3f, 0.3f);
 
-            internal static readonly GUIStyle boxedSkinStyle;
-            internal static readonly GUIStyle labelSkinStyle;
-            internal static readonly GUIStyle buttonSkinStyle;
-            internal static readonly GUIStyle miniButtonStyle;
-
+            internal static readonly GUIStyle box0Style;
+            internal static readonly GUIStyle box1Style;
+            internal static readonly GUIStyle box2Style;
+ 
             internal static readonly GUIContent warningContent;
 
             static Style()
             {
-                boxedSkinStyle = new GUIStyle(GUI.skin.box);
-                labelSkinStyle = new GUIStyle(GUI.skin.label);
-                buttonSkinStyle = new GUIStyle(GUI.skin.button);
-                miniButtonStyle = new GUIStyle(EditorStyles.miniButton);
+                box0Style = new GUIStyle(EditorStyles.inspectorFullWidthMargins);
+                box1Style = new GUIStyle(GUI.skin.box);
+                box2Style = new GUIStyle(EditorStyles.helpBox);
 
                 warningContent = EditorGUIUtility.IconContent("console.warnicon.sml");
             }
@@ -204,54 +212,6 @@ namespace Toolbox.Editor
 
     public static partial class ToolboxEditorGui
     {
-        /// <summary>
-        /// Draws <see cref="ReorderableList"/> as drawer list instace used within the <see cref="ToolboxEditorSettingsEditor"/> class.
-        /// </summary>
-        /// <param name="drawersList"></param>
-        /// <param name="drawersTitle"></param>
-        /// <param name="assignButtonLabel"></param>
-        /// <param name="foldoutStyle"></param>
-        /// <returns></returns>
-        internal static bool DoDrawerList(ReorderableList drawersList, string drawersTitle, string assignButtonLabel, GUIStyle foldoutStyle)
-        {
-            GUILayout.BeginHorizontal();
-            var expanded = DoListFoldout(drawersList, foldoutStyle, drawersTitle);
-            GUILayout.FlexibleSpace();
-            var pressed = GUILayout.Button(assignButtonLabel, Style.miniButtonStyle);
-            GUILayout.EndHorizontal();
-
-            if (expanded)
-            {
-                drawersList.DoLayoutList();
-            }
-
-            return pressed;
-        }
-
-        /// <summary>
-        /// Draws <see cref="ReorderableList"/> with an additional foldout.
-        /// </summary>
-        /// <param name="list"></param>
-        /// <param name="style"></param>
-        /// <returns></returns>
-        internal static bool DoListFoldout(ReorderableList list, GUIStyle style)
-        {
-            return DoListFoldout(list, style, list.List.displayName);
-        }
-
-        /// <summary>
-        /// Draws <see cref="ReorderableList"/> with an additional foldout and a custom label.
-        /// </summary>
-        /// <param name="list"></param>
-        /// <param name="style"></param>
-        /// <returns></returns>
-        internal static bool DoListFoldout(ReorderableList list, GUIStyle style, string label)
-        {
-            list.HasHeader = false;
-            return list.List.isExpanded = EditorGUILayout.Foldout(list.List.isExpanded, label, true, style);
-        }
-
-
         /// <summary>
         /// Creates <see cref="ReorderableList"/> using standard background.
         /// </summary>
@@ -276,14 +236,14 @@ namespace Toolbox.Editor
                     rect.y += EditorGUIUtility.standardVerticalSpacing / 2;
                     if (Event.current.type == EventType.Repaint)
                     {
-                        Style.boxedSkinStyle.Draw(rect, false, false, false, false);
+                        Style.box1Style.Draw(rect, false, false, false, false);
                     }
                 },
                 drawMiddleBackgroundCallback = (Rect rect) =>
                 {
                     if (Event.current.type == EventType.Repaint)
                     {
-                        Style.boxedSkinStyle.Draw(rect, false, false, false, false);
+                        Style.box1Style.Draw(rect, false, false, false, false);
                     }
                 },
                 drawFooterBackgroundCallback = (Rect rect) =>
@@ -291,7 +251,7 @@ namespace Toolbox.Editor
                     rect.y -= EditorGUIUtility.standardVerticalSpacing / 2;
                     if (Event.current.type == EventType.Repaint)
                     {
-                        Style.boxedSkinStyle.Draw(rect, false, false, false, false);
+                        Style.box1Style.Draw(rect, false, false, false, false);
                     }
                 },
 #if UNITY_2019_3_OR_NEWER
@@ -336,6 +296,29 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
+        /// Creates <see cref="ReorderableList"/> without any additional background.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static ReorderableList CreateClearList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true)
+        {
+            return new ReorderableList(property, elementLabel, draggable, hasHeader, fixedSize)
+            {
+                drawHeaderBackgroundCallback = (Rect rect) =>
+                { },
+                drawMiddleBackgroundCallback = (Rect rect) =>
+                { },
+                drawFooterBackgroundCallback = (Rect rect) =>
+                { },
+#if UNITY_2019_3_OR_NEWER
+                FooterHeight = 17
+#else
+                FooterHeight = 15
+#endif
+            };
+        }
+
+        /// <summary>
         /// Creates <see cref="ReorderableList"/> using provided <see cref="ListStyle"/> type.
         /// </summary>
         /// <param name="property"></param>
@@ -358,13 +341,13 @@ namespace Toolbox.Editor
         [Obsolete]
         public static void DrawToolboxProperty(Rect position, SerializedProperty property)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         [Obsolete]
         public static void DrawToolboxProperty(Rect position, SerializedProperty property, GUIContent label)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -394,7 +377,7 @@ namespace Toolbox.Editor
         /// <param name="property"></param>
         public static void DrawLayoutDefaultProperty(SerializedProperty property, GUIContent label)
         {
-            //draw standard foldout with built-in operations(like prefabs handling)
+            //draw standard foldout with built-in operations (like prefabs handling)
             //to re-create native steps:
             // - get foldout rect
             // - begin property using EditorGUI.BeginProperty method

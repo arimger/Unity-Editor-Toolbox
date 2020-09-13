@@ -41,7 +41,7 @@ namespace Toolbox.Editor.Drawers
 
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {            
+        {
             //if expanded - draw foldout + 3 properties + buttons strip + additional icon 
             if (property.isExpanded)
             {
@@ -82,8 +82,8 @@ namespace Toolbox.Editor.Drawers
             var smallIconProperty = property.FindPropertyRelative("smallIcon");
 
             var isPathBased = typeProperty.intValue == 0;
-            var propertyName = isPathBased 
-                ? pathProperty.stringValue 
+            var propertyName = isPathBased
+                ? pathProperty.stringValue
                 : nameProperty.stringValue;
 
             //begin property
@@ -201,8 +201,9 @@ namespace Toolbox.Editor.Drawers
                 //update the previously picked property
                 if (iconProperty != null)
                 {
+                    var o = EditorGUIUtility.GetObjectPickerObject();
                     iconProperty.serializedObject.Update();
-                    iconProperty.objectReferenceValue = EditorGUIUtility.GetObjectPickerObject();
+                    iconProperty.objectReferenceValue = o;
                     iconProperty.serializedObject.ApplyModifiedProperties();
                     //force GUI to changed state
                     GUI.changed = true;
@@ -213,13 +214,13 @@ namespace Toolbox.Editor.Drawers
 
             //adjust rect for each icon
             var largeFolderIconRect = new Rect(position.x,
-                                               position.yMin + summaryFieldHeight, 
-                                               Style.largeFolderWidth, 
+                                               position.yMin + summaryFieldHeight,
+                                               Style.largeFolderWidth,
                                                Style.largeFolderHeight);
-            var smallFolderIconRect = new Rect(position.x + Style.largeFolderWidth, 
+            var smallFolderIconRect = new Rect(position.x + Style.largeFolderWidth,
                                                //adjust small rect to the large one
-                                               largeFolderIconRect.y + Style.smallFolderHeight / 2 - Style.spacing, 
-                                               Style.smallFolderWidth, 
+                                               largeFolderIconRect.y + Style.smallFolderHeight / 2 - Style.spacing,
+                                               Style.smallFolderWidth,
                                                Style.smallFolderHeight);
 
             //draw default folder icons
@@ -274,9 +275,9 @@ namespace Toolbox.Editor.Drawers
 
                 folderLabelStyle = new GUIStyle(EditorStyles.foldout)
                 {
-                    padding = new RectOffset(17, 2, 0, 0),                                                         
+                    padding = new RectOffset(17, 2, 0, 0),
                 };
-                
+
                 largeIconPickerStyle = new GUIStyle(EditorStyles.miniButtonLeft)
                 {
                     fixedHeight = 16.0f,
@@ -287,7 +288,7 @@ namespace Toolbox.Editor.Drawers
                     fixedHeight = 16.0f,
                     padding = new RectOffset(2, 2, 2, 2)
                 };
-  
+
                 largeIconPickerContent = new GUIContent("Select");
                 smallIconPickerContent = EditorGUIUtility.IconContent("RawImage Icon");
                 largeIconPickerContent.tooltip = "Select large icon";

@@ -7,7 +7,7 @@ namespace UnityEngine
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class HelpAttribute : ToolboxDecoratorAttribute
-    {        
+    {
         public HelpAttribute(string text, UnityMessageType type = UnityMessageType.Info)
         {
             Text = text;

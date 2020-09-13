@@ -27,9 +27,9 @@ namespace Toolbox.Editor.Drawers
             var maxFieldRect = new Rect(position.xMax - fieldWidth, position.y, fieldWidth, position.height);
             //set slider rect between min and max fields + additional padding
             var minMaxSliderRect = new Rect
-                (position.x + labelWidth + fieldWidth + Style.sliderPadding,
+                (position.x + labelWidth + fieldWidth + Style.padding,
                  position.y,
-                 position.width - labelWidth - fieldWidth * 2 - Style.sliderPadding * 2,
+                 position.width - labelWidth - fieldWidth * 2 - Style.padding * 2,
                  position.height);
 
             //begin drawing using GUI methods
@@ -62,9 +62,7 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal static readonly float height = EditorGUIUtility.singleLineHeight;
-            internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
-            internal static readonly float sliderPadding = 8.0f;
+            internal static readonly float padding = 8.0f;
         }
     }
 }
