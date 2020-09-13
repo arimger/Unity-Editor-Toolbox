@@ -396,6 +396,31 @@ namespace Toolbox.Editor
             targetTypeDrawerHandlers?.Remove(drawerReference);
         }
 
+        public void ClearDecoratorDrawerHandlers()
+        {
+            decoratorDrawerHandlers?.Clear();
+        }
+
+        public void ClearConditionDrawerHandlers()
+        {
+            conditionDrawerHandlers?.Clear();
+        }
+
+        public void ClearSelfPropertyDrawerHandlers()
+        {
+            selfPropertyDrawerHandlers?.Clear();
+        }
+
+        public void ClearListPropertyDrawerHandlers()
+        {
+            listPropertyDrawerHandlers?.Clear();
+        }
+
+        public void ClearTargetTypeDrawerHandlers()
+        {
+            targetTypeDrawerHandlers?.Clear();
+        }
+
         public Type GetDecoratorDrawerTypeAt(int index)
         {
             return decoratorDrawerHandlers[index];
@@ -422,7 +447,7 @@ namespace Toolbox.Editor
         }
 
 
-        public void ResetIconsRectProperties()
+        public void ResetIconRectProperties()
         {
             largeIconScale = Defaults.largeFolderIconScaleDefault;
             smallIconScale = Defaults.smallFolderIconScaleDefault;

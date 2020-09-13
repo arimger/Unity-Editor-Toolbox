@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -55,7 +55,7 @@ namespace Toolbox.Editor.Drawers
                 Style.textureStyle.normal.background = previewTexture;
                 //set additional height as preview + 2x spacing + 2x frame offset
                 position.width = width + Style.frameSize + indent;
-                position.height = height + Style.frameSize;       
+                position.height = height + Style.frameSize;
                 position.y += Style.height + Style.spacing;
                 //draw frame
                 EditorGUI.LabelField(position, GUIContent.none, Style.backgroundStyle);

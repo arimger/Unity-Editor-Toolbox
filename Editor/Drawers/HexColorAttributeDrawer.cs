@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -15,20 +15,19 @@ namespace Toolbox.Editor.Drawers
         {
             const string hexFormat = "#{0}";
 
-            //begin property drawing
+            //begin the true property
             label = EditorGUI.BeginProperty(position, label, property);
-            //create the associated label
+            //draw the prefix label
             position = EditorGUI.PrefixLabel(position, label);
 
-            var color = Color.white;
-            ColorUtility.TryParseHtmlString(string.Format(hexFormat, property.stringValue), out color);
-        
+            ColorUtility.TryParseHtmlString(string.Format(hexFormat, property.stringValue), out var color);
+
             //prepare proper rects for each field
             var labelRect = position;
             labelRect.xMax -= position.width / 2;
             var colorRect = position;
             colorRect.xMin += position.width / 2;
-          
+
             //draw the color field and the associated label
             color = EditorGUI.ColorField(colorRect, GUIContent.none, color, true, true, false);
             property.stringValue = ColorUtility.ToHtmlStringRGBA(color);
