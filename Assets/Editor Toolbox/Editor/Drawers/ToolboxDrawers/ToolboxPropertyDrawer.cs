@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -7,7 +7,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected virtual void OnGuiSafe(SerializedProperty property, GUIContent label, T attribute)
         {
-            ToolboxEditorGui.DrawLayoutDefaultProperty(property);
+            ToolboxEditorGui.DrawDefaultProperty(property);
         }
 
 
@@ -41,8 +41,10 @@ namespace Toolbox.Editor.Drawers
             else
             {
                 var warningContent = new GUIContent(property.displayName + " has invalid property drawer");
+                //create additional warning log to the console window
                 ToolboxEditorLog.WrongAttributeUsageWarning(attribute, property);
-                ToolboxEditorGui.DrawLayoutEmptyProperty(property, warningContent);
+                //create additional warning label based on the property name
+                ToolboxEditorGui.DrawEmptyProperty(property, warningContent);
             }
         }
     }

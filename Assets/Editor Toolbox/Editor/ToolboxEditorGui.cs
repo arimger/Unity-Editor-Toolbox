@@ -19,9 +19,9 @@ namespace Toolbox.Editor
         /// <param name="color"></param>
         /// <param name="thickness"></param>
         /// <param name="padding"></param>
-        public static void DrawLayoutLine(float thickness = 0.75f, float padding = 6.0f)
+        public static void DrawLine(float thickness = 0.75f, float padding = 6.0f)
         {
-            DrawLayoutLine(thickness, padding, Style.standardLineColor);
+            DrawLine(thickness, padding, Style.standardLineColor);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Toolbox.Editor
         /// <param name="color"></param>
         /// <param name="thickness"></param>
         /// <param name="padding"></param>
-        public static void DrawLayoutLine(float thickness, float padding, Color color)
+        public static void DrawLine(float thickness, float padding, Color color)
         {
             DrawLine(EditorGUILayout.GetControlRect(GUILayout.Height(padding + thickness)), thickness, padding, color);
         }
@@ -66,29 +66,28 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="texture"></param>
         /// <param name=""></param>
-        public static void DrawLayoutAssetPreview(Object asset, float width = 64.0f, float height = 64.0f)
+        public static void DrawAssetPreview(Object asset, float width = 64.0f, float height = 64.0f)
         {
             var previewTexture = AssetPreview.GetAssetPreview(asset);
-
-            if (!previewTexture)
+            if (previewTexture == null)
             {
                 return;
             }
 
             var style = new GUIStyle();
             style.normal.background = previewTexture;
-            width = Mathf.Clamp(width, 0, previewTexture.width);
-            height = Mathf.Clamp(height, 0, previewTexture.height);
+            var w = Mathf.Clamp(width, 0, previewTexture.width);
+            var h = Mathf.Clamp(height, 0, previewTexture.height);
             var previewOptions = new GUILayoutOption[]
             {
-                GUILayout.MaxWidth(width),
-                GUILayout.MaxHeight(height)
+                GUILayout.MaxWidth(w),
+                GUILayout.MaxHeight(h)
             };
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             EditorGUILayout.BeginHorizontal(Style.box1Style);
-            EditorGUI.LabelField(EditorGUILayout.GetControlRect(true, height, previewOptions), GUIContent.none, style);
+            EditorGUI.LabelField(EditorGUILayout.GetControlRect(true, h, previewOptions), GUIContent.none, style);
             EditorGUILayout.EndHorizontal();
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
@@ -109,7 +108,7 @@ namespace Toolbox.Editor
         /// Draws header-like label in form of foldout. Uses built-in layouting system.
         /// </summary>
         /// <returns></returns>
-        public static bool DrawLayoutHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle)
+        public static bool DrawHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle)
         {
             var rect = GUILayoutUtility.GetRect(1, 30.0f);
             rect.xMin = -1;
@@ -196,7 +195,7 @@ namespace Toolbox.Editor
             internal static readonly GUIStyle box0Style;
             internal static readonly GUIStyle box1Style;
             internal static readonly GUIStyle box2Style;
- 
+
             internal static readonly GUIContent warningContent;
 
             static Style()
@@ -355,7 +354,7 @@ namespace Toolbox.Editor
         /// Uses built-in layouting system.
         /// </summary>
         /// <param name="property"></param>
-        public static void DrawLayoutToolboxProperty(SerializedProperty property)
+        public static void DrawToolboxProperty(SerializedProperty property)
         {
             ToolboxDrawerModule.GetPropertyHandler(property).OnGuiLayout();
         }
@@ -365,9 +364,9 @@ namespace Toolbox.Editor
         /// Uses built-in layouting system.
         /// </summary>
         /// <param name="property"></param>
-        public static void DrawLayoutDefaultProperty(SerializedProperty property)
+        public static void DrawDefaultProperty(SerializedProperty property)
         {
-            DrawLayoutDefaultProperty(property, null);
+            DrawDefaultProperty(property, null);
         }
 
         /// <summary>
@@ -375,7 +374,7 @@ namespace Toolbox.Editor
         /// Uses built-in layouting system.
         /// </summary>
         /// <param name="property"></param>
-        public static void DrawLayoutDefaultProperty(SerializedProperty property, GUIContent label)
+        public static void DrawDefaultProperty(SerializedProperty property, GUIContent label)
         {
             //draw standard foldout with built-in operations (like prefabs handling)
             //to re-create native steps:
@@ -412,7 +411,7 @@ namespace Toolbox.Editor
                 iterateThroughChildren = false;
 
                 //handle current property using Toolbox drawers
-                DrawLayoutToolboxProperty(iterProperty.Copy());
+                DrawToolboxProperty(iterProperty.Copy());
             }
 
             //restore old indent level
@@ -424,9 +423,9 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <param name="label"></param>
-        public static void DrawLayoutNativeProperty(SerializedProperty property)
+        public static void DrawNativeProperty(SerializedProperty property)
         {
-            DrawLayoutNativeProperty(property, null);
+            DrawNativeProperty(property, null);
         }
 
         /// <summary>
@@ -434,7 +433,7 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <param name="label"></param>
-        public static void DrawLayoutNativeProperty(SerializedProperty property, GUIContent label)
+        public static void DrawNativeProperty(SerializedProperty property, GUIContent label)
         {
             EditorGUILayout.PropertyField(property, label, property.isExpanded);
         }
@@ -442,15 +441,15 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws provided property as a warning label. Uses built-in layouting system.
         /// </summary>
-        public static void DrawLayoutEmptyProperty(SerializedProperty property)
+        public static void DrawEmptyProperty(SerializedProperty property)
         {
-            DrawLayoutEmptyProperty(property, null);
+            DrawEmptyProperty(property, null);
         }
 
         /// <summary>
         /// Draws provided property as a warning label. Uses built-in layouting system.
         /// </summary>
-        public static void DrawLayoutEmptyProperty(SerializedProperty property, GUIContent label)
+        public static void DrawEmptyProperty(SerializedProperty property, GUIContent label)
         {
             DrawEmptyProperty(GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight), property, label);
         }
@@ -473,13 +472,14 @@ namespace Toolbox.Editor
             var yMin = position.yMin;
             var yMax = position.yMax;
 
-            var dim = position.height + EditorGUIUtility.standardVerticalSpacing * 2;
-            position.width = dim;
-            position.height = dim;
+            position.yMin -= EditorGUIUtility.standardVerticalSpacing;
+            position.yMax += EditorGUIUtility.standardVerticalSpacing;
 
             EditorGUI.LabelField(position, Style.warningContent);
 
-            position.xMin = xMin + position.width;
+            var width = Style.warningContent.image.width;
+
+            position.xMin = xMin + width;
             position.xMax = xMax;
             position.yMin = yMin;
             position.yMax = yMax;

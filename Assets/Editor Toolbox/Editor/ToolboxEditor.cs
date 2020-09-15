@@ -31,7 +31,7 @@ namespace Toolbox.Editor
         /// <param name="property">Property to display.</param>
         public virtual void DrawCustomProperty(SerializedProperty property)
         {
-            ToolboxEditorGui.DrawLayoutToolboxProperty(property);
+            ToolboxEditorGui.DrawToolboxProperty(property);
         }
 
         /// <summary>

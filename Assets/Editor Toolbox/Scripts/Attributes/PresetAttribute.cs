@@ -3,7 +3,8 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Allows to pick values based on the provided preset collection.
+    /// Allows to pick values based on the given preset (array/list) collection.
+    /// Remark: has to be implemented within classes, structs are not supported.
     /// Supported types: all.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
