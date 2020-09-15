@@ -255,8 +255,10 @@ namespace Toolbox.Editor
             EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
 
             var longName = drawerHandlersLongNames[enabledToShowDrawerType];
+            var tooltip = drawerHandlersInfoLabels[enabledToShowDrawerType];
+            var content = new GUIContent(longName + " Drawers", tooltip);
+            EditorGUILayout.LabelField(content, Style.drawersHeaderStyle);
 
-            EditorGUILayout.LabelField(longName + " Drawers", Style.drawersHeaderStyle);
 #if UNITY_2019_3_OR_NEWER
             EditorGUILayout.EndVertical();
 #endif
@@ -349,21 +351,21 @@ namespace Toolbox.Editor
             serializedObject.Update();
 
             //handle hierarchy settings section
-            if (hierarchySettingsEnabled = DrawLayoutHeaderFoldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.sectionHeaderStyle))
+            if (hierarchySettingsEnabled = DrawHeaderFoldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.sectionHeaderStyle))
             {
                 DrawHierarchySettings();
             }
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
             //handle project settings section
-            if (projectSettingsEnabled = DrawLayoutHeaderFoldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.sectionHeaderStyle))
+            if (projectSettingsEnabled = DrawHeaderFoldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.sectionHeaderStyle))
             {
                 DrawProjectSettings();
             }
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
             //handle inspector settings section
-            if (inspectorSettingsEnabled = DrawLayoutHeaderFoldout(inspectorSettingsEnabled, Style.inspectorSettingsContent, true, Style.sectionHeaderStyle))
+            if (inspectorSettingsEnabled = DrawHeaderFoldout(inspectorSettingsEnabled, Style.inspectorSettingsContent, true, Style.sectionHeaderStyle))
             {
                 DrawInspectorSettings();
             }

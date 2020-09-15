@@ -70,8 +70,7 @@ Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associa
 #### HelpAttribute
 
 ```csharp
-[Help("You can provide more information in HelpBoxes.", order = 100)]
-public int var1;
+//NOTE: HelpAttribute moved to ToolboxAttributes
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc1.png)

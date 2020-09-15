@@ -96,6 +96,12 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
+        public override bool IsPropertyValid(SerializedProperty property)
+        {
+            //NOTE: reflection won't work properly on nested structs
+            return !property.GetDeclaringObject().GetType().IsValueType;
+        }
+
 
         private PresetAttribute Attribute => attribute as PresetAttribute;
     }

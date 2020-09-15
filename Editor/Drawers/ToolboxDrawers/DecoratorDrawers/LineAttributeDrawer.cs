@@ -6,7 +6,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(LineAttribute attribute)
         {
-            ToolboxEditorGui.DrawLayoutLine(attribute.Thickness, attribute.Padding, attribute.GetLineColor());
+            ToolboxEditorGui.DrawLine(attribute.Thickness, attribute.Padding, attribute.GetLineColor());
         }
     }
 }

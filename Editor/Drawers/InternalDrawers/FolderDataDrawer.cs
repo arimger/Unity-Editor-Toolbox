@@ -14,23 +14,17 @@ namespace Toolbox.Editor.Drawers
 
         private void DrawFolderByNameIcon(Rect rect)
         {
-            GUI.DrawTexture(rect, Style.folderIcon);
+            GUI.Label(rect, "Aa", Style.dataByNameLabelStyle);
         }
 
         private void DrawFolderByPathIcon(Rect rect)
         {
-            const float doubleIconOffsetRatio = 1.5f;
-
-            GUI.DrawTexture(rect, Style.folderIcon);
-
-            rect.y += Style.spacing;
-            rect.x += Style.spacing * doubleIconOffsetRatio;
-            GUI.DrawTexture(rect, Style.folderIcon);
+            GUI.DrawTexture(rect, Style.foldersIcon);
         }
 
         private void DrawLabelWarningIcon(Rect rect)
         {
-            GUI.DrawTexture(rect, Style.folderIcon);
+            GUI.DrawTexture(rect, Style.foldersIcon);
             GUI.DrawTexture(rect, Style.warningIcon);
         }
 
@@ -92,16 +86,20 @@ namespace Toolbox.Editor.Drawers
 
             var propertyPosition = new Rect(position.x, position.y, position.width, Style.height);
 
-            if (!(property.isExpanded = EditorGUI.Foldout(propertyPosition, property.isExpanded, label, true, Style.folderLabelStyle)))
+            if (!(property.isExpanded = EditorGUI.Foldout(propertyPosition, property.isExpanded, label, true, Style.propertyFoldoutStyle)))
             {
                 EditorGUI.EndProperty();
 
                 //adjust position for small icon and draw it in label field
                 var typeIconRect = new Rect(position.xMax - Style.smallFolderWidth,
 #if UNITY_2019_3_OR_NEWER
-                                            position.yMin, Style.smallFolderWidth, Style.smallFolderHeight);
+                                            position.yMin, 
+                                            Style.smallFolderWidth, 
+                                            Style.smallFolderHeight);
 #else
-                                            position.yMin - Style.spacing, Style.smallFolderWidth, Style.smallFolderHeight);
+                                            position.yMin - Style.spacing,
+                                            Style.smallFolderWidth,
+                                            Style.smallFolderHeight);
 #endif
                 if (isPathBased)
                 {
@@ -131,12 +129,12 @@ namespace Toolbox.Editor.Drawers
 
             propertyPosition.y += rawPropertyHeight;
             summaryFieldHeight += rawPropertyHeight;
-            //draw folder data type property
+            //draw the folder data type property
             EditorGUI.PropertyField(propertyPosition, typeProperty, false);
             propertyPosition.y += rawPropertyHeight;
             summaryFieldHeight += rawPropertyHeight;
 
-            //decide what property should be drawn depending on folder data type
+            //decide what property should be drawn depending on the folder data type
             if (isPathBased)
             {
                 propertyPosition.height = EditorGUI.GetPropertyHeight(pathProperty);
@@ -152,7 +150,7 @@ namespace Toolbox.Editor.Drawers
                 summaryFieldHeight += rawPropertyHeight;
             }
 
-            //draw tooltip property
+            //draw the tooltip property
             EditorGUI.PropertyField(propertyPosition, toolProperty, false);
             propertyPosition.y += rawPropertyHeight;
             summaryFieldHeight += rawPropertyHeight;
@@ -224,8 +222,8 @@ namespace Toolbox.Editor.Drawers
                                                Style.smallFolderHeight);
 
             //draw default folder icons
-            GUI.DrawTexture(largeFolderIconRect, Style.folderIcon, ScaleMode.ScaleToFit);
-            GUI.DrawTexture(smallFolderIconRect, Style.folderIcon, ScaleMode.ScaleToFit);
+            GUI.DrawTexture(largeFolderIconRect, Style.foldersIcon, ScaleMode.ScaleToFit);
+            GUI.DrawTexture(smallFolderIconRect, Style.foldersIcon, ScaleMode.ScaleToFit);
 
             if (largeIconProperty.objectReferenceValue)
             {
@@ -249,8 +247,7 @@ namespace Toolbox.Editor.Drawers
         {
             internal static readonly float height = EditorGUIUtility.singleLineHeight;
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
-
-            internal const float padding = 12.0f;
+            internal static readonly float padding = 12.0f;
 
             internal const float largeFolderWidth = ToolboxEditorProject.Style.maxFolderWidth;
             internal const float largeFolderHeight = ToolboxEditorProject.Style.maxFolderHeight;
@@ -258,22 +255,25 @@ namespace Toolbox.Editor.Drawers
             internal const float smallFolderWidth = ToolboxEditorProject.Style.minFolderWidth;
             internal const float smallFolderHeight = ToolboxEditorProject.Style.minFolderHeight;
 
-            internal static readonly Texture2D folderIcon;
-            internal static readonly Texture2D warningIcon;
-
-            internal static readonly GUIStyle folderLabelStyle;
+            internal static readonly GUIStyle dataByNameLabelStyle;
+            internal static readonly GUIStyle propertyFoldoutStyle;
             internal static readonly GUIStyle largeIconPickerStyle;
             internal static readonly GUIStyle smallIconPickerStyle;
 
             internal static readonly GUIContent largeIconPickerContent;
             internal static readonly GUIContent smallIconPickerContent;
 
+            internal static readonly Texture2D foldersIcon;
+            internal static readonly Texture2D warningIcon;
+
             static Style()
             {
-                folderIcon = EditorGUIUtility.FindTexture("Folder Icon");
-                warningIcon = EditorGUIUtility.FindTexture("console.warnicon.sml");
-
-                folderLabelStyle = new GUIStyle(EditorStyles.foldout)
+#if UNITY_2019_3_OR_NEWER
+                dataByNameLabelStyle = new GUIStyle(EditorStyles.miniLabel);
+#else
+                dataByNameLabelStyle = new GUIStyle(EditorStyles.miniTextField);
+#endif
+                propertyFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
                     padding = new RectOffset(17, 2, 0, 0),
                 };
@@ -293,6 +293,9 @@ namespace Toolbox.Editor.Drawers
                 smallIconPickerContent = EditorGUIUtility.IconContent("RawImage Icon");
                 largeIconPickerContent.tooltip = "Select large icon";
                 smallIconPickerContent.tooltip = "Select small icon";
+
+                foldersIcon = EditorGUIUtility.FindTexture("Folder Icon");
+                warningIcon = EditorGUIUtility.FindTexture("console.warnicon.sml");
             }
         }
     }

@@ -34,6 +34,26 @@ public class SampleDrawer : ToolboxDecoratorDrawer<SampleAttribute>
 
 ### Custom Condition Drawer
 
+```csharp
+using UnityEngine;
+
+public class SampleAttribute : ToolboxConditionAttribute
+{ }
+```
+
+```csharp
+using UnityEditor;
+using Toolbox.Editor.Drawers;
+
+public class SampleDrawer : ToolboxConditionDrawer<SampleAttribute>
+{
+	protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, SampleAttribute attribute)
+	{
+		return PropertyCondition.Disabled;
+	}
+}
+```
+
 ### Custom Self Property Drawer
 
 ### Custom List Property Drawer
