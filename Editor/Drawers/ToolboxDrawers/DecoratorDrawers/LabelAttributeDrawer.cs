@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -34,7 +34,7 @@ namespace Toolbox.Editor.Drawers
                     return Style.skinLabelStyle;
                 case SkinStyle.Box:
                     return Style.skinBoxStyle;
-                case SkinStyle.Help:
+                case SkinStyle.Round:
                     return Style.skinHelpStyle;
             }
 
@@ -42,7 +42,7 @@ namespace Toolbox.Editor.Drawers
         }
 
         private static GUIContent GetContent(LabelAttribute attribute)
-        {           
+        {
             if (attribute.Content != null)
             {
                 var content = EditorGUIUtility.TrIconContent(attribute.Content);
@@ -63,17 +63,17 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal static readonly GUIStyle skinLabelStyle;
             internal static readonly GUIStyle skinBoxStyle;
             internal static readonly GUIStyle skinHelpStyle;
+            internal static readonly GUIStyle skinLabelStyle;
 
             internal static readonly GUIStyle labelStyle;
 
             static Style()
             {
+                skinBoxStyle = new GUIStyle("box");
+                skinHelpStyle = new GUIStyle("helpBox");
                 skinLabelStyle = new GUIStyle("label");
-                skinBoxStyle   = new GUIStyle("box");
-                skinHelpStyle  = new GUIStyle("helpBox");
 
                 labelStyle = new GUIStyle(EditorStyles.label);
             }

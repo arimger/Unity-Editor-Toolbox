@@ -2,7 +2,6 @@
 
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
@@ -62,46 +61,12 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Creates asset preview for given <see cref="Object"/>. Uses built-in layouting system.
+        /// Draws header-like label in form of foldout. Uses built-in layouting system.
         /// </summary>
-        /// <param name="texture"></param>
-        /// <param name=""></param>
-        public static void DrawAssetPreview(Object asset, float width = 64.0f, float height = 64.0f)
+        /// <returns></returns>
+        public static bool DrawHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick)
         {
-            var previewTexture = AssetPreview.GetAssetPreview(asset);
-            if (previewTexture == null)
-            {
-                return;
-            }
-
-            var style = new GUIStyle();
-            style.normal.background = previewTexture;
-            var w = Mathf.Clamp(width, 0, previewTexture.width);
-            var h = Mathf.Clamp(height, 0, previewTexture.height);
-            var previewOptions = new GUILayoutOption[]
-            {
-                GUILayout.MaxWidth(w),
-                GUILayout.MaxHeight(h)
-            };
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.BeginHorizontal(Style.box1Style);
-            EditorGUI.LabelField(EditorGUILayout.GetControlRect(true, h, previewOptions), GUIContent.none, style);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.EndHorizontal();
-        }
-
-        /// <summary>
-        /// Creates asset preview for given <see cref="Object"/>.
-        /// </summary>
-        /// <param name="texture"></param>
-        /// <param name=""></param>
-        [Obsolete]
-        public static void DrawAssetPreview(Rect rect, Object asset, float width = 64.0f, float height = 64.0f)
-        {
-            throw new NotImplementedException();
+            return DrawHeaderFoldout(foldout, label, toggleOnLabelClick, null);
         }
 
         /// <summary>
@@ -110,11 +75,21 @@ namespace Toolbox.Editor
         /// <returns></returns>
         public static bool DrawHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle)
         {
+            //where 30.0f - header height, -1.0f - additional padding
             var rect = GUILayoutUtility.GetRect(1, 30.0f);
-            rect.xMin = -1;
+            rect.xMin = -1.0f;
             rect.xMax = EditorGUIUtility.currentViewWidth;
 
             return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, headerStyle);
+        }
+
+        /// <summary>
+        /// Draws header-like label in form of foldout.
+        /// </summary>
+        /// <returns></returns>
+        public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick)
+        {
+            return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, null);
         }
 
         /// <summary>

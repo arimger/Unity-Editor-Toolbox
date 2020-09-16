@@ -110,10 +110,9 @@ namespace Toolbox.Editor.Internal
         /// <param name="footerRect"></param>
         private void DoList(Rect headerRect, Rect midderRect, Rect footerRect)
         {
-            var fixedIndent = -EditorGUI.indentLevel;
-
             //make sure there is no indent while drawing
-            using (new EditorGUI.IndentLevelScope(fixedIndent))
+            //NOTE: indentation will break some controls
+            using (new ZeroIndentScope())
             {
                 DoListHeader(headerRect);
                 DoListMiddle(midderRect);
@@ -594,9 +593,11 @@ namespace Toolbox.Editor.Internal
 
         private bool IsMouseInActiveElement(Rect listRect)
         {
-            var mouseRowIndex = GetRowIndex(Event.current.mousePosition.y - listRect.y);
+            var mousePosition = Event.current.mousePosition;
+            var mouseRowIndex = GetRowIndex(mousePosition.y - listRect.y);
+
             //check if mouse position is inside current row rect 
-            return mouseRowIndex == Index && GetRowRect(mouseRowIndex, listRect).Contains(Event.current.mousePosition);
+            return mouseRowIndex == Index && GetRowRect(mouseRowIndex, listRect).Contains(mousePosition);
         }
 
         private bool IsCurrentElementExpanded()
@@ -678,6 +679,11 @@ namespace Toolbox.Editor.Internal
             var headerRect = GUILayoutUtility.GetRect(0, HeaderHeight, GUILayout.ExpandWidth(true));
             var middleRect = GUILayoutUtility.GetRect(0, MiddleHeight, GUILayout.ExpandWidth(true));
             var footerRect = GUILayoutUtility.GetRect(0, FooterHeight, GUILayout.ExpandWidth(true));
+
+            headerRect = EditorGUI.IndentedRect(headerRect);
+            middleRect = EditorGUI.IndentedRect(middleRect);
+            footerRect = EditorGUI.IndentedRect(footerRect);
+
             DoList(headerRect, middleRect, footerRect);
         }
 
@@ -686,6 +692,7 @@ namespace Toolbox.Editor.Internal
             var headerRect = new Rect(rect.x, rect.y, rect.width, HeaderHeight);
             var middleRect = new Rect(rect.x, headerRect.y + headerRect.height, rect.width, MiddleHeight);
             var footerRect = new Rect(rect.x, middleRect.y + middleRect.height, rect.width, FooterHeight);
+
             DoList(headerRect, middleRect, footerRect);
         }
 
@@ -776,7 +783,7 @@ namespace Toolbox.Editor.Internal
         }
 
         /// <summary>
-        /// Draws default Header's label.
+        /// Draws the default Header.
         /// </summary>
         public void DrawStandardHeader(Rect rect)
         {
@@ -790,7 +797,7 @@ namespace Toolbox.Editor.Internal
             rect.y += diff / 2;
 #endif
 
-            //display the property label using preprocessed name by BeginProperty method
+            //display the property label using the preprocessed name by BeginProperty method
             EditorGUI.LabelField(rect, label);
 
             //adjust OY position to middle of the conent
@@ -869,7 +876,7 @@ namespace Toolbox.Editor.Internal
                 //disable (if needed) and draw the handle
                 using (var scope = new EditorGUI.DisabledScope(!draggable))
                 {
-                    Style.dragButtonHandle.Draw(rect, false, false, false, false);
+                    Style.dragHandleButton.Draw(rect, false, false, false, false);
                 }
             }
         }
@@ -1066,7 +1073,7 @@ namespace Toolbox.Editor.Internal
 
             internal static readonly GUIStyle sizeLabel;
             internal static readonly GUIStyle addRemoveButton;
-            internal static readonly GUIStyle dragButtonHandle;
+            internal static readonly GUIStyle dragHandleButton;
             internal static readonly GUIStyle headerBackground;
             internal static readonly GUIStyle middleBackground;
             internal static readonly GUIStyle footerBackground;
@@ -1091,7 +1098,7 @@ namespace Toolbox.Editor.Internal
                 };
 
                 addRemoveButton = new GUIStyle("RL FooterButton");
-                dragButtonHandle = new GUIStyle("RL DragHandle");
+                dragHandleButton = new GUIStyle("RL DragHandle");
                 headerBackground = new GUIStyle("RL Header");
                 middleBackground = new GUIStyle("RL Background");
                 footerBackground = new GUIStyle("RL Footer");

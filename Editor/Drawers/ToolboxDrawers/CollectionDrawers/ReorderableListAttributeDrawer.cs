@@ -38,7 +38,7 @@ namespace Toolbox.Editor.Drawers
         }
 
         /// <summary>
-        /// Handles data clearing between editors.
+        /// Handles data clearing between Editors.
         /// </summary>
         public override void OnGuiReload()
         {
