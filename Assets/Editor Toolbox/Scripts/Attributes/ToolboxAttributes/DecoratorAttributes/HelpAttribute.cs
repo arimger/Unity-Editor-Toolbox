@@ -21,7 +21,7 @@ namespace UnityEngine
 
     public enum UnityMessageType
     {
-        Noone,
+        None,
         Info,
         Warning,
         Error

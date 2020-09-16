@@ -9,7 +9,7 @@ namespace Toolbox.Editor
     internal static class ToolboxEditorLog
     {
         private const string tag = "Editor Toolbox";
-        private const string format  = "[{0}] {1}";
+        private const string format = "[{0}] {1}";
 
 
         private static string GetPropertyLocation(SerializedProperty property)
@@ -104,6 +104,6 @@ namespace Toolbox.Editor
         internal static void LogError(string message)
         {
             Debug.LogErrorFormat(format, tag, message);
-        }     
+        }
     }
 }

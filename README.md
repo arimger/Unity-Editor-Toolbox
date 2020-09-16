@@ -91,7 +91,7 @@ public string var1;
 #### ProgressBarAttribute
 
 ```csharp
-[ProgressBar(minValue:0.0f, maxValue:100.0f)]
+[ProgressBar(minValue: 0.0f, maxValue: 100.0f)]
 public float var1 = 36.0f;
 ```
 
@@ -351,13 +351,13 @@ Every ToolboxConditionDrawer supports boolean, int, string and enum types and wo
 
 ```csharp
 public string stringValue = "sho";
-[EnableIf(nameof(stringValue), "show")] //or DisableIfAttribute
+[ShowIf(nameof(stringValue), "show")] //or HideIfAttribute
 public int var1;
 ```
 
 ```csharp
 public KeyCode enumValue = KeyCode.A;
-[ShowIf(nameof(enumValue), KeyCode.A)] //or HideIfAttribute
+[EnableIf(nameof(enumValue), KeyCode.A)] //or DisableIfAttribute
 public int var1;
 ```
 
