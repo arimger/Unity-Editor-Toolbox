@@ -1,6 +1,6 @@
 ﻿using System;
 
-using static UnityEditor.EditorGUI;
+using UnityEditor;
 
 namespace Toolbox.Editor.Internal
 {
@@ -11,13 +11,13 @@ namespace Toolbox.Editor.Internal
 
         public ZeroIndentScope()
         {
-            prevIndent = indentLevel;
-            indentLevel = nextIndent;
+            prevIndent = EditorGUI.indentLevel;
+            EditorGUI.indentLevel = nextIndent;
         }
 
         public void Dispose()
         {
-            indentLevel = prevIndent;
+            EditorGUI.indentLevel = prevIndent;
         }
     }
 }
