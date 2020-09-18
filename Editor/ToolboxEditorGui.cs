@@ -352,7 +352,7 @@ namespace Toolbox.Editor
         public static void DrawDefaultProperty(SerializedProperty property, GUIContent label)
         {
             //draw standard foldout with built-in operations (like prefabs handling)
-            //to re-create native steps:
+            //native steps to re-create:
             // - get foldout rect
             // - begin property using EditorGUI.BeginProperty method
             // - read current drag events
@@ -364,18 +364,23 @@ namespace Toolbox.Editor
             }
 
             var currentEvent = Event.current;
+            //TODO: re-examination:
+            //https://github.com/Unity-Technologies/UnityCsReference/blob/master/Editor/Mono/ScriptAttributeGUI/PropertyHandler.cs
             //use current event if drag was performed otherwise, it will cause an error
-            if (currentEvent.type == EventType.DragPerform && GUI.changed) currentEvent.Use();
+            if (currentEvent.type == EventType.DragPerform && GUI.changed)
+            {
+                currentEvent.Use();
+            }
 
             var iterateThroughChildren = true;
 
             //handle property references
             var iterProperty = property.Copy();
-            var lastProperty = iterProperty.GetEndProperty();
+            var lastProperty = property.GetEndProperty();
 
             EditorGUI.indentLevel++;
 
-            //iterate over all children(but only one level depth)
+            //iterate over all children (but only one level depth)
             while (iterProperty.NextVisible(iterateThroughChildren))
             {
                 if (SerializedProperty.EqualContents(iterProperty, lastProperty))

@@ -334,7 +334,7 @@ public int var1;
 public int var1;
 ```
 ```csharp
-[Help("Help information", Order = -1)]
+[Help("Help information", UnityMessageType.Warning, Order = -1)]
 public int var1;
 ```
 ```csharp
