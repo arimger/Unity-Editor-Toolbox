@@ -336,6 +336,11 @@ namespace Toolbox.Editor
             return null;
         }
 
+        public static SerializedProperty GetSize(this SerializedProperty array)
+        {
+            return array.FindPropertyRelative("Array.size");
+        }
+
 
         public static T GetAttribute<T>(SerializedProperty property) where T : Attribute
         {

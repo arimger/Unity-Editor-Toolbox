@@ -147,7 +147,7 @@ namespace Toolbox.Editor
 
             targetTypeDrawers.Clear();
             for (var i = 0; i < settings.TargetTypeDrawersCount; i++)
-            {    
+            {
                 var drawerType = settings.GetTargetTypeDrawerTypeAt(i);
                 if (drawerType == null)
                 {
@@ -186,7 +186,7 @@ namespace Toolbox.Editor
             {
                 var typesDrawer = typesMap.Key;
                 var targetTypes = typesMap.Value;
-                
+
                 for (var i = 0; i < targetTypes.Count; i++)
                 {
                     var targetType = targetTypes[i];
@@ -197,7 +197,7 @@ namespace Toolbox.Editor
 
                     targetTypeDrawers[targetType] = typesDrawer;
                 }
-            }            
+            }
         }
 
 
@@ -347,6 +347,7 @@ namespace Toolbox.Editor
             }
             else
             {
+                //TODO: warning
                 return null;
             }
         }
@@ -393,7 +394,7 @@ namespace Toolbox.Editor
             else
             {
                 return propertyHandlers[key] = new ToolboxPropertyHandler(property);
-            } 
+            }
         }
 
 

@@ -34,7 +34,7 @@ namespace Toolbox.Editor.Drawers
                     attribute.HasHeader);
             }
 
-            list.DoLayoutList(); 
+            list.DoLayoutList();
         }
 
         /// <summary>
