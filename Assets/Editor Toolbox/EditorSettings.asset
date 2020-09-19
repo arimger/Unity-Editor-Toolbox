@@ -65,4 +65,5 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
   listPropertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.ScrollableItemsAttributeDrawer, Toolbox-Editor
   targetTypeDrawerHandlers: []

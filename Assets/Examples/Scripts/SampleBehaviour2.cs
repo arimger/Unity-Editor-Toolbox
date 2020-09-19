@@ -4,6 +4,9 @@
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 2")]
 public class SampleBehaviour2 : MonoBehaviour
 {
+    [ScrollableItems()]
+    public GameObject[] test;
+
     [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
           "Check the SampleBehaviour2.cs script for more details.", Order = -1)]
 

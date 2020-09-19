@@ -75,9 +75,9 @@ namespace Toolbox.Editor
         /// <returns></returns>
         public static bool DrawHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle)
         {
-            //where 30.0f - header height, -1.0f - additional padding
+            //where 30.0f - header height, 2.0f - additional padding
             var rect = GUILayoutUtility.GetRect(1, 30.0f);
-            rect.xMin = -1.0f;
+            rect.xMin = EditorGUIUtility.standardVerticalSpacing;
             rect.xMax = EditorGUIUtility.currentViewWidth;
 
             return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, headerStyle);

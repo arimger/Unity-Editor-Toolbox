@@ -233,7 +233,6 @@ namespace Toolbox.Editor
 #else
             contentRect.x = rect.xMax;
 #endif
-            //draw hierarchy background
             if (Event.current.type == EventType.Repaint)
             {
                 Style.backgroundStyle.Draw(contentRect, false, false, false, false);
@@ -260,11 +259,11 @@ namespace Toolbox.Editor
             }
 
             var content = new GUIContent(string.Empty, "Enable/disable GameObject");
-            //NOTE: using EditorGUI.Toggle will cause bug and deselect all hierarchy toggles when you will pick multi-selected property in inspector
+            //NOTE: using EditorGUI.Toggle will cause bug and deselect all hierarchy toggles when you will pick a multi-selected property in the Inspector
             var result = GUI.Toggle(new Rect(contentRect.x + Style.padding,
                                              contentRect.y,
                                              contentRect.width,
-                                             contentRect.height), 
+                                             contentRect.height),
                                              gameObject.activeSelf, content);
 
             if (contentRect.Contains(Event.current.mousePosition))
@@ -292,21 +291,19 @@ namespace Toolbox.Editor
             var layerMask = gameObject.layer;
             var layerName = LayerMask.LayerToName(layerMask);
 
-            var contentText = layerMask.ToString();
-
-            //adjust the layer label to known layer values
-            switch (layerMask)
+            string GetContentText()
             {
-                //keep the default layer as an empty label
-                case 0:
-                    contentText = string.Empty;
-                    break;
-                //for UI elements we can use the full name
-                case 5:
-                    contentText = layerName;
-                    break;
+                switch (layerMask)
+                {
+                    //keep the default layer as an empty label
+                    case 00: return string.Empty;
+                    //for UI elements we can use the full name
+                    case 05: return layerName;
+                    default: return layerMask.ToString();
+                }
             }
-            var content = new GUIContent(contentText, layerName + " layer");
+
+            var content = new GUIContent(GetContentText(), layerName + " layer");
 
             //draw label for the gameObject's specific layer
             EditorGUI.LabelField(contentRect, content, Style.layerLabelStyle);
@@ -315,14 +312,13 @@ namespace Toolbox.Editor
 
         private static Rect DrawTag(GameObject gameObject, Rect rect)
         {
-            //prepare content based on the GameObject's tag
-            var tagName = gameObject.tag; 
-            var content = new GUIContent(tagName == "Untagged" ? string.Empty : tagName, tagName);
-
             if (Event.current.type == EventType.Repaint)
             {
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
+
+            //prepare content based on the GameObject's tag
+            var content = new GUIContent(gameObject.CompareTag("Untagged") ? string.Empty : gameObject.tag, gameObject.tag);
 
             //draw related label field using prepared content
             EditorGUI.LabelField(rect, content, Style.normalLabelStyle);
@@ -448,7 +444,7 @@ namespace Toolbox.Editor
             //hide the redundant transform component
             headerGameObject.transform.hideFlags = HideFlags.HideInInspector;
             //set proper essentials
-            headerGameObject.name = "#hHeader";           
+            headerGameObject.name = "#hHeader";
             headerGameObject.layer = 0;
             headerGameObject.tag = "EditorOnly";
             headerGameObject.isStatic = false;
@@ -533,7 +529,7 @@ namespace Toolbox.Editor
         {
             internal static readonly float padding = 2.0f;
             internal static readonly float minWidth = 17.0f;
-            internal static readonly float maxWidth = 55.0f;
+            internal static readonly float maxWidth = 60.0f;
             internal static readonly float minHeight = 16.0f;
             internal static readonly float maxHeight = 17.0f;
             internal static readonly float lineWidth = 1.0f;
