@@ -42,7 +42,7 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            const string warningMessage = "Scene does not exist. Check available Scenes in Build options.";
+            const string warningMessage = "Scene does not exist. Check available Scenes in the Build options.";
 
             if (!SceneExists(property.stringValue))
             {
@@ -69,7 +69,11 @@ namespace Toolbox.Editor.Drawers
         private static class Style
         {
             internal static readonly float rowHeight = EditorGUIUtility.singleLineHeight;
+#if UNITY_2019_3_OR_NEWER
+            internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.0f;
+#else
             internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.5f;
+#endif
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
             internal static readonly float padding = 5.0f;
         }

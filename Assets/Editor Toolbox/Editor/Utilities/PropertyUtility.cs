@@ -16,6 +16,8 @@ namespace Toolbox.Editor
         /// <returns></returns>
         internal static string GetPropertyKey(this SerializedProperty property)
         {
+            //TODO:
+            //return property.serializedObject.targetObject.GetType() + "-" + property.propertyPath;
             return property.serializedObject.GetHashCode() + "-" + property.propertyPath;
         }
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -16,7 +16,7 @@ namespace Toolbox.Editor.Drawers
 
 
         /// <summary>
-        /// Clears and destroys particular editor mapped to the provided key.
+        /// Clears and destroys particular Editor mapped to the provided key.
         /// </summary>
         /// <param name="key"></param>
         private void ClearEditor(string key)
@@ -29,7 +29,7 @@ namespace Toolbox.Editor.Drawers
         }
 
         /// <summary>
-        /// Clears and destroys all previously instantiated editor instances.
+        /// Clears and destroys all previously instantiated Editor instances.
         /// </summary>
         private void ClearEditors()
         {
@@ -42,39 +42,12 @@ namespace Toolbox.Editor.Drawers
         }
 
         /// <summary>
-        /// Draws the inlined version of the <see cref="Editor"></see> and handles all unexpected situations.
+        /// Draws the inlined version of the given <see cref="Editor"/>.
         /// </summary>
         /// <param name="editor"></param>
         /// <param name="attribute"></param>
-        private void OnEditorGuiSafe(Editor editor, InLineEditorAttribute attribute)
+        private void DrawEditor(Editor editor, InLineEditorAttribute attribute)
         {
-            //force the expanded inspector since a header is not expected
-            InspectorUtility.SetIsEditorExpanded(editor, true);
-
-            var labelWidth = 0.0f;
-            var fieldWidth = 0.0f;
-
-            //prevent custom editors for overriding the internal properties
-            labelWidth = EditorGUIUtility.labelWidth;
-            fieldWidth = EditorGUIUtility.fieldWidth;
-
-            OnEditorGuiDraw(editor, attribute);
-
-            EditorGUIUtility.labelWidth = labelWidth;
-            EditorGUIUtility.fieldWidth = fieldWidth;
-        }
-
-        /// <summary>
-        /// Draws the inlined version of the <see cref="Editor"></see>.
-        /// </summary>
-        /// <param name="editor"></param>
-        /// <param name="attribute"></param>
-        private void OnEditorGuiDraw(Editor editor, InLineEditorAttribute attribute)
-        {
-            //begin editor inside vertical group
-            EditorGUILayout.BeginVertical(Style.inlinedStyle);
-            EditorGUILayout.BeginVertical();
-
             //draw whole inspector and apply all changes 
             editor.serializedObject.Update();
             editor.OnInspectorGUI();
@@ -90,14 +63,16 @@ namespace Toolbox.Editor.Drawers
 
                 if (attribute.DrawSettings)
                 {
-                    EditorGUILayout.BeginHorizontal();
-                    editor.OnPreviewSettings();
-                    EditorGUILayout.EndHorizontal();
+                    //draw additional settings associated to the Editor
+                    //for example:
+                    // - audio management for the AudioClip
+                    // - model settings within the Previews
+                    using (new EditorGUILayout.HorizontalScope(Style.settingStyle))
+                    {
+                        editor.OnPreviewSettings();
+                    }
                 }
             }
-
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.EndVertical();
         }
 
 
@@ -131,7 +106,7 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            //get (or create) editor for the current property
+            //get (or create new) Editor for the current property
             if (!editorInstances.TryGetValue(propertyKey, out var editor))
             {
                 editor = Editor.CreateEditor(propertyValue);
@@ -144,14 +119,27 @@ namespace Toolbox.Editor.Drawers
 
             if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "Inspector Preview", true, Style.foldoutStyle))
             {
-                //draw and prewarm the inlined editor   
-                OnEditorGuiSafe(editor, attribute);
+                InspectorUtility.SetIsEditorExpanded(editor, true);
+
+                //TODO: additional scope to handle widths
+                //prevent custom Editors for overriding
+                var labelWidth = EditorGUIUtility.labelWidth;
+                var fieldWidth = EditorGUIUtility.fieldWidth;
+
+                using (new EditorGUILayout.VerticalScope(Style.inlinedStyle))
+                {
+                    //draw and prewarm the inlined Editor   
+                    DrawEditor(editor, attribute);
+                }
+
+                EditorGUIUtility.labelWidth = labelWidth;
+                EditorGUIUtility.fieldWidth = fieldWidth;
             }
         }
 
 
         /// <summary>
-        /// Handles data clearing between editors.
+        /// Handles data clearing between Editors.
         /// </summary>
         public override void OnGuiReload()
         {
@@ -174,21 +162,35 @@ namespace Toolbox.Editor.Drawers
             internal static readonly GUIStyle inlinedStyle;
             internal static readonly GUIStyle foldoutStyle;
             internal static readonly GUIStyle previewStyle;
+            internal static readonly GUIStyle settingStyle;
 
             static Style()
             {
                 inlinedStyle = new GUIStyle(EditorStyles.helpBox)
                 {
-                    padding = new RectOffset(13, 12, 8, 8)
+                    padding = new RectOffset(13, 13, 8, 8)
                 };
                 foldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
+#if UNITY_2019_3_OR_NEWER
+                    fontSize = 10,
+#else
                     fontSize = 9,
+#endif
                     alignment = TextAnchor.MiddleLeft
                 };
 
                 previewStyle = new GUIStyle();
-                previewStyle.normal.background = EditorGuiUtility.CreatePersistantTexture();
+                previewStyle.normal.background = EditorGuiUtility.CreateColorTexture();
+
+                settingStyle = new GUIStyle()
+                {
+#if UNITY_2019_3_OR_NEWER
+                    padding = new RectOffset(4, 0, 0, 0)
+#else
+                    padding = new RectOffset(1, 0, 0, 0)
+#endif
+                };
             }
         }
     }
