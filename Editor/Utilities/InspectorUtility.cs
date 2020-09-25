@@ -16,6 +16,7 @@ namespace Toolbox.Editor
         [InitializeOnLoadMethod]
         private static void InitializeEvents()
         {
+            //TODO: better event needed
             Selection.selectionChanged += OnEditorReload;
         }
 
@@ -96,7 +97,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Event fired every time when the inspector window is fully rebuilt.
+        /// Event fired every time when the Inspector Window is fully rebuilt.
         /// </summary>
         internal static event Action OnEditorReload;
     }

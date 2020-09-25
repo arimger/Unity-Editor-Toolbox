@@ -15,12 +15,12 @@ namespace Toolbox.Editor
         private static readonly Dictionary<string, Texture2D> loadedTextures = new Dictionary<string, Texture2D>();
 
 
-        public static Texture2D CreatePersistantTexture()
+        public static Texture2D CreateColorTexture()
         {
-            return CreatePersistantTexture(Color.clear);
+            return CreateColorTexture(Color.clear);
         }
 
-        public static Texture2D CreatePersistantTexture(Color color)
+        public static Texture2D CreateColorTexture(Color color)
         {
             var mode = FilterMode.Point;
             var flag = HideFlags.HideAndDontSave;
