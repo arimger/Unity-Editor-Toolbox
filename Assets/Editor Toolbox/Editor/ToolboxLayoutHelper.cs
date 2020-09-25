@@ -23,12 +23,12 @@ namespace Toolbox.Editor
                 inEditorLayout = false;
             };
 
-            //ToolboxEditor.OnAfterToolboxEditor is a quite useful event which can be used to 
+            //ToolboxEditor.OnCloseToolboxEditor is a quite useful event which can be used to 
             //validate layout data. Actually it should be used to draw additional information
             //into the target Editor but in this case we will check previously created scopes
 
             ToolboxEditor.OnBeginToolboxEditor += OnBeginEditor;
-            ToolboxEditor.OnAfterToolboxEditor += OnAfterEditor;
+            ToolboxEditor.OnCloseToolboxEditor += OnCloseEditor;
         }
 
 
@@ -53,7 +53,7 @@ namespace Toolbox.Editor
             inEditorLayout = true;
         }
 
-        private static void OnAfterEditor(Editor editor)
+        private static void OnCloseEditor(Editor editor)
         {
             inEditorLayout = false;
 

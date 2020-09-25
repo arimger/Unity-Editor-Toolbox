@@ -21,7 +21,7 @@ namespace Toolbox.Editor
         {
             OnBeginToolboxEditor?.Invoke(this);
             DrawCustomInspector();
-            OnAfterToolboxEditor?.Invoke(this);
+            OnCloseToolboxEditor?.Invoke(this);
         }
 
 
@@ -76,6 +76,6 @@ namespace Toolbox.Editor
 
 
         public static event Action<Editor> OnBeginToolboxEditor;
-        public static event Action<Editor> OnAfterToolboxEditor;
+        public static event Action<Editor> OnCloseToolboxEditor;
     }
 }
