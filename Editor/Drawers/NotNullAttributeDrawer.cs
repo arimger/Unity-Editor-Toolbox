@@ -55,7 +55,11 @@ namespace Toolbox.Editor.Drawers
         private static class Style
         {
             internal static readonly float rowHeight = EditorGUIUtility.singleLineHeight;
+#if UNITY_2019_3_OR_NEWER
+            internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.0f;
+#else
             internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.5f;
+#endif
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
             internal static readonly float padding = 5.0f;
 
