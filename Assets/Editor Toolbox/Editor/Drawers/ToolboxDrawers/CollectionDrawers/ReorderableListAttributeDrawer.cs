@@ -22,11 +22,11 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReorderableListAttribute attribute)
         {
-            var key = property.GetPropertyKey();
+            var propertyKey = property.GetPropertyKey();
 
-            if (!listInstances.TryGetValue(key, out var list))
+            if (!listInstances.TryGetValue(propertyKey, out var list))
             {
-                listInstances[key] = list = ToolboxEditorGui.CreateList(property,
+                listInstances[propertyKey] = list = ToolboxEditorGui.CreateList(property,
                     attribute.ListStyle,
                     attribute.ElementLabel,
                     attribute.FixedSize,
