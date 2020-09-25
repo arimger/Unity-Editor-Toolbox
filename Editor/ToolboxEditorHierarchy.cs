@@ -242,7 +242,6 @@ namespace Toolbox.Editor
             var content = EditorGuiUtility.GetObjectContent(gameObject, typeof(GameObject));
             if (content.image)
             {
-                //draw the specific icon 
                 GUI.Label(contentRect, content.image);
             }
 
@@ -450,7 +449,6 @@ namespace Toolbox.Editor
             headerGameObject.isStatic = false;
 
             //ensure it gets reparented if this was a context click(otherwise does nothing) and fix name
-            GameObjectUtility.EnsureUniqueNameForSibling(headerGameObject);
             GameObjectUtility.SetParentAndAlign(headerGameObject, parentGameObject);
 
             //register the creation in the undo system
@@ -585,7 +583,7 @@ namespace Toolbox.Editor
                 };
 
                 backgroundStyle = new GUIStyle();
-                backgroundStyle.normal.background = EditorGuiUtility.CreatePersistantTexture(labelColor);
+                backgroundStyle.normal.background = EditorGuiUtility.CreateColorTexture(labelColor);
 
                 componentIcon = EditorGUIUtility.IconContent("cs Script Icon").image;
                 transformIcon = EditorGUIUtility.IconContent("Transform Icon").image;

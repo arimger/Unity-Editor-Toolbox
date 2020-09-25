@@ -31,7 +31,7 @@ Unity 2018.x or newer
 
 ## Table Of Contents
 
-- [Attributes&Drawers](#drawers)
+- [Attributes & Drawers](#drawers)
 	- [Regular Drawers](#regulardrawers)
 	- [Toolbox Drawers](#toolboxdrawers)
 - [Reorderable List](#reorderable-list)
@@ -54,7 +54,7 @@ Available features are divided into three groups:
 
 Each module is described in its respective section.
 
-## Attributes&Drawers <a name="drawers"></a>
+## Attributes & Drawers <a name="drawers"></a>
 
 ### Regular Drawers <a name="regulardrawers"></a>
 
@@ -381,7 +381,7 @@ public AudioClip var1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc36.png)
 ```csharp
-[InLineEditor(drawPreview:true)]
+[InLineEditor(true, true)]
 public Material var1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc37.png)

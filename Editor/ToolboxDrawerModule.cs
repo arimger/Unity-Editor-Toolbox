@@ -385,15 +385,15 @@ namespace Toolbox.Editor
         /// <returns></returns>
         internal static ToolboxPropertyHandler GetPropertyHandler(SerializedProperty property)
         {
-            var key = property.GetPropertyKey();
+            var propertyKey = property.GetPropertyKey();
 
-            if (propertyHandlers.TryGetValue(key, out var propertyHandler))
+            if (propertyHandlers.TryGetValue(propertyKey, out var propertyHandler))
             {
                 return propertyHandler;
             }
             else
             {
-                return propertyHandlers[key] = new ToolboxPropertyHandler(property);
+                return propertyHandlers[propertyKey] = new ToolboxPropertyHandler(property);
             }
         }
 
