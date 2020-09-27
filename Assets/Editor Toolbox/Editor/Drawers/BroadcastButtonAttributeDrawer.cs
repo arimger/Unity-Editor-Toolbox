@@ -32,13 +32,6 @@ namespace Toolbox.Editor.Drawers
         {
             internal static readonly float height = EditorGUIUtility.singleLineHeight * 1.25f;
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
-
-            internal static GUIStyle buttonStyle;
-
-            static Style()
-            {
-                buttonStyle = new GUIStyle(GUI.skin.button);
-            }
         }
     }
 }

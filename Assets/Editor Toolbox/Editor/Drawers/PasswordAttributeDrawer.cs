@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -13,9 +13,9 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            //begin property drawing
+            //begin the true property
             label = EditorGUI.BeginProperty(position, label, property);
-            //create the associated label
+            //draw the prefix label
             position = EditorGUI.PrefixLabel(position, label);
             //craete the password field and cache the current result
             property.stringValue = EditorGUI.PasswordField(position, GUIContent.none, property.stringValue);

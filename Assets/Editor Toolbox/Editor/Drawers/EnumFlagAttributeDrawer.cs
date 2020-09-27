@@ -189,7 +189,11 @@ namespace Toolbox.Editor.Drawers
             {
                 toggleStyle = new GUIStyle(GUI.skin.button)
                 {
+#if UNITY_2019_3_OR_NEWER
+                    fontSize = 10
+#else
                     fontSize = 9
+#endif
                 };
             }
         }
