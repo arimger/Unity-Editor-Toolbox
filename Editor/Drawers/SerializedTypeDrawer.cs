@@ -80,11 +80,7 @@ namespace Toolbox.Editor.Drawers
             //get stored types if possible or create new item
             if (!filteredTypes.TryGetValue(refAttribute.AssemblyType, out refTypes))
             {
-                refTypes = filteredTypes[refAttribute.AssemblyType] = refAttribute.GetFilteredTypes();
-            }
-            else
-            {
-                refTypes = filteredTypes[refAttribute.AssemblyType];
+                filteredTypes[refAttribute.AssemblyType] = refTypes = refAttribute.GetFilteredTypes();
             }
 
             //create labels from filtered types
@@ -93,7 +89,10 @@ namespace Toolbox.Editor.Drawers
                 var menuType = refTypes[i];
                 var menuLabel = FormatGroupedTypeName(menuType, refAttribute.Grouping);
 
-                if (menuType == refType) index = i;
+                if (menuType == refType)
+                {
+                    index = i;
+                }
 
                 refLabels.Add(menuLabel);
             }

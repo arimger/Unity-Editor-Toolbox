@@ -5,12 +5,6 @@ namespace Toolbox.Editor.Drawers
 {
     public abstract class ToolboxPropertyDrawerBase : ToolboxAttributeDrawer
     {
-        public ToolboxPropertyDrawerBase()
-        {
-            InspectorUtility.OnEditorReload += OnGuiReload;
-        }
-
-
         public abstract bool IsPropertyValid(SerializedProperty property);
 
         public abstract void OnGui(SerializedProperty property, GUIContent label);

@@ -11,14 +11,41 @@ namespace Toolbox.Editor
     using Editor = UnityEditor.Editor;
     using Object = UnityEngine.Object;
 
+    [InitializeOnLoad]
     internal static partial class InspectorUtility
     {
-        [InitializeOnLoadMethod]
-        private static void InitializeEvents()
+        static InspectorUtility()
         {
-            //TODO: better event needed
-            Selection.selectionChanged += OnEditorReload;
+            //we can use 'OnBeginToolboxEditor' and 'OnCloseToolboxEditor' to cache 
+            //processed Editors and determine the real context of the serialization
+            ToolboxEditor.OnBeginToolboxEditor += (editor) =>
+            {
+                CurrentTargetObjects = editor.targets;
+            };
+            ToolboxEditor.OnCloseToolboxEditor += (editor) =>
+            {
+                CurrentTargetObjects = null;
+            };
+
+            //we should determine whenever the last created Editor is destroyed so
+            //using the 'Selection' class is more like a workaround than a solution
+            //Selection.selectionChanged += () => OnEditorReload?.Invoke();
+
+            //we can use new Editors to check if 'OnEditorReload' should be called
+            ToolboxEditor.OnBeginToolboxEditor += (editor) =>
+            {
+                if (lastCachedEditor == null)
+                {
+                    OnEditorReload?.Invoke();
+                }
+
+                //cached Editor will be destroyed every time when object is deselected
+                lastCachedEditor = editor;
+            };
         }
+
+        private static Editor validationEditor;
+        private static Editor lastCachedEditor;
 
 
         /// <summary>
@@ -100,6 +127,12 @@ namespace Toolbox.Editor
         /// Event fired every time when the Inspector Window is fully rebuilt.
         /// </summary>
         internal static event Action OnEditorReload;
+
+
+        /// <summary>
+        /// Last cached targetObjects from the currently processed <see cref="ToolboxEditor"/>.
+        /// </summary>
+        internal static Object[] CurrentTargetObjects { get; private set; }
     }
 
     internal static partial class InspectorUtility
@@ -201,7 +234,6 @@ namespace Toolbox.Editor
             InternalEditorUtility.RepaintAllViews();
         }
 
-        //[MenuItem("CONTEXT/Component/Hide All Components", false, priority = 301)]
         [Obsolete]
         private static void HideAll(MenuCommand menuCommand)
         {
@@ -218,7 +250,6 @@ namespace Toolbox.Editor
             InternalEditorUtility.RepaintAllViews();
         }
 
-        //[MenuItem("CONTEXT/Component/Show All Components", false, priority = 302)]
         [Obsolete]
         private static void ShowAll(MenuCommand menuCommand)
         {

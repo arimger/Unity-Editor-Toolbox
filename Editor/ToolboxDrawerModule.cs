@@ -15,7 +15,7 @@ namespace Toolbox.Editor
         [InitializeOnLoadMethod]
         internal static void InitializeModule()
         {
-            InspectorUtility.OnEditorReload += ClearHandlers;
+            InspectorUtility.OnEditorReload += ReloadDrawers;
         }
 
 
@@ -29,6 +29,8 @@ namespace Toolbox.Editor
         private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers = new Dictionary<Type, ToolboxConditionDrawerBase>();
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> selfPropertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> listPropertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
+
+        private readonly static List<ToolboxPropertyDrawerBase> propertyDrawers = new List<ToolboxPropertyDrawerBase>();
 
         /// <summary>
         /// Collection of specific drawers associated to particular <see cref="object"/> types.
@@ -204,9 +206,18 @@ namespace Toolbox.Editor
         /// <summary>
         /// Clears all currently cached <see cref="ToolboxPropertyHandler"/>s.
         /// </summary>
-        internal static void ClearHandlers()
+        internal static void ReloadDrawers()
         {
             propertyHandlers.Clear();
+
+            foreach (var drawer in listPropertyDrawers.Values)
+            {
+                drawer.OnGuiReload();
+            }
+            foreach (var drawer in selfPropertyDrawers.Values)
+            {
+                drawer.OnGuiReload();
+            }
         }
 
         /// <summary>
@@ -385,7 +396,7 @@ namespace Toolbox.Editor
         /// <returns></returns>
         internal static ToolboxPropertyHandler GetPropertyHandler(SerializedProperty property)
         {
-            var propertyKey = property.GetPropertyKey();
+            var propertyKey = property.GetPropertyHashKey();
 
             if (propertyHandlers.TryGetValue(propertyKey, out var propertyHandler))
             {
