@@ -104,7 +104,10 @@ public class SampleEditor : ToolboxEditor
 	public override void DrawCustomInspector()
 	{
 		base.DrawCustomInspector();
-
+		
+        //for custom properties:
+        // - ToolboxEditorGui.DrawToolboxProperty(serializedObject.FindProperty("myProperty"));
+		
 		EditorGUILayout.Space();
 		EditorGUILayout.LabelField("This label is created in the custom Editor. You can freely extend Toolbox-based Editors by inheriting from the <b>ToolboxEditor</b> class.", Style.labelStyle);
 	}

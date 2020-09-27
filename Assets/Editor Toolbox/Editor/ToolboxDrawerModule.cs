@@ -396,15 +396,24 @@ namespace Toolbox.Editor
         /// <returns></returns>
         internal static ToolboxPropertyHandler GetPropertyHandler(SerializedProperty property)
         {
-            var propertyKey = property.GetPropertyHashKey();
-
-            if (propertyHandlers.TryGetValue(propertyKey, out var propertyHandler))
+            if (InspectorUtility.InToolboxEditor)
             {
-                return propertyHandler;
+                //NOTE: maybe type-based key?
+                var propertyKey = property.GetPropertyHashKey();
+
+                if (propertyHandlers.TryGetValue(propertyKey, out var propertyHandler))
+                {
+                    return propertyHandler;
+                }
+                else
+                {
+                    return propertyHandlers[propertyKey] = new ToolboxPropertyHandler(property);
+                }
             }
             else
             {
-                return propertyHandlers[propertyKey] = new ToolboxPropertyHandler(property);
+                ToolboxEditorLog.LogWarning("Do not use Toolbox-related drawers outside ToolboxEditor.");
+                return null;
             }
         }
 

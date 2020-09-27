@@ -15,6 +15,9 @@ public class SampleEditor : ToolboxEditor
     {
         base.DrawCustomInspector();
 
+        //for custom properties:
+        // - ToolboxEditorGui.DrawToolboxProperty(serializedObject.FindProperty("myProperty"));
+
         EditorGUILayout.Space();
         EditorGUILayout.Space();
         EditorGUILayout.Space();

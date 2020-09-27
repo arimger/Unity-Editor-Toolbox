@@ -124,7 +124,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Event fired every time when the Inspector Window is fully rebuilt.
+        /// Event fired every time when <see cref="ToolboxEditor"/>s were re-created.
         /// </summary>
         internal static event Action OnEditorReload;
 
@@ -133,6 +133,8 @@ namespace Toolbox.Editor
         /// Last cached targetObjects from the currently processed <see cref="ToolboxEditor"/>.
         /// </summary>
         internal static Object[] CurrentTargetObjects { get; private set; }
+
+        internal static bool InToolboxEditor => lastCachedEditor;
     }
 
     internal static partial class InspectorUtility

@@ -331,7 +331,7 @@ namespace Toolbox.Editor
         /// <param name="property"></param>
         public static void DrawToolboxProperty(SerializedProperty property)
         {
-            ToolboxDrawerModule.GetPropertyHandler(property).OnGuiLayout();
+            ToolboxDrawerModule.GetPropertyHandler(property)?.OnGuiLayout();
         }
 
         /// <summary>
