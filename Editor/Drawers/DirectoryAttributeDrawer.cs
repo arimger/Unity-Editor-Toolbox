@@ -87,7 +87,7 @@ namespace Toolbox.Editor.Drawers
         {
             internal static readonly float rowHeight = EditorGUIUtility.singleLineHeight;
 #if UNITY_2019_3_OR_NEWER
-            internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.0f;
+            internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.1f;
 #else
             internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.5f;
 #endif

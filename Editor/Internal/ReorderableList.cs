@@ -273,7 +273,7 @@ namespace Toolbox.Editor.Internal
                     }
                     else
                     {
-                        DrawStandardElementDraggingHandle(dragElementRect, i, false, false, Draggable);
+                        DrawStandardElementHandle(dragElementRect, i, false, false, Draggable);
                     }
 
                     elementContentRect = itemElementRect;
@@ -289,7 +289,7 @@ namespace Toolbox.Editor.Internal
                     }
                     else
                     {
-                        DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(nonDragTargetIndices[i]), false, false, Draggable);
+                        DrawStandardElement(elementContentRect, nonDragTargetIndices[i], false, false, Draggable);
                     }
                     EditorGUIUtility.labelWidth += Style.handleSpace;
                 }
@@ -318,7 +318,7 @@ namespace Toolbox.Editor.Internal
                 }
                 else
                 {
-                    DrawStandardElementDraggingHandle(dragElementRect, Index, true, true, Draggable);
+                    DrawStandardElementHandle(dragElementRect, Index, true, true, Draggable);
                 }
 
                 elementContentRect = itemElementRect;
@@ -334,7 +334,7 @@ namespace Toolbox.Editor.Internal
                 }
                 else
                 {
-                    DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(Index), true, true, Draggable);
+                    DrawStandardElement(elementContentRect, Index, true, true, Draggable);
                 }
                 EditorGUIUtility.labelWidth += Style.handleSpace;
             }
@@ -372,7 +372,7 @@ namespace Toolbox.Editor.Internal
                     }
                     else
                     {
-                        DrawStandardElementDraggingHandle(dragElementRect, i, activeElement, focusedElement, Draggable);
+                        DrawStandardElementHandle(dragElementRect, i, activeElement, focusedElement, Draggable);
                     }
 
                     elementContentRect = itemElementRect;
@@ -388,7 +388,7 @@ namespace Toolbox.Editor.Internal
                     }
                     else
                     {
-                        DrawStandardElement(elementContentRect, List.GetArrayElementAtIndex(i), activeElement, focusedElement, Draggable);
+                        DrawStandardElement(elementContentRect, i, activeElement, focusedElement, Draggable);
                     }
                     EditorGUIUtility.labelWidth += Style.handleSpace;
                 }
@@ -674,6 +674,49 @@ namespace Toolbox.Editor.Internal
         }
 
 
+        public string GetElementName(SerializedProperty element, int index)
+        {
+            const string defaultPrefix = "Element";
+
+            var elementLabel = element.displayName;
+            if (ElementLabel == null)
+            {
+                return elementLabel;
+            }
+
+            var standardName = string.Format("{0} {1}", defaultPrefix, index);
+            if (standardName != elementLabel)
+            {
+                return elementLabel;
+            }
+
+            return elementLabel.Replace(defaultPrefix, ElementLabel);
+        }
+
+        public void GrabKeyboardFocus()
+        {
+            GUIUtility.keyboardControl = id;
+        }
+
+        public bool HasKeyboardControl()
+        {
+            return GUIUtility.keyboardControl == id;
+        }
+
+        public void RemoveKeyboardFocus()
+        {
+            if (GUIUtility.keyboardControl == id)
+            {
+                GUIUtility.keyboardControl = 0;
+            }
+        }
+
+        public float GetHeight()
+        {
+            return MiddleHeight + HeaderHeight + FooterHeight;
+        }
+
+
         public void DoLayoutList()
         {
             var headerRect = GUILayoutUtility.GetRect(0, HeaderHeight, GUILayout.ExpandWidth(true));
@@ -836,24 +879,34 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-        /// <summary>
-        /// Draws the default Element.
+        /// <summary>                                       
+        /// Draws the default Element background.
         /// </summary>
-        public void DrawStandardElement(Rect rect, SerializedProperty element, bool selected, bool focused, bool draggable)
+        public void DrawStandardElementBackground(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
-            const string standardElementName = "Element";
+            if (Event.current.type == EventType.Repaint)
+            {
+                if (selected)
+                {
+                    //additional height for selection rect + shadow
+                    //NOTE: shadow appears before Unity 2019.3+
+#if UNITY_2019_3_OR_NEWER
+                    var padding = Style.spacing;
+#else
+                    var padding = Style.spacing + Style.spacing / 2;
+#endif
+                    rect.yMax += padding / 2;
+                    rect.yMin -= padding / 2;
+                }
 
-            var displayName = ElementLabel == null
-                ? element.displayName
-                : element.displayName.Replace(standardElementName, ElementLabel);
-
-            EditorGUI.PropertyField(rect, element, new GUIContent(displayName), element.isExpanded);
+                Style.elementBackground.Draw(rect, false, selected, selected, focused);
+            }
         }
 
         /// <summary>
         /// Draws the default dragging Handle.
         /// </summary>
-        public void DrawStandardElementDraggingHandle(Rect rect, int index, bool selected, bool focused, bool draggable)
+        public void DrawStandardElementHandle(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
             if (Event.current.type == EventType.Repaint)
             {
@@ -882,27 +935,13 @@ namespace Toolbox.Editor.Internal
         }
 
         /// <summary>
-        /// Draws the default Element background.
+        /// Draws the default Element field.
         /// </summary>
-        public void DrawStandardElementBackground(Rect rect, int index, bool selected, bool focused, bool draggable)
+        public void DrawStandardElement(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
-            if (Event.current.type == EventType.Repaint)
-            {
-                if (selected)
-                {
-                    //additional height for selection rect + shadow
-                    //NOTE: shadow appears before Unity 2019.3+
-#if UNITY_2019_3_OR_NEWER
-                    var padding = Style.spacing;
-#else
-                    var padding = Style.spacing + Style.spacing / 2;
-#endif
-                    rect.yMax += padding / 2;
-                    rect.yMin -= padding / 2;
-                }
+            var element = List.GetArrayElementAtIndex(index);
 
-                Style.elementBackground.Draw(rect, false, selected, selected, focused);
-            }
+            EditorGUI.PropertyField(rect, element, new GUIContent(GetElementName(element, index)), element.isExpanded);
         }
 
         /// <summary>
@@ -914,27 +953,6 @@ namespace Toolbox.Editor.Internal
         }
 
         #endregion
-
-
-        public void GrabKeyboardFocus()
-        {
-            GUIUtility.keyboardControl = id;
-        }
-
-        public void ReleaseKeyboardFocus()
-        {
-            if (GUIUtility.keyboardControl == id) GUIUtility.keyboardControl = 0;
-        }
-
-        public bool HasKeyboardControl()
-        {
-            return GUIUtility.keyboardControl == id;
-        }
-
-        public float GetHeight()
-        {
-            return MiddleHeight + HeaderHeight + FooterHeight;
-        }
 
 
         public int Index
