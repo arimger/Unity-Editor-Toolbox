@@ -22,7 +22,7 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReorderableListAttribute attribute)
         {
-            var propertyKey = property.GetPropertyKey();
+            var propertyKey = property.GetPropertyHashKey();
 
             if (!listInstances.TryGetValue(propertyKey, out var list))
             {
@@ -36,6 +36,7 @@ namespace Toolbox.Editor.Drawers
 
             list.DoLayoutList();
         }
+
 
         /// <summary>
         /// Handles data clearing between Editors.

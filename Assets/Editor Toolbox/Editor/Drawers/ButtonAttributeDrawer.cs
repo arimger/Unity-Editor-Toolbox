@@ -14,6 +14,7 @@ namespace Toolbox.Editor.Drawers
             switch (attribute.Type)
             {
                 case ButtonActivityType.Everything:
+                    isValid = true;
                     break;
                 case ButtonActivityType.Nothing:
                     isValid = false;

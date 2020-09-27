@@ -14,11 +14,20 @@ namespace Toolbox.Editor
         /// Creates and returns unique (hash based) key for this property.
         /// </summary>
         /// <returns></returns>
-        internal static string GetPropertyKey(this SerializedProperty property)
+        internal static string GetPropertyHashKey(this SerializedProperty property)
         {
-            //TODO:
-            //return property.serializedObject.targetObject.GetType() + "-" + property.propertyPath;
-            return property.serializedObject.GetHashCode() + "-" + property.propertyPath;
+            var hash = property.serializedObject.GetHashCode();
+            return hash + "." + property.propertyPath;
+        }
+
+        /// <summary>
+        /// Creates and returns unique (type based) key for this property.
+        /// </summary>
+        /// <returns></returns>
+        internal static string GetPropertyTypeKey(this SerializedProperty property)
+        {
+            var type = property.serializedObject.targetObject.GetType();
+            return type + "." + property.propertyPath;
         }
 
         /// <summary>

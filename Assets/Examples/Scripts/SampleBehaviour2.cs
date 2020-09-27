@@ -4,9 +4,6 @@
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 2")]
 public class SampleBehaviour2 : MonoBehaviour
 {
-    [ScrollableItems()]
-    public GameObject[] test;
-
     [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
           "Check the SampleBehaviour2.cs script for more details.", Order = -1)]
 
@@ -114,4 +111,9 @@ public class SampleBehaviour2 : MonoBehaviour
     public KeyCode enumValue = KeyCode.A;
     [DisableIf(nameof(enumValue), KeyCode.A)] //or EnableIf
     public int var35;
+
+    [Label("10", skinStyle: SkinStyle.Box)]
+
+    [ScrollableItems(60, DefaultMinIndex = 0, DefaultMaxIndex = 10)]
+    public GameObject[] largeArray = new GameObject[19];
 }

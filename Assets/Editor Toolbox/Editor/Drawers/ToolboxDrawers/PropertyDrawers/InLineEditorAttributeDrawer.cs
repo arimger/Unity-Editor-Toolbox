@@ -83,7 +83,7 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, InLineEditorAttribute attribute)
         {
-            var propertyKey = property.GetPropertyKey();
+            var propertyKey = property.GetPropertyHashKey();
 
             //create a standard property field
             EditorGUI.BeginChangeCheck();
@@ -106,22 +106,21 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            //get (or create new) Editor for the current property
-            if (!editorInstances.TryGetValue(propertyKey, out var editor))
-            {
-                editor = Editor.CreateEditor(propertyValue);
-                if (editor.HasPreviewGUI())
-                {
-                    editor.ReloadPreviewInstances();
-                }
-                editorInstances[propertyKey] = editor;
-            }
-
             if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "Inspector Preview", true, Style.foldoutStyle))
             {
+                //get (or create new) Editor for the current property
+                if (!editorInstances.TryGetValue(propertyKey, out var editor))
+                {
+                    editor = Editor.CreateEditor(propertyValue);
+                    if (editor.HasPreviewGUI())
+                    {
+                        editor.ReloadPreviewInstances();
+                    }
+                    editorInstances[propertyKey] = editor;
+                }
+
                 InspectorUtility.SetIsEditorExpanded(editor, true);
 
-                //TODO: additional scope to handle widths
                 //prevent custom Editors for overriding
                 var labelWidth = EditorGUIUtility.labelWidth;
                 var fieldWidth = EditorGUIUtility.fieldWidth;
