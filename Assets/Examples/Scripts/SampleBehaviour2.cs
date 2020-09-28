@@ -114,6 +114,6 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [Label("10", skinStyle: SkinStyle.Box)]
 
-    [ScrollableItems(60, DefaultMinIndex = 0, DefaultMaxIndex = 10)]
+    [ScrollableItems(defaultMinIndex: 0, defaultMaxIndex: 5)]
     public GameObject[] largeArray = new GameObject[19];
 }

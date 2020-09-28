@@ -45,7 +45,7 @@ Unity 2018.x or newer
 
 The most important file, it allows the user to manage all available features. Can be accessed from the Project Settings window (Edit/Project Settings.../Editor Toolbox) or directly inside the Project window. Make sure to have one valid settings file per project.
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc14.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/settings.png)
 
 Available features are divided into three groups:
 - Hierarchy
@@ -73,7 +73,7 @@ Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associa
 //NOTE: HelpAttribute moved to ToolboxAttributes
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/helpbox.png)
 
 #### TagSelectorAttribute
 
@@ -82,55 +82,67 @@ Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associa
 public string var1;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc2.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/tagselector.png)
 
 #### SeparatorAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc3.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/separator.png)
 
 #### ProgressBarAttribute
 
 ```csharp
-[ProgressBar(minValue: 0.0f, maxValue: 100.0f)]
-public float var1 = 36.0f;
+[ProgressBar("Name", minValue: 0.0f, maxValue: 100.0f, HexColor = "#EB7D34")]
+public float var1 = 80.0f;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc4.png)
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc5.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/progressbar1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/progressbar2.png)
 
 #### NewLabelAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc12.png)
+```csharp
+[NewLabel("Custom Label", "Element")]
+public int[] vars1 = new int[3];
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/newlabel.png)
 
 #### MinMaxSliderAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc6.png)
+```csharp
+[MinMaxSlider(0.5f, 71.7f)]
+public Vector2 var1;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/minmaxslider.png)
 
 #### IndentAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc7.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/indent.png)
 
 #### ConditionalShowAttribute & ConditionalHideAttribute
 
 ```csharp
+//remark: use the 'ShowIf'/'HideIf' attribute instead
 public bool toggle;
 [ConditionalShow(nameof(toggle), true)]
 public float var1;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc9.png)
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc8.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/showif1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/showif2.png)
 
 #### ConditionalEnableAttribute & ConditionalDisableAttribute
 
 ```csharp
+//remark: use the 'EnableIf'/'DisableIf' attribute instead
 public bool toggle;
 [ConditionalEnable(nameof(toggle), true)]
 public float var1;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc24.png)
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc25.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enableif1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enableif2.png)
 
 #### AssetPreviewAttribute
 
@@ -139,26 +151,24 @@ public float var1;
 public GameObject var1;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc10.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/assetpreview.png)
 
 #### HideLabelAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc11.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/hidelabel.png)
 
 #### SuffixAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc13.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/suffix.png)
 
 #### TypeConstraintAttribute
 
 ```csharp
-[ClassExtends(typeof(UnityEngine.Object))]
-public SerializedType type1;
-[ClassImplements(typeof(System.Collections.ICollection))]
-public SerializedType type2;
+[ClassExtends(typeof(Collider))] //or [ClassImplements(typeof(interface))] for interfaces
+public SerializedType var1;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc14.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializedtype.png)
 
 #### ReadOnlyFieldAttribute
 
@@ -167,7 +177,7 @@ public SerializedType type2;
 public int var1;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc15.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/readonly.png)
 
 #### EnumFlagAttribute
 
@@ -175,45 +185,50 @@ public int var1;
 [System.Flags]
 public enum FlagExample
 {
-    Nothing = 0,
-    Flag1 = 1,
-    Flag2 = 2,
-    Flag3 = 4,
-    Everything = ~0
+	Nothing = 0,
+	Flag1 = 1,
+	Flag2 = 2,
+	Flag3 = 4,
+	Flag4 = 8,
+	Flag5 = 16,
+	Flag6 = 32,
+	Flag7 = 64,
+	Flag8 = 128,
+	Flag9 = 256,
+	Everything = ~0
 }
 
 [EnumFlag]
-public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2;
+public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExample.Flag6;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc20.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enumflag1.png)
 
 ```csharp
 [EnumFlag(EnumStyle.Button)]
-public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExample.Flag4 | FlagExample.Flag8;
+public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExample.Flag6;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc35.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enumflag2.png)
 
 #### NotNullAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc21.png)
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc22.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull2.png)
 
 #### RandomAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc23.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/random.png)
 
 #### DirectoryAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc26.png)
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc27.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory2.png)
 
 #### BroadcastButtonAttribute
 
 ```csharp
-//NOTE1: to broadcast messages in Edit mode desired component has to have [ExecuteAlways] or [ExecuteInEditMode] attribute
-//NOTE2: Unity broadcasting will invoke all matching methods on this behaviour
+//NOTE: [ExecuteAlways] or [ExecuteInEditMode] needed in the Edit mode
 
 [BroadcastButton(nameof(MyMethod), "Click me to broadcast message", ButtonActivityType.OnEditMode, order = 100)]
 public int var1;
@@ -224,16 +239,16 @@ private void MyMethod()
 }
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc28.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/button1.png)
 
 #### InstanceButtonAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc29.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/button2.png)
 
 #### SceneNameAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc30.png)
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc31.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename2.png)
 
 #### PresetAttribute
 
@@ -244,7 +259,7 @@ private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
 public int presetTarget;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc33.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/preset.png)
 
 #### SearchableEnumAttribute
 
@@ -253,7 +268,7 @@ public int presetTarget;
 public KeyCode enumSearch;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc34.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enumsearch.png)
 
 #### ClampAttribute
 
@@ -277,6 +292,9 @@ public Vector3 direction3d;
 [Password]
 public string password;
 ```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/password.png)
+
 ---
 
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
@@ -290,7 +308,7 @@ Drawers are based on classes inherited from the **ToolboxDrawer** class and asso
 
 &nbsp;
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc5.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inspector.png)
 
 #### ToolboxDecoratorAttributes
 
@@ -341,8 +359,9 @@ public int var1;
 [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 150.0f)]
 public int var1;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc41.png)
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc40.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/imagearea.png)
 
 #### ToolboxConditionDrawers
 
@@ -366,7 +385,7 @@ public int var1;
 public int[] vars1 = new [] { 1, 2, 3, 4 };
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc19.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/disabled.png)
 
 #### InLineEditorAttribute
 
@@ -374,17 +393,26 @@ public int[] vars1 = new [] { 1, 2, 3, 4 };
 [InLineEditor]
 public Transform var1;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc32.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inlined3.png)
 ```csharp
 [InLineEditor]
 public AudioClip var1;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc36.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inlined2.png)
 ```csharp
 [InLineEditor(true, true)]
 public Material var1;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/Attributes/doc37.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inlined1.png)
+
+#### ScrollableItemsAttribute
+
+```csharp
+[ScrollableItems(defaultMinIndex: 0, defaultMaxIndex: 5)]
+public GameObject[] largeArray = new GameObject[19];
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scrollableitems.png)
 
 ## Reorderable List
 
@@ -399,17 +427,17 @@ var list = new ReorderableList(SerializedProperty property, string elementLabel,
 [ReorderableList(ListStyle.Lined, "Item")]
 public List<int> linedStyleList;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc6.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list1.png)
 ```csharp
 [ReorderableList(ListStyle.Round)]
 public List<string> standardStyleList;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc7.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list2.png)
 ```csharp
 [ReorderableList(ListStyle.Boxed, fixedSize: true)]
 public GameObject[] boxedStyleList = new GameObject[4];
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc8.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list3.png)
 
 ## Editor Extensions
 
@@ -426,7 +454,7 @@ Each row can contain:
 
 > Editor Toolbox/Editor/ToolboxEditorHierarchy.cs
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc2.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/hierarchy.png)
 
 ### Project <a name="project"></a>
 
@@ -442,9 +470,9 @@ Properties that can be edited include:
 
 > Editor Toolbox/Editor/ToolboxEditorProject.cs
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc12.png)  
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project1.png)  
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc11.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project2.png)
 
 ### Toolbar <a name="toolbar"></a>
 
@@ -492,13 +520,13 @@ public static class MyEditorUtility
 }
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc10.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/toolbar.png)
 
 ### Utilities 
 
 Copy and paste all components from/to particular GameObject.
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Documentation/doc13.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/utils.png)
 
 ## Editor Extras
 

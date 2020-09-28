@@ -48,28 +48,31 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         private void DrawEditor(Editor editor, InLineEditorAttribute attribute)
         {
-            //draw whole inspector and apply all changes 
-            editor.serializedObject.Update();
-            editor.OnInspectorGUI();
-            editor.serializedObject.ApplyModifiedProperties();
-
-            if (editor.HasPreviewGUI())
+            using (new EditorGUILayout.VerticalScope())
             {
-                //draw preview if possible and needed
-                if (attribute.DrawPreview)
-                {
-                    editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, attribute.PreviewHeight), Style.previewStyle);
-                }
+                //draw whole inspector and apply all changes 
+                editor.serializedObject.Update();
+                editor.OnInspectorGUI();
+                editor.serializedObject.ApplyModifiedProperties();
 
-                if (attribute.DrawSettings)
+                if (editor.HasPreviewGUI())
                 {
-                    //draw additional settings associated to the Editor
-                    //for example:
-                    // - audio management for the AudioClip
-                    // - model settings within the Previews
-                    using (new EditorGUILayout.HorizontalScope(Style.settingStyle))
+                    //draw preview if possible and needed
+                    if (attribute.DrawPreview)
                     {
-                        editor.OnPreviewSettings();
+                        editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, attribute.PreviewHeight), Style.previewStyle);
+                    }
+
+                    if (attribute.DrawSettings)
+                    {
+                        //draw additional settings associated to the Editor
+                        //for example:
+                        // - audio management for the AudioClip
+                        // - model settings within the Previews
+                        using (new EditorGUILayout.HorizontalScope(Style.settingStyle))
+                        {
+                            editor.OnPreviewSettings();
+                        }
                     }
                 }
             }
@@ -187,7 +190,7 @@ namespace Toolbox.Editor.Drawers
 #if UNITY_2019_3_OR_NEWER
                     padding = new RectOffset(4, 0, 0, 0)
 #else
-                    padding = new RectOffset(1, 0, 0, 0)
+                    padding = new RectOffset(5, 0, 0, 0)
 #endif
                 };
             }
