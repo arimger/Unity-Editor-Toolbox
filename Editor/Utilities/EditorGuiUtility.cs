@@ -22,13 +22,10 @@ namespace Toolbox.Editor
 
         public static Texture2D CreateColorTexture(Color color)
         {
-            var mode = FilterMode.Point;
-            var flag = HideFlags.HideAndDontSave;
             var texture = new Texture2D(1, 1);
 
             texture.SetPixel(0, 0, color);
-            texture.filterMode = mode;
-            texture.hideFlags = flag;
+            texture.hideFlags = HideFlags.HideAndDontSave;
             texture.Apply();
 
             return texture;

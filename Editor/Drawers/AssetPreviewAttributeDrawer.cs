@@ -58,7 +58,7 @@ namespace Toolbox.Editor.Drawers
                 position.height = height + Style.frameSize;
                 position.y += Style.height + Style.spacing;
                 //draw frame
-                EditorGUI.LabelField(position, GUIContent.none, Style.backgroundStyle);
+                EditorGUI.LabelField(position, GUIContent.none, Style.previewStyle);
                 position.width = width + indent;
                 position.height = height;
                 //adjust image to frame center
@@ -86,12 +86,16 @@ namespace Toolbox.Editor.Drawers
             internal static readonly float frameSize = 6.0f;
 
             internal static readonly GUIStyle textureStyle;
-            internal static readonly GUIStyle backgroundStyle;
+            internal static readonly GUIStyle previewStyle;
 
             static Style()
             {
                 textureStyle = new GUIStyle();
-                backgroundStyle = new GUIStyle(GUI.skin.box);
+#if UNITY_2019_3_OR_NEWER
+                previewStyle = new GUIStyle("helpBox");
+#else
+                previewStyle = new GUIStyle("box");
+#endif
             }
         }
     }

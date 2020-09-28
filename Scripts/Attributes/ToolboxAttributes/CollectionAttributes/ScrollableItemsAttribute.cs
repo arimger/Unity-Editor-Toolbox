@@ -10,14 +10,13 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class ScrollableItemsAttribute : ToolboxListPropertyAttribute
     {
-        public ScrollableItemsAttribute(float areaHeight = 100.0f)
+        public ScrollableItemsAttribute(int defaultMinIndex = 0, int defaultMaxIndex = 20)
         {
-            AreaHeight = areaHeight;
+            DefaultMinIndex = defaultMinIndex;
+            DefaultMaxIndex = defaultMaxIndex;
         }
 
-        public int DefaultMinIndex { get; set; } = 0;
-        public int DefaultMaxIndex { get; set; } = 20;
-
-        public float AreaHeight { get; private set; }
+        public int DefaultMinIndex { get; private set; }
+        public int DefaultMaxIndex { get; private set; }
     }
 }

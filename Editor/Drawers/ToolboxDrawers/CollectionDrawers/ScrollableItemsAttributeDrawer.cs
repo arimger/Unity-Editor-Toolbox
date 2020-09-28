@@ -8,7 +8,7 @@ namespace Toolbox.Editor.Drawers
     public class ScrollableItemsAttributeDrawer : ToolboxListPropertyDrawer<ScrollableItemsAttribute>
     {
         /// <summary>
-        /// All cached ranges related to particular properties.
+        /// All cached ranges paired to particular properties.
         /// </summary>
         private static Dictionary<string, Vector2> indexRanges = new Dictionary<string, Vector2>();
 
@@ -16,13 +16,12 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ScrollableItemsAttribute attribute)
         {
             var propertyKey = property.GetPropertyTypeKey();
-            //try to get previously cached scroll position
+            //try to get previously cached range
             if (!indexRanges.TryGetValue(propertyKey, out var indexRange))
             {
                 var x = attribute.DefaultMinIndex;
                 var y = attribute.DefaultMaxIndex;
-                //var x = EditorPrefs.GetFloat(propertyKey + ".x", attribute.DefaultMinIndex);
-                //var y = EditorPrefs.GetFloat(propertyKey + ".y", attribute.DefaultMaxIndex);
+
                 indexRanges[propertyKey] = indexRange = new Vector2(x, y);
             }
 
@@ -42,7 +41,7 @@ namespace Toolbox.Editor.Drawers
                 EditorGUILayout.MinMaxSlider(Style.rangeContent, ref indexRange.x, ref indexRange.y, 0, size.longValue);
                 GUI.enabled = enabled;
 
-                //NOTE: should we keep data between editors?
+                //NOTE: should we keep data between compilations?
                 //EditorPrefs.SetFloat(propertyKey, x);
                 //EditorPrefs.SetFloat(propertyKey, y);
             }
