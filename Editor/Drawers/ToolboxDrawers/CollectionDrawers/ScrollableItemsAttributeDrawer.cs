@@ -1,64 +1,56 @@
-﻿using System.Collections.Generic;
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
     public class ScrollableItemsAttributeDrawer : ToolboxListPropertyDrawer<ScrollableItemsAttribute>
     {
-        /// <summary>
-        /// All cached ranges paired to particular properties.
-        /// </summary>
-        private static Dictionary<string, Vector2> indexRanges = new Dictionary<string, Vector2>();
+        static ScrollableItemsAttributeDrawer()
+        {
+            storage = new DrawerDataStorage<Vector2, ScrollableItemsAttribute>(true, (p, a) =>
+            {
+                return new Vector2(a.DefaultMinIndex, a.DefaultMaxIndex);
+            });
+        }
+
+        private static readonly DrawerDataStorage<Vector2, ScrollableItemsAttribute> storage;
 
 
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ScrollableItemsAttribute attribute)
         {
-            var propertyKey = property.GetPropertyTypeKey();
-            //try to get previously cached range
-            if (!indexRanges.TryGetValue(propertyKey, out var indexRange))
-            {
-                var x = attribute.DefaultMinIndex;
-                var y = attribute.DefaultMaxIndex;
-
-                indexRanges[propertyKey] = indexRange = new Vector2(x, y);
-            }
-
             if (!EditorGUILayout.PropertyField(property, label, false))
             {
                 return;
             }
 
-            var size = property.GetSize();
-
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(size);
+            EditorGUILayout.PropertyField(property.GetSize());
+            var size = property.arraySize;
+
+            //get or initialize current ranges 
+            var indexRange = storage.ReturnItem(property, attribute);
+
             //create a min-max slider to determine the range of visible properties
             {
                 var enabled = GUI.enabled;
                 GUI.enabled = true;
-                EditorGUILayout.MinMaxSlider(Style.rangeContent, ref indexRange.x, ref indexRange.y, 0, size.longValue);
+                EditorGUILayout.MinMaxSlider(Style.rangeContent, ref indexRange.x, ref indexRange.y, 0, size);
                 GUI.enabled = enabled;
-
-                //NOTE: should we keep data between compilations?
-                //EditorPrefs.SetFloat(propertyKey, x);
-                //EditorPrefs.SetFloat(propertyKey, y);
             }
 
             //fix values to the integral part
             indexRange.x = Mathf.Max(Mathf.RoundToInt(indexRange.x), 0);
-            indexRange.y = Mathf.Min(Mathf.RoundToInt(indexRange.y), size.longValue);
-            indexRanges[propertyKey] = indexRange;
+            indexRange.y = Mathf.Min(Mathf.RoundToInt(indexRange.y), size);
+            storage.ApplyItem(property, indexRange);
             EditorGUI.indentLevel--;
 
-            if (size.longValue == 0 || indexRange.x - indexRange.y == 0)
+            if (size == 0 || indexRange.x - indexRange.y == 0)
             {
                 return;
             }
 
             EditorGUILayout.BeginHorizontal();
-            //NOTE1: we have to handle indentation internally
+            //NOTE1: we have to handle indentation for group
             //NOTE2: 15.0f - internal 'indentPerLevel' value
             GUILayout.Space(15.0f * EditorGUI.indentLevel);
 
@@ -81,7 +73,7 @@ namespace Toolbox.Editor.Drawers
                 EditorGUILayout.PropertyField(property.GetArrayElementAtIndex(i), true);
             }
 
-            if (maxRange < size.longValue)
+            if (maxRange < size)
             {
                 EditorGUILayout.LabelField(Style.spaceContent, Style.spaceLabelStyle);
             }
