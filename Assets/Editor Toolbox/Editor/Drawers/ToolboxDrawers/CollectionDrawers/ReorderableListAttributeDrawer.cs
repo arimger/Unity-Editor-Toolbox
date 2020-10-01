@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
@@ -9,41 +7,29 @@ namespace Toolbox.Editor.Drawers
 
     public class ReorderableListAttributeDrawer : ToolboxListPropertyDrawer<ReorderableListAttribute>
     {
-        /// <summary>
-        /// Collection of all stored <see cref="ReorderableList"/> instances.
-        /// </summary>
-        private static Dictionary<string, ReorderableList> listInstances = new Dictionary<string, ReorderableList>();
-
-
-        /// <summary>
-        /// Draws a <see cref="ReorderableList"/> if provided property is previously cached array/list or creates completely new instance.
-        /// </summary>
-        /// <param name="property">Property to draw.</param>
-        /// <param name="attribute"></param>
-        protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReorderableListAttribute attribute)
+        static ReorderableListAttributeDrawer()
         {
-            var propertyKey = property.GetPropertyHashKey();
-
-            if (!listInstances.TryGetValue(propertyKey, out var list))
+            storage = new DrawerDataStorage<ReorderableList, ReorderableListAttribute>(false, (p, a) =>
             {
-                listInstances[propertyKey] = list = ToolboxEditorGui.CreateList(property,
-                    attribute.ListStyle,
-                    attribute.ElementLabel,
-                    attribute.FixedSize,
-                    attribute.Draggable,
-                    attribute.HasHeader);
-            }
-
-            list.DoLayoutList();
+                return ToolboxEditorGui.CreateList(p, 
+                    a.ListStyle,
+                    a.ElementLabel,
+                    a.FixedSize,
+                    a.Draggable,
+                    a.HasHeader);
+            });
         }
 
+        private static readonly DrawerDataStorage<ReorderableList, ReorderableListAttribute> storage;
+
 
         /// <summary>
-        /// Handles data clearing between Editors.
+        /// Draws a <see cref="ReorderableList"/> if given property was previously cached or creates completely new instance.
         /// </summary>
-        public override void OnGuiReload()
+        /// <param name="property">Property to draw.</param>
+        protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReorderableListAttribute attribute)
         {
-            listInstances.Clear();
+            storage.ReturnItem(property, attribute).DoLayoutList();
         }
     }
 }

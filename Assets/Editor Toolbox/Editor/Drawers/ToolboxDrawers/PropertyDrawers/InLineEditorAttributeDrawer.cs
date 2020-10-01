@@ -1,69 +1,71 @@
-﻿using System.Collections.Generic;
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    using Toolbox.Editor.Internal;
+
     using Editor = UnityEditor.Editor;
 
     public class InLineEditorAttributeDrawer : ToolboxSelfPropertyDrawer<InLineEditorAttribute>
     {
-        /// <summary>
-        /// Collection of all stored <see cref="Editor"/> instances.
-        /// </summary>
-        private static Dictionary<string, Editor> editorInstances = new Dictionary<string, Editor>();
-
-
-        /// <summary>
-        /// Clears and destroys particular Editor mapped to the provided key.
-        /// </summary>
-        /// <param name="key"></param>
-        private void ClearEditor(string key)
+        static InLineEditorAttributeDrawer()
         {
-            if (editorInstances.TryGetValue(key, out var editor))
-            {
-                editorInstances.Remove(key);
-                Object.DestroyImmediate(editor);
-            }
+            storage = new DrawerDataStorage<Editor, InLineEditorAttribute>(false,
+                (p, a) =>
+                {
+                    var value = p.objectReferenceValue;
+                    if (value)
+                    {
+                        var editor = Editor.CreateEditor(value);
+                        if (editor.HasPreviewGUI())
+                        {
+                            editor.ReloadPreviewInstances();
+                        }
+
+                        return editor;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                },
+                (e) =>
+                {
+                    Object.DestroyImmediate(e);
+                });
         }
 
-        /// <summary>
-        /// Clears and destroys all previously instantiated Editor instances.
-        /// </summary>
-        private void ClearEditors()
-        {
-            foreach (var editor in editorInstances.Values)
-            {
-                Object.DestroyImmediate(editor);
-            }
+        private static readonly DrawerDataStorage<Editor, InLineEditorAttribute> storage;
 
-            editorInstances.Clear();
-        }
 
-        /// <summary>
-        /// Draws the inlined version of the given <see cref="Editor"/>.
-        /// </summary>
-        /// <param name="editor"></param>
-        /// <param name="attribute"></param>
         private void DrawEditor(Editor editor, InLineEditorAttribute attribute)
+        {
+            using (new EditorGUILayout.VerticalScope(Style.inlinedStyle))
+            {
+                //draw and prewarm the inlined Editor version
+                DrawEditor(editor, attribute.DrawPreview, attribute.DrawSettings, attribute.PreviewHeight);
+            }
+        }
+
+        private void DrawEditor(Editor editor, bool drawPreview, bool drawSettings, float previewHeight)
         {
             using (new EditorGUILayout.VerticalScope())
             {
-                //draw whole inspector and apply all changes 
+                //draw the whole inspector and apply changes 
                 editor.serializedObject.Update();
                 editor.OnInspectorGUI();
                 editor.serializedObject.ApplyModifiedProperties();
 
                 if (editor.HasPreviewGUI())
                 {
-                    //draw preview if possible and needed
-                    if (attribute.DrawPreview)
+                    //draw the preview if possible and needed
+                    if (drawPreview)
                     {
-                        editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, attribute.PreviewHeight), Style.previewStyle);
+                        editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, previewHeight), Style.previewStyle);
                     }
 
-                    if (attribute.DrawSettings)
+                    if (drawSettings)
                     {
                         //draw additional settings associated to the Editor
                         //for example:
@@ -86,15 +88,13 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, InLineEditorAttribute attribute)
         {
-            var propertyKey = property.GetPropertyHashKey();
-
-            //create a standard property field
+            //create a standard property field for given property
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(property, label, property.isExpanded);
             if (EditorGUI.EndChangeCheck())
             {
-                ClearEditor(propertyKey);
-                return;
+                //make sure previously cached Editor is disposed
+                storage.ClearItem(property);
             }
 
             //NOTE: multiple different Editors are not supported
@@ -109,50 +109,21 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "Inspector Preview", true, Style.foldoutStyle))
+            //create additional foldout for the associated Editor 
+            if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, Style.foldouContent, true, Style.foldoutStyle))
             {
-                //get (or create new) Editor for the current property
-                if (!editorInstances.TryGetValue(propertyKey, out var editor))
-                {
-                    editor = Editor.CreateEditor(propertyValue);
-                    if (editor.HasPreviewGUI())
-                    {
-                        editor.ReloadPreviewInstances();
-                    }
-                    editorInstances[propertyKey] = editor;
-                }
-
+                var editor = storage.ReturnItem(property, attribute);
                 InspectorUtility.SetIsEditorExpanded(editor, true);
 
-                //prevent custom Editors for overriding
-                var labelWidth = EditorGUIUtility.labelWidth;
-                var fieldWidth = EditorGUIUtility.fieldWidth;
-
-                using (new EditorGUILayout.VerticalScope(Style.inlinedStyle))
+                //make useage of the created (returned) instance
+                using (new FixedFieldsScope())
                 {
-                    //draw and prewarm the inlined Editor   
                     DrawEditor(editor, attribute);
                 }
-
-                EditorGUIUtility.labelWidth = labelWidth;
-                EditorGUIUtility.fieldWidth = fieldWidth;
             }
         }
 
 
-        /// <summary>
-        /// Handles data clearing between Editors.
-        /// </summary>
-        public override void OnGuiReload()
-        {
-            ClearEditors();
-        }
-
-        /// <summary>
-        /// Checks if the provided property can be handled by this drawer.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.ObjectReference;
@@ -165,6 +136,8 @@ namespace Toolbox.Editor.Drawers
             internal static readonly GUIStyle foldoutStyle;
             internal static readonly GUIStyle previewStyle;
             internal static readonly GUIStyle settingStyle;
+
+            internal static readonly GUIContent foldouContent = new GUIContent("Inspector Preview");
 
             static Style()
             {
