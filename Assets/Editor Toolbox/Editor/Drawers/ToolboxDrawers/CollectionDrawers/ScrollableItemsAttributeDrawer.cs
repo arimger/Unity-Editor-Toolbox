@@ -70,7 +70,7 @@ namespace Toolbox.Editor.Drawers
             //draw all visible (in the range) properties
             for (var i = minRange; i < maxRange; i++)
             {
-                EditorGUILayout.PropertyField(property.GetArrayElementAtIndex(i), true);
+                ToolboxEditorGui.DrawToolboxProperty(property.GetArrayElementAtIndex(i));
             }
 
             if (maxRange < size)
