@@ -22,7 +22,7 @@ public class SampleDrawer : ToolboxDecoratorDrawer<SampleAttribute>
 		//draw something before property
 	}
 	
-	protected override void OnGuiEndSafe(SampleAttribute attribute)
+	protected override void OnGuiCloseSafe(SampleAttribute attribute)
 	{
 		//draw something after property
 		

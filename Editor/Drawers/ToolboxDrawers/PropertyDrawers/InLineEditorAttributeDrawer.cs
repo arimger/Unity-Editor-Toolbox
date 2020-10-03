@@ -70,7 +70,7 @@ namespace Toolbox.Editor.Drawers
                         //draw additional settings associated to the Editor
                         //for example:
                         // - audio management for the AudioClip
-                        // - model settings within the Previews
+                        // - material preview for the Material
                         using (new EditorGUILayout.HorizontalScope(Style.settingStyle))
                         {
                             editor.OnPreviewSettings();
@@ -110,7 +110,7 @@ namespace Toolbox.Editor.Drawers
             }
 
             //create additional foldout for the associated Editor 
-            if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, Style.foldouContent, true, Style.foldoutStyle))
+            if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, Style.foldoutContent, true, Style.foldoutStyle))
             {
                 var editor = storage.ReturnItem(property, attribute);
                 InspectorUtility.SetIsEditorExpanded(editor, true);
@@ -137,7 +137,7 @@ namespace Toolbox.Editor.Drawers
             internal static readonly GUIStyle previewStyle;
             internal static readonly GUIStyle settingStyle;
 
-            internal static readonly GUIContent foldouContent = new GUIContent("Inspector Preview");
+            internal static readonly GUIContent foldoutContent = new GUIContent("Inspector Preview");
 
             static Style()
             {

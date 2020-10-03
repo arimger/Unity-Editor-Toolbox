@@ -8,7 +8,7 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class ShowIfAttribute : ComparisonAttribute
     {
-        public ShowIfAttribute(string comparedPropertyName, object comparedValue) : base(comparedPropertyName, comparedValue)
+        public ShowIfAttribute(string comparedPropertyName, object targetValue) : base(comparedPropertyName, targetValue)
         { }
     }
 }

@@ -7,17 +7,16 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(LabelAttribute attribute)
         {
-            var spaceStyle = GetSpaceStyle(attribute.SkinStyle);
+            var scopeStyle = GetScopeStyle(attribute.SkinStyle);
             var labelStyle = GetLabelStyle(attribute.FontStyle);
 
             labelStyle.alignment = attribute.Alignment;
             labelStyle.fontStyle = attribute.FontStyle;
 
-            var content = GetContent(attribute);
-
-            EditorGUILayout.BeginVertical(spaceStyle);
-            EditorGUILayout.LabelField(content, labelStyle);
-            EditorGUILayout.EndVertical();
+            using (new EditorGUILayout.VerticalScope(scopeStyle))
+            {
+                EditorGUILayout.LabelField(GetContent(attribute), labelStyle);
+            }
         }
 
 
@@ -26,7 +25,7 @@ namespace Toolbox.Editor.Drawers
             return Style.labelStyle;
         }
 
-        private static GUIStyle GetSpaceStyle(SkinStyle style)
+        private static GUIStyle GetScopeStyle(SkinStyle style)
         {
             switch (style)
             {

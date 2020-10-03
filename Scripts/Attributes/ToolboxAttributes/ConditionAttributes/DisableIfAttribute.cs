@@ -8,7 +8,7 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class DisableIfAttribute : ComparisonAttribute
     {
-        public DisableIfAttribute(string comparedPropertyName, object comparedValue) : base(comparedPropertyName, comparedValue)
+        public DisableIfAttribute(string comparedPropertyName, object targetValue) : base(comparedPropertyName, targetValue)
         { }
     }
 }

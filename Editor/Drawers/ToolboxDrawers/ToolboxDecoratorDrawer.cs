@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -7,6 +9,10 @@ namespace Toolbox.Editor.Drawers
         protected virtual void OnGuiBeginSafe(T attribute)
         { }
 
+        protected virtual void OnGuiCloseSafe(T attribute)
+        { }
+
+        [Obsolete("This method is renamed. Override 'OnGuiCloseSafe' instead.")]
         protected virtual void OnGuiEndSafe(T attribute)
         { }
 
@@ -16,9 +22,9 @@ namespace Toolbox.Editor.Drawers
             OnGuiBegin(attribute as T);
         }
 
-        public override sealed void OnGuiEnd(ToolboxAttribute attribute)
+        public override sealed void OnGuiClose(ToolboxAttribute attribute)
         {
-            OnGuiEnd(attribute as T);
+            OnGuiClose(attribute as T);
         }
 
 
@@ -32,14 +38,14 @@ namespace Toolbox.Editor.Drawers
             OnGuiBeginSafe(attribute);
         }
 
-        public void OnGuiEnd(T attribute)
+        public void OnGuiClose(T attribute)
         {
             if (attribute == null)
             {
                 return;
             }
 
-            OnGuiEndSafe(attribute);
+            OnGuiCloseSafe(attribute);
         }
     }
 }

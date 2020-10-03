@@ -230,7 +230,7 @@ namespace Toolbox.Editor
             {
                 for (var i = decoratorAttributes.Length - 1; i >= 0; i--)
                 {
-                    ToolboxDrawerModule.GetDecoratorDrawer(decoratorAttributes[i])?.OnGuiEnd(decoratorAttributes[i]);
+                    ToolboxDrawerModule.GetDecoratorDrawer(decoratorAttributes[i])?.OnGuiClose(decoratorAttributes[i]);
                 }
             }
         }

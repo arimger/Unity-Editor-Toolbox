@@ -4,7 +4,7 @@ namespace Toolbox.Editor.Drawers
 {
     public class EndGroupAttributeDrawer : ToolboxDecoratorDrawer<EndGroupAttribute>
     {
-        protected override void OnGuiEndSafe(EndGroupAttribute attribute)
+        protected override void OnGuiCloseSafe(EndGroupAttribute attribute)
         {
             ToolboxLayoutHelper.EndVertical();
         }
