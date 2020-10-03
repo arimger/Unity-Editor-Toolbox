@@ -2,6 +2,10 @@
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// Validates associated <see cref="string"/> using regular expression and given pattern.
+    /// Supported types: any <see cref="string"/>.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class RegexValueAttribute : ToolboxSelfPropertyAttribute
     {

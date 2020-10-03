@@ -6,6 +6,6 @@ namespace Toolbox.Editor.Drawers
     {
         public abstract void OnGuiBegin(ToolboxAttribute attribute);
 
-        public abstract void OnGuiEnd(ToolboxAttribute attribute);
+        public abstract void OnGuiClose(ToolboxAttribute attribute);
     }
 }

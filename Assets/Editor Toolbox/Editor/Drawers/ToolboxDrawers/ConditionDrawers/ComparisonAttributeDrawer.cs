@@ -14,20 +14,20 @@ namespace Toolbox.Editor.Drawers
                 return PropertyCondition.Valid;
             }
 
-            //TODO: validate 'propertyToCheck' type with 'attribute.ComparedConditionValue'
+            //TODO: validate 'propertyToCheck' type with 'attribute.TargetConditionValue'
 
             switch (propertyToCheck.propertyType)
             {
                 case SerializedPropertyType.Boolean:
-                    return OnComparisonResult(propertyToCheck.boolValue.Equals(attribute.ComparedConditionValue));
+                    return OnComparisonResult(propertyToCheck.boolValue.Equals(attribute.TargetConditionValue));
                 case SerializedPropertyType.String:
-                    return OnComparisonResult(propertyToCheck.stringValue.Equals(attribute.ComparedConditionValue));
+                    return OnComparisonResult(propertyToCheck.stringValue.Equals(attribute.TargetConditionValue));
                 case SerializedPropertyType.Integer:
-                    return OnComparisonResult(propertyToCheck.intValue.Equals(attribute.ComparedConditionValue));
+                    return OnComparisonResult(propertyToCheck.intValue.Equals(attribute.TargetConditionValue));
                 case SerializedPropertyType.Float:
-                    return OnComparisonResult(propertyToCheck.floatValue.Equals(attribute.ComparedConditionValue));
+                    return OnComparisonResult(propertyToCheck.floatValue.Equals(attribute.TargetConditionValue));
                 case SerializedPropertyType.Enum:
-                    return OnComparisonResult(propertyToCheck.intValue.Equals((int)attribute.ComparedConditionValue));
+                    return OnComparisonResult(propertyToCheck.intValue.Equals((int)attribute.TargetConditionValue));
                 default:
                     ToolboxEditorLog.TypeNotSupportedWarning(property, propertyToCheck.type);
                     return PropertyCondition.Valid;

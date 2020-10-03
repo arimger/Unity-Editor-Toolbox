@@ -8,7 +8,7 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGuiBeginSafe(BeginHorizontalAttribute attribute)
         {
             var width = EditorGUIUtility.currentViewWidth;
-            //set a new label width for this area
+            //set a new label & field width for this group
             EditorGUIUtility.labelWidth = width * attribute.LabelToWidthRatio;
             EditorGUIUtility.fieldWidth = width * attribute.FieldToWidthRatio;
 

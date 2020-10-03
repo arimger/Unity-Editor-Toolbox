@@ -11,7 +11,7 @@ namespace Toolbox.Editor.Drawers
     using Toolbox.Editor.Routine;
 
     public class ImageAreaAttributeDrawer : ToolboxDecoratorDrawer<ImageAreaAttribute>
-    {      
+    {
         private readonly static Dictionary<string, DownloadedTexture> textures = new Dictionary<string, DownloadedTexture>();
 
 

@@ -10,7 +10,7 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.indentLevel += attribute.IndentLevelChange;
         }
 
-        protected override void OnGuiEndSafe(IndentAreaAttribute attribute)
+        protected override void OnGuiCloseSafe(IndentAreaAttribute attribute)
         {
             EditorGUI.indentLevel -= attribute.IndentLevelChange;
         }

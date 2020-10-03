@@ -5,14 +5,14 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public abstract class ComparisonAttribute : ToolboxConditionAttribute
     {
-        public ComparisonAttribute(string comparedPropertyName, object comparedConditionValue)
+        public ComparisonAttribute(string comparedPropertyName, object targetConditionValue)
         {
             ComparedPropertyName = comparedPropertyName;
-            ComparedConditionValue = comparedConditionValue;
+            TargetConditionValue = targetConditionValue;
         }
 
         public string ComparedPropertyName { get; private set; }
 
-        public object ComparedConditionValue { get; private set; }
+        public object TargetConditionValue { get; private set; }
     }
 }

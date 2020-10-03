@@ -5,12 +5,12 @@ namespace Toolbox.Editor.Drawers
 {
     public class EndHorizontalAttributeDrawer : ToolboxDecoratorDrawer<EndHorizontalAttribute>
     {
-        protected override void OnGuiEndSafe(EndHorizontalAttribute attribute)
+        protected override void OnGuiCloseSafe(EndHorizontalAttribute attribute)
         {
             //end horizontal group
             ToolboxLayoutHelper.EndHorizontal();
 
-            //restore label width 
+            //restore label & field 
             EditorGUIUtility.labelWidth = 0.0f;
             EditorGUIUtility.fieldWidth = 0.0f;
         }

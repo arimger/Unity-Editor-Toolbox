@@ -9,7 +9,7 @@ namespace Toolbox.Editor.Drawers
             GUILayout.Space(attribute.SpaceBefore);         
         }
 
-        protected override void OnGuiEndSafe(SpaceAreaAttribute attribute)
+        protected override void OnGuiCloseSafe(SpaceAreaAttribute attribute)
         {
             GUILayout.Space(attribute.SpaceAfter);
         }
