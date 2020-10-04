@@ -21,7 +21,7 @@ namespace Toolbox.Editor.Drawers
             if (!textures.TryGetValue(url, out var texture))
             {
                 textures[url] = texture = new DownloadedTexture(true);
-                EditorCoroutineUtility.StartCoroutineOwnerless(SendGetImageRequest(url, (b, t) =>
+                EditorCoroutineUtility.StartCoroutine(SendGetImageRequest(url, (b, t) =>
                 {
                     textures[url] = new DownloadedTexture(false, t);
                     if (b)

@@ -88,6 +88,16 @@ namespace Toolbox.Editor
         internal static bool InitializeSettings()
         {
             var guids = AssetDatabase.FindAssets("t:" + settingsType);
+            //try to find a settings file in a non-package directory
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                if (path.StartsWith("Assets"))
+                {
+                    guids[0] = guid;
+                    break;
+                }
+            }
 
             if (InitializeSettings(guids.Length > 0 ? guids[0] : null))
             {
@@ -139,6 +149,16 @@ namespace Toolbox.Editor
         internal static SettingsProvider SettingsProvider()
         {
             var provider = new SettingsProvider("Project/Editor Toolbox", SettingsScope.Project);
+
+            void ReintializeProvider()
+            {
+                InitializeSettings();
+
+                //rebuild the settings provider right after initialization
+                provider.OnDeactivate();
+                provider.OnActivate("", null);
+            }
+
             provider.guiHandler = (searchContext) =>
             {
                 if (globalSettingsEditor == null || globalSettingsEditor.serializedObject.targetObject == null)
@@ -147,33 +167,22 @@ namespace Toolbox.Editor
                     EditorGUILayout.LabelField("Cannot find " + settingsType + " file located in this Project");
                     EditorGUILayout.Space();
 
-                    void InitializeProvider()
-                    {
-                        provider.OnDeactivate();
-                        provider.OnActivate("", null);
-                    }
-
-                    if (GUILayout.Button("Try to find the settings file"))
-                    {
-                        InitializeSettings();
-                        InitializeProvider();
-                    }
-
-                    if (GUILayout.Button("Create the new settings file"))
+                    if (GUILayout.Button("Create a new settings file"))
                     {
                         var settingsInstance = ScriptableObject.CreateInstance(settingsType);
 
-                        var directoryPath = EditorUtility.OpenFolderPanel("New Settings file location", "Assets", "");
-                        var settingsPath = directoryPath.Substring(directoryPath.IndexOf("Assets/")) + "/" + settingsType + ".asset";
+                        var locationPath = EditorUtility.OpenFolderPanel("New Settings file location", "Assets", "");
+                        var relativePath = locationPath
+                                               .Substring(locationPath
+                                                   .IndexOf("Assets/")) + "/" + settingsType + ".asset";
 
-                        AssetDatabase.CreateAsset(settingsInstance, settingsPath);
+                        AssetDatabase.CreateAsset(settingsInstance, relativePath);
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
 
-                        ToolboxEditorLog.LogMessage("Created the settings file at - " + settingsPath);
+                        ToolboxEditorLog.LogMessage("Created a settings file at - " + relativePath);
 
-                        InitializeSettings();
-                        InitializeProvider();
+                        ReintializeProvider();
                     }
 
                     return;
@@ -183,9 +192,7 @@ namespace Toolbox.Editor
                 EditorGUILayout.LabelField("Settings file location - " + SettingsPath);
                 EditorGUILayout.Space();
 
-                globalSettingsEditor.serializedObject.Update();
                 globalSettingsEditor.OnInspectorGUI();
-                globalSettingsEditor.serializedObject.ApplyModifiedProperties();
             };
             provider.activateHandler = (searchContext, elements) =>
             {
@@ -194,6 +201,13 @@ namespace Toolbox.Editor
             provider.deactivateHandler = () =>
             {
                 Object.DestroyImmediate(globalSettingsEditor);
+            };
+            provider.titleBarGuiHandler = () =>
+            {
+                if (GUILayout.Button(new GUIContent("Refresh", "Try to find a new settings file in the main (Assets) directory")))
+                {
+                    ReintializeProvider();
+                }
             };
 
             return provider;
