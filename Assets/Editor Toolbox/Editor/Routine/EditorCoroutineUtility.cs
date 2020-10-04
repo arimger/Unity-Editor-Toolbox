@@ -10,7 +10,7 @@ namespace Toolbox.Editor.Routine
             return new EditorCoroutine(routine, owner);
         }
 
-        public static EditorCoroutine StartCoroutineOwnerless(IEnumerator routine)
+        public static EditorCoroutine StartCoroutine(IEnumerator routine)
         {
             return new EditorCoroutine(routine);
         }

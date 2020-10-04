@@ -23,7 +23,7 @@ Unity 2018.x or newer
 	```
 	- 2 way: Copy and paste `Editor Toolbox` directory into your project (Assets/...)
 - Open Edit/Project Settings/Editor Toolbox window
-- If Toolbox Editor Settings is not available, press "Try to find the settings file" button or create new
+- If settings file is not found, press "Refresh" button or create new one
 - Manage settings in your way
 	- Enable/disable Hierarchy overlay, choose allowed information
 	- Enable/disable Project icons or/and assign own directories
