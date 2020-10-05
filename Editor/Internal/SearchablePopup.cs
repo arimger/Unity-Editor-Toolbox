@@ -15,7 +15,7 @@ namespace Toolbox.Editor.Internal
     public class SearchablePopup : PopupWindowContent
     {
         public static void Show(Rect activatorRect, int current, string[] options, Action<int> onSelect)
-        { 
+        {
             PopupWindow.Show(activatorRect, new SearchablePopup(current, options, onSelect));
         }
 
@@ -29,7 +29,7 @@ namespace Toolbox.Editor.Internal
 
         private int optionIndex = -1;
         private int scrollIndex = -1;
-        
+
         private Vector2 scroll;
 
         private Rect toolbarRect;
@@ -104,22 +104,28 @@ namespace Toolbox.Editor.Internal
             }
 
             rect.xMin += Style.padding;
+#if !UNITY_2019_3_OR_NEWER
             rect.xMax -= Style.padding;
+#endif
             rect.yMin += Style.spacing;
             rect.yMax -= Style.spacing;
 
-            searchArray.Search(searchField.OnGUI(rect, searchArray.Filter, Style.searchBoxStyle, Style.showCancelButtonStyle, Style.hideCancelButtonStyle));
+            searchArray.Search(searchField.OnGUI(rect, searchArray.Filter, Style.searchBoxStyle,
+                                                                           Style.showCancelButtonStyle,
+                                                                           Style.hideCancelButtonStyle));
         }
 
         private void DrawContent(Rect rect)
         {
             var currentEvent = Event.current;
 
+            //prepare base rects for the whole content and a particular element
             var contentRect = new Rect(0, 0, rect.width - Style.scrollbarStyle.fixedWidth, searchArray.ItemsCount * Style.height);
             var elementRect = new Rect(0, 0, rect.width, Style.height);
 
             scroll = GUI.BeginScrollView(rect, scroll, contentRect);
 
+            //iterate over all searched and available items
             for (var i = 0; i < searchArray.ItemsCount; i++)
             {
                 if (currentEvent.type == EventType.Repaint && scrollIndex == i)
@@ -144,6 +150,7 @@ namespace Toolbox.Editor.Internal
                     GUI.Box(elementRect, GUIContent.none, Style.selectionStyle);
                 }
 
+                //draw proper label for the associated item
                 elementRect.xMin += Style.indent;
                 GUI.Label(elementRect, searchArray.GetItemAt(i).label);
                 elementRect.xMin -= Style.indent;
@@ -255,7 +262,7 @@ namespace Toolbox.Editor.Internal
             internal static readonly float height = EditorGUIUtility.singleLineHeight;
             internal static readonly float padding = 6.0f;
             internal static readonly float spacing = 2.0f;
-     
+
             internal static GUIStyle toolbarStyle;
             internal static GUIStyle scrollbarStyle;
             internal static GUIStyle selectionStyle;
