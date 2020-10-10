@@ -1,5 +1,7 @@
 ﻿using UnityEditor;
+using UnityEditor.AnimatedValues;
 using UnityEngine;
+using UnityEngine.Events;
 using static Toolbox.Editor.ToolboxEditorGui;
 
 namespace Toolbox.Editor
@@ -12,9 +14,9 @@ namespace Toolbox.Editor
     {
         private ToolboxEditorSettings currentTarget;
 
-        private bool inspectorSettingsEnabled;
-        private bool projectSettingsEnabled;
-        private bool hierarchySettingsEnabled;
+        private AnimBool hierarchyAnimBool;
+        private AnimBool projectAnimBool;
+        private AnimBool inspectorAnimBool;
 
         private int enabledToShowDrawerType;
 
@@ -42,11 +44,22 @@ namespace Toolbox.Editor
             currentTarget = target as ToolboxEditorSettings;
 
             //internal properties cached by 'EditorPrefs'
-            hierarchySettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".HierarchyEnabled", false);
-            projectSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", false);
-            inspectorSettingsEnabled = EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", false);
+            hierarchyAnimBool = new AnimBool(EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".HierarchyEnabled", false));
+            projectAnimBool = new AnimBool(EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", false));
+            inspectorAnimBool = new AnimBool(EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", false));
 
             enabledToShowDrawerType = EditorPrefs.GetInt(nameof(ToolboxEditorSettings) + ".PickedDrawerType", 0);
+
+            var repaintAction = new UnityAction(() =>
+            {
+                //NOTE: we have to repaint our editor and already focused (probably ProjectSettings) window
+                Repaint();
+                EditorWindow.focusedWindow.Repaint();
+            });
+
+            hierarchyAnimBool.valueChanged.AddListener(repaintAction);
+            projectAnimBool.valueChanged.AddListener(repaintAction);
+            inspectorAnimBool.valueChanged.AddListener(repaintAction);
 
             //hierarchy-related properties
             useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
@@ -113,9 +126,9 @@ namespace Toolbox.Editor
 
         private void OnDisable()
         {
-            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".HierarchyEnabled", hierarchySettingsEnabled);
-            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", projectSettingsEnabled);
-            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", inspectorSettingsEnabled);
+            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".HierarchyEnabled", hierarchyAnimBool.target);
+            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", projectAnimBool.target);
+            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", inspectorAnimBool.target);
 
             EditorPrefs.SetInt(nameof(ToolboxEditorSettings) + ".PickedDrawerType", enabledToShowDrawerType);
         }
@@ -351,23 +364,35 @@ namespace Toolbox.Editor
             serializedObject.Update();
 
             //handle hierarchy settings section
-            if (hierarchySettingsEnabled = DrawHeaderFoldout(hierarchySettingsEnabled, Style.hierarchySettingsContent, true, Style.sectionHeaderStyle))
+            hierarchyAnimBool.target = DrawHeaderFoldout(hierarchyAnimBool.target, Style.hierarchySettingsContent, true, Style.sectionHeaderStyle);
+            using (var group = new EditorGUILayout.FadeGroupScope(hierarchyAnimBool.faded))
             {
-                DrawHierarchySettings();
+                if (group.visible)
+                {
+                    DrawHierarchySettings();
+                }
             }
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
             //handle project settings section
-            if (projectSettingsEnabled = DrawHeaderFoldout(projectSettingsEnabled, Style.projectSettingsContent, true, Style.sectionHeaderStyle))
+            projectAnimBool.target = DrawHeaderFoldout(projectAnimBool.target, Style.projectSettingsContent, true, Style.sectionHeaderStyle);
+            using (var group = new EditorGUILayout.FadeGroupScope(projectAnimBool.faded))
             {
-                DrawProjectSettings();
+                if (group.visible)
+                {
+                    DrawProjectSettings();
+                }
             }
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
             //handle inspector settings section
-            if (inspectorSettingsEnabled = DrawHeaderFoldout(inspectorSettingsEnabled, Style.inspectorSettingsContent, true, Style.sectionHeaderStyle))
+            inspectorAnimBool.target = DrawHeaderFoldout(inspectorAnimBool.target, Style.inspectorSettingsContent, true, Style.sectionHeaderStyle);
+            using (var group = new EditorGUILayout.FadeGroupScope(inspectorAnimBool.faded))
             {
-                DrawInspectorSettings();
+                if (group.visible)
+                {
+                    DrawInspectorSettings();
+                }
             }
 
             serializedObject.ApplyModifiedProperties();

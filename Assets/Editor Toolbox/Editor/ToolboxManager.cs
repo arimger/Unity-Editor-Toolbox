@@ -204,7 +204,7 @@ namespace Toolbox.Editor
             };
             provider.titleBarGuiHandler = () =>
             {
-                if (GUILayout.Button(new GUIContent("Refresh", "Try to find a new settings file in the main (Assets) directory")))
+                if (GUILayout.Button(new GUIContent("Refresh", "Try to find a settings file in the main (Assets) directory")))
                 {
                     ReintializeProvider();
                 }
