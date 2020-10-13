@@ -56,7 +56,71 @@ public class SampleDrawer : ToolboxConditionDrawer<SampleAttribute>
 
 ### Custom Self Property Drawer
 
+```csharp
+using UnityEngine;
+
+public class HideLabelAttribute : ToolboxSelfPropertyAttribute
+{
+    //since we want only to hide the label there is no additional data needed
+}
+
+```
+
+```csharp
+using UnityEditor;
+using UnityEngine;
+using Toolbox.Editor.Drawers;
+
+public class HideLabelAttributeDrawer : ToolboxSelfPropertyDrawer<HideLabelAttribute>
+{
+    protected override void OnGuiSafe(SerializedProperty property, GUIContent label, HideLabelAttribute attribute)
+    {
+        //hide label and draw property in the standard way
+        EditorGUILayout.PropertyField(property, GUIContent.none, property.isExpanded);
+    }
+
+
+    public override bool IsPropertyValid(SerializedProperty property)
+    {
+        //drawer is valid for all properties (for all types)
+        return true;
+    }
+}
+```
+
 ### Custom List Property Drawer
+
+```csharp
+using UnityEngine;
+
+public class StandardListAttribute : ToolboxListPropertyAttribute
+{ }
+```
+
+```csharp
+using UnityEditor;
+using UnityEngine;
+using Toolbox.Editor.Drawers;
+
+public class StandardListAttributeDrawer : ToolboxListPropertyDrawer<StandardListAttribute>
+{
+    protected override void OnGuiSafe(SerializedProperty property, GUIContent label, StandardListAttribute attribute)
+    {
+        EditorGUILayout.LabelField("Custom list drawer example");
+        EditorGUILayout.PropertyField(property, label, false);
+        if (property.isExpanded)
+        {
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("Array.size"));
+            var size = property.arraySize;
+            for (var i = 0; i < size; i++)
+            {
+                var element = property.GetArrayElementAtIndex(i);
+                EditorGUILayout.PropertyField(element, element.isExpanded);
+            }
+        }
+    }
+}
+```
 
 ### Custom Target Type Drawer
 
@@ -105,8 +169,8 @@ public class SampleEditor : ToolboxEditor
 	{
 		base.DrawCustomInspector();
 		
-        //for custom properties:
-        // - ToolboxEditorGui.DrawToolboxProperty(serializedObject.FindProperty("myProperty"));
+		//for custom properties:
+		// - ToolboxEditorGui.DrawToolboxProperty(serializedObject.FindProperty("myProperty"));
 		
 		EditorGUILayout.Space();
 		EditorGUILayout.LabelField("This label is created in the custom Editor. You can freely extend Toolbox-based Editors by inheriting from the <b>ToolboxEditor</b> class.", Style.labelStyle);
