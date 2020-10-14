@@ -154,15 +154,15 @@ namespace Toolbox.Editor
                 folderIconRect.height -= EditorGUIUtility.singleLineHeight - EditorGUIUtility.standardVerticalSpacing * 2;
             }
 
-            //NOTE: in older versions of Unity folder icon is not scaling properly 
+            //NOTE: in older versions of the Unity Editor icons are not scaling properly 
 #if !UNITY_2019_3_OR_NEWER
-            var width = Mathf.Min(folderIconRect.width, Style.maxFolderWidth);
-            var height = Mathf.Min(folderIconRect.height, Style.maxFolderHeight);
+            var w = Mathf.Min(folderIconRect.width, Style.maxFolderWidth);
+            var h = Mathf.Min(folderIconRect.height, Style.maxFolderHeight);
 
-            folderIconRect.x += (folderIconRect.width - width) / 2;
-            folderIconRect.y += (folderIconRect.height - height) / 2;
-            folderIconRect.width = width;
-            folderIconRect.height = height;
+            folderIconRect.x += (folderIconRect.width - w) / 2;
+            folderIconRect.y += (folderIconRect.height - h) / 2;
+            folderIconRect.width = w;
+            folderIconRect.height = h;
 #endif
 
             //calculate only base icon dimensions as:
@@ -176,7 +176,7 @@ namespace Toolbox.Editor
             var centerX = folderIconRect.xMin + folderIconRect.width / 2 - iconPlaceWidth / 2;
             var centerY = folderIconRect.yMin + folderIconRect.height / 2 - iconPlaceHeight / 2;
 
-            //prepare final rect for the large icon
+            //prepare final rect for the 'large' icon
             folderIconRect = new Rect(centerX, centerY, iconPlaceWidth, iconPlaceHeight);
 
             folderIconRect.x += (folderIconRect.width - folderIconRect.width * LargeIconScale) / 2;
@@ -193,7 +193,7 @@ namespace Toolbox.Editor
 
         internal static Rect GetSmallIconRect(Rect folderIconRect)
         {
-            //prepare final rect for the small icon
+            //prepare final rect for the 'small' icon
             folderIconRect = new Rect(folderIconRect.xMin, folderIconRect.y, Style.minFolderWidth, Style.minFolderHeight);
 
             folderIconRect.x += (folderIconRect.width - folderIconRect.width * SmallIconScale) / 2;
@@ -272,13 +272,19 @@ namespace Toolbox.Editor
         Name
     }
 
+    public enum FolderIconType
+    {
+        Custom,
+        Editor
+    }
+
     [Serializable]
     public struct FolderData
     {
         [SerializeField]
         private FolderDataType type;
 
-        //NOTE: HideIf attribute is override by custom FolderDataDrawer
+        //NOTE: HideIf attribute is overrided by custom FolderDataDrawer
         [SerializeField, HideIf(nameof(type), FolderDataType.Name)]
         private string name;
         [SerializeField, HideIf(nameof(type), FolderDataType.Path), Directory, Tooltip("Relative path from Assets directory.")]
