@@ -95,7 +95,7 @@ public string var1;
 public float var1 = 80.0f;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/progressbar1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/progressbar1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/progressbar2.png)
 
 #### NewLabelAttribute
@@ -129,7 +129,7 @@ public bool toggle;
 public float var1;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/showif1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/showif1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/showif2.png)
 
 #### ConditionalEnableAttribute & ConditionalDisableAttribute
@@ -141,7 +141,7 @@ public bool toggle;
 public float var1;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enableif1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enableif1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enableif2.png)
 
 #### AssetPreviewAttribute
@@ -161,7 +161,7 @@ public GameObject var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/suffix.png)
 
-#### TypeConstraintAttribute
+#### ClassExtends/ClassImplementsAttribute
 
 ```csharp
 [ClassExtends(typeof(Collider))] //or [ClassImplements(typeof(interface))] for interfaces
@@ -213,7 +213,7 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExampl
 
 #### NotNullAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull2.png)
 
 #### RandomAttribute
@@ -222,7 +222,7 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExampl
 
 #### DirectoryAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory2.png)
 
 #### BroadcastButtonAttribute
@@ -247,7 +247,7 @@ private void MyMethod()
 
 #### SceneNameAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename1.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename2.png)
 
 #### PresetAttribute
@@ -310,6 +310,8 @@ Drawers are based on classes inherited from the **ToolboxDrawer** class and asso
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inspector.png)
 
+More examples 'How to' create custom ToolboxDrawers you can find [HERE](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Assets/Editor%20Toolbox/HOWTO.md).
+
 #### ToolboxDecoratorAttributes
 
 Display/create something before and after property in the desired order (using Order property).   
@@ -359,7 +361,7 @@ public int var1;
 [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 150.0f)]
 public int var1;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)\
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/imagearea.png)
 
@@ -470,7 +472,7 @@ Properties that can be edited include:
 
 > Editor Toolbox/Editor/ToolboxEditorProject.cs
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project1.png)  
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project1.png)\
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project2.png)
 
@@ -534,4 +536,4 @@ I decieded to move additional editors and tools to Gist.
 
 ### Prefab/GameObject Painter
 
-Check it out [HERE](https://gist.github.com/arimger/00842a217ea8ab03d4e1b81f11592cf3)
+Check it out [HERE](https://gist.github.com/arimger/00842a217ea8ab03d4e1b81f11592cf3).

@@ -61,7 +61,7 @@ using UnityEngine;
 
 public class HideLabelAttribute : ToolboxSelfPropertyAttribute
 {
-    //since we want only to hide the label there is no additional data needed
+	//since we want only to hide the label there is no additional data needed
 }
 
 ```
@@ -73,18 +73,18 @@ using Toolbox.Editor.Drawers;
 
 public class HideLabelAttributeDrawer : ToolboxSelfPropertyDrawer<HideLabelAttribute>
 {
-    protected override void OnGuiSafe(SerializedProperty property, GUIContent label, HideLabelAttribute attribute)
-    {
-        //hide label and draw property in the standard way
-        EditorGUILayout.PropertyField(property, GUIContent.none, property.isExpanded);
-    }
+	protected override void OnGuiSafe(SerializedProperty property, GUIContent label, HideLabelAttribute attribute)
+	{
+		//hide label and draw property in the standard way
+		EditorGUILayout.PropertyField(property, GUIContent.none, property.isExpanded);
+	}
 
 
-    public override bool IsPropertyValid(SerializedProperty property)
-    {
-        //drawer is valid for all properties (for all types)
-        return true;
-    }
+	public override bool IsPropertyValid(SerializedProperty property)
+	{
+		//drawer is valid for all properties (for all types)
+		return true;
+	}
 }
 ```
 
@@ -104,21 +104,21 @@ using Toolbox.Editor.Drawers;
 
 public class StandardListAttributeDrawer : ToolboxListPropertyDrawer<StandardListAttribute>
 {
-    protected override void OnGuiSafe(SerializedProperty property, GUIContent label, StandardListAttribute attribute)
-    {
-        EditorGUILayout.LabelField("Custom list drawer example");
-        EditorGUILayout.PropertyField(property, label, false);
-        if (property.isExpanded)
-        {
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("Array.size"));
-            var size = property.arraySize;
-            for (var i = 0; i < size; i++)
-            {
-                var element = property.GetArrayElementAtIndex(i);
-                EditorGUILayout.PropertyField(element, element.isExpanded);
-            }
-        }
-    }
+	protected override void OnGuiSafe(SerializedProperty property, GUIContent label, StandardListAttribute attribute)
+	{
+		EditorGUILayout.LabelField("Custom list drawer example");
+		EditorGUILayout.PropertyField(property, label, false);
+		if (property.isExpanded)
+		{
+			EditorGUILayout.PropertyField(property.FindPropertyRelative("Array.size"));
+			var size = property.arraySize;
+			for (var i = 0; i < size; i++)
+			{
+				var element = property.GetArrayElementAtIndex(i);
+				EditorGUILayout.PropertyField(element, element.isExpanded);
+			}
+		}
+	}
 }
 ```
 

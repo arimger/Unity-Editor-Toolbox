@@ -14,6 +14,9 @@ namespace Toolbox.Editor.Drawers
 
         private void DrawFolderByNameIcon(Rect rect)
         {
+            var diff = rect.height - Style.dataByNameLabelStyle.fixedHeight;
+            rect.yMin += diff;
+            rect.yMax -= diff;
             GUI.Label(rect, "Aa", Style.dataByNameLabelStyle);
         }
 
@@ -80,7 +83,7 @@ namespace Toolbox.Editor.Drawers
                 ? pathProperty.stringValue
                 : nameProperty.stringValue;
 
-            //begin property
+            //begin the main property
             label = EditorGUI.BeginProperty(position, label, property);
             label.text = string.IsNullOrEmpty(propertyName) ? label.text : propertyName;
 
@@ -249,11 +252,11 @@ namespace Toolbox.Editor.Drawers
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
             internal static readonly float padding = 12.0f;
 
-            internal const float largeFolderWidth = ToolboxEditorProject.Style.maxFolderWidth;
-            internal const float largeFolderHeight = ToolboxEditorProject.Style.maxFolderHeight;
+            internal const float largeFolderWidth = 64.0f;
+            internal const float largeFolderHeight = 64.0f;
 
-            internal const float smallFolderWidth = ToolboxEditorProject.Style.minFolderWidth;
-            internal const float smallFolderHeight = ToolboxEditorProject.Style.minFolderHeight;
+            internal const float smallFolderWidth = 16.0f;
+            internal const float smallFolderHeight = 16.0f;
 
             internal static readonly GUIStyle dataByNameLabelStyle;
             internal static readonly GUIStyle propertyFoldoutStyle;
@@ -271,7 +274,10 @@ namespace Toolbox.Editor.Drawers
 #if UNITY_2019_3_OR_NEWER
                 dataByNameLabelStyle = new GUIStyle(EditorStyles.miniLabel);
 #else
-                dataByNameLabelStyle = new GUIStyle(EditorStyles.miniTextField);
+                dataByNameLabelStyle = new GUIStyle(EditorStyles.miniTextField)
+                {
+                    alignment = TextAnchor.MiddleCenter
+                };
 #endif
                 propertyFoldoutStyle = new GUIStyle(EditorStyles.foldout)
                 {
