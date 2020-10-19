@@ -2,6 +2,7 @@
 using UnityEditor.AnimatedValues;
 using UnityEngine;
 using UnityEngine.Events;
+
 using static Toolbox.Editor.ToolboxEditorGui;
 
 namespace Toolbox.Editor
@@ -10,7 +11,7 @@ namespace Toolbox.Editor
 
     [CustomEditor(typeof(ToolboxEditorSettings), true, isFallback = false)]
     [CanEditMultipleObjects, InitializeOnLoad]
-    public class ToolboxEditorSettingsEditor : ToolboxEditor
+    internal class ToolboxEditorSettingsEditor : ToolboxEditor
     {
         private ToolboxEditorSettings currentTarget;
 
