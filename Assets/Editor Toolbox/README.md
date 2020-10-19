@@ -361,7 +361,7 @@ public int var1;
 [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 150.0f)]
 public int var1;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)\
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/imagearea.png)
 
@@ -472,7 +472,7 @@ Properties that can be edited include:
 
 > Editor Toolbox/Editor/ToolboxEditorProject.cs
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project1.png)\
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project1.png)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project2.png)
 

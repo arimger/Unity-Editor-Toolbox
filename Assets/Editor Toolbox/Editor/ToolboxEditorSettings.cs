@@ -7,7 +7,7 @@ namespace Toolbox.Editor
 {
     using Toolbox.Editor.Drawers;
 
-    public interface IToolboxHierarchySettings
+    internal interface IToolboxHierarchySettings
     {
         void AddRowDataItem(HierarchyObjectDataItem item);
         void RemoveRowDataItem(HierarchyObjectDataItem item);
@@ -20,7 +20,7 @@ namespace Toolbox.Editor
         int RowDataItemsCount { get; }
     }
 
-    public interface IToolboxProjectSettings
+    internal interface IToolboxProjectSettings
     {
         void AddCustomFolder(FolderData path);
         void RemoveCustomFolder(FolderData path);
@@ -38,7 +38,7 @@ namespace Toolbox.Editor
         int CustomFoldersCount { get; }
     }
 
-    public interface IToolboxInspectorSettings
+    internal interface IToolboxInspectorSettings
     {
         void SetAllPossibleDecoratorDrawers();
         void SetAllPossibleConditionDrawers();
@@ -74,7 +74,7 @@ namespace Toolbox.Editor
     }
 
     [CreateAssetMenu(fileName = "Editor Toolbox Settings", menuName = "Editor Toolbox/Settings")]
-    public class ToolboxEditorSettings : ScriptableObject, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxInspectorSettings
+    internal class ToolboxEditorSettings : ScriptableObject, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxInspectorSettings
     {
         [SerializeField]
         private bool useToolboxHierarchy = true;

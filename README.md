@@ -123,7 +123,7 @@ public Vector2 var1;
 #### ConditionalShowAttribute & ConditionalHideAttribute
 
 ```csharp
-//remark: use the 'ShowIf'/'HideIf' attribute instead
+//REMARK: use the 'ShowIf'/'HideIf' attribute instead
 public bool toggle;
 [ConditionalShow(nameof(toggle), true)]
 public float var1;
@@ -135,7 +135,7 @@ public float var1;
 #### ConditionalEnableAttribute & ConditionalDisableAttribute
 
 ```csharp
-//remark: use the 'EnableIf'/'DisableIf' attribute instead
+//REMARK: use the 'EnableIf'/'DisableIf' attribute instead
 public bool toggle;
 [ConditionalEnable(nameof(toggle), true)]
 public float var1;
@@ -361,7 +361,7 @@ public int var1;
 [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 150.0f)]
 public int var1;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)\
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/imagearea.png)
 
@@ -472,7 +472,7 @@ Properties that can be edited include:
 
 > Editor Toolbox/Editor/ToolboxEditorProject.cs
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project1.png)\
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project1.png)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project2.png)
 
