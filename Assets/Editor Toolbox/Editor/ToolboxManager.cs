@@ -172,6 +172,12 @@ namespace Toolbox.Editor
                         var settingsInstance = ScriptableObject.CreateInstance(settingsType);
 
                         var locationPath = EditorUtility.OpenFolderPanel("New Settings file location", "Assets", "");
+                        //validate returned path and create relative one if possible
+                        if (string.IsNullOrEmpty(locationPath))
+                        {
+                            return;
+                        }
+
                         var relativePath = locationPath
                                                .Substring(locationPath
                                                    .IndexOf("Assets/")) + "/" + settingsType + ".asset";
