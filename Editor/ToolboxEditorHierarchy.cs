@@ -110,18 +110,22 @@ namespace Toolbox.Editor
                 switch (type)
                 {
                     case LabelType.Empty:
-                        DrawEmptyItemLabel(gameObject, rect, label, currentItemIndex);
+                        DrawEmptyItemLabel(rect, gameObject, label, currentItemIndex);
                         break;
                     case LabelType.Header:
-                        DrawHeaderItemLabel(gameObject, rect, label, currentItemIndex);
+                        DrawHeaderItemLabel(rect, gameObject, label, currentItemIndex);
                         break;
                     case LabelType.Default:
-                        DrawDefaultItemLabel(gameObject, rect, label, currentItemIndex);
+                        DrawDefaultItemLabel(rect, gameObject, label, currentItemIndex);
                         break;
                 }
 
                 //increment index after drawing
                 currentItemIndex++;
+            }
+            else
+            {
+                DrawSceneHeaderLabel(rect);
             }
         }
 
@@ -133,7 +137,7 @@ namespace Toolbox.Editor
         /// <param name="rect"></param>
         /// <param name="label"></param>
         /// <param name="index"></param>
-        private static void DrawEmptyItemLabel(GameObject gameObject, Rect rect, string label, int index = 0)
+        private static void DrawEmptyItemLabel(Rect rect, GameObject gameObject, string label, int index = 0)
         { }
 
         /// <summary>
@@ -143,7 +147,7 @@ namespace Toolbox.Editor
         /// <param name="rect"></param>
         /// <param name="label"></param>
         /// <param name="index"></param>
-        private static void DrawHeaderItemLabel(GameObject gameObject, Rect rect, string label, int index = 0)
+        private static void DrawHeaderItemLabel(Rect rect, GameObject gameObject, string label, int index = 0)
         {
             //repaint background on proper event
             if (Event.current.type == EventType.Repaint)
@@ -177,7 +181,7 @@ namespace Toolbox.Editor
         /// <param name="rect"></param>
         /// <param name="label"></param>
         /// <param name="index"></param>
-        private static void DrawDefaultItemLabel(GameObject gameObject, Rect rect, string label, int index = 0)
+        private static void DrawDefaultItemLabel(Rect rect, GameObject gameObject, string label, int index = 0)
         {
             var contentRect = rect;
             var drawersCount = allowedDrawContentCallbacks.Count;
@@ -221,6 +225,28 @@ namespace Toolbox.Editor
 
             //create an empty label field which will serve as a tooltip
             EditorGUI.LabelField(contentRect, new GUIContent(string.Empty, label));
+        }
+
+        /// <summary>
+        /// Creates optional information about selected object using the <see cref="Selection"/> class.
+        /// </summary>
+        /// <param name="rect"></param>
+        private static void DrawSceneHeaderLabel(Rect rect)
+        {
+            if (!ShowSelectionsCount)
+            {
+                return;
+            }
+
+            //validate selected objects
+            var count = Selection.gameObjects?.Length ?? 0;
+            if (count == 0)
+            {
+                return;
+            }
+
+            //draw dedicated label field
+            EditorGUI.LabelField(rect, count.ToString(), Style.selectLabelStyle);
         }
 
 
@@ -520,6 +546,7 @@ namespace Toolbox.Editor
         internal static bool IsOverlayAllowed { get; set; } = false;
 
         internal static bool DrawHorizontalLines { get; set; } = true;
+        internal static bool ShowSelectionsCount { get; set; } = true;
         internal static bool DrawSeparationLines { get; set; } = true;
 
 
@@ -545,6 +572,7 @@ namespace Toolbox.Editor
             internal static readonly GUIStyle layerLabelStyle;
             internal static readonly GUIStyle remarkLabelStyle;
             internal static readonly GUIStyle headerLabelStyle;
+            internal static readonly GUIStyle selectLabelStyle;
             internal static readonly GUIStyle backgroundStyle;
 
             internal static readonly Texture componentIcon;
@@ -576,10 +604,17 @@ namespace Toolbox.Editor
                 };
 
                 remarkLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
-
                 headerLabelStyle = new GUIStyle(EditorStyles.boldLabel)
                 {
                     alignment = TextAnchor.MiddleCenter
+                };
+                selectLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel)
+                {
+                    alignment = TextAnchor.MiddleRight,
+                    contentOffset = new Vector2()
+                    {
+                        x = -2.0f
+                    }
                 };
 
                 backgroundStyle = new GUIStyle();

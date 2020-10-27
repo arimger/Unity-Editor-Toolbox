@@ -23,6 +23,7 @@ namespace Toolbox.Editor
 
         private SerializedProperty useToolboxHierarchyProperty;
         private SerializedProperty drawHorizontalLinesProperty;
+        private SerializedProperty showSelectionsCountProperty;
         private SerializedProperty useToolboxFoldersProperty;
         private SerializedProperty useToolboxDrawersProperty;
         private SerializedProperty largeIconScaleProperty;
@@ -65,6 +66,7 @@ namespace Toolbox.Editor
             //hierarchy-related properties
             useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
             drawHorizontalLinesProperty = serializedObject.FindProperty("drawHorizontalLines");
+            showSelectionsCountProperty = serializedObject.FindProperty("showSelectionsCount");
 #if UNITY_2019_3_OR_NEWER
 			rowDataItemsList = CreateClearList(serializedObject.FindProperty("rowDataItems"), hasHeader: false, elementLabel: "Position");
 #else
@@ -161,6 +163,7 @@ namespace Toolbox.Editor
             }
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(drawHorizontalLinesProperty);
+            EditorGUILayout.PropertyField(showSelectionsCountProperty);
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.Space();

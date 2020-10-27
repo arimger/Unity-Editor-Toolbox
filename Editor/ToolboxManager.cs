@@ -70,6 +70,7 @@ namespace Toolbox.Editor
             ToolboxEditorHierarchy.IsOverlayAllowed = settings.UseToolboxHierarchy;
 
             ToolboxEditorHierarchy.DrawHorizontalLines = settings.DrawHorizontalLines;
+            ToolboxEditorHierarchy.ShowSelectionsCount = settings.ShowSelectionsCount;
             ToolboxEditorHierarchy.DrawSeparationLines = true;
 
             ToolboxEditorHierarchy.RemoveAllowedHierarchyContentCallbacks();
