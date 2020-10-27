@@ -9,20 +9,21 @@ namespace Toolbox.Editor
 
     internal interface IToolboxHierarchySettings
     {
-        void AddRowDataItem(HierarchyObjectDataItem item);
+        void AppendRowDataItem(HierarchyObjectDataItem item);
         void RemoveRowDataItem(HierarchyObjectDataItem item);
         void RemoveRowDataItemAt(int index);
         HierarchyObjectDataItem GetRowDataItemAt(int index);
 
         bool UseToolboxHierarchy { get; }
         bool DrawHorizontalLines { get; }
+        bool ShowSelectionsCount { get; }
 
         int RowDataItemsCount { get; }
     }
 
     internal interface IToolboxProjectSettings
     {
-        void AddCustomFolder(FolderData path);
+        void AppendCustomFolder(FolderData path);
         void RemoveCustomFolder(FolderData path);
         void RemoveCustomFolderAt(int index);
         FolderData GetCustomFolderAt(int index);
@@ -80,6 +81,8 @@ namespace Toolbox.Editor
         private bool useToolboxHierarchy = true;
         [SerializeField]
         private bool drawHorizontalLines = true;
+        [SerializeField]
+        private bool showSelectionsCount;
 
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         private List<HierarchyObjectDataItem> rowDataItems = Defaults.rowDataItems;
@@ -215,7 +218,7 @@ namespace Toolbox.Editor
         #endregion
 
 
-        public void AddRowDataItem(HierarchyObjectDataItem item)
+        public void AppendRowDataItem(HierarchyObjectDataItem item)
         {
             if (rowDataItems == null)
             {
@@ -241,7 +244,7 @@ namespace Toolbox.Editor
         }
 
 
-        public void AddCustomFolder(FolderData data)
+        public void AppendCustomFolder(FolderData data)
         {
             if (customFolders == null)
             {
@@ -470,6 +473,12 @@ namespace Toolbox.Editor
         {
             get => drawHorizontalLines;
             set => drawHorizontalLines = value;
+        }
+
+        public bool ShowSelectionsCount
+        {
+            get => showSelectionsCount;
+            set => showSelectionsCount = value;
         }
 
         public bool UseToolboxProject
