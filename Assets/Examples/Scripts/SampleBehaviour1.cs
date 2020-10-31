@@ -191,4 +191,26 @@ public class SampleBehaviour1 : MonoBehaviour
     public Vector3 direction3d;
     [Vector2Direction]
     public Vector2 direction2d;
+	
+	[Label("27", skinStyle: SkinStyle.Box)]
+	
+	[LabelByChild("var3.var2")]
+    public SampleClass1 sampleField;
+    [LabelByChild("var2")]
+    public SampleClass1[] sampleFields;
+
+    [System.Serializable]
+    public class SampleClass1
+    {
+        public Material var1;
+        public KeyCode var2;
+        public SampleClass2 var3;
+    }
+
+    [System.Serializable]
+    public class SampleClass2
+    {
+        public int var1;
+        public string var2;
+    }
 }

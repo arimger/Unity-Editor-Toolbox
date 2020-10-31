@@ -615,6 +615,28 @@ MonoBehaviour:
   hexColor: 234CE0FF
   direction3d: {x: 0, y: 1, z: 0}
   direction2d: {x: 0, y: 1}
+  sampleField:
+    var1: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
+    var2: 0
+    var3:
+      var1: 0
+      var2: Label By Value
+  sampleFields:
+  - var1: {fileID: 0}
+    var2: 64
+    var3:
+      var1: 0
+      var2: 
+  - var1: {fileID: 0}
+    var2: 53
+    var3:
+      var1: 0
+      var2: 
+  - var1: {fileID: 0}
+    var2: 38
+    var3:
+      var1: 0
+      var2: 
 --- !u!4 &959025299
 Transform:
   m_ObjectHideFlags: 2

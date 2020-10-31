@@ -295,6 +295,33 @@ public string password;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/password.png)
 
+#### LabelByChildAttribute
+
+```csharp
+[System.Serializable]
+public class SampleClass1
+{
+	public Material var1;
+	public KeyCode var2;
+	public SampleClass2 var3;
+}
+
+[System.Serializable]
+public class SampleClass2
+{
+	public int var1;
+	public string var2;
+}
+
+[LabelByChild("var2")]
+public SampleClass1[] vars1;
+[LabelByChild("var3.var2")]
+public SampleClass1 var1;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild1.png)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild2.png)
 ---
 
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
