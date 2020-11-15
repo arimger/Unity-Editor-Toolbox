@@ -40,22 +40,14 @@ public class SampleBehaviour2 : MonoBehaviour
     [InLineEditor]
     public Transform var21;
 
-    [SpaceArea]
-
     [InLineEditor(drawSettings: true)]
     public Material var22;
-
-    [SpaceArea]
 
     [InLineEditor(true, true)]
     public Texture var23;
 
-    [SpaceArea]
-
     [InLineEditor(drawSettings: true)]
     public AudioClip var24;
-
-    [SpaceArea]
 
     [InLineEditor]
     public Mesh var25;

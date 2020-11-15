@@ -88,29 +88,34 @@ namespace Toolbox.Editor.Drawers
         /// <param name="attribute"></param>
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, InLineEditorAttribute attribute)
         {
-            //create a standard property field for given property
-            EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(property, label, property.isExpanded);
-            if (EditorGUI.EndChangeCheck())
-            {
-                //make sure previously cached Editor is disposed
-                storage.ClearItem(property);
+            using (new EditorGUILayout.HorizontalScope())
+            {            
+                //create a standard property field for given property
+                EditorGUI.BeginChangeCheck();
+                EditorGUILayout.PropertyField(property, label, property.isExpanded);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    //make sure previously cached Editor is disposed
+                    storage.ClearItem(property);
+                }
+
+                //NOTE: multiple different Editors are not supported
+                if (property.hasMultipleDifferentValues)
+                {
+                    return;
+                }
+
+                var propertyValue = property.objectReferenceValue;
+                if (propertyValue == null)
+                {
+                    return;
+                }
+
+                property.isExpanded = GUILayout.Toggle(property.isExpanded, Style.foldoutContent, Style.foldoutStyle, Style.foldoutOptions);
             }
 
-            //NOTE: multiple different Editors are not supported
-            if (property.hasMultipleDifferentValues)
-            {
-                return;
-            }
-
-            var propertyValue = property.objectReferenceValue;
-            if (propertyValue == null)
-            {
-                return;
-            }
-
-            //create additional foldout for the associated Editor 
-            if (property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, Style.foldoutContent, true, Style.foldoutStyle))
+            //create additional Editor for the associated reference 
+            if (property.isExpanded)
             {
                 var editor = storage.ReturnItem(property, attribute);
                 InspectorUtility.SetIsEditorExpanded(editor, true);
@@ -137,7 +142,12 @@ namespace Toolbox.Editor.Drawers
             internal static readonly GUIStyle previewStyle;
             internal static readonly GUIStyle settingStyle;
 
-            internal static readonly GUIContent foldoutContent = new GUIContent("Inspector Preview");
+            internal static readonly GUIContent foldoutContent = new GUIContent("Edit");
+
+            internal static readonly GUILayoutOption[] foldoutOptions = new GUILayoutOption[]
+            {
+                GUILayout.Width(40.0f)
+            };
 
             static Style()
             {
@@ -145,14 +155,14 @@ namespace Toolbox.Editor.Drawers
                 {
                     padding = new RectOffset(13, 13, 8, 8)
                 };
-                foldoutStyle = new GUIStyle(EditorStyles.foldout)
+                foldoutStyle = new GUIStyle(EditorStyles.miniButton)
                 {
 #if UNITY_2019_3_OR_NEWER
                     fontSize = 10,
 #else
                     fontSize = 9,
 #endif
-                    alignment = TextAnchor.MiddleLeft
+                    alignment = TextAnchor.MiddleCenter
                 };
 
                 previewStyle = new GUIStyle();

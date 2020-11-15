@@ -102,7 +102,7 @@ namespace Toolbox.Editor
         internal static void CreateCustomFolder(FolderData data)
         {
             //TODO: data overriding validation
-            switch (data.Type)
+            switch (data.DataType)
             {
                 case FolderDataType.Path:
                     //if (validationEnabled)
@@ -121,7 +121,7 @@ namespace Toolbox.Editor
         /// <returns></returns>
         internal static bool RemoveCustomFolder(FolderData data)
         {
-            switch (data.Type)
+            switch (data.DataType)
             {
                 case FolderDataType.Path:
                     return pathBasedFoldersData.Remove(data.Path);
@@ -281,28 +281,35 @@ namespace Toolbox.Editor
     [Serializable]
     public struct FolderData
     {
-        [SerializeField]
-        private FolderDataType type;
+        //NOTE: all additional attributes are overrided by the custom FolderDataDrawer
 
-        //NOTE: HideIf attribute is overrided by custom FolderDataDrawer
-        [SerializeField, HideIf(nameof(type), FolderDataType.Name)]
+        [SerializeField, FormerlySerializedAs("type")]
+        private FolderDataType dataType;
+
+        [SerializeField, HideIf(nameof(dataType), FolderDataType.Name)]
         private string name;
-        [SerializeField, HideIf(nameof(type), FolderDataType.Path), Directory, Tooltip("Relative path from Assets directory.")]
+        [SerializeField, HideIf(nameof(dataType), FolderDataType.Path), Directory, Tooltip("Relative path from Assets directory.")]
         private string path;
 
         [SerializeField, Tooltip("Will create additional tooltip for custom folders. Leave empty to ignore.")]
         private string tooltip;
 
-        [SerializeField, FormerlySerializedAs("icon")]
-        private Texture largeIcon;
         [SerializeField]
+        private FolderIconType iconType;
+
+        [SerializeField, HideIf(nameof(iconType), FolderIconType.Editor), FormerlySerializedAs("icon")]
+        private Texture largeIcon;
+        [SerializeField, HideIf(nameof(iconType), FolderIconType.Editor)]
         private Texture smallIcon;
 
+        [SerializeField, HideIf(nameof(iconType), FolderIconType.Custom)]
+        private string iconName;
 
-        public FolderDataType Type
+
+        public FolderDataType DataType
         {
-            get => type;
-            set => type = value;
+            get => dataType;
+            set => dataType = value;
         }
 
         public string Path
@@ -323,6 +330,12 @@ namespace Toolbox.Editor
             set => tooltip = value;
         }
 
+        public FolderIconType IconType
+        {
+            get => iconType;
+            set => iconType = value;
+        }
+
         public Texture LargeIcon
         {
             get => largeIcon;
@@ -333,6 +346,12 @@ namespace Toolbox.Editor
         {
             get => smallIcon;
             set => smallIcon = value;
+        }
+
+        public string IconName
+        {
+            get => iconName;
+            set => iconName = value;
         }
     }
 }
