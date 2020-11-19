@@ -4,9 +4,9 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(ChildObjectOnlyAttribute))]
-    public class ChildObjectOnlyAttributeDrawer : ToolboxNativePropertyDrawer
+    public class ChildObjectOnlyAttributeDrawer : ObjectValidationDrawer
     {
-        private Transform GetTransform(Object reference)
+        protected Transform GetTransform(Object reference)
         {
             switch (reference)
             {
@@ -20,37 +20,16 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        protected override string GetWarningMessage()
         {
-            return base.GetPropertyHeightSafe(property, label);
+            return "Assigned value has to be a child of the target transform.";
         }
 
-        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
+        protected override bool IsObjectValid(Object objectValue, SerializedProperty property)
         {
-            EditorGUI.BeginChangeCheck();
-            EditorGUI.PropertyField(position, property, label, false);
-            if (EditorGUI.EndChangeCheck())
-            {
-                var target = property.serializedObject.targetObject as Component;
-                var reference = property.objectReferenceValue;
-                if (reference)
-                {
-                    var transfrom = GetTransform(reference);
-                    if (transfrom && transfrom != target.transform && transfrom.IsChildOf(target.transform))
-                    {
-                        return;
-                    }
-
-                    property.objectReferenceValue = null;
-                    ToolboxEditorLog.AttributeUsageWarning(attribute, property, "Assigned value has to be a child of the target transform.");
-                }
-            }
-        }
-
-
-        public override bool IsPropertyValid(SerializedProperty property)
-        {
-            return property.propertyType == SerializedPropertyType.ObjectReference;
+            var target = property.serializedObject.targetObject as Component;
+            var transfrom = GetTransform(objectValue);
+            return transfrom && transfrom != target.transform && transfrom.IsChildOf(target.transform);
         }
     }
 }

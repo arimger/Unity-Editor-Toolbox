@@ -5,8 +5,7 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public abstract class ButtonAttribute : PropertyAttribute
     {
-        public ButtonAttribute(string methodName, string label = null,
-            ButtonActivityType type = ButtonActivityType.Everything)
+        public ButtonAttribute(string methodName, string label = null, ButtonActivityType type = ButtonActivityType.Everything)
         {
             MethodName = methodName;
             Label = label;
