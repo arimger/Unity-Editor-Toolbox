@@ -4,33 +4,16 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(PrefabReferenceAttribute))]
-    public class PrefabReferenceAttributeDrawer : ToolboxNativePropertyDrawer
+    public class PrefabReferenceAttributeDrawer : ObjectValidationDrawer
     {
-        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        protected override string GetWarningMessage()
         {
-            return base.GetPropertyHeightSafe(property, label);
+            return "Assigned object has to be a prefab.";
         }
 
-        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
+        protected override bool IsObjectValid(Object objectValue, SerializedProperty property)
         {
-            EditorGUI.BeginChangeCheck();
-            EditorGUI.PropertyField(position, property, label);
-            if (!EditorGUI.EndChangeCheck() || property.objectReferenceValue == null)
-            {
-                return;
-            }
-
-            if (PrefabUtility.GetPrefabAssetType(property.objectReferenceValue) == PrefabAssetType.NotAPrefab)
-            {
-                ToolboxEditorLog.AttributeUsageWarning(attribute, property, "Assigned object has to be a prefab.");
-                property.objectReferenceValue = null;
-            }
-        }
-
-
-        public override bool IsPropertyValid(SerializedProperty property)
-        {
-            return property.propertyType == SerializedPropertyType.ObjectReference;
+            return PrefabUtility.GetPrefabAssetType(objectValue) != PrefabAssetType.NotAPrefab;
         }
     }
 }
