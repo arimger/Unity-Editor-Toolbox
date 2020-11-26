@@ -319,13 +319,14 @@ public SampleClass1[] vars1;
 public SampleClass1 var1;
 ```
 
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild1.png)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild2.png)
+
 #### ChildObjectOnlyAttribute
 
 #### SceneObjectOnlyAttribute
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild1.png)
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild2.png)
 ---
 
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
