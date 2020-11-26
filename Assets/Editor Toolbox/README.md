@@ -319,6 +319,10 @@ public SampleClass1[] vars1;
 public SampleClass1 var1;
 ```
 
+#### ChildObjectOnlyAttribute
+
+#### SceneObjectOnlyAttribute
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild1.png)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild2.png)
