@@ -86,7 +86,7 @@ namespace Toolbox.Editor
 
         internal static void KitInitializationMessage()
         {
-            LogWarning("Settings initialization needed. Go to Edit/Project Settings.../Editor Toolbox and find an existing Settings file ('Refresh') or create new.");
+            LogWarning("Settings initialization needed. Go to <b>Edit/Project Settings.../Editor Toolbox</b> and find an existing Settings file ('Refresh') or create new.");
         }
 
 
