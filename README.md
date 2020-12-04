@@ -327,6 +327,10 @@ public SampleClass1 var1;
 
 #### SceneObjectOnlyAttribute
 
+#### LeftToggleAttribute
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/lefttoggle.png)
+
 ---
 
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
@@ -477,7 +481,7 @@ public GameObject[] boxedStyleList = new GameObject[4];
 
 ### Hierarchy <a name="hierarchy"></a>
 
-Enable and customize the presented hierarchy overlay in the **ToolboxEditorSettings**. Basically it provides more data about particular GameObjects directly within the Hierarchy window. Additionally, you can create special 'Header' objects using the '#h' prefix or Create menu: GameObject/Editor Toolbox/Hierarchy Header.
+Enable and customize the presented hierarchy overlay in the **ToolboxEditorSettings**. Basically it provides more data about particular GameObjects directly within the Hierarchy window. Additionally, you can create special 'Header' objects using the '#h' prefix or Create menu: **GameObject/Editor Toolbox/Hierarchy Header** (by default created object will have **EditorOnly** tag).
 
 Each row can contain:
 - Scripts information
