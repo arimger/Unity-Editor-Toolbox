@@ -213,4 +213,8 @@ public class SampleBehaviour1 : MonoBehaviour
         public int var1;
         public string var2;
     }
+
+    [Label("28", skinStyle: SkinStyle.Box)]
+
+    public SerializedScene scene;
 }
