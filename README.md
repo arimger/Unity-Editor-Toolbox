@@ -337,6 +337,8 @@ public SampleClass1 var1;
 
 Drawers are based on classes inherited from the **ToolboxDrawer** class and associated **ToolboxAttribute**. With this powerful custom system you are able to create really flexible drawers. You can use them without limitations (they work with sub-classes and as array children). Every ToolboxDrawer is layout-based. For proper work they need at least one settings file located in your project. You can find predefined one here - `Editor Toolbox/EditorSettings.asset`.
 
+Examples **'How to'** create custom ToolboxDrawers you can find [HERE](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Assets/Editor%20Toolbox/HOWTO.md).
+
 &nbsp;
 
 > Editor Toolbox/Scripts/Attributes/ToolboxAttributes\
@@ -345,8 +347,6 @@ Drawers are based on classes inherited from the **ToolboxDrawer** class and asso
 &nbsp;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inspector.png)
-
-More examples 'How to' create custom ToolboxDrawers you can find [HERE](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Assets/Editor%20Toolbox/HOWTO.md).
 
 #### ToolboxDecoratorAttributes
 
