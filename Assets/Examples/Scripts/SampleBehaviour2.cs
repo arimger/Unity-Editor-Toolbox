@@ -108,4 +108,9 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [ScrollableItems(defaultMinIndex: 0, defaultMaxIndex: 5)]
     public GameObject[] largeArray = new GameObject[19];
+
+    [Label("11", skinStyle: SkinStyle.Box)]
+
+    [DisableInPlayMode]
+    public int var36;
 }

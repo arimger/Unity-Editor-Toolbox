@@ -68,6 +68,7 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.HideAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.HideIfAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.ShowIfAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.DisableInPlayModeAttributeDrawer, Toolbox-Editor
   selfPropertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
   listPropertyDrawerHandlers:

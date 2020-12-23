@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
@@ -7,13 +9,15 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(LabelAttribute attribute)
         {
+            //determine proper styles for scope and text
             var scopeStyle = GetScopeStyle(attribute.SkinStyle);
             var labelStyle = GetLabelStyle(attribute.FontStyle);
 
             labelStyle.alignment = attribute.Alignment;
             labelStyle.fontStyle = attribute.FontStyle;
 
-            using (new EditorGUILayout.VerticalScope(scopeStyle))
+            //create (optionally) the vertical scope group
+            using (CreateScopeIfNeeded(scopeStyle))
             {
                 EditorGUILayout.LabelField(GetContent(attribute), labelStyle);
             }
@@ -30,7 +34,7 @@ namespace Toolbox.Editor.Drawers
             switch (style)
             {
                 case SkinStyle.Normal:
-                    return Style.skinLabelStyle;
+                    return null;
                 case SkinStyle.Box:
                     return Style.skinBoxStyle;
                 case SkinStyle.Round:
@@ -44,6 +48,7 @@ namespace Toolbox.Editor.Drawers
         {
             if (attribute.Content != null)
             {
+                //try to find associated image content
                 var content = EditorGUIUtility.TrIconContent(attribute.Content);
                 if (content.image == null)
                 {
@@ -59,6 +64,11 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
+        private static IDisposable CreateScopeIfNeeded(GUIStyle style)
+        {
+            return style != null ? new EditorGUILayout.VerticalScope(style) : null;
+        }
+
 
         private static class Style
         {
@@ -70,10 +80,12 @@ namespace Toolbox.Editor.Drawers
 
             static Style()
             {
+                //initialize optional scope styles
                 skinBoxStyle = new GUIStyle("box");
                 skinHelpStyle = new GUIStyle("helpBox");
                 skinLabelStyle = new GUIStyle("label");
 
+                //initialize optional label styles
                 labelStyle = new GUIStyle(EditorStyles.label);
             }
         }
