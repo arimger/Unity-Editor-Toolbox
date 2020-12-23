@@ -173,6 +173,7 @@ public SerializedType var1;
 #### ReadOnlyFieldAttribute
 
 ```csharp
+//REMARK: use the 'Disable' attribute instead
 [ReadOnlyField]
 public int var1;
 ```
