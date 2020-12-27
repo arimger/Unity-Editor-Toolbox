@@ -9,10 +9,10 @@ namespace Toolbox.Editor
 
     internal interface IToolboxHierarchySettings
     {
-        void AppendRowDataItem(HierarchyObjectDataItem item);
-        void RemoveRowDataItem(HierarchyObjectDataItem item);
+        void AppendRowDataItem(HierarchyObjectDataType item);
+        void RemoveRowDataItem(HierarchyObjectDataType item);
         void RemoveRowDataItemAt(int index);
-        HierarchyObjectDataItem GetRowDataItemAt(int index);
+        HierarchyObjectDataType GetRowDataItemAt(int index);
 
         bool UseToolboxHierarchy { get; }
         bool DrawHorizontalLines { get; }
@@ -85,7 +85,7 @@ namespace Toolbox.Editor
         private bool showSelectionsCount;
 
         [SerializeField, ReorderableList(ListStyle.Boxed)]
-        private List<HierarchyObjectDataItem> rowDataItems = Defaults.rowDataItems;
+        private List<HierarchyObjectDataType> rowDataItems = Defaults.rowDataItems;
 
         [SerializeField]
         private bool useToolboxFolders = true;
@@ -218,17 +218,17 @@ namespace Toolbox.Editor
         #endregion
 
 
-        public void AppendRowDataItem(HierarchyObjectDataItem item)
+        public void AppendRowDataItem(HierarchyObjectDataType item)
         {
             if (rowDataItems == null)
             {
-                rowDataItems = new List<HierarchyObjectDataItem>();
+                rowDataItems = new List<HierarchyObjectDataType>();
             }
 
             rowDataItems.Add(item);
         }
 
-        public void RemoveRowDataItem(HierarchyObjectDataItem item)
+        public void RemoveRowDataItem(HierarchyObjectDataType item)
         {
             rowDataItems?.Remove(item);
         }
@@ -238,7 +238,7 @@ namespace Toolbox.Editor
             rowDataItems?.RemoveAt(index);
         }
 
-        public HierarchyObjectDataItem GetRowDataItemAt(int index)
+        public HierarchyObjectDataType GetRowDataItemAt(int index)
         {
             return rowDataItems[index];
         }
@@ -544,13 +544,13 @@ namespace Toolbox.Editor
             internal const float smallFolderIconXPaddingDefault = 0.15f;
             internal const float smallFolderIconYPaddingDefault = 0.15f;
 
-            internal readonly static List<HierarchyObjectDataItem> rowDataItems = new List<HierarchyObjectDataItem>()
+            internal readonly static List<HierarchyObjectDataType> rowDataItems = new List<HierarchyObjectDataType>()
             {
-                HierarchyObjectDataItem.Icon,
-                HierarchyObjectDataItem.Toggle,
-                HierarchyObjectDataItem.Tag,
-                HierarchyObjectDataItem.Layer,
-                HierarchyObjectDataItem.Script
+                HierarchyObjectDataType.Icon,
+                HierarchyObjectDataType.Toggle,
+                HierarchyObjectDataType.Tag,
+                HierarchyObjectDataType.Layer,
+                HierarchyObjectDataType.Script
             };
         }
     }
