@@ -46,7 +46,7 @@ public class SampleBehaviour1 : MonoBehaviour
     [HideLabel]
     public bool toggle1;
     [Help("Use this toggle to show/hide property.", Order = 100)]
-    [ConditionalHide(nameof(toggle1), true)] //ConditionalShow
+    [HideIf(nameof(toggle1), true)]
     public float var6;
 
     [Label("8", skinStyle: SkinStyle.Box)]
@@ -54,7 +54,7 @@ public class SampleBehaviour1 : MonoBehaviour
     [HideLabel]
     public bool toggle2;
     [Help("Use this toggle to enable/disable property.", Order = 100)]
-    [ConditionalDisable(nameof(toggle2), true)] //ConditionalEnable
+    [EnableIf(nameof(toggle2), true)]
     public float var7;
 
     [Label("9", skinStyle: SkinStyle.Box)]

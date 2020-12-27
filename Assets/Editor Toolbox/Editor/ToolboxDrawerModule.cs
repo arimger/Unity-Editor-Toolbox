@@ -30,8 +30,6 @@ namespace Toolbox.Editor
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> selfPropertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> listPropertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
 
-        private readonly static List<ToolboxPropertyDrawerBase> propertyDrawers = new List<ToolboxPropertyDrawerBase>();
-
         /// <summary>
         /// Collection of specific drawers associated to particular <see cref="object"/> types.
         /// </summary>
@@ -57,7 +55,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates all possible attribute-based drawers and add them to proper collections.
         /// </summary>
-        /// <param name="settings"></param>
         private static void CreateAttributeDrawers(IToolboxInspectorSettings settings)
         {
             void AddAttributeDrawer<T>(Type drawerType, Type attributeType, Dictionary<Type, T> drawersCollection) where T : ToolboxAttributeDrawer
@@ -142,7 +139,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates all possible type-based drawers and add them to the related collection.
         /// </summary>
-        /// <param name="settings"></param>
         private static void CreateTargetTypeDrawers(IToolboxInspectorSettings settings)
         {
             var childrenTypesMap = new Dictionary<ToolboxTargetTypeDrawer, List<Type>>();
@@ -231,7 +227,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Initializes all assigned drawers using the given settings reference.
         /// </summary>
-        /// <param name="settings"></param>
         internal static void UpdateDrawers(IToolboxInspectorSettings settings)
         {
             ToolboxDrawerModule.settings = settings;
@@ -244,8 +239,9 @@ namespace Toolbox.Editor
 
             ToolboxDrawersAllowed = settings.UseToolboxDrawers;
 
-            //create all additional drawers
+            //create all attribute-related drawers
             CreateAttributeDrawers(settings);
+            //create all type-only-related drawers
             CreateTargetTypeDrawers(settings);
 
             //log errors into console only once
@@ -257,8 +253,6 @@ namespace Toolbox.Editor
         /// Determines if property has any associated drawer (built-in or custom one).
         /// This method does not take into account <see cref="ToolboxDrawer"/>s.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         internal static bool HasNativeTypeDrawer(Type type)
         {
             var parameters = new object[] { type };
@@ -269,8 +263,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Checks if provided type has an associated <see cref="ToolboxTargetTypeDrawer"/>.
         /// </summary>
-        /// <param name="propertyType"></param>
-        /// <returns></returns>
         internal static bool HasTargetTypeDrawer(Type propertyType)
         {
             return targetTypeDrawers.ContainsKey(propertyType);
@@ -392,8 +384,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Returns and/or creates (if needed) <see cref="ToolboxPropertyHandler"/> for given property.
         /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
         internal static ToolboxPropertyHandler GetPropertyHandler(SerializedProperty property)
         {
             if (InspectorUtility.InToolboxEditor)
