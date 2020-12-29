@@ -104,34 +104,34 @@ namespace Toolbox.Editor
             }
 
             decoratorDrawers.Clear();
-            for (var i = 0; i < settings.DecoratorDrawersCount; i++)
+            for (var i = 0; i < settings.DecoratorDrawerHandlers.Count; i++)
             {
-                var drawerType = settings.GetDecoratorDrawerTypeAt(i);
-                var targetType = GetDrawersGenericType(settings.GetDecoratorDrawerTypeAt(i), decoratorDrawerBase);
+                var drawerType = settings.DecoratorDrawerHandlers[i].Type;
+                var targetType = GetDrawersGenericType(drawerType, decoratorDrawerBase);
                 AddAttributeDrawer(drawerType, targetType, decoratorDrawers);
             }
 
             conditionDrawers.Clear();
-            for (var i = 0; i < settings.ConditionDrawersCount; i++)
+            for (var i = 0; i < settings.ConditionDrawerHandlers.Count; i++)
             {
-                var drawerType = settings.GetConditionDrawerTypeAt(i);
-                var targetType = GetDrawersGenericType(settings.GetConditionDrawerTypeAt(i), conditionDrawerBase);
+                var drawerType = settings.ConditionDrawerHandlers[i].Type;
+                var targetType = GetDrawersGenericType(drawerType, conditionDrawerBase);
                 AddAttributeDrawer(drawerType, targetType, conditionDrawers);
             }
 
             selfPropertyDrawers.Clear();
-            for (var i = 0; i < settings.SelfPropertyDrawersCount; i++)
+            for (var i = 0; i < settings.SelfPropertyDrawerHandlers.Count; i++)
             {
-                var drawerType = settings.GetSelfPropertyDrawerTypeAt(i);
-                var targetType = GetDrawersGenericType(settings.GetSelfPropertyDrawerTypeAt(i), selfPropertyDrawerBase);
+                var drawerType = settings.SelfPropertyDrawerHandlers[i].Type;
+                var targetType = GetDrawersGenericType(drawerType, selfPropertyDrawerBase);
                 AddAttributeDrawer(drawerType, targetType, selfPropertyDrawers);
             }
 
             listPropertyDrawers.Clear();
-            for (var i = 0; i < settings.ListPropertyDrawersCount; i++)
+            for (var i = 0; i < settings.ListPropertyDrawerHandlers.Count; i++)
             {
-                var drawerType = settings.GetListPropertyDrawerTypeAt(i);
-                var targetType = GetDrawersGenericType(settings.GetListPropertyDrawerTypeAt(i), listPropertyDrawerBase);
+                var drawerType = settings.ListPropertyDrawerHandlers[i].Type;
+                var targetType = GetDrawersGenericType(drawerType, listPropertyDrawerBase);
                 AddAttributeDrawer(drawerType, targetType, listPropertyDrawers);
             }
         }
@@ -144,9 +144,9 @@ namespace Toolbox.Editor
             var childrenTypesMap = new Dictionary<ToolboxTargetTypeDrawer, List<Type>>();
 
             targetTypeDrawers.Clear();
-            for (var i = 0; i < settings.TargetTypeDrawersCount; i++)
+            for (var i = 0; i < settings.TargetTypeDrawerHandlers.Count; i++)
             {
-                var drawerType = settings.GetTargetTypeDrawerTypeAt(i);
+                var drawerType = settings.TargetTypeDrawerHandlers[i].Type;
                 if (drawerType == null)
                 {
                     if (validationEnabled)

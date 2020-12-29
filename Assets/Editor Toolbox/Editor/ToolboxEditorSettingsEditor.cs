@@ -68,9 +68,9 @@ namespace Toolbox.Editor
             drawHorizontalLinesProperty = serializedObject.FindProperty("drawHorizontalLines");
             showSelectionsCountProperty = serializedObject.FindProperty("showSelectionsCount");
 #if UNITY_2019_3_OR_NEWER
-			rowDataItemsList = CreateClearList(serializedObject.FindProperty("rowDataItems"), hasHeader: false, elementLabel: "Position");
+			rowDataItemsList = CreateClearList(serializedObject.FindProperty("rowDataTypes"), hasHeader: false, elementLabel: "Position");
 #else
-            rowDataItemsList = CreateLinedList(serializedObject.FindProperty("rowDataItems"), hasHeader: false, elementLabel: "Position");
+            rowDataItemsList = CreateLinedList(serializedObject.FindProperty("rowDataTypes"), hasHeader: false, elementLabel: "Position");
 #endif
             //project-related properties
             useToolboxFoldersProperty = serializedObject.FindProperty("useToolboxFolders");
@@ -148,7 +148,7 @@ namespace Toolbox.Editor
 #if UNITY_2019_3_OR_NEWER
             EditorGUILayout.BeginVertical(Style.groupStyle);
 #endif
-            EditorGUILayout.LabelField("Row Data Items");
+            EditorGUILayout.LabelField("Row Data Types");
 #if UNITY_2019_3_OR_NEWER
             EditorGUILayout.EndVertical();
 #endif
@@ -296,19 +296,19 @@ namespace Toolbox.Editor
                 switch (enabledToShowDrawerType)
                 {
                     case 0:
-                        currentTarget.ClearDecoratorDrawerHandlers();
+                        currentTarget.DecoratorDrawerHandlers.Clear();
                         break;
                     case 1:
-                        currentTarget.ClearConditionDrawerHandlers();
+                        currentTarget.ConditionDrawerHandlers.Clear();
                         break;
                     case 2:
-                        currentTarget.ClearSelfPropertyDrawerHandlers();
+                        currentTarget.SelfPropertyDrawerHandlers.Clear();
                         break;
                     case 3:
-                        currentTarget.ClearListPropertyDrawerHandlers();
+                        currentTarget.ListPropertyDrawerHandlers.Clear();
                         break;
                     case 4:
-                        currentTarget.ClearTargetTypeDrawerHandlers();
+                        currentTarget.TargetTypeDrawerHandlers.Clear();
                         break;
                 }
                 validateInspector = true;

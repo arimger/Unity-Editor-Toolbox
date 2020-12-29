@@ -8,15 +8,6 @@ namespace Toolbox.Editor
 {
     using Toolbox.Editor.Hierarchy;
 
-    public enum HierarchyObjectDataType
-    {
-        Icon,
-        Toggle,
-        Tag,
-        Layer,
-        Script
-    }
-
     /// <summary>
     /// Static GUI representation for the Hierarchy Overlay.
     /// </summary>
@@ -41,15 +32,7 @@ namespace Toolbox.Editor
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private static readonly List<HierarchyDataDrawer> allowedDrawers = new List<HierarchyDataDrawer>();
-
-        /// <summary>
-        /// Index of current (last processed) GameObject within the Hierarchy Window.
-        /// </summary>
-        private static int currentItemIndex = 0;
+        private static readonly List<HierarchyPropertyLabel> allowedDrawers = new List<HierarchyPropertyLabel>();
 
 
         /// <summary>
@@ -66,30 +49,20 @@ namespace Toolbox.Editor
             var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
             if (gameObject)
             {
-                //NOTE: the first item can be used to draw single options for the whole hierarchy
-                if (IsFirstGameObject(gameObject))
-                {
-                    //reset items index
-                    currentItemIndex = 0;
-                }
-
                 var type = GetLabelType(gameObject, out var label);
                 //draw label using one of the possible forms
                 switch (type)
                 {
                     case LabelType.Empty:
-                        DrawEmptyItemLabel(rect, gameObject, label, currentItemIndex);
+                        DrawEmptyItemLabel(rect, gameObject, label);
                         break;
                     case LabelType.Header:
-                        DrawHeaderItemLabel(rect, gameObject, label, currentItemIndex);
+                        DrawHeaderItemLabel(rect, gameObject, label);
                         break;
                     case LabelType.Default:
-                        DrawDefaultItemLabel(rect, gameObject, label, currentItemIndex);
+                        DrawDefaultItemLabel(rect, gameObject, label);
                         break;
                 }
-
-                //increment index after drawing
-                currentItemIndex++;
             }
             else
             {
@@ -122,7 +95,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws item in the completely raw way.
         /// </summary>
-        private static void DrawEmptyItemLabel(Rect rect, GameObject gameObject, string label, int index = 0)
+        private static void DrawEmptyItemLabel(Rect rect, GameObject gameObject, string label)
         {
             //just keep internal label
         }
@@ -130,17 +103,14 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws GameObject's as header. Creates separation lines and a proper background.
         /// </summary>
-        private static void DrawHeaderItemLabel(Rect rect, GameObject gameObject, string label, int index = 0)
+        private static void DrawHeaderItemLabel(Rect rect, GameObject gameObject, string label)
         {
+            EditorGUI.DrawRect(new Rect(rect.x, rect.y - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
+
             //repaint background on proper event
             if (Event.current.type == EventType.Repaint)
             {
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
-            }
-
-            if (index > 0)
-            {
-                EditorGUI.DrawRect(new Rect(rect.x, rect.y - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
             }
 
             EditorGUI.DrawRect(new Rect(rect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
@@ -160,7 +130,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates separation lines and content based on the <see cref="allowedDrawContentCallbacks"/> collection.
         /// </summary>
-        private static void DrawDefaultItemLabel(Rect rect, GameObject gameObject, string label, int index = 0)
+        private static void DrawDefaultItemLabel(Rect rect, GameObject gameObject, string label)
         {
             var contentRect = rect;
             var drawersCount = allowedDrawers.Count;
@@ -173,7 +143,7 @@ namespace Toolbox.Editor
 
                 //draw first the drawer element in a proper rect
                 //we have to adjust a given rect to our purpose
-                contentRect = ApplyDataDrawer(allowedDrawers[0], gameObject, availableRect);
+                contentRect = AppendPropertyLabel(allowedDrawers[0], gameObject, availableRect);
                 availableRect.xMax -= contentRect.width;
 
                 EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
@@ -181,7 +151,7 @@ namespace Toolbox.Editor
                 //draw each needed element content stored in the drawers collection
                 for (var i = 1; i < drawersCount; i++)
                 {
-                    contentRect = ApplyDataDrawer(allowedDrawers[i], gameObject, availableRect);
+                    contentRect = AppendPropertyLabel(allowedDrawers[i], gameObject, availableRect);
                     availableRect.xMax -= contentRect.width;
 
                     EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
@@ -208,31 +178,21 @@ namespace Toolbox.Editor
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private static Rect ApplyDataDrawer(HierarchyDataDrawer dataDrawer, GameObject target, Rect availableRect)
+        private static Rect AppendPropertyLabel(HierarchyPropertyLabel propertyLabel, GameObject target, Rect availableRect)
         {
-            dataDrawer.Prepare(target, availableRect);
+            //prepare currently maintaind label
+            propertyLabel.Prepare(target, availableRect);
             var rect = availableRect;
-            rect.xMin = rect.xMax - dataDrawer.GetWidth();
+            rect.xMin = rect.xMax - propertyLabel.GetWidth();
 
+            //draw hierarchy overlay background
             if (Event.current.type == EventType.Repaint)
             {
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
 
-            dataDrawer.OnGui(rect);
+            propertyLabel.OnGui(rect);
             return rect;
-        }
-
-
-        /// <summary>
-        /// Determines if the provided GameObject is first element inside hierarchy.
-        /// </summary>
-        private static bool IsFirstGameObject(GameObject gameObject)
-        {
-            return gameObject.transform.parent == null && gameObject.transform.GetSiblingIndex() == 0;
         }
 
         /// <summary>
@@ -315,27 +275,13 @@ namespace Toolbox.Editor
         {
             foreach (var item in items)
             {
-                HierarchyDataDrawer dataDrawer = null;
-                switch (item)
+                var propertyLabel = HierarchyPropertyLabel.GetPropertyLabel(item);
+                if (propertyLabel == null)
                 {
-                    case HierarchyObjectDataType.Icon:
-                        dataDrawer = new HierarchyIconDrawer();
-                        break;
-                    case HierarchyObjectDataType.Toggle:
-                        dataDrawer = new HierarchyToggleDrawer();
-                        break;
-                    case HierarchyObjectDataType.Tag:
-                        dataDrawer = new HierarchyTagDrawer();
-                        break;
-                    case HierarchyObjectDataType.Layer:
-                        dataDrawer = new HierarchyLayerDrawer();
-                        break;
-                    case HierarchyObjectDataType.Script:
-                        dataDrawer = new HierarchyScriptDrawer();
-                        break;
+                    continue;
                 }
 
-                allowedDrawers.Add(dataDrawer);
+                allowedDrawers.Add(propertyLabel);
             }
         }
 
@@ -357,7 +303,7 @@ namespace Toolbox.Editor
         internal static bool DrawSeparationLines { get; set; } = true;
 
 
-        internal static class Style
+        private static class Style
         {
             internal static readonly float lineWidth = 1.0f;
 #if UNITY_2019_3_OR_NEWER
