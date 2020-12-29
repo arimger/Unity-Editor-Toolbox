@@ -49,9 +49,9 @@ namespace Toolbox.Editor
             ToolboxEditorProject.RemoveCustomFolders();
 
             //create custom folders using stored data
-            for (var i = 0; i < settings.CustomFoldersCount; i++)
+            for (var i = 0; i < settings.CustomFolders.Count; i++)
             {
-                ToolboxEditorProject.CreateCustomFolder(settings.GetCustomFolderAt(i));
+                ToolboxEditorProject.CreateCustomFolder(settings.CustomFolders[i]);
             }
 
             ToolboxEditorProject.RepaintProjectOverlay();
@@ -76,9 +76,9 @@ namespace Toolbox.Editor
             ToolboxEditorHierarchy.RemoveAllowedHierarchyContentCallbacks();
 
             //create custom drawers using stored data
-            for (var i = 0; i < settings.RowDataItemsCount; i++)
+            for (var i = 0; i < settings.RowDataTypes.Count; i++)
             {
-                ToolboxEditorHierarchy.CreateAllowedHierarchyContentCallbacks(settings.GetRowDataItemAt(i));
+                ToolboxEditorHierarchy.CreateAllowedHierarchyContentCallbacks(settings.RowDataTypes[i]);
             }
 
             ToolboxEditorHierarchy.RepaintHierarchyOverlay();
