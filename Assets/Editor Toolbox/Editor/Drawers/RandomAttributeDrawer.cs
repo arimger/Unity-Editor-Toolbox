@@ -62,7 +62,7 @@ namespace Toolbox.Editor.Drawers
 
             static Style()
             {
-                buttonLabel = new GUIContent(" \u211D", "Set random value.");
+                buttonLabel = new GUIContent(" \u211D", "Set random value");
                 buttonStyle = new GUIStyle(EditorStyles.miniButton)
                 {
                     fontSize = 13

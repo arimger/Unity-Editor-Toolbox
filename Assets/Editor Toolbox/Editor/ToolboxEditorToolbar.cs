@@ -7,7 +7,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
-
+using Unity.EditorCoroutines.Editor;
 #if UNITY_2019_1_OR_NEWER
 using UnityEngine.UIElements;
 #else
@@ -18,7 +18,7 @@ using UnityEngine.Experimental.UIElements;
 
 namespace Toolbox.Editor
 {
-    using Toolbox.Editor.Routine;
+    //using Toolbox.Editor.Routine;
 
     /// <summary>
     /// Toolbar extension which provides new funtionalites into classic Unity's scene toolbar.
@@ -28,7 +28,7 @@ namespace Toolbox.Editor
     {
         static ToolboxEditorToolbar()
         {
-            EditorCoroutineUtility.StartCoroutine(Initialize());
+            EditorCoroutineUtility.StartCoroutineOwnerless(Initialize());
         }
 
 
@@ -61,7 +61,7 @@ namespace Toolbox.Editor
                     toolbar = toolbars[0];
                 }
             }
-            
+
             //get current toolbar containter using reflection
             var elements = visualTree.GetValue(toolbar, null) as VisualElement;
 #if UNITY_2019_1_OR_NEWER
@@ -116,8 +116,8 @@ namespace Toolbox.Editor
             }
         }
 
-        
-        public static event Action OnToolbarGui; 
+
+        public static event Action OnToolbarGui;
 
 
         private static class Style

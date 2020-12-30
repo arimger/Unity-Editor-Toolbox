@@ -5,11 +5,10 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using Unity.EditorCoroutines.Editor;
 
 namespace Toolbox.Editor.Drawers
 {
-    using Toolbox.Editor.Routine;
-
     public class ImageAreaAttributeDrawer : ToolboxDecoratorDrawer<ImageAreaAttribute>
     {
         private readonly static Dictionary<string, DownloadedTexture> textures = new Dictionary<string, DownloadedTexture>();
@@ -21,7 +20,7 @@ namespace Toolbox.Editor.Drawers
             if (!textures.TryGetValue(url, out var texture))
             {
                 textures[url] = texture = new DownloadedTexture(true);
-                EditorCoroutineUtility.StartCoroutine(SendGetImageRequest(url, (b, t) =>
+                EditorCoroutineUtility.StartCoroutineOwnerless(SendGetImageRequest(url, (b, t) =>
                 {
                     textures[url] = new DownloadedTexture(false, t);
                     if (b)

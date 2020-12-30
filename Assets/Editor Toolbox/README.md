@@ -13,7 +13,11 @@ Learn all the details about the main features below.
 
 ## System Requirements
 Unity 2018.x or newer
- 
+
+## Dependencies
+
+[EditorCoroutines](https://docs.unity3d.com/Packages/com.unity.editorcoroutines@0.0/api/Unity.EditorCoroutines.Editor.html)
+
 ## Installation
 
 - Install Editor Toolbox package:
