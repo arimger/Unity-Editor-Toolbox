@@ -1,7 +1,8 @@
 {
     "name": "Toolbox-Editor",
     "references": [
-        "Toolbox"
+        "Toolbox",
+        "Unity.EditorCoroutines.Editor"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [

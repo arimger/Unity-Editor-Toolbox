@@ -135,12 +135,11 @@ namespace Toolbox.Editor
             var contentRect = rect;
             var drawersCount = allowedDrawers.Count;
 
+            EditorGUI.DrawRect(new Rect(contentRect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
             //determine if there is anything to draw
             if (drawersCount > 0)
             {
                 var availableRect = contentRect;
-                EditorGUI.DrawRect(new Rect(contentRect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
-
                 //draw first the drawer element in a proper rect
                 //we have to adjust a given rect to our purpose
                 contentRect = AppendPropertyLabel(allowedDrawers[0], gameObject, availableRect);

@@ -12,7 +12,9 @@
     "folders"
   ],
   "category": "editor extensions",
-  "dependencies": {},
+  "dependencies": {
+	"com.unity.editorcoroutines": "1.0.0"
+  },
   "author": {
     "name": "Arimger",
     "email": "milosz.matkowski96@gmail.com",
