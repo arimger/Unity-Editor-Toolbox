@@ -154,6 +154,10 @@ public class IntDrawer : ToolboxTargetTypeDrawer
 ```csharp
 using UnityEditor;
 using UnityEngine;
+#if UNITY_2019_1_OR_NEWER
+using UnityEditor.UIElements;
+using UnityEngine.UIElements;
+#endif
 using Toolbox.Editor;
 
 [CustomEditor(typeof(SampleBehaviour2))]
@@ -175,6 +179,14 @@ public class SampleEditor : ToolboxEditor
 		EditorGUILayout.Space();
 		EditorGUILayout.LabelField("This label is created in the custom Editor. You can freely extend Toolbox-based Editors by inheriting from the <b>ToolboxEditor</b> class.", Style.labelStyle);
 	}
+	
+#if UNITY_2019_1_OR_NEWER
+	public override VisualElement CreateInspectorGUI()
+    {
+		//NOTE: create a custom container if you want to use UIElements instead of the standard IMGUI system
+        return null;
+    }
+#endif
 
 	private static class Style
 	{

@@ -88,7 +88,6 @@ namespace Toolbox.Editor.Drawers
             {
                 var menuType = refTypes[i];
                 var menuLabel = FormatGroupedTypeName(menuType, refAttribute.Grouping);
-
                 if (menuType == refType)
                 {
                     index = i;
@@ -105,7 +104,7 @@ namespace Toolbox.Editor.Drawers
 
             index = EditorGUI.Popup(position, index + 1, refLabels.ToArray());
             //get the correct class reference, index = 0 is reserved to <None> type
-            refProperty.stringValue = index >= 1 ? SerializedType.GetClassReference(refTypes[index - 1]) : "";
+            refProperty.stringValue = index >= 1 ? SerializedType.GetClassReference(refTypes[index - 1]) : string.Empty;
             EditorGUI.EndProperty();
         }
 

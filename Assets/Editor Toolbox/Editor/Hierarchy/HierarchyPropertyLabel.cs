@@ -1,4 +1,7 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using System.Text;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Hierarchy
@@ -141,7 +144,53 @@ namespace Toolbox.Editor.Hierarchy
             /// <summary>
             /// Cached components of the last prepared <see cref="target"/>.
             /// </summary>
-            private Component[] components;
+            private List<Component> cachedComponents;
+
+
+            private void CacheComponents(GameObject target)
+            {
+                var components = target.GetComponents<Component>();
+                cachedComponents = new List<Component>(components.Length);
+                foreach (var component in components)
+                {
+                    if (component)
+                    {
+                        cachedComponents.Add(component);
+                    }
+                }
+            }
+
+            private GUIContent GetTooltip(Rect rect)
+            {
+                var componentsCount = cachedComponents.Count;
+                var tooltipBuilder = new StringBuilder();
+                var tooltipContent = new GUIContent();
+
+                tooltipBuilder.Append("Components:\n");
+                for (var i = 1; i < componentsCount; i++)
+                {
+                    tooltipBuilder.Append("- ");
+                    tooltipBuilder.Append(cachedComponents[i].GetType().Name);
+                    if (componentsCount - 1 != i)
+                    {
+                        tooltipBuilder.Append("\n");
+                    }
+                }
+
+                tooltipContent.tooltip = tooltipBuilder.ToString();
+                return tooltipContent;
+            }
+
+            private GUIContent GetContent(Component component)
+            {
+                var content = EditorGUIUtility.ObjectContent(component, component.GetType());
+                if (content.image == null)
+                {
+                    content.image = componentIcon;
+                }
+
+                return content;
+            }
 
 
             public override void Prepare(GameObject target, Rect availableRect)
@@ -149,15 +198,14 @@ namespace Toolbox.Editor.Hierarchy
                 base.Prepare(target, availableRect);
 
                 baseWidth = Style.minWidth;
-
                 var rect = availableRect;
                 rect.xMin = rect.xMax - baseWidth;
                 if (rect.Contains(Event.current.mousePosition))
                 {
                     isHighlighted = true;
-                    components = target.GetComponents<Component>();
-                    summWidth = components.Length > 1
-                             ? (components.Length - 1) * baseWidth
+                    CacheComponents(target);
+                    summWidth = cachedComponents.Count > 1
+                             ? (cachedComponents.Count - 1) * baseWidth
                              : baseWidth;
                 }
                 else
@@ -184,30 +232,23 @@ namespace Toolbox.Editor.Hierarchy
 
                 if (isHighlighted)
                 {
-                    if (components.Length > 1)
+                    var componentsCount = cachedComponents.Count;
+                    if (componentsCount > 1)
                     {
-                        texture = null;
-                        tooltip = "Components:\n";
-                        //set tooltip based on available components
-                        for (var i = 1; i < components.Length; i++)
-                        {
-                            tooltip += "- " + components[i].GetType().Name;
-                            tooltip += i == components.Length - 1 ? "" : "\n";
-                        }
+                        //draw tooltip based on all available components
+                        GUI.Label(rect, GetTooltip(rect));
 
-                        GUI.Label(rect, new GUIContent(string.Empty, tooltip));
-
-                        rect.xMin -= baseWidth * (components.Length - 2);
+                        rect.xMin -= baseWidth * (componentsCount - 2);
 
                         var iconRect = rect;
                         iconRect.xMin = rect.xMin;
                         iconRect.xMax = rect.xMin + baseWidth;
 
-                        //iterate over available components
-                        for (var i = 1; i < components.Length; i++)
+                        //draw all icons associated to cached components (except transform)
+                        for (var i = 1; i < cachedComponents.Count; i++)
                         {
-                            var component = components[i];
-                            var content = EditorGUIUtility.ObjectContent(component, component.GetType());
+                            var component = cachedComponents[i];
+                            var content = GetContent(component);
 
                             //draw icon for the current component
                             GUI.Label(iconRect, new GUIContent(content.image));
