@@ -23,7 +23,6 @@ namespace Toolbox.Editor
         private readonly static Type conditionDrawerBase = typeof(ToolboxConditionDrawer<>);
         private readonly static Type selfPropertyDrawerBase = typeof(ToolboxSelfPropertyDrawer<>);
         private readonly static Type listPropertyDrawerBase = typeof(ToolboxListPropertyDrawer<>);
-        private readonly static Type targetTypeDrawerBase = typeof(ToolboxTargetTypeDrawer);
 
         private readonly static Dictionary<Type, ToolboxDecoratorDrawerBase> decoratorDrawers = new Dictionary<Type, ToolboxDecoratorDrawerBase>();
         private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers = new Dictionary<Type, ToolboxConditionDrawerBase>();
@@ -377,7 +376,7 @@ namespace Toolbox.Editor
 
         internal static List<Type> GetAllPossibleTargetTypeDrawers()
         {
-            return targetTypeDrawerBase.GetAllChildClasses();
+            return typeof(ToolboxTargetTypeDrawer).GetAllChildClasses();
         }
 
 

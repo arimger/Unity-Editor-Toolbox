@@ -89,7 +89,7 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, InLineEditorAttribute attribute)
         {
             using (new EditorGUILayout.HorizontalScope())
-            {            
+            {
                 //create a standard property field for given property
                 EditorGUI.BeginChangeCheck();
                 EditorGUILayout.PropertyField(property, label, property.isExpanded);
@@ -142,7 +142,7 @@ namespace Toolbox.Editor.Drawers
             internal static readonly GUIStyle previewStyle;
             internal static readonly GUIStyle settingStyle;
 
-            internal static readonly GUIContent foldoutContent = new GUIContent("Edit");
+            internal static readonly GUIContent foldoutContent = new GUIContent("Edit", "Show/Hide Editor");
 
             internal static readonly GUILayoutOption[] foldoutOptions = new GUILayoutOption[]
             {

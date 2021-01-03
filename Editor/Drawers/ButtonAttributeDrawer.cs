@@ -30,18 +30,21 @@ namespace Toolbox.Editor.Drawers
             position.yMin += EditorGUIUtility.standardVerticalSpacing / 2;
             position.yMax -= EditorGUIUtility.standardVerticalSpacing / 2;
 
-            EditorGUI.BeginDisabledGroup(!isValid);
-            if (GUI.Button(position, GetLabel()))
+            using (new EditorGUI.DisabledScope(!isValid))
             {
-                OnButtonClick();
+                if (GUI.Button(position, GetLabel()))
+                {
+                    OnButtonClick();
+                }
             }
-            EditorGUI.EndDisabledGroup();
         }
 
         public virtual string GetLabel()
         {
             var attribute = this.attribute as ButtonAttribute;
-            return string.IsNullOrEmpty(attribute.Label) ? attribute.MethodName : attribute.Label;
+            return string.IsNullOrEmpty(attribute.Label)
+                ? attribute.MethodName
+                : attribute.Label;
         }
 
         public abstract void OnButtonClick();

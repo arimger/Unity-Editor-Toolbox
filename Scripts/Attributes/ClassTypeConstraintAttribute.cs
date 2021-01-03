@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 
+using Toolbox;
+
 namespace UnityEngine
 {
     /// <summary>
@@ -149,7 +151,7 @@ namespace UnityEngine
             }
 
             return AssemblyType.IsGenericType
-                ? AssemblyType.IsAssignableFromRawGeneric(type)
+                ? AssemblyType.IsAssignableFromGeneric(type)
                 : AssemblyType.IsAssignableFrom(type);
         }
     }

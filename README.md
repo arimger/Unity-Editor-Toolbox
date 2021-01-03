@@ -424,6 +424,11 @@ public int var1;
 ```
 
 ```csharp
+[DisableInPlayMode]
+public int var1;
+```
+
+```csharp
 [Disable, ReorderableList]
 public int[] vars1 = new [] { 1, 2, 3, 4 };
 ```
