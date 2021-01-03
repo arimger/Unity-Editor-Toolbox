@@ -59,10 +59,6 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("9", skinStyle: SkinStyle.Box)]
 
-    [InstanceButton(typeof(SampleBehaviour1), nameof(ResetVar8),
-                                        "Use this button to reset var8 using this instance[in Play mode]", ButtonActivityType.OnPlayMode, order = 100)]
-    [BroadcastButton(nameof(ResetVar8), "Use this button to reset var8 using broadcasting[in Edit mode]", ButtonActivityType.OnEditMode, order = 100)]
-
     [AssetPreview]
     public GameObject var8;
     [AssetPreview(useLabel: false), Help("Who needs label?")]
@@ -74,12 +70,6 @@ public class SampleBehaviour1 : MonoBehaviour
         var9 = var8;
     }
 #endif
-
-    private void ResetVar8()
-    {
-        var8 = null;
-        Debug.Log("Var8 resetted");
-    }
 
     [Label("10", skinStyle: SkinStyle.Box)]
 
@@ -191,10 +181,10 @@ public class SampleBehaviour1 : MonoBehaviour
     public Vector3 direction3d;
     [Vector2Direction]
     public Vector2 direction2d;
-	
-	[Label("27", skinStyle: SkinStyle.Box)]
-	
-	[LabelByChild("var3.var2")]
+
+    [Label("27", skinStyle: SkinStyle.Box)]
+
+    [LabelByChild("var3.var2")]
     public SampleClass1 sampleField;
     [LabelByChild("var2")]
     public SampleClass1[] sampleFields;

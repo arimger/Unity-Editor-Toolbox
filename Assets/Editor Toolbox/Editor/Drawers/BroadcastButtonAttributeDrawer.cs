@@ -1,8 +1,11 @@
-﻿using UnityEditor;
+﻿using System;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    [Obsolete]
     [CustomPropertyDrawer(typeof(BroadcastButtonAttribute))]
     public class BroadcastButtonAttributeDrawer : ButtonAttributeDrawer
     {

@@ -1,10 +1,12 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    [Obsolete]
     [CustomPropertyDrawer(typeof(InstanceButtonAttribute))]
     public class InstanceButtonAttributeDrawer : ButtonAttributeDrawer
     {

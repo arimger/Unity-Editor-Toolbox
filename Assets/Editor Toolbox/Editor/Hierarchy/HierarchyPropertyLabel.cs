@@ -138,6 +138,9 @@ namespace Toolbox.Editor.Hierarchy
 
             private bool isHighlighted;
 
+            /// <summary>
+            /// Cached components of the last prepared <see cref="target"/>.
+            /// </summary>
             private Component[] components;
 
 

@@ -26,7 +26,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Handles property display process using custom <see cref="Drawers.ToolboxDrawer"/>s.
+        /// Handles property display process using custom <see cref="Drawers.ToolboxDrawer"/>.
         /// </summary>
         /// <param name="property">Property to display.</param>
         public virtual void DrawCustomProperty(SerializedProperty property)
@@ -35,7 +35,7 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws each available property using custom <see cref="Drawers.ToolboxDrawer"/>s.
+        /// Draws each available property using internal <see cref="Drawers.ToolboxDrawer"/>s.
         /// </summary>
         public virtual void DrawCustomInspector()
         {
@@ -44,7 +44,6 @@ namespace Toolbox.Editor
                 serializedObject.Update();
 
                 var isExpanded = true;
-
                 var property = serializedObject.GetIterator();
                 //enter to the 'Base' property
                 if (property.NextVisible(isExpanded))

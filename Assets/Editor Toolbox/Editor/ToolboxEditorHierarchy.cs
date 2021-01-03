@@ -203,22 +203,20 @@ namespace Toolbox.Editor
             var name = gameObject.name;
             if (name.StartsWith("#") && name.Length > 1)
             {
-                //try to find an associated command
                 switch (name[1])
                 {
                     case 'e':
+                        name = name.Remove(0, 2);
                         type = LabelType.Empty;
                         break;
                     case 'h':
+                        name = name.Remove(0, 2);
                         type = LabelType.Header;
                         break;
                 }
-                //remove unnecessary part of the name
-                name = name.Remove(0, 2);
             }
 
             label = name;
-            //return last cached type
             return type;
         }
 

@@ -1,60 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public static class TypeExtensions
+namespace Toolbox
 {
-    public static bool IsSubclassOfRawGeneric(this Type toCheck, Type generic)
+    public static class TypeExtensions
     {
-        while (toCheck != null && toCheck != typeof(object))
+        public static bool IsSubclassOfGeneric(this Type toCheck, Type generic)
         {
-            var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
-            if (generic == cur)
+            while (toCheck != null && toCheck != typeof(object))
             {
-                return true;
-            }
-            toCheck = toCheck.BaseType;
-        }
-
-        return false;
-    }
-
-    public static bool IsAssignableFromRawGeneric(this Type generic, Type toCheck)
-    {
-        while (toCheck != null && toCheck != typeof(object))
-        {
-            var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
-            if (generic == cur)
-            {
-                return true;
-            }
-            toCheck = toCheck.BaseType;
-        }
-
-        return false;
-    }
-
-    public static List<Type> GetAllChildClasses(this Type baseType, bool allowAbstract = false)
-    {
-        var types = new List<Type>();
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        var isSubclass = baseType.IsGenericType 
-            ? (Func<Type, bool>)
-              ((type) => type.IsSubclassOfRawGeneric(baseType))
-            : ((type) => type.IsSubclassOf(baseType));
-
-        foreach (var assembly in assemblies)
-        {
-            foreach (var type in assembly.GetTypes())
-            {
-                if (!isSubclass(type) || !type.IsVisible || (!allowAbstract && type.IsAbstract))
+                var current = toCheck.IsGenericType
+                    ? toCheck.GetGenericTypeDefinition()
+                    : toCheck;
+                if (generic == current)
                 {
-                    continue;
+                    return true;
                 }
 
-                types.Add(type);
+                toCheck = toCheck.BaseType;
             }
+
+            return false;
         }
 
-        return types;
+        public static bool IsAssignableFromGeneric(this Type generic, Type toCheck)
+        {
+            while (toCheck != null && toCheck != typeof(object))
+            {
+                var current = toCheck.IsGenericType
+                    ? toCheck.GetGenericTypeDefinition()
+                    : toCheck;
+                if (generic == current)
+                {
+                    return true;
+                }
+
+                toCheck = toCheck.BaseType;
+            }
+
+            return false;
+        }
+
+        public static List<Type> GetAllChildClasses(this Type baseType, bool allowAbstract = false, bool ignoreObsolete = true)
+        {
+            var types = new List<Type>();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var isSubclass = baseType.IsGenericType
+                ? (Func<Type, bool>)
+                  ((type) => type.IsSubclassOfGeneric(baseType))
+                : ((type) => type.IsSubclassOf(baseType));
+
+            foreach (var assembly in assemblies)
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    if (!isSubclass(type) || !type.IsVisible || (!allowAbstract && type.IsAbstract) || 
+                        (ignoreObsolete && Attribute.IsDefined(type, typeof(ObsoleteAttribute))))
+                    {
+                        continue;
+                    }
+
+                    types.Add(type);
+                }
+            }
+
+            return types;
+        }
     }
 }

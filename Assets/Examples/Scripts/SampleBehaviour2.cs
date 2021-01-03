@@ -1,9 +1,33 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 [ExecuteAlways]
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 2")]
 public class SampleBehaviour2 : MonoBehaviour
 {
+    private void TestMethod()
+    {
+        Debug.Log(nameof(TestMethod) + " is called");
+    }
+
+    private IEnumerator TestCoroutine()
+    {
+        Debug.Log("Coroutine started");
+        yield return new WaitForSecondsRealtime(1);
+        Debug.Log("Log after 1s");
+        yield return new WaitForSecondsRealtime(2);
+        Debug.Log("Log after 2s");
+    }
+
+    private static void TestStaticMethod()
+    {
+        Debug.Log(nameof(TestStaticMethod) + " is called");
+    }
+
+    [EditorButton(nameof(TestMethod))]
+    [EditorButton(nameof(TestCoroutine), "Test Coroutine", activityType: ButtonActivityType.OnPlayMode)]
+    [EditorButton(nameof(TestStaticMethod), activityType: ButtonActivityType.OnEditMode)]
+
     [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
           "Check the SampleBehaviour2.cs script for more details.", Order = -1)]
 

@@ -2,6 +2,7 @@
 
 namespace UnityEngine
 {
+    [Obsolete("Use EditorButtonAttribute instead.")]
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class BroadcastButtonAttribute : ButtonAttribute
     {

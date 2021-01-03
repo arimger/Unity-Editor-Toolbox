@@ -18,13 +18,4 @@ namespace UnityEngine
 
         public string Label { get; private set; }
     }
-
-    [Flags]
-    public enum ButtonActivityType
-    {
-        Nothing = 0,
-        OnPlayMode = 1,
-        OnEditMode = 2,
-        Everything = ~0
-    }
 }
