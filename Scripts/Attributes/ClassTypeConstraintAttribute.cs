@@ -50,7 +50,6 @@ namespace UnityEngine
         public List<Type> GetFilteredTypes()
         {
             var types = new List<Type>();
-
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in assemblies)
             {
@@ -58,7 +57,6 @@ namespace UnityEngine
             }
 
             types.Sort((a, b) => a.FullName.CompareTo(b.FullName));
-
             return types;
         }
 
@@ -70,7 +68,6 @@ namespace UnityEngine
         public List<Type> GetFilteredAssemblyTypes(Assembly assembly)
         {
             var types = new List<Type>();
-
             foreach (var type in assembly.GetTypes())
             {
                 if (!type.IsVisible || !type.IsClass)
@@ -100,7 +97,7 @@ namespace UnityEngine
         /// </returns>
         public virtual bool IsConstraintSatisfied(Type type)
         {
-            return AllowAbstract || !type.IsAbstract;
+            return (AllowAbstract || !type.IsAbstract) && (AllowObsolete || !IsDefined(type, typeof(ObsoleteAttribute)));
         }
 
 
@@ -109,10 +106,15 @@ namespace UnityEngine
         /// Defaults to a value of <c>false</c> unless explicitly specified.
         /// </summary>
         public bool AllowAbstract { get; private set; }
+        /// <summary>
+        /// Gets or sets whether obsolete classes can be selected from drop-down.
+        /// Defaults to a value of <c>false</c> unless explicitly specified.
+        /// </summary>
+        public bool AllowObsolete { get; private set; }
 
         /// <summary>
-        /// Gets or sets grouping of selectable classes. Defaults to <see cref="ClassGrouping.None"/>
-        /// unless explicitly specified.
+        /// Gets or sets grouping of selectable classes.
+        /// Defaults to <see cref="ClassGrouping.None"/> unless explicitly specified.
         /// </summary>
         public ClassGrouping Grouping { get; private set; } = ClassGrouping.None;
 
@@ -183,7 +185,10 @@ namespace UnityEngine
             {
                 foreach (var interfaceType in type.GetInterfaces())
                 {
-                    if (interfaceType == AssemblyType) return true;
+                    if (interfaceType == AssemblyType)
+                    {
+                        return true;
+                    }
                 }
             }
 
