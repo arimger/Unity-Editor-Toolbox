@@ -63,6 +63,8 @@ public class SampleBehaviour1 : MonoBehaviour
     public GameObject var8;
     [AssetPreview(useLabel: false), Help("Who needs label?")]
     public GameObject var9;
+    [AssetPreview]
+    public Transform preview;
 
 #if UNITY_EDITOR
     private void OnValidate()

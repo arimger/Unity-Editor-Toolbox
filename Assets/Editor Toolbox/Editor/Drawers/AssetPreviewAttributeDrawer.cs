@@ -6,6 +6,54 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(AssetPreviewAttribute))]
     public class AssetPreviewAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        /// <summary>
+        /// Returns proper <see cref="Object"/> depending on the <see cref="referenceValue"/> type.
+        /// </summary>
+        private Object GetValidTarget(Object referenceValue)
+        {
+            if (referenceValue)
+            {
+                switch (referenceValue)
+                {
+                    //NOTE: if target reference is a component we want to retrieve a preview from the associated GameObject
+                    case Component component:
+                        return component.gameObject;
+                    default:
+                        return referenceValue;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Draws asset preview using previously created <see cref="Texture2D"/> and base rect.
+        /// </summary>
+        private void DrawAssetPreview(Rect rect, Texture2D previewTexture)
+        {
+            //cache indent difference
+            var indent = rect.width - EditorGUI.IndentedRect(rect).width;
+            //set image base properties
+            var width = Mathf.Clamp(Attribute.Width, 0, previewTexture.width);
+            var height = Mathf.Clamp(Attribute.Height, 0, previewTexture.height);
+
+            Style.textureStyle.normal.background = previewTexture;
+            //set additional height as preview + 2x spacing + 2x frame offset
+            rect.width = width + Style.frameSize + indent;
+            rect.height = height + Style.frameSize;
+            rect.y += Style.height + Style.spacing;
+            //draw background frame
+            EditorGUI.LabelField(rect, GUIContent.none, Style.previewStyle);
+            rect.width = width + indent;
+            rect.height = height;
+            //adjust image to frame center
+            rect.y += Style.frameSize / 2;
+            rect.x += Style.frameSize / 2;
+            //draw texture without label
+            EditorGUI.LabelField(rect, GUIContent.none, Style.textureStyle);
+        }
+
+
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             //return native height 
@@ -18,7 +66,6 @@ namespace Toolbox.Editor.Drawers
             var additionalHeight = Attribute.Height + Style.frameSize * 2 + Style.spacing * 2;
             if (!Attribute.UseLabel)
             {
-                //adjust height to old label position
                 additionalHeight -= Style.height;
             }
 
@@ -37,35 +84,17 @@ namespace Toolbox.Editor.Drawers
                 position.y -= Style.height;
             }
 
-            if (property.objectReferenceValue)
+            var target = GetValidTarget(property.objectReferenceValue);
+            if (target)
             {
-                var previewTexture = AssetPreview.GetAssetPreview(property.objectReferenceValue);
-
-                if (!previewTexture)
+                var previewTexture = AssetPreview.GetAssetPreview(target);
+                if (previewTexture == null)
                 {
                     return;
                 }
 
-                //cache indent difference
-                var indent = position.width - EditorGUI.IndentedRect(position).width;
-                //set image style
-                var width = Mathf.Clamp(Attribute.Width, 0, previewTexture.width);
-                var height = Mathf.Clamp(Attribute.Height, 0, previewTexture.height);
-
-                Style.textureStyle.normal.background = previewTexture;
-                //set additional height as preview + 2x spacing + 2x frame offset
-                position.width = width + Style.frameSize + indent;
-                position.height = height + Style.frameSize;
-                position.y += Style.height + Style.spacing;
-                //draw frame
-                EditorGUI.LabelField(position, GUIContent.none, Style.previewStyle);
-                position.width = width + indent;
-                position.height = height;
-                //adjust image to frame center
-                position.y += Style.frameSize / 2;
-                position.x += Style.frameSize / 2;
-                //draw preview texture
-                EditorGUI.LabelField(position, GUIContent.none, Style.textureStyle);
+                //finally draw preview texture of the target
+                DrawAssetPreview(position, previewTexture);
             }
         }
 
