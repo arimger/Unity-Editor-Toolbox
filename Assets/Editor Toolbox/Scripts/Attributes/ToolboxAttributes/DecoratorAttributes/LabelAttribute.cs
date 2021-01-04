@@ -17,7 +17,7 @@ namespace UnityEngine
 
         public string Label { get; private set; }
 
-        public string Content { get; set; }
+        public string Asset { get; set; }
 
         public FontStyle FontStyle { get; private set; }
 

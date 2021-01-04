@@ -25,13 +25,13 @@ public class SampleBehaviour2 : MonoBehaviour
     }
 
     [EditorButton(nameof(TestMethod))]
-    [EditorButton(nameof(TestCoroutine), "Test Coroutine", activityType: ButtonActivityType.OnPlayMode)]
+    [EditorButton(nameof(TestCoroutine), "<b>Test Coroutine</b>", activityType: ButtonActivityType.OnPlayMode)]
     [EditorButton(nameof(TestStaticMethod), activityType: ButtonActivityType.OnEditMode)]
 
     [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
           "Check the SampleBehaviour2.cs script for more details.", Order = -1)]
 
-    [Label("Toolbox Attributes", skinStyle: SkinStyle.Box, Alignment = TextAnchor.MiddleCenter, Content = "UnityEditor.InspectorWindow")]
+    [Label("Toolbox Attributes", skinStyle: SkinStyle.Box, Alignment = TextAnchor.MiddleCenter, Asset = "UnityEditor.InspectorWindow")]
 
     [Label("1", skinStyle: SkinStyle.Box)]
 
@@ -44,12 +44,13 @@ public class SampleBehaviour2 : MonoBehaviour
     public int y;
     [BeginGroup("Nested group")]
     public int var14;
-    [Separator] //or [Line]
+    [Line]
     public int var15;
     public int var16;
     [BeginIndent]
     public int var17;
     public int var18;
+    [Label("<color=red><b>Custom Header</b></color>")]
     [EndIndent]
     public int var19;
     [EndGroup]

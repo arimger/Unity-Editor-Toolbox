@@ -75,8 +75,13 @@ namespace Toolbox.Editor
         /// Determines whenever property has a custom <see cref="ToolboxTargetTypeDrawer"/>.
         /// </summary>
         private readonly bool hasToolboxPropertyTargetTypeDrawer;
-
+        /// <summary>
+        /// Determines whenever property has a custom <see cref="ToolboxConditionDrawer{T}"/>
+        /// </summary>
         private readonly bool hasToolboxConditionDrawer;
+        /// <summary>
+        /// Determines whenever property has a custom <see cref="ToolboxDecoratorDrawer{T}"/>
+        /// </summary>
         private readonly bool hasToolboxDecoratorDrawer;
 
 
