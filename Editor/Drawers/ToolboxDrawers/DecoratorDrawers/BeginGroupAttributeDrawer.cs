@@ -9,13 +9,11 @@ namespace Toolbox.Editor.Drawers
         {
             if (attribute.HasLabel)
             {
-                using (new GUILayout.HorizontalScope(Style.labelBackgroundStyle))
+                using (new GUILayout.VerticalScope(Style.labelBackgroundStyle))
                 {
-                    //draw group label for the whole section
                     GUILayout.Label(attribute.Label, Style.labelStyle);
                 }
 
-                //remove additional space between layouts
                 GUILayout.Space(Style.labelOffset);
             }
 

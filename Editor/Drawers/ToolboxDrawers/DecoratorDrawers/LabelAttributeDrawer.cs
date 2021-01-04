@@ -9,16 +9,15 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(LabelAttribute attribute)
         {
-            //determine proper styles for scope and text
+            //prepare proper styles for the scope and text
             var scopeStyle = GetScopeStyle(attribute.SkinStyle);
             var labelStyle = GetLabelStyle(attribute.FontStyle);
-
-            labelStyle.alignment = attribute.Alignment;
-            labelStyle.fontStyle = attribute.FontStyle;
 
             //create (optionally) the vertical scope group
             using (CreateScopeIfNeeded(scopeStyle))
             {
+                labelStyle.alignment = attribute.Alignment;
+                labelStyle.fontStyle = attribute.FontStyle;
                 EditorGUILayout.LabelField(GetContent(attribute), labelStyle);
             }
         }
@@ -36,24 +35,25 @@ namespace Toolbox.Editor.Drawers
                 case SkinStyle.Normal:
                     return null;
                 case SkinStyle.Box:
-                    return Style.skinBoxStyle;
+                    return Style.boxedScopeStyle;
                 case SkinStyle.Round:
-                    return Style.skinHelpStyle;
+                    return Style.roundScopeStyle;
             }
 
-            return Style.skinLabelStyle;
+            return Style.labelScopeStyle;
         }
 
         private static GUIContent GetContent(LabelAttribute attribute)
         {
-            if (attribute.Content != null)
+            if (attribute.Asset != null)
             {
                 //try to find associated image content
-                var content = EditorGUIUtility.TrIconContent(attribute.Content);
+                var content = EditorGUIUtility.TrIconContent(attribute.Asset);
                 if (content.image == null)
                 {
-                    ToolboxEditorLog.AttributeUsageWarning(attribute, "Cannot find icon '" + attribute.Content + "'.");
+                    ToolboxEditorLog.AttributeUsageWarning(attribute, "Cannot find icon asset '" + attribute.Asset + "'.");
                 }
+
                 content.text = attribute.Label;
                 content.tooltip = string.Empty;
                 return content;
@@ -72,21 +72,24 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal static readonly GUIStyle skinBoxStyle;
-            internal static readonly GUIStyle skinHelpStyle;
-            internal static readonly GUIStyle skinLabelStyle;
+            internal static readonly GUIStyle boxedScopeStyle;
+            internal static readonly GUIStyle roundScopeStyle;
+            internal static readonly GUIStyle labelScopeStyle;
 
             internal static readonly GUIStyle labelStyle;
 
             static Style()
             {
-                //initialize optional scope styles
-                skinBoxStyle = new GUIStyle("box");
-                skinHelpStyle = new GUIStyle("helpBox");
-                skinLabelStyle = new GUIStyle("label");
+                //initialize possible scope styles
+                boxedScopeStyle = new GUIStyle("box");
+                roundScopeStyle = new GUIStyle("helpBox");
+                labelScopeStyle = new GUIStyle("label");
 
-                //initialize optional label styles
-                labelStyle = new GUIStyle(EditorStyles.label);
+                //initialize default label style
+                labelStyle = new GUIStyle(EditorStyles.label)
+                {
+                    richText = true
+                };
             }
         }
     }

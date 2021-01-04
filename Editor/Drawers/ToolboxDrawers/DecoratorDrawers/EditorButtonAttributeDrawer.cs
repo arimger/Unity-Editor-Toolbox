@@ -50,7 +50,7 @@ namespace Toolbox.Editor.Drawers
                     ? attribute.MethodName
                     : attribute.ExtraLabel;
 
-                if (GUILayout.Button(label))
+                if (GUILayout.Button(label, Style.buttonStyle))
                 {
                     var targetType = targetObjects[0].GetType();
                     var method = targetType.GetMethod(attribute.MethodName,
@@ -85,6 +85,15 @@ namespace Toolbox.Editor.Drawers
                     }
                 }
             }
+        }
+
+
+        private static class Style
+        {
+            internal static readonly GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
+            {
+                richText = true
+            };
         }
     }
 }
