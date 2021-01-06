@@ -74,7 +74,7 @@ Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associa
 #### HelpAttribute
 
 ```csharp
-//NOTE: HelpAttribute moved to ToolboxAttributes
+//NOTE: HelpAttribute moved to ToolboxAttributes (Decorators)
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/helpbox.png)
@@ -107,6 +107,8 @@ public float var1 = 80.0f;
 ```csharp
 [NewLabel("Custom Label", "Element")]
 public int[] vars1 = new int[3];
+[NewLabel("Custom Label")]
+public float var2 = 25.4f;
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/newlabel.png)
@@ -153,6 +155,8 @@ public float var1;
 ```csharp
 [AssetPreview]
 public GameObject var1;
+[AssetPreview(useLabel: false)]
+public Component var2;
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/assetpreview.png)
@@ -233,6 +237,7 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExampl
 #### BroadcastButtonAttribute
 
 ```csharp
+//REMARK: use the 'EditorButton' attribute instead
 //NOTE: [ExecuteAlways] or [ExecuteInEditMode] needed in the Edit mode
 
 [BroadcastButton(nameof(MyMethod), "Click me to broadcast message", ButtonActivityType.OnEditMode, order = 100)]
@@ -328,6 +333,8 @@ public SampleClass1 var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild2.png)
 
+#### PrefabReference
+
 #### ChildObjectOnlyAttribute
 
 #### SceneObjectOnlyAttribute
@@ -388,6 +395,10 @@ public int var1;
 ```
 ```csharp
 [Label("My Custom Header", skinStyle: SkinStyle.Box, Alignment = TextAnchor.MiddleCenter)]
+public int var1;
+```
+```csharp
+[EditorButtob("MyMethodName", "<b>My</b> Custom Label", activityType: ButtonActivityType.OnPlayMode)]
 public int var1;
 ```
 ```csharp

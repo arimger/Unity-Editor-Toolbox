@@ -182,10 +182,10 @@ public class SampleEditor : ToolboxEditor
 	
 #if UNITY_2019_1_OR_NEWER
 	public override VisualElement CreateInspectorGUI()
-    {
+	{
 		//NOTE: create a custom container if you want to use UIElements instead of the standard IMGUI system
-        return null;
-    }
+		return null;
+	}
 #endif
 
 	private static class Style
