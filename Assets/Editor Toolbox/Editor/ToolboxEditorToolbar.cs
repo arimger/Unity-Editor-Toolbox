@@ -18,8 +18,6 @@ using UnityEngine.Experimental.UIElements;
 
 namespace Toolbox.Editor
 {
-    //using Toolbox.Editor.Routine;
-
     /// <summary>
     /// Toolbar extension which provides new funtionalites into classic Unity's scene toolbar.
     /// </summary>
@@ -35,12 +33,19 @@ namespace Toolbox.Editor
         private static readonly Type containterType = typeof(IMGUIContainer);
         private static readonly Type toolbarType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.Toolbar");
         private static readonly Type guiViewType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.GUIView");
+#if UNITY_2020_1_OR_NEWER
+        private static readonly Type backendType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.IWindowBackend");
 
-        private static readonly FieldInfo onGuiHandler = containterType.GetField("m_OnGUIHandler",
+        private static readonly PropertyInfo guiBackend = guiViewType.GetProperty("windowBackend",
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly PropertyInfo visualTree = backendType.GetProperty("visualTree",
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+#else
         private static readonly PropertyInfo visualTree = guiViewType.GetProperty("visualTree",
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
+#endif
+        private static readonly FieldInfo onGuiHandler = containterType.GetField("m_OnGUIHandler",
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static Object toolbar;
 
@@ -49,7 +54,7 @@ namespace Toolbox.Editor
         {
             while (toolbar == null)
             {
-                //try to find aldready craeted Toolbar object
+                //try to find aldready created Toolbar object
                 var toolbars = Resources.FindObjectsOfTypeAll(toolbarType);
                 if (toolbars == null || toolbars.Length == 0)
                 {
@@ -61,9 +66,13 @@ namespace Toolbox.Editor
                     toolbar = toolbars[0];
                 }
             }
-
-            //get current toolbar containter using reflection
+#if UNITY_2020_1_OR_NEWER
+            var backend = guiBackend.GetValue(toolbar);
+            var elements = visualTree.GetValue(backend, null) as VisualElement;
+#else
             var elements = visualTree.GetValue(toolbar, null) as VisualElement;
+#endif
+
 #if UNITY_2019_1_OR_NEWER
             var container = elements[0];
 #else
@@ -91,7 +100,7 @@ namespace Toolbox.Editor
             }
 
             var screenWidth = EditorGUIUtility.currentViewWidth;
-            var toolbarRect = new Rect(0, 0, screenWidth, Style.height);
+            var toolbarRect = new Rect(0, 0, screenWidth, Style.rowHeight);
             //calculations known from UnityCsReference
             toolbarRect.xMin += fromToolsOffsetX;
             toolbarRect.xMax = (screenWidth - fromStripOffsetX) / 2;
@@ -122,7 +131,7 @@ namespace Toolbox.Editor
 
         private static class Style
         {
-            internal static readonly float height = 30.0f;
+            internal static readonly float rowHeight = 30.0f;
             internal static readonly float spacing = 15.0f;
             internal static readonly float topPadding = 5.0f;
             internal static readonly float botPadding = 3.0f;
