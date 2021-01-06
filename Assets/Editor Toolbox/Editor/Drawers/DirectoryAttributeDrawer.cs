@@ -1,7 +1,7 @@
 ﻿using System.IO;
 
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -10,14 +10,11 @@ namespace Toolbox.Editor.Drawers
     {
         private static bool IsPathValid(string propertyPath, string assetRelativePath)
         {
-            var projectRelativePath = Application.dataPath + "/";
+            var targetPath = string.IsNullOrEmpty(assetRelativePath)
+                ? Path.Combine(Application.dataPath, propertyPath)
+                : Path.Combine(Application.dataPath, assetRelativePath, propertyPath);
 
-            if (!string.IsNullOrEmpty(assetRelativePath))
-            {
-                projectRelativePath += assetRelativePath + "/";
-            }
-
-            return Directory.Exists(projectRelativePath + propertyPath);
+            return Directory.Exists(targetPath);
         }
 
 
@@ -29,17 +26,17 @@ namespace Toolbox.Editor.Drawers
                 return base.GetPropertyHeightSafe(property, label);
             }
 
-            //return adjusted height
+            //return adjusted height (include help box)
             return base.GetPropertyHeightSafe(property, label) + Style.boxHeight + Style.spacing * 2;
         }
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            //current stored path validation
+            //validate currently serialized path value
             if (!IsPathValid(property.stringValue, Attribute.RelativePath))
             {
-                var helpBoxRect = new Rect(position.x, 
-                                           position.y, 
+                var helpBoxRect = new Rect(position.x,
+                                           position.y,
                                            position.width, Style.boxHeight);
                 EditorGUI.HelpBox(helpBoxRect, "Provided directory does not exist.", MessageType.Warning);
                 position.y += Style.boxHeight + Style.spacing + Style.spacing;
@@ -47,29 +44,38 @@ namespace Toolbox.Editor.Drawers
 
             position.height = Style.rowHeight;
             position.width -= Style.directoryButtonWidth + Style.spacing;
-            //draw standard string property field
+            //draw the default string property field
             EditorGUI.PropertyField(position, property, label);
             position.x = position.xMax + Style.spacing;
             position.width = Style.directoryButtonWidth;
 
             //create additional pick directory button
-            if (GUI.Button(position, Style.directoryButtonLabel, Style.directoryButtonStyle))
+            if (GUI.Button(position, Style.directoryButtonContent, EditorStyles.miniButton))
             {
-                var assetsRelativePath = Attribute.RelativePath;
-                var deviceRelativePath = Application.dataPath + "/";
-
-                if (!string.IsNullOrEmpty(assetsRelativePath))
+                var relativePath = Attribute.RelativePath;
+                var baseDataPath = Application.dataPath;
+                var baseOpenPath = "Assets";
+                if (!string.IsNullOrEmpty(relativePath))
                 {
-                    deviceRelativePath += assetsRelativePath + "/";
+                    baseDataPath = Path.Combine(baseDataPath, relativePath);
+                    baseOpenPath = Path.Combine(baseOpenPath, relativePath);
                 }
 
-                property.serializedObject.Update();
-                property.stringValue = EditorUtility.OpenFolderPanel("Pick directory", "Assets/" + assetsRelativePath, "").Replace(deviceRelativePath, "");
-                property.serializedObject.ApplyModifiedProperties();
+                var selectedPath = EditorUtility.OpenFolderPanel("Pick directory", baseOpenPath, "");
+                if (!string.IsNullOrEmpty(selectedPath))
+                {
+                    //Unity's API always returns slash
+                    baseDataPath = baseDataPath.Replace('\\', '/');
+                    selectedPath = selectedPath.Replace(baseDataPath, "");
+                    selectedPath = selectedPath.Remove(0, 1);
 
-                //NOTE1: we have to exit GUI since the EditorUtility.OpenFolderPanel method will break layouting system
-                //NOTE2: it seams to be fixed in new releases
-                //GUIUtility.ExitGUI();
+                    property.serializedObject.Update();
+                    property.stringValue = selectedPath;
+                    property.serializedObject.ApplyModifiedProperties();
+                }
+
+                //NOTE: we have to exit GUI since the EditorUtility.OpenFolderPanel method will break the layouting system
+                GUIUtility.ExitGUI();
             }
         }
 
@@ -94,14 +100,11 @@ namespace Toolbox.Editor.Drawers
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
             internal static readonly float directoryButtonWidth = 30.0f;
 
-            internal static readonly GUIContent directoryButtonLabel;
+            internal static readonly GUIContent directoryButtonContent;
 
-            internal static readonly GUIStyle directoryButtonStyle;
- 
             static Style()
             {
-                directoryButtonStyle = new GUIStyle(EditorStyles.miniButton);
-                directoryButtonLabel = new GUIContent(EditorGUIUtility.FindTexture("Folder Icon"), "Pick directory");
+                directoryButtonContent = new GUIContent(EditorGUIUtility.FindTexture("Folder Icon"), "Pick directory");
             }
         }
     }
