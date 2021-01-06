@@ -151,6 +151,7 @@ namespace Toolbox.Editor.Hierarchy
             {
                 var components = target.GetComponents<Component>();
                 cachedComponents = new List<Component>(components.Length);
+                //cache only valid (non-null) components
                 foreach (var component in components)
                 {
                     if (component)

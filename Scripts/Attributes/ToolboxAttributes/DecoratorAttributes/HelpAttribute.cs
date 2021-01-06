@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Draws a HelpBox within the Inspector Window above this field.
+    /// Draws a HelpBox within the Inspector Window above serialized field.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class HelpAttribute : ToolboxDecoratorAttribute
@@ -14,9 +14,9 @@ namespace UnityEngine
             Type = type;
         }
 
-        public UnityMessageType Type { get; private set; }
-
         public string Text { get; private set; }
+
+        public UnityMessageType Type { get; private set; }
     }
 
     public enum UnityMessageType

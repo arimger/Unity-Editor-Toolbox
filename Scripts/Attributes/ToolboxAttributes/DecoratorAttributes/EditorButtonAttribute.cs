@@ -21,6 +21,8 @@ namespace UnityEngine
 
         public string ExtraLabel { get; private set; }
 
+        public string Tooltip { get; set; }
+
         public ButtonActivityType ActivityType { get; private set; }
     }
 
