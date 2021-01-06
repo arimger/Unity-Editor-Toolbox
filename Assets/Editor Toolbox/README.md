@@ -333,7 +333,7 @@ public SampleClass1 var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild2.png)
 
-#### PrefabReference
+#### PrefabReferenceAttribute
 
 #### ChildObjectOnlyAttribute
 
@@ -398,7 +398,7 @@ public int var1;
 public int var1;
 ```
 ```csharp
-[EditorButtob("MyMethodName", "<b>My</b> Custom Label", activityType: ButtonActivityType.OnPlayMode)]
+[EditorButton("MyMethodName", "<b>My</b> Custom Label", activityType: ButtonActivityType.OnPlayMode)]
 public int var1;
 ```
 ```csharp
