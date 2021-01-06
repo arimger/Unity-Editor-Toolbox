@@ -29,7 +29,6 @@ namespace Toolbox.Editor.Drawers
 
         private bool IsCoroutine(Type targetType, MethodInfo method)
         {
-
             return method.ReturnType == typeof(IEnumerator);
         }
 
@@ -47,20 +46,24 @@ namespace Toolbox.Editor.Drawers
             using (new EditorGUI.DisabledScope(disable))
             {
                 var label = string.IsNullOrEmpty(attribute.ExtraLabel)
-                    ? attribute.MethodName
-                    : attribute.ExtraLabel;
-
-                if (GUILayout.Button(label, Style.buttonStyle))
+                            ? attribute.MethodName
+                            : attribute.ExtraLabel;
+                var tooltip = attribute.Tooltip;
+                var content = new GUIContent(label, tooltip);
+                
+                if (GUILayout.Button(content, Style.buttonStyle))
                 {
                     var targetType = targetObjects[0].GetType();
                     var method = targetType.GetMethod(attribute.MethodName,
                         BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+                    //validate method name (check if method exists)
                     if (method == null)
                     {
                         ToolboxEditorLog.AttributeUsageWarning(attribute, attribute.MethodName + " method not found.");
                         return;
                     }
 
+                    //validate parameters count and log warning
                     var parameters = method.GetParameters();
                     if (parameters.Length > 0)
                     {
@@ -68,6 +71,7 @@ namespace Toolbox.Editor.Drawers
                         return;
                     }
 
+                    //invoke method for all selected components
                     var isCoroutine = IsCoroutine(targetType, method);
                     for (var i = 0; i < targetObjects.Length; i++)
                     {
@@ -78,7 +82,8 @@ namespace Toolbox.Editor.Drawers
                         }
 
                         var result = method.Invoke(target, null);
-                        if (isCoroutine) 
+                        //additionaly run Coroutine if possible
+                        if (isCoroutine)
                         {
                             EditorCoroutineUtility.StartCoroutineOwnerless((IEnumerator)result);
                         }

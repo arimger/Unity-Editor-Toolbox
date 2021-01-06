@@ -24,7 +24,7 @@ public class SampleBehaviour2 : MonoBehaviour
         Debug.Log(nameof(TestStaticMethod) + " is called");
     }
 
-    [EditorButton(nameof(TestMethod))]
+    [EditorButton(nameof(TestMethod), Tooltip = "Custom Tooltip")]
     [EditorButton(nameof(TestCoroutine), "<b>Test Coroutine</b>", activityType: ButtonActivityType.OnPlayMode)]
     [EditorButton(nameof(TestStaticMethod), activityType: ButtonActivityType.OnEditMode)]
 
