@@ -15,8 +15,12 @@ namespace Toolbox.Editor.Drawers
         private void DrawFolderByNameIcon(Rect rect)
         {
             var diff = rect.height - Style.dataByNameLabelStyle.fixedHeight;
-            rect.yMin += diff;
-            rect.yMax -= diff;
+            if (diff < rect.height / 2)
+            {
+                rect.yMin += diff;
+                rect.yMax -= diff;
+            }
+
             GUI.Label(rect, "Aa", Style.dataByNameLabelStyle);
         }
 
