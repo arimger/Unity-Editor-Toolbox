@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor
@@ -17,35 +14,23 @@ namespace Toolbox.Editor
     {
         static ToolboxLayoutHelper()
         {
-            //ensure that on the begining of a frame we are not within the Inspector Window
-            EditorApplication.update += () =>
-            {
-                inEditorLayout = false;
-            };
-
             //ToolboxEditor.OnCloseToolboxEditor is a quite useful event which can be used to 
             //validate layout data. Actually it should be used to draw additional information
             //into the target Editor but in this case we will check previously created scopes
 
             ToolboxEditor.OnBeginToolboxEditor += OnBeginEditor;
+            ToolboxEditor.OnBreakToolboxEditor += OnBreakEditor;
             ToolboxEditor.OnCloseToolboxEditor += OnCloseEditor;
         }
-
-
-        /// <summary>
-        /// All currently cached vertical scopes.
-        /// </summary>
-        private static readonly Stack<IDisposable> verticalScopes = new Stack<IDisposable>();
-
-        /// <summary>
-        /// All currently cached horizontal scopes.
-        /// </summary>
-        private static readonly Stack<IDisposable> horizontalScopes = new Stack<IDisposable>();
 
         /// <summary>
         /// Determines whether we are currently within any Editor's layout scope.
         /// </summary>
         private static bool inEditorLayout;
+        private static bool isExitedLayout;
+
+        private static int vLayoutClips;
+        private static int hLayoutClips;
 
 
         private static void OnBeginEditor(Editor editor)
@@ -53,11 +38,17 @@ namespace Toolbox.Editor
             inEditorLayout = true;
         }
 
+        private static void OnBreakEditor(Editor editor)
+        {
+            isExitedLayout = true;
+        }
+
         private static void OnCloseEditor(Editor editor)
         {
-            inEditorLayout = false;
-
             ValidateScope();
+
+            inEditorLayout = false;
+            isExitedLayout = false;
         }
 
         /// <summary>
@@ -66,32 +57,35 @@ namespace Toolbox.Editor
         /// <returns>true if scopes were clean.</returns>
         private static bool ValidateScope()
         {
-            if (verticalScopes.Count == 0 && horizontalScopes.Count == 0)
+            if (vLayoutClips > 0 || hLayoutClips > 0)
             {
-                return true;
+                if (!isExitedLayout)
+                {
+                    ToolboxEditorLog.LogWarning("Invalid layout data. Check if created groups (vertical or horizontal) are properly closed.");
+                }
+
+                while (vLayoutClips > 0)
+                {
+                    EndVertical();
+                }
+
+                while (hLayoutClips > 0)
+                {
+                    EndHorizontal();
+                }
+
+                return false;
             }
             else
             {
-                ToolboxEditorLog.LogWarning("Invalid layout data. Check if created groups (vertical or horizontal) are properly closed.");
-
-                while (verticalScopes.Count > 0)
-                {
-                    verticalScopes.Pop().Dispose();
-                }
-
-                while (horizontalScopes.Count > 0)
-                {
-                    horizontalScopes.Pop().Dispose();
-                }
+                return true;
             }
-
-            return false;
         }
 
 
         internal static void BeginVertical()
         {
-            BeginVertical(null);
+            BeginVertical(new GUIStyle());
         }
 
         internal static void BeginVertical(GUIStyle style, params GUILayoutOption[] options)
@@ -102,27 +96,26 @@ namespace Toolbox.Editor
                 return;
             }
 
-            var scope = style == null
-                ? new EditorGUILayout.VerticalScope(options)
-                : new EditorGUILayout.VerticalScope(style, options);
-            verticalScopes.Push(scope);
+            vLayoutClips++;
+            EditorGUILayout.BeginVertical(style, options);
         }
 
         internal static void EndVertical()
         {
-            if (verticalScopes.Count == 0)
+            if (vLayoutClips == 0)
             {
                 ToolboxEditorLog.LogWarning("There is no a vertical group to end. Call will be ignored.");
                 return;
             }
 
-            verticalScopes.Pop().Dispose();
+            vLayoutClips--;
+            EditorGUILayout.EndVertical();
         }
 
 
         internal static void BeginHorizontal()
         {
-            BeginHorizontal(null);
+            BeginHorizontal(new GUIStyle());
         }
 
         internal static void BeginHorizontal(GUIStyle style, params GUILayoutOption[] options)
@@ -133,27 +126,26 @@ namespace Toolbox.Editor
                 return;
             }
 
-            if (horizontalScopes.Count > 0)
+            if (hLayoutClips > 0)
             {
                 ToolboxEditorLog.LogWarning("Nested horizontal layout groups are not supported.");
                 return;
             }
 
-            var scope = style == null
-                ? new EditorGUILayout.HorizontalScope(options)
-                : new EditorGUILayout.HorizontalScope(style, options);
-            horizontalScopes.Push(scope);
+            hLayoutClips++;
+            EditorGUILayout.BeginHorizontal(style, options);
         }
 
         internal static void EndHorizontal()
         {
-            if (horizontalScopes.Count == 0)
+            if (hLayoutClips == 0)
             {
                 ToolboxEditorLog.LogWarning("There is no a horizontal group to end. Call will be ignored.");
                 return;
             }
 
-            horizontalScopes.Pop().Dispose();
+            hLayoutClips--;
+            EditorGUILayout.EndHorizontal();
         }
     }
 }
