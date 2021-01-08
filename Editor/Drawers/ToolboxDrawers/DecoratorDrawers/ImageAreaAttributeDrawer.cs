@@ -17,7 +17,7 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGuiBeginSafe(ImageAreaAttribute attribute)
         {
             var url = attribute.Url;
-            if (!textures.TryGetValue(url, out var texture))
+            if (!textures.TryGetValue(url, out var texture) || texture.IsInvalid)
             {
                 textures[url] = texture = new DownloadedTexture(true);
                 EditorCoroutineUtility.StartCoroutineOwnerless(SendGetImageRequest(url, (b, t) =>
@@ -81,6 +81,11 @@ namespace Toolbox.Editor.Drawers
             public bool IsLoading
             {
                 get; set;
+            }
+
+            public bool IsInvalid
+            {
+                get => !IsLoading && !Texture2D;
             }
 
             public Texture2D Texture2D
