@@ -50,6 +50,7 @@ public class SampleBehaviour2 : MonoBehaviour
     [BeginIndent]
     public int var17;
     public int var18;
+    public GameObject go;
     [Label("<color=red><b>Custom Header</b></color>")]
     [EndIndent]
     public int var19;

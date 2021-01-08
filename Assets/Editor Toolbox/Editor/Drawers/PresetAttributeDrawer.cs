@@ -10,6 +10,10 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(PresetAttribute))]
     public class PresetAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        private const BindingFlags presetBinding = BindingFlags.Instance | BindingFlags.Static |
+                                                   BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly;
+
+
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             return base.GetPropertyHeightSafe(property, label);
@@ -17,23 +21,18 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            //we want to cache all possible fields 
-            const BindingFlags bindingFlags = BindingFlags.Instance  | BindingFlags.Static | 
-                                              BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly;
-
             var targetObject = property.GetDeclaringObject();
-            var presetValues = targetObject.GetType().GetField(Attribute.PresetFieldName, bindingFlags);
-          
+            var presetValues = targetObject.GetType().GetField(Attribute.PresetFieldName, presetBinding);  
             if (presetValues == null)
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    "Cannot find relative preset field (" + Attribute.PresetFieldName + "). Property will be drawn in the standard way.");
+                    "Cannot find relative preset field (" + Attribute.PresetFieldName + ").");
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
 
             var presetObject = presetValues.GetValue(targetObject);
-            if (presetObject is IList)
+            if (presetObject is IList list)
             {
                 var propertyType = property.GetProperType(fieldInfo, targetObject);
                 //check if types match between property and provided preset
@@ -41,17 +40,16 @@ namespace Toolbox.Editor.Drawers
                                    ? presetValues.FieldType.GetGenericArguments()[0] 
                                    : presetValues.FieldType.GetElementType()))
                 {
-                    var list = presetObject as IList;
-                    var values = new object[list.Count];
+                    var objects = new object[list.Count];
                     var options = new string[list.Count];
 
                     for (var i = 0; i < list.Count; i++)
                     {
-                        values[i] = list[i];
+                        objects[i] = list[i];
                         options[i] = list[i]?.ToString();
                     }
 
-                    var index = Array.IndexOf(values, property.GetProperValue(fieldInfo, targetObject));
+                    var index = Array.IndexOf(objects, property.GetProperValue(fieldInfo, targetObject));
 
                     //begin the true property
                     label = EditorGUI.BeginProperty(position, label, property);
@@ -59,11 +57,10 @@ namespace Toolbox.Editor.Drawers
                     position = EditorGUI.PrefixLabel(position, label);
 
                     EditorGUI.BeginChangeCheck();
-                    //get index value from popup
+                    //get selected preset value
                     index = EditorGUI.Popup(position, index, options);
-                    //validate index value
+                    //validate index before set
                     index = Mathf.Clamp(index, 0, list.Count - 1);
-
                     if (EditorGUI.EndChangeCheck())
                     {
                         //udpate property value using previously cached FieldInfo and picked value
@@ -71,18 +68,19 @@ namespace Toolbox.Editor.Drawers
                         //serialized property we are updating
 
                         property.serializedObject.Update(); 
-                        property.SetProperValue(fieldInfo, values[index]);
+                        property.SetProperValue(fieldInfo, objects[index]);
                         property.serializedObject.ApplyModifiedProperties();
 
-                        //handle situation when we update multiple different values
+                        //handle situation when updating multiple different targets
                         property.serializedObject.SetIsDifferentCacheDirty();
                     }
+
                     EditorGUI.EndProperty();
                 }
                 else
                 {
                     ToolboxEditorLog.AttributeUsageWarning(attribute, property, 
-                        "Type mismatch between serialized property and provided preset field. Property will be drawn in the standard way.");
+                        "Type mismatch between serialized property and provided preset field.");
                     EditorGUI.PropertyField(position, property, label);
                     return;
                 }
@@ -90,7 +88,7 @@ namespace Toolbox.Editor.Drawers
             else
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property, 
-                    "Preset field (" + Attribute.PresetFieldName + ") has to be a one-dimensional collection(array or list). Property will be drawn in the standard way.");
+                    "Preset field (" + Attribute.PresetFieldName + ") has to be a one-dimensional collection (array or list).");
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }

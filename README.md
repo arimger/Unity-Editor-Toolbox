@@ -448,6 +448,9 @@ public int[] vars1 = new [] { 1, 2, 3, 4 };
 
 #### InLineEditorAttribute
 
+This attribute gives a great possibility to extend all reference-related (UnityEngine.Object) fields. 
+Using it you are able to 'inline' Editors for: components, ScriptableObjects, Materials, Renderers, MeshFilters, Textures, AudioClips, etc.
+
 ```csharp
 [InLineEditor]
 public Transform var1;
@@ -465,6 +468,8 @@ public Material var1;
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inlined1.png)
 
 #### ScrollableItemsAttribute
+
+It's a perfect solution to inspect large arrays/lists and optimize displaying them within the Inspector window.
 
 ```csharp
 [ScrollableItems(defaultMinIndex: 0, defaultMaxIndex: 5)]

@@ -399,6 +399,7 @@ MonoBehaviour:
   var16: -45
   var17: 15
   var18: -24
+  go: {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
   var19: 18
   var20: 34
   x: 0
@@ -444,7 +445,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  var36: 0
+  var36: 1
 --- !u!4 &661896459
 Transform:
   m_ObjectHideFlags: 2

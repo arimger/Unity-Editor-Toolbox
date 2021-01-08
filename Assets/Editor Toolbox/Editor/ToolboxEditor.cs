@@ -8,7 +8,7 @@ namespace Toolbox.Editor
     using Object = UnityEngine.Object;
 
     /// <summary>
-    /// Base editor class.
+    /// Base Editor class for all Toolbox-related features.
     /// </summary>
     [CustomEditor(typeof(Object), true, isFallback = true)]
     [CanEditMultipleObjects]
@@ -19,9 +19,22 @@ namespace Toolbox.Editor
         /// </summary>
         public override sealed void OnInspectorGUI()
         {
-            OnBeginToolboxEditor?.Invoke(this);
-            DrawCustomInspector();
-            OnCloseToolboxEditor?.Invoke(this);
+            try
+            {
+                OnBeginToolboxEditor?.Invoke(this);
+                DrawCustomInspector();
+            }
+            catch (Exception)
+            {
+                //make sure to catch all Exceptions (especially ExitGUIException),
+                //it will allow us to safely dispose all layout-based controls, etc.
+                OnBreakToolboxEditor?.Invoke(this);
+                throw;
+            }
+            finally
+            {
+                OnCloseToolboxEditor?.Invoke(this);
+            }
         }
 
 
@@ -75,6 +88,7 @@ namespace Toolbox.Editor
 
 
         public static event Action<Editor> OnBeginToolboxEditor;
+        public static event Action<Editor> OnBreakToolboxEditor; 
         public static event Action<Editor> OnCloseToolboxEditor;
     }
 }
