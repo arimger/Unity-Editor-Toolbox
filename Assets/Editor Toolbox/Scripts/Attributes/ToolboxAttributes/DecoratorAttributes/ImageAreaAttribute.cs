@@ -2,6 +2,10 @@
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// Creates and displays texture as decorator, based on URL/URI.
+    /// Target texture is downloaded using a standard HTTP web request.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class ImageAreaAttribute : ToolboxDecoratorAttribute
     {
