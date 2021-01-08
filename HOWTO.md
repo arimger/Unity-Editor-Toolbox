@@ -5,24 +5,24 @@
 ToolboxDrawers are divided into 5 sub-types to maximize useability and cover all popular cases.
 - **ToolboxDecoratorDrawers:**
 
-Use them to create nice looking controls, icons and optional 'decorators' before or/and after any serialized property.  
-There is no limit of usages within single property.
+	Use them to create nice looking controls, icons and optional 'decorators' before or/and after any serialized property.<br/> 
+	There is no limit of usages within single property.
 - **ToolboxConditionDrawers:**
 
-Use them to validate the state of any serialized property (even lists), you can easily decide if a property should be disabled or hidden.
-Use it only once per property.
+	Use them to validate the state of any property (even lists), you can easily decide if a property should be disabled or hidden.<br/> 
+	Use it only once per property.
 - **ToolboxSelfPropertyDrawers:**
 
-Use them to customize the look of the respective property field.
-Use it only once per property.
+	Use them to customize the look of the respective property field.<br/>
+	Use it only once per property.
 - **ToolboxListPropertyDrawers:**
 
-Use them to customize the look of the respective list property.
-Use it only once per property.
+	Use them to customize the look of the respective list property.<br/> 
+	Use it only once per property.
 - **ToolboxTargetTypeDrawers:**
 
-Use them to specify the look of all dedicated properties based on the chosen type.
-
+	Use them to specify the look of all dedicated properties based on the chosen type.
+	
 **Implementation steps:**
 - decide what kind of drawer you need
 - implement dedicated ToolboxAttribute class (if drawer is attribute-based)
