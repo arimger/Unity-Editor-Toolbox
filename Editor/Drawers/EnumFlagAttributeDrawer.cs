@@ -11,11 +11,14 @@ namespace Toolbox.Editor.Drawers
     {
         private int maxButtonsInRow = 1;
 
-        private float minButtonsWidth;
+        private float passableMinWidth;
         private float additionalHeight;
+        private float singleLineHeight;
+
+        private object declaringObject;
 
 
-        private void HandlePopupStyle(Rect position, SerializedProperty property, GUIContent label, object targetObject)
+        private void DrawDefaultGui(Rect position, SerializedProperty property, GUIContent label, object targetObject)
         {
             //get field info value from this property, works even on array elements
             var enumValue = property.GetProperValue(fieldInfo, targetObject) as Enum;
@@ -24,33 +27,36 @@ namespace Toolbox.Editor.Drawers
             label = EditorGUI.BeginProperty(position, label, property);
             //draw the prefix label
             position = EditorGUI.PrefixLabel(position, label);
-
             EditorGUI.BeginChangeCheck();
             enumValue = EditorGUI.EnumFlagsField(position, GUIContent.none, enumValue);
             if (EditorGUI.EndChangeCheck())
             {
                 property.intValue = Convert.ToInt32(enumValue);
             }
+
             EditorGUI.EndProperty();
         }
 
-        private void HandleButtonStyle(Rect position, SerializedProperty property, GUIContent label, object targetObject)
+        private void DrawButtonsGui(Rect position, SerializedProperty property, GUIContent label, object targetObject)
         {
-            //collection of indexes used to store all needed enums
-            var buttonsToDisplay = new List<int>();
-
             //begin property and draw label
             label = EditorGUI.BeginProperty(position, label, property);
             var buttonPosition = EditorGUI.PrefixLabel(position, label);
 
-            EditorGUI.BeginChangeCheck();
-
             var propertyType = property.GetProperType(fieldInfo, targetObject);
+
             var enumValues = Enum.GetValues(propertyType);
             var enumNames = Enum.GetNames(propertyType);
             var enumSum = 0;
 
-            //get all proper enum values except 0(nothing) and ~0(everything)
+            var attribute = (EnumFlagAttribute)this.attribute;
+            var buttonsSpacing = attribute.ButtonsSpacing;
+            var buttonsHeight = attribute.ButtonsHeight;
+            var buttonsWidth = attribute.ButtonsWidth;
+
+            //collection of indexes used to store all needed labels
+            var buttonsToDisplay = new List<int>();
+            //get all proper enum values except 0 and ~0(everything)
             for (var i = 0; i < enumValues.Length; i++)
             {
                 var value = (int)enumValues.GetValue(i);
@@ -63,78 +69,74 @@ namespace Toolbox.Editor.Drawers
                 enumSum += value;
             }
 
-            //in buttons states we will store all toggle values for all buttons + "Everything" and "Nothing"
-            var buttonsCount = buttonsToDisplay.Count;
-
             //check how many buttons can we draw in one row
             if (Event.current.type == EventType.Repaint)
             {
-                //get maximum count of buttons in row
-                maxButtonsInRow = Mathf.Max(1, Mathf.FloorToInt(position.width / Style.minEnumRowButtonWidth));
-                minButtonsWidth = (position.width - Style.spacing * (maxButtonsInRow - 1)) / maxButtonsInRow;
+                //get maximum count of buttons in a single row
+                maxButtonsInRow = Mathf.Max(1, Mathf.FloorToInt(position.width / buttonsWidth));
+                passableMinWidth = (position.width - buttonsSpacing * (maxButtonsInRow - 1)) / maxButtonsInRow;
             }
 
             const int nothing = 0;
-
             //store current enum value if possible
-            var enumValue = property.hasMultipleDifferentValues
-                ? 0
-                : property.intValue == -1 ? enumSum : property.intValue;
+            var enumValue = property.intValue == -1 ? enumSum : property.intValue;
 
-
-            var isNone = enumValue == nothing &&
-                         !property.hasMultipleDifferentValues;
-
-            //create "Nothing" button
-            buttonPosition.height = Style.minEnumRowButtonHeight;
+            buttonPosition.height = buttonsHeight;
             buttonPosition.width /= 2;
-            buttonPosition.width -= Style.spacing / 2;
-            enumValue = GUI.Toggle(buttonPosition, isNone, "Nothing", Style.toggleStyle) ? nothing : enumValue;
-            //create "Everything" button
-            buttonPosition.x += buttonPosition.width + Style.spacing;
+            buttonPosition.width -= buttonsSpacing / 2;
 
-            var isFull = enumValue == enumSum;
+            EditorGUI.BeginChangeCheck();
+            //create "Nothing" and "Everything" buttons
+            var toggleValue = enumValue == nothing;
+            var toggleLabel = "Nothing";
+            //validate value for the multiple selection
+            if (property.hasMultipleDifferentValues)
+            {
+                enumValue = 0;
+            }
 
-            enumValue = GUI.Toggle(buttonPosition, isFull, "Everything", Style.toggleStyle) ? enumSum : enumValue;
+            enumValue = GUI.Toggle(buttonPosition, toggleValue, toggleLabel, Style.buttonStyle) ? nothing : enumValue;
+            buttonPosition.x += buttonPosition.width + buttonsSpacing;
 
-            //set basic rect for first button
-            buttonPosition = position;
-            buttonPosition.height = Style.minEnumRowButtonHeight;
-            buttonPosition.width = minButtonsWidth;
+            toggleValue = enumValue == enumSum;
+            toggleLabel = "Everything";
+            enumValue = GUI.Toggle(buttonPosition, toggleValue, toggleLabel, Style.buttonStyle) ? enumSum : enumValue;
 
-            additionalHeight = 0;
+            //adjust additional height to the first row
+            additionalHeight = buttonsHeight > singleLineHeight ? buttonsHeight - singleLineHeight : 0.0f;
 
-            //draw all other buttons depending on enum values
+            var buttonsCount = buttonsToDisplay.Count;
+            //draw all buttons depending on enum values
             for (var i = 0; i < buttonsCount; i++)
             {
                 //row break if we reach limit
                 if (i % maxButtonsInRow == 0)
                 {
                     buttonPosition.x = position.x;
-                    buttonPosition.y += Style.minEnumRowButtonHeight + Style.spacing;
-                    additionalHeight += Style.minEnumRowButtonHeight + Style.spacing;
+                    buttonPosition.y += buttonsHeight + buttonsSpacing;
+                    additionalHeight += buttonsHeight + buttonsSpacing;
                     //adjust buttons width to row width or use maximum possible width
                     var buttonsInRow = buttonsCount - i;
                     if (buttonsInRow < maxButtonsInRow)
                     {
-                        buttonPosition.width = (position.width - Style.spacing * (buttonsInRow - 1)) / buttonsInRow;
+                        buttonPosition.width = (position.width - buttonsSpacing * (buttonsInRow - 1)) / buttonsInRow;
                     }
                     else
                     {
-                        buttonPosition.width = minButtonsWidth;
+                        buttonPosition.width = passableMinWidth;
                     }
                 }
 
-                //cache index and enum value
+                //cache index and valid enum value
                 var index = buttonsToDisplay[i];
                 var value = (int)enumValues.GetValue(index);
 
                 //draw toggle for each enum value
-                enumValue = GUI.Toggle(buttonPosition, enumValue == (enumValue | value), enumNames[index], Style.toggleStyle)
+                enumValue = GUI.Toggle(buttonPosition, enumValue == (enumValue | value), enumNames[index], Style.buttonStyle)
                     ? enumValue | value
                     : enumValue & ~value;
                 //adjust position for next button
-                buttonPosition.x += buttonPosition.width + Style.spacing;
+                buttonPosition.x += buttonPosition.width + buttonsSpacing;
             }
 
             if (EditorGUI.EndChangeCheck())
@@ -148,20 +150,22 @@ namespace Toolbox.Editor.Drawers
 
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
+            singleLineHeight = base.GetPropertyHeightSafe(property, label);
+            //TODO:
             //NOTE: caching additional height like this will cause 1 frame delay 
-            return base.GetPropertyHeightSafe(property, label) + additionalHeight;
+            return singleLineHeight + additionalHeight;
         }
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            switch (Attribute.Style)
+            switch (((EnumFlagAttribute)attribute).Style)
             {
                 case EnumStyle.Button:
-                    HandleButtonStyle(position, property, label, property.GetDeclaringObject());
+                    DrawButtonsGui(position, property, label, declaringObject);
                     break;
                 case EnumStyle.Popup:
                 default:
-                    HandlePopupStyle(position, property, label, property.GetDeclaringObject());
+                    DrawDefaultGui(position, property, label, declaringObject);
                     break;
 
             }
@@ -170,24 +174,19 @@ namespace Toolbox.Editor.Drawers
 
         public override bool IsPropertyValid(SerializedProperty property)
         {
-            return property.propertyType == SerializedPropertyType.Enum;
+            declaringObject = property.GetDeclaringObject();
+            return property.propertyType == SerializedPropertyType.Enum &&
+                   Attribute.IsDefined(property.GetProperType(fieldInfo, declaringObject), typeof(FlagsAttribute));
         }
-
-
-        private EnumFlagAttribute Attribute => attribute as EnumFlagAttribute;
 
 
         private static class Style
         {
-            internal static readonly float minEnumRowButtonWidth = 85.0f;
-            internal static readonly float minEnumRowButtonHeight = 16.0f;
-            internal static readonly float spacing = 3.0f;
-
-            internal static readonly GUIStyle toggleStyle;
+            internal static readonly GUIStyle buttonStyle;
 
             static Style()
             {
-                toggleStyle = new GUIStyle(GUI.skin.button)
+                buttonStyle = new GUIStyle(GUI.skin.button)
                 {
 #if UNITY_2019_3_OR_NEWER
                     fontSize = 10
