@@ -87,7 +87,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("12", skinStyle: SkinStyle.Box)]
 
-    [ReadOnlyField]
+    [Disable]
     public string var11 = "Im read only";
 
     [Label("13", skinStyle: SkinStyle.Box)]
