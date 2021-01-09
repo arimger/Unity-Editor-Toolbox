@@ -1,8 +1,11 @@
-﻿using UnityEditor;
+﻿using System;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    [Obsolete]
     [CustomPropertyDrawer(typeof(ReadOnlyFieldAttribute))]
     public class ReadOnlyFieldDrawer : ToolboxNativePropertyDrawer
     {
@@ -13,9 +16,10 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUI.BeginDisabledGroup(true);
-            EditorGUI.PropertyField(position, property, label, property.isExpanded);
-            EditorGUI.EndDisabledGroup();
+            using (new EditorGUI.DisabledScope(true))
+            {
+                EditorGUI.PropertyField(position, property, label, property.isExpanded);
+            }
         }
     }
 }
