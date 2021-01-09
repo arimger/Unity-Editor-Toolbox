@@ -15,6 +15,10 @@ namespace UnityEngine
         }
 
         public EnumStyle Style { get; private set; }
+
+        public float ButtonsSpacing { get; set; } = 3.0f;
+        public float ButtonsHeight { get; set; } = 16.0f;
+        public float ButtonsWidth { get; set; } = 85.0f;
     }
 
     public enum EnumStyle
