@@ -17,50 +17,49 @@ namespace Toolbox.Editor.Internal
 
         public delegate void DrawIndexedRectCallbackDelegate(Rect rect, int index, bool isActive, bool isFocused);
 
-        public delegate void DrawDetailedRectCallbackDelegate(Rect buttonRect, ReorderableList list);
-
-        public delegate void ChangeListCallbackDelegate(ReorderableList list);
+        public delegate void DrawRelatedRectCallbackDelegate(Rect rect, ReorderableList list);
 
         public delegate bool CanChangeListCallbackDelegate(ReorderableList list);
 
         public delegate void ChangeDetailsCallbackDelegate(ReorderableList list, int oldIndex, int newIndex);
 
-        public delegate bool CanChangeDetailsCallbackDelegate(ReorderableList list, int oldIndex, int newIndex);
+        public delegate void ChangeListCallbackDelegate(ReorderableList list);
 
-
-        public DrawRectCallbackDelegate drawHeaderBackgroundCallback = null;
-        public DrawRectCallbackDelegate drawFooterBackgroundCallback = null;
-        public DrawRectCallbackDelegate drawMiddleBackgroundCallback = null;
 
         public DrawRectCallbackDelegate drawHeaderCallback;
-        public DrawRectCallbackDelegate drawVoidedCallback = null;
-        public DrawRectCallbackDelegate drawFooterCallback = null;
+        public DrawRectCallbackDelegate drawVoidedCallback;
+        public DrawRectCallbackDelegate drawFooterCallback;
 
-        public DrawIndexedRectCallbackDelegate drawHandleCallback = null;
+        public DrawRectCallbackDelegate drawHeaderBackgroundCallback;
+        public DrawRectCallbackDelegate drawFooterBackgroundCallback;
+        public DrawRectCallbackDelegate drawMiddleBackgroundCallback;
+
+        public DrawIndexedRectCallbackDelegate drawElementHandleCallback;
         public DrawIndexedRectCallbackDelegate drawElementCallback;
         public DrawIndexedRectCallbackDelegate drawElementBackgroundCallback;
 
-        public DrawDetailedRectCallbackDelegate onAddDropdownCallback;
+        public DrawRelatedRectCallbackDelegate onAppendDropdownCallback;
 
-
-        public ChangeListCallbackDelegate onAddCallback;
-        public ChangeListCallbackDelegate onSelectCallback;
-        public ChangeListCallbackDelegate onChangedCallback;
+        public ChangeListCallbackDelegate onAppendCallback;
         public ChangeListCallbackDelegate onRemoveCallback;
+        public ChangeListCallbackDelegate onSelectCallback;
+
+        public ChangeListCallbackDelegate onChangedCallback;
         public ChangeListCallbackDelegate onMouseUpCallback;
         public ChangeListCallbackDelegate onReorderCallback;
 
         public ChangeDetailsCallbackDelegate onDetailsCallback;
 
-        public CanChangeListCallbackDelegate onCanAddCallback;
+        public CanChangeListCallbackDelegate onCanAppendCallback;
         public CanChangeListCallbackDelegate onCanRemoveCallback;
-
 
         public ElementCallbackDelegate elementHeightCallback;
 
 
+        private const string defaultElementName = "Element";
+
         /// <summary>
-        /// Hotcontrol index.
+        /// Hotcontrol index unique for this instance.
         /// </summary>
         private readonly int id = -1;
 
@@ -81,33 +80,29 @@ namespace Toolbox.Editor.Internal
 
         public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool hasFixedSize)
         {
+            //validate parameters
+            if (list == null || list.isArray == false)
+            {
+                throw new ArgumentException("List should be an Array SerializedProperty.", nameof(list));
+            }
+
             id = GetHashCode();
 
+            //set basic properties
             Draggable = draggable;
             HasHeader = hasHeader;
             HasFixedSize = hasFixedSize;
             ElementLabel = elementLabel;
 
+            //ser serialized data
             List = list;
-
-            if (List != null && List.isArray == false)
-            {
-                throw new ArgumentException("Input elements should be an Array SerializedProperty.");
-            }
-
-            if (List != null && List.editable == false)
-            {
-                Draggable = false;
-            }
+            Size = list.FindPropertyRelative("Array.size");
         }
 
 
         /// <summary>
         /// Starts all drawing methods for each segment.
         /// </summary>
-        /// <param name="headerRect"></param>
-        /// <param name="midderRect"></param>
-        /// <param name="footerRect"></param>
         private void DoList(Rect headerRect, Rect midderRect, Rect footerRect)
         {
             //make sure there is no indent while drawing
@@ -133,7 +128,7 @@ namespace Toolbox.Editor.Internal
             {
                 if (drawHeaderBackgroundCallback != null)
                 {
-                    drawHeaderBackgroundCallback.Invoke(headerRect);
+                    drawHeaderBackgroundCallback(headerRect);
                 }
                 else
                 {
@@ -168,11 +163,11 @@ namespace Toolbox.Editor.Internal
             {
                 if (drawMiddleBackgroundCallback != null)
                 {
-                    drawMiddleBackgroundCallback?.Invoke(middleRect);
+                    drawMiddleBackgroundCallback(middleRect);
                 }
                 else
                 {
-                    Style.middleBackground.Draw(middleRect, false, false, false, false);
+                    Style.middleBackgroundStyle.Draw(middleRect, false, false, false, false);
                 }
             }
 
@@ -187,7 +182,7 @@ namespace Toolbox.Editor.Internal
             //the content rect is what we will actually draw into - it doesn't include the drag handle or padding
             var elementContentRect = itemElementRect;
 
-            //handle empty list 
+            //handle empty or invalid list 
             if (List == null || List.isArray == false || arraySize == 0)
             {
                 //there was no content, so we will draw an empty element
@@ -208,7 +203,7 @@ namespace Toolbox.Editor.Internal
 
                 if (drawVoidedCallback == null)
                 {
-                    DrawStandardNoneElement(elementContentRect, Draggable);
+                    EditorGUI.LabelField(elementContentRect, Style.emptyOrInvalidListContent);
                 }
                 else
                 {
@@ -225,15 +220,18 @@ namespace Toolbox.Editor.Internal
                 var targetIndex = CalculateRowIndex();
 
                 nonDragTargetIndices.Clear();
-                for (int i = 0; i < arraySize; i++)
+                for (var i = 0; i < arraySize; i++)
                 {
-                    if (i != Index) nonDragTargetIndices.Add(i);
+                    if (i != Index)
+                    {
+                        nonDragTargetIndices.Add(i);
+                    }
                 }
                 nonDragTargetIndices.Insert(targetIndex, -1);
 
                 //now draw each element in the list (excluding the active element)
                 var targetSeen = false;
-                for (int i = 0; i < nonDragTargetIndices.Count; i++)
+                for (var i = 0; i < nonDragTargetIndices.Count; i++)
                 {
                     if (nonDragTargetIndices[i] == -1)
                     {
@@ -266,10 +264,12 @@ namespace Toolbox.Editor.Internal
                     {
                         DrawStandardElementBackground(itemElementRect, i, false, false, Draggable);
                     }
+
+                    dragElementRect.xMax = dragElementRect.xMin + Style.dragAreaWidth;
                     //draw the dragging handle
-                    if (drawHandleCallback != null)
+                    if (drawElementHandleCallback != null)
                     {
-                        drawHandleCallback.Invoke(dragElementRect, i, false, false);
+                        drawElementHandleCallback(dragElementRect, i, false, false);
                     }
                     else
                     {
@@ -278,10 +278,10 @@ namespace Toolbox.Editor.Internal
 
                     elementContentRect = itemElementRect;
                     //adjust element's rect to the dragging handle
-                    elementContentRect.xMin += Style.handleSpace;
+                    elementContentRect.xMin += Style.dragAreaWidth;
                     elementContentRect.xMax -= Style.padding;
 
-                    EditorGUIUtility.labelWidth -= Style.handleSpace;
+                    EditorGUIUtility.labelWidth -= Style.dragAreaWidth;
                     //draw the actual element
                     if (drawElementCallback != null)
                     {
@@ -291,14 +291,14 @@ namespace Toolbox.Editor.Internal
                     {
                         DrawStandardElement(elementContentRect, nonDragTargetIndices[i], false, false, Draggable);
                     }
-                    EditorGUIUtility.labelWidth += Style.handleSpace;
+                    EditorGUIUtility.labelWidth += Style.dragAreaWidth;
                 }
 
-                //finally get the position of the active element
+                //finally get position of the active element
                 elementY = draggedY - dragOffset + middleRect.y;
                 itemElementRect.y = elementY;
                 dragElementRect.y = elementY;
-                //adjust rect height to desired element
+                //adjust rect height to the active element
                 itemElementRect.height = GetElementHeight(Index);
 
                 //actually draw the element
@@ -311,10 +311,11 @@ namespace Toolbox.Editor.Internal
                     DrawStandardElementBackground(itemElementRect, Index, true, true, Draggable);
                 }
 
+                dragElementRect.xMax = dragElementRect.xMin + Style.dragAreaWidth;
                 //draw the dragging handle
-                if (drawHandleCallback != null)
+                if (drawElementHandleCallback != null)
                 {
-                    drawHandleCallback.Invoke(dragElementRect, Index, true, true);
+                    drawElementHandleCallback(dragElementRect, Index, true, true);
                 }
                 else
                 {
@@ -323,10 +324,10 @@ namespace Toolbox.Editor.Internal
 
                 elementContentRect = itemElementRect;
                 //adjust element's rect to the dragging handle
-                elementContentRect.xMin += Style.handleSpace;
+                elementContentRect.xMin += Style.dragAreaWidth;
                 elementContentRect.xMax -= Style.padding;
 
-                EditorGUIUtility.labelWidth -= Style.handleSpace;
+                EditorGUIUtility.labelWidth -= Style.dragAreaWidth;
                 //draw the active element
                 if (drawElementCallback != null)
                 {
@@ -336,15 +337,15 @@ namespace Toolbox.Editor.Internal
                 {
                     DrawStandardElement(elementContentRect, Index, true, true, Draggable);
                 }
-                EditorGUIUtility.labelWidth += Style.handleSpace;
+                EditorGUIUtility.labelWidth += Style.dragAreaWidth;
             }
             else
             {
                 //if we aren't dragging, we just draw all of the elements in order
-                for (int i = 0; i < arraySize; i++)
+                for (var i = 0; i < arraySize; i++)
                 {
-                    var activeElement = (i == Index);
-                    var focusedElement = (i == Index && HasKeyboardControl());
+                    var isActive = (i == Index);
+                    var hasFocus = (i == Index && HasKeyboardFocus());
 
                     var height = GetElementHeight(i);
                     //update the height of the element
@@ -359,38 +360,40 @@ namespace Toolbox.Editor.Internal
                     //draw the background
                     if (drawElementBackgroundCallback != null)
                     {
-                        drawElementBackgroundCallback(itemElementRect, i, activeElement, focusedElement);
+                        drawElementBackgroundCallback(itemElementRect, i, isActive, hasFocus);
                     }
                     else
                     {
-                        DrawStandardElementBackground(itemElementRect, i, activeElement, focusedElement, Draggable);
+                        DrawStandardElementBackground(itemElementRect, i, isActive, hasFocus, Draggable);
                     }
+
+                    dragElementRect.xMax = dragElementRect.xMin + Style.dragAreaWidth;
                     //draw the dragging handle
-                    if (drawHandleCallback != null)
+                    if (drawElementHandleCallback != null)
                     {
-                        drawHandleCallback.Invoke(dragElementRect, i, activeElement, focusedElement);
+                        drawElementHandleCallback(dragElementRect, i, isActive, hasFocus);
                     }
                     else
                     {
-                        DrawStandardElementHandle(dragElementRect, i, activeElement, focusedElement, Draggable);
+                        DrawStandardElementHandle(dragElementRect, i, isActive, hasFocus, Draggable);
                     }
 
                     elementContentRect = itemElementRect;
                     //adjust element's rect to the dragging handle
-                    elementContentRect.xMin += Style.handleSpace;
+                    elementContentRect.xMin += Style.dragAreaWidth;
                     elementContentRect.xMax -= Style.padding;
 
-                    EditorGUIUtility.labelWidth -= Style.handleSpace;
+                    EditorGUIUtility.labelWidth -= Style.dragAreaWidth;
                     //do the callback for the element
                     if (drawElementCallback != null)
                     {
-                        drawElementCallback(elementContentRect, i, activeElement, focusedElement);
+                        drawElementCallback(elementContentRect, i, isActive, hasFocus);
                     }
                     else
                     {
-                        DrawStandardElement(elementContentRect, i, activeElement, focusedElement, Draggable);
+                        DrawStandardElement(elementContentRect, i, isActive, hasFocus, Draggable);
                     }
-                    EditorGUIUtility.labelWidth += Style.handleSpace;
+                    EditorGUIUtility.labelWidth += Style.dragAreaWidth;
                 }
             }
 
@@ -400,15 +403,18 @@ namespace Toolbox.Editor.Internal
 
         private void DoListFooter(Rect footerRect)
         {
-            //ignore footer if list has fixed size(no need for add/remove button)
-            if (HasFixedSize) return;
+            //ignore footer if list has fixed size
+            if (HasFixedSize)
+            {
+                return;
+            }
 
-            //draw the background on repaint
+            //draw the background on repaint event
             if (Event.current.type == EventType.Repaint)
             {
                 if (drawFooterBackgroundCallback != null)
                 {
-                    drawFooterBackgroundCallback.Invoke(footerRect);
+                    drawFooterBackgroundCallback(footerRect);
                 }
                 else
                 {
@@ -430,12 +436,13 @@ namespace Toolbox.Editor.Internal
 
         private void UpdateDraggedY(Rect listRect)
         {
-            draggedY = Mathf.Clamp(Event.current.mousePosition.y - listRect.y, dragOffset, listRect.height - (GetElementHeight(Index) - dragOffset));
+            draggedY = Mathf.Clamp(Event.current.mousePosition.y - listRect.y, dragOffset, 
+                listRect.height - (GetElementHeight(Index) - dragOffset));
         }
 
         private void DoDraggingAndSelection(Rect listRect)
         {
-            var clicked = false;
+            var isClicked = false;
             var oldIndex = Index;
             var currentEvent = Event.current;
 
@@ -480,7 +487,7 @@ namespace Toolbox.Editor.Internal
                     //clicking on the list should end editing any existing edits
                     EditorGUIUtility.editingTextField = false;
                     //pick the active element based on click position
-                    Index = GetRowIndex(currentEvent.mousePosition.y - listRect.y);
+                    Index = CalculateRowIndex(currentEvent.mousePosition.y - listRect.y);
 
                     if (Draggable)
                     {
@@ -491,9 +498,9 @@ namespace Toolbox.Editor.Internal
                         nonDragTargetIndices = new List<int>();
                     }
 
-                    GrabKeyboardFocus();
+                    SetKeyboardFocus();
                     currentEvent.Use();
-                    clicked = true;
+                    isClicked = true;
                     break;
 
                 case EventType.MouseDrag:
@@ -531,7 +538,6 @@ namespace Toolbox.Editor.Internal
                     }
 
                     currentEvent.Use();
-
                     IsDragging = false;
 
                     try
@@ -585,46 +591,43 @@ namespace Toolbox.Editor.Internal
             }
 
             //if the index has changed and there is a selected callback, call it
-            if ((Index != oldIndex || clicked) && onSelectCallback != null)
+            if ((Index != oldIndex || isClicked))
             {
-                onSelectCallback(this);
+                onSelectCallback?.Invoke(this);
             }
         }
 
         private bool IsMouseInActiveElement(Rect listRect)
         {
             var mousePosition = Event.current.mousePosition;
-            var mouseRowIndex = GetRowIndex(mousePosition.y - listRect.y);
+            var mouseRowIndex = CalculateRowIndex(mousePosition.y - listRect.y);
 
             //check if mouse position is inside current row rect 
             return mouseRowIndex == Index && GetRowRect(mouseRowIndex, listRect).Contains(mousePosition);
         }
 
-        private bool IsCurrentElementExpanded()
-        {
-            return List.GetArrayElementAtIndex(Index).isExpanded;
-        }
-
         private int CalculateRowIndex()
         {
-            return GetRowIndex(draggedY);
+            return CalculateRowIndex(draggedY);
         }
 
-        private int GetRowIndex(float localY)
+        private int CalculateRowIndex(float localY)
         {
             var rowYOffset = 0.0f;
-            for (int i = 0; i < Count; i++)
+            var itemsCount = Count;
+            for (var i = 0; i < itemsCount; i++)
             {
-                var rowYHeight = GetRowHeight(i);
-                var rowYEnd = rowYOffset + rowYHeight;
+                var height = GetRowHeight(i);
+                var rowYEnd = rowYOffset + height;
                 if (localY >= rowYOffset && localY < rowYEnd)
                 {
                     return i;
                 }
-                rowYOffset += rowYHeight;
+
+                rowYOffset += height;
             }
 
-            return Count - 1;
+            return itemsCount - 1;
         }
 
         private float GetRowHeight(int index)
@@ -642,17 +645,6 @@ namespace Toolbox.Editor.Internal
             return elementHeightCallback(index);
         }
 
-        private float GetListElementHeight()
-        {
-            var arraySize = Count;
-            var listHeight = Style.padding * 2;
-            if (arraySize != 0)
-            {
-                listHeight += GetElementYOffset(arraySize - 1) + GetRowHeight(arraySize - 1);
-            }
-            return listHeight;
-        }
-
         private float GetElementYOffset(int index)
         {
             return GetElementYOffset(index, -1);
@@ -661,11 +653,27 @@ namespace Toolbox.Editor.Internal
         private float GetElementYOffset(int index, int skipIndex)
         {
             var offset = 0.0f;
-            for (int i = 0; i < index; i++)
+            for (var i = 0; i < index; i++)
             {
-                if (i != skipIndex) offset += GetRowHeight(i);
+                if (i != skipIndex)
+                {
+                    offset += GetRowHeight(i);
+                }
             }
+
             return offset;
+        }
+
+        private float GetRowHeight()
+        {
+            var arraySize = Count;
+            var listHeight = Style.padding * 2;
+            if (arraySize != 0)
+            {
+                listHeight += GetElementYOffset(arraySize - 1) + GetRowHeight(arraySize - 1);
+            }
+
+            return listHeight;
         }
 
         private Rect GetRowRect(int index, Rect listRect)
@@ -676,34 +684,27 @@ namespace Toolbox.Editor.Internal
 
         public string GetElementName(SerializedProperty element, int index)
         {
-            const string defaultPrefix = "Element";
-
-            var elementLabel = element.displayName;
-            if (ElementLabel == null)
+            var elementName = element.displayName;
+            var defaultName = string.Format("{0} {1}", defaultElementName, index);
+            if (defaultName != elementName || ElementLabel == null)
             {
-                return elementLabel;
+                return elementName;
             }
 
-            var standardName = string.Format("{0} {1}", defaultPrefix, index);
-            if (standardName != elementLabel)
-            {
-                return elementLabel;
-            }
-
-            return elementLabel.Replace(defaultPrefix, ElementLabel);
+            return elementName.Replace(defaultElementName, ElementLabel);
         }
 
-        public void GrabKeyboardFocus()
+        public void SetKeyboardFocus()
         {
             GUIUtility.keyboardControl = id;
         }
 
-        public bool HasKeyboardControl()
+        public bool HasKeyboardFocus()
         {
             return GUIUtility.keyboardControl == id;
         }
 
-        public void RemoveKeyboardFocus()
+        public void CutKeyboardFocus()
         {
             if (GUIUtility.keyboardControl == id)
             {
@@ -714,6 +715,20 @@ namespace Toolbox.Editor.Internal
         public float GetHeight()
         {
             return MiddleHeight + HeaderHeight + FooterHeight;
+        }
+
+        public void AppendElement()
+        {
+            Index = (List.arraySize += 1) - 1;
+        }
+
+        public void RemoveElement()
+        {
+            List.DeleteArrayElementAtIndex(Index);
+            if (Index >= List.arraySize - 1)
+            {
+                Index = List.arraySize - 1;
+            }
         }
 
 
@@ -742,62 +757,50 @@ namespace Toolbox.Editor.Internal
 
         #region Methods: Default interaction/draw calls
 
-        public void AddNewDefaultElement()
-        {
-            Index = (List.arraySize += 1) - 1;
-        }
-
-        public void RemoveSelectedElement()
-        {
-            List.DeleteArrayElementAtIndex(Index);
-            if (Index >= List.arraySize - 1)
-            {
-                Index = List.arraySize - 1;
-            }
-        }
-
         /// <summary>
         /// Draws the default Footer.
         /// </summary>
         public void DrawStandardFooter(Rect rect)
         {
             //set button area rect
-            rect = new Rect(rect.xMax - Style.buttonSpace, rect.y, Style.buttonSpace, rect.height);
+            rect = new Rect(rect.xMax - Style.footerWidth, rect.y, Style.footerWidth, rect.height);
 
             //set rect properties from style
-            var width = Style.buttonWidth;
-            var height = Style.buttonHeight;
-            var margin = Style.buttonMargin;
-            var padding = Style.buttonPadding;
+            var buttonWidth = Style.footerButtonWidth;
+            var buttonHeight = Style.footerButtonHeight;
+            var margin = Style.footerMargin;
+            var padding = Style.footerPadding;
 
             //set proper rect for each buttons
-            var addRect = new Rect(rect.xMin + margin, rect.y - padding, width, height);
+            var appendButtonRect = new Rect(rect.xMin + margin, rect.y - padding, buttonWidth, buttonHeight);
 
             EditorGUI.BeginDisabledGroup(List.hasMultipleDifferentValues);
-            EditorGUI.BeginDisabledGroup(onCanAddCallback != null && !onCanAddCallback(this));
-            if (GUI.Button(addRect, onAddDropdownCallback != null ? Style.iconToolbarDrop : Style.iconToolbarAdd, Style.addRemoveButton))
+            EditorGUI.BeginDisabledGroup(onCanAppendCallback != null && !onCanAppendCallback(this));
+            if (GUI.Button(appendButtonRect, onAppendDropdownCallback != null 
+                ? Style.iconToolbarDropContent 
+                : Style.iconToolbarAddContent, Style.footerButtonStyle))
             {
-                if (onAddDropdownCallback != null)
+                if (onAppendDropdownCallback != null)
                 {
-                    onAddDropdownCallback(addRect, this);
+                    onAppendDropdownCallback(appendButtonRect, this);
                 }
-                else if (onAddCallback != null)
+                else if (onAppendCallback != null)
                 {
-                    onAddCallback(this);
+                    onAppendCallback(this);
                 }
                 else
                 {
-                    AddNewDefaultElement();
+                    AppendElement();
                 }
 
                 onChangedCallback?.Invoke(this);
             }
             EditorGUI.EndDisabledGroup();
 
-            var removeRect = new Rect(rect.xMax - width - margin, rect.y - padding, width, height);
+            var removeButtonRect = new Rect(rect.xMax - buttonWidth - margin, rect.y - padding, buttonWidth, buttonHeight);
 
             EditorGUI.BeginDisabledGroup((onCanRemoveCallback != null && !onCanRemoveCallback(this) || Index < 0 || Index >= Count));
-            if (GUI.Button(removeRect, Style.iconToolbarRemove, Style.addRemoveButton))
+            if (GUI.Button(removeButtonRect, Style.iconToolbarRemoveContent, Style.footerButtonStyle))
             {
                 if (onRemoveCallback != null)
                 {
@@ -805,7 +808,7 @@ namespace Toolbox.Editor.Internal
                 }
                 else
                 {
-                    RemoveSelectedElement();
+                    RemoveElement();
                 }
 
                 onChangedCallback?.Invoke(this);
@@ -821,7 +824,8 @@ namespace Toolbox.Editor.Internal
         {
             if (Event.current.type == EventType.Repaint)
             {
-                Style.footerBackground.Draw(new Rect(rect.xMax - Style.buttonSpace, rect.y, Style.buttonSpace, rect.height), false, false, false, false);
+                rect = new Rect(rect.xMax - Style.footerWidth, rect.y, Style.footerWidth, rect.height);
+                Style.footerBackgroundStyle.Draw(rect, false, false, false, false);
             }
         }
 
@@ -832,32 +836,31 @@ namespace Toolbox.Editor.Internal
         {
             var label = EditorGUI.BeginProperty(rect, new GUIContent(List.displayName), List);
 
-            var diff = rect.height - Style.sizeLabel.fixedHeight;
+            var diff = rect.height - Style.sizePropertyStyle.fixedHeight;
             var oldY = rect.y;
 
 #if !UNITY_2019_3_OR_NEWER
             //adjust OY position to middle of the conent
             rect.y += diff / 2;
 #endif
-
             //display the property label using the preprocessed name by BeginProperty method
             EditorGUI.LabelField(rect, label);
 
-            //adjust OY position to middle of the conent
+            //adjust OY position to the middle of the element row
             rect.y = oldY;
             rect.yMin += diff / 2;
             rect.yMax -= diff / 2;
             //adjust OX position and width for the size property
-            rect.xMin = rect.xMax - Style.sizeArea;
+            rect.xMin = rect.xMax - Style.sizeAreaWidth;
 
             using (new EditorGUI.DisabledScope(HasFixedSize))
             {
                 var property = Size;
 
-                EditorGUI.BeginProperty(rect, Style.arraySizeFieldContent, property);
+                EditorGUI.BeginProperty(rect, Style.sizePropertyContent, property);
                 EditorGUI.BeginChangeCheck();
                 //cache a delayed size value using the delayed int field
-                var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, property.intValue, Style.sizeLabel), 0);
+                var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, property.intValue, Style.sizePropertyStyle), 0);
                 if (EditorGUI.EndChangeCheck())
                 {
                     property.intValue = sizeValue;
@@ -875,7 +878,7 @@ namespace Toolbox.Editor.Internal
         {
             if (Event.current.type == EventType.Repaint)
             {
-                Style.headerBackground.Draw(rect, false, false, false, false);
+                Style.headerBackgroundStyle.Draw(rect, false, false, false, false);
             }
         }
 
@@ -889,7 +892,7 @@ namespace Toolbox.Editor.Internal
                 if (selected)
                 {
                     //additional height for selection rect + shadow
-                    //NOTE: shadow appears before Unity 2019.3+
+                    //NOTE: shadow appears only before Unity 2019.3
 #if UNITY_2019_3_OR_NEWER
                     var padding = Style.spacing;
 #else
@@ -899,7 +902,7 @@ namespace Toolbox.Editor.Internal
                     rect.yMin -= padding / 2;
                 }
 
-                Style.elementBackground.Draw(rect, false, selected, selected, focused);
+                Style.elementBackgroundStyle.Draw(rect, false, selected, selected, focused);
             }
         }
 
@@ -911,14 +914,12 @@ namespace Toolbox.Editor.Internal
             if (Event.current.type == EventType.Repaint)
             {
                 //keep the dragging handle in the 1 row
-                rect.yMax = rect.yMin + Style.rowHeight;
+                rect.yMax = rect.yMin + EditorGUIUtility.singleLineHeight;
 
-                rect.width = Style.handleSpace;
                 //prepare rect for the handle texture draw
                 var xDiff = rect.width - Style.handleWidth;
                 rect.xMin += xDiff / 2;
-                rect.xMax = rect.xMin;
-                rect.xMax += xDiff / 2;
+                rect.xMax -= xDiff / 2;
 
                 var yDiff = rect.height - Style.handleHeight;
                 rect.yMin += yDiff / 2;
@@ -927,9 +928,9 @@ namespace Toolbox.Editor.Internal
                 rect.y += Style.spacing;
 #endif
                 //disable (if needed) and draw the handle
-                using (var scope = new EditorGUI.DisabledScope(!draggable))
+                using (new EditorGUI.DisabledScope(!draggable))
                 {
-                    Style.dragHandleButton.Draw(rect, false, false, false, false);
+                    Style.dragHandleButtonStyle.Draw(rect, false, false, false, false);
                 }
             }
         }
@@ -942,14 +943,6 @@ namespace Toolbox.Editor.Internal
             var element = List.GetArrayElementAtIndex(index);
 
             EditorGUI.PropertyField(rect, element, new GUIContent(GetElementName(element, index)), element.isExpanded);
-        }
-
-        /// <summary>
-        /// Draw the default none-Element.
-        /// </summary>
-        public void DrawStandardNoneElement(Rect rect, bool draggable)
-        {
-            EditorGUI.LabelField(rect, Style.listIsEmptyContent);
         }
 
         #endregion
@@ -969,7 +962,7 @@ namespace Toolbox.Editor.Internal
                     return List.arraySize;
                 }
 
-                //if we are handling multi-selection
+                //if we are during multi-selection
                 var smallerArraySize = List.arraySize;
                 foreach (var targetObject in List.serializedObject.targetObjects)
                 {
@@ -979,11 +972,10 @@ namespace Toolbox.Editor.Internal
                         smallerArraySize = Math.Min(property.arraySize, smallerArraySize);
                     }
                 }
-                //return smalest array size
+                //return the smallest array size
                 return smallerArraySize;
             }
         }
-
 
         public bool Draggable
         {
@@ -1013,7 +1005,7 @@ namespace Toolbox.Editor.Internal
 
         public float MiddleHeight
         {
-            get => GetListElementHeight();
+            get => GetRowHeight();
         }
 
         public float FooterHeight
@@ -1032,18 +1024,19 @@ namespace Toolbox.Editor.Internal
 
         /// <summary>
         /// Standard element label name.
+        /// "<see cref="ElementLabel"/> {index}"
         /// </summary>
         public string ElementLabel
         {
             get; set;
-        } = "Element";
+        } = defaultElementName;
 
         /// <summary>
-        /// Serialized 'Array.size' property.
+        /// Nested 'Array.size' property.
         /// </summary>
         public SerializedProperty Size
         {
-            get => List.FindPropertyRelative("Array.size");
+            get; private set;
         }
 
         /// <summary>
@@ -1067,45 +1060,44 @@ namespace Toolbox.Editor.Internal
             internal static readonly float spacing = 2.0f;
 #endif
             internal static readonly float padding = 6.0f;
-            internal static readonly float sizeArea = 19.0f;
-            internal static readonly float rowHeight = EditorGUIUtility.singleLineHeight;
 
-            internal static readonly float buttonSpace = 60.0f;
-            internal static readonly float buttonWidth = 25.0f;
-            internal static readonly float buttonHeight = 13.0f;
-            internal static readonly float buttonMargin = 4.0f;
+            internal static readonly float footerWidth = 60.0f;
+            internal static readonly float footerButtonWidth = 25.0f;
+            internal static readonly float footerButtonHeight = 13.0f;
+            internal static readonly float footerMargin = 4.0f;
 #if UNITY_2019_3_OR_NEWER
-            internal static readonly float buttonPadding = 0.0f;
+            internal static readonly float footerPadding = 0.0f;
 #else
-            internal static readonly float buttonPadding = 3.0f;
+            internal static readonly float footerPadding = 3.0f;
 #endif
-            internal static readonly float handleSpace = 40.0f;
             internal static readonly float handleWidth = 15.0f;
             internal static readonly float handleHeight = 7.0f;
+            internal static readonly float dragAreaWidth = 40.0f;
+            internal static readonly float sizeAreaWidth = 19.0f;
 
-            internal static readonly GUIContent iconToolbarAdd;
-            internal static readonly GUIContent iconToolbarDrop;
-            internal static readonly GUIContent iconToolbarRemove;
-            internal static readonly GUIContent listIsEmptyContent;
-            internal static readonly GUIContent arraySizeFieldContent;
+            internal static readonly GUIContent sizePropertyContent;
+            internal static readonly GUIContent iconToolbarAddContent;
+            internal static readonly GUIContent iconToolbarDropContent;
+            internal static readonly GUIContent iconToolbarRemoveContent;
+            internal static readonly GUIContent emptyOrInvalidListContent;
 
-            internal static readonly GUIStyle sizeLabel;
-            internal static readonly GUIStyle addRemoveButton;
-            internal static readonly GUIStyle dragHandleButton;
-            internal static readonly GUIStyle headerBackground;
-            internal static readonly GUIStyle middleBackground;
-            internal static readonly GUIStyle footerBackground;
-            internal static readonly GUIStyle elementBackground;
+            internal static readonly GUIStyle sizePropertyStyle;
+            internal static readonly GUIStyle footerButtonStyle;
+            internal static readonly GUIStyle dragHandleButtonStyle;
+            internal static readonly GUIStyle headerBackgroundStyle;
+            internal static readonly GUIStyle middleBackgroundStyle;
+            internal static readonly GUIStyle footerBackgroundStyle;
+            internal static readonly GUIStyle elementBackgroundStyle;
 
             static Style()
             {
-                iconToolbarAdd = EditorGUIUtility.TrIconContent("Toolbar Plus", "Add to list");
-                iconToolbarDrop = EditorGUIUtility.TrIconContent("Toolbar Plus More", "Choose to add to list");
-                iconToolbarRemove = EditorGUIUtility.TrIconContent("Toolbar Minus", "Remove selection from list");
-                listIsEmptyContent = EditorGUIUtility.TrTextContent("List is Empty");
-                arraySizeFieldContent = EditorGUIUtility.TrTextContent("", "List size");
+                sizePropertyContent = EditorGUIUtility.TrTextContent("", "List size");
+                iconToolbarAddContent = EditorGUIUtility.TrIconContent("Toolbar Plus", "Add to list");
+                iconToolbarDropContent = EditorGUIUtility.TrIconContent("Toolbar Plus More", "Choose to add to list");
+                iconToolbarRemoveContent = EditorGUIUtility.TrIconContent("Toolbar Minus", "Remove selection from list");
+                emptyOrInvalidListContent = EditorGUIUtility.TrTextContent("List is Empty");
 
-                sizeLabel = new GUIStyle(EditorStyles.miniTextField)
+                sizePropertyStyle = new GUIStyle(EditorStyles.miniTextField)
                 {
                     alignment = TextAnchor.MiddleRight,
 #if UNITY_2019_3_OR_NEWER
@@ -1115,12 +1107,12 @@ namespace Toolbox.Editor.Internal
 #endif
                 };
 
-                addRemoveButton = new GUIStyle("RL FooterButton");
-                dragHandleButton = new GUIStyle("RL DragHandle");
-                headerBackground = new GUIStyle("RL Header");
-                middleBackground = new GUIStyle("RL Background");
-                footerBackground = new GUIStyle("RL Footer");
-                elementBackground = new GUIStyle("RL Element");
+                footerButtonStyle = new GUIStyle("RL FooterButton");
+                dragHandleButtonStyle = new GUIStyle("RL DragHandle");
+                headerBackgroundStyle = new GUIStyle("RL Header");
+                middleBackgroundStyle = new GUIStyle("RL Background");
+                footerBackgroundStyle = new GUIStyle("RL Footer");
+                elementBackgroundStyle = new GUIStyle("RL Element");
             }
         }
     }
