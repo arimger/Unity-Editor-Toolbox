@@ -7,47 +7,28 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(BeginGroupAttribute attribute)
         {
+            ToolboxLayoutHelper.BeginVertical(Style.groupBackgroundStyle);
             if (attribute.HasLabel)
             {
-                using (new GUILayout.VerticalScope(Style.labelBackgroundStyle))
-                {
-                    GUILayout.Label(attribute.Label, Style.labelStyle);
-                }
-
-                GUILayout.Space(Style.labelOffset);
+                GUILayout.Label(attribute.Label, EditorStyles.boldLabel);
             }
-
-            ToolboxLayoutHelper.BeginVertical(Style.groupBackgroundStyle);
         }
 
 
         private static class Style
         {
-#if UNITY_2019_3_OR_NEWER
-            internal static readonly float labelOffset = -3.0f;
-#else
-            internal static readonly float labelOffset = -5.0f;
-#endif
-            internal static readonly GUIStyle labelStyle;
-            internal static readonly GUIStyle labelBackgroundStyle;
             internal static readonly GUIStyle groupBackgroundStyle;
 
             static Style()
             {
-                labelStyle = new GUIStyle(EditorStyles.boldLabel);
 #if UNITY_2019_3_OR_NEWER
-                labelBackgroundStyle = new GUIStyle(EditorStyles.helpBox);
-                groupBackgroundStyle = new GUIStyle(EditorStyles.helpBox)
-                {
-                    padding = new RectOffset(13, 12, 5, 5)
-                };
+                groupBackgroundStyle = new GUIStyle("helpBox")
 #else
-                labelBackgroundStyle = new GUIStyle(GUI.skin.box);
-                groupBackgroundStyle = new GUIStyle(GUI.skin.box)
+                groupBackgroundStyle = new GUIStyle("box")
+#endif
                 {
                     padding = new RectOffset(13, 12, 5, 5)
                 };
-#endif
             }
         }
     }

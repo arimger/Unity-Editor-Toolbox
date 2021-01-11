@@ -19,7 +19,8 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             //prepare pick button label
-            var buttonLabel = property.enumValueIndex >= 0 && property.enumValueIndex < property.enumDisplayNames.Length
+            var buttonLabel = property.enumValueIndex >= 0 && 
+                              property.enumValueIndex < property.enumDisplayNames.Length
                 ? new GUIContent(property.enumDisplayNames[property.enumValueIndex])
                 : new GUIContent();
             var id = GUIUtility.GetControlID(FocusType.Keyboard, position);
@@ -53,7 +54,10 @@ namespace Toolbox.Editor.Drawers
             {
                 //NOTE: unfortunately PopupWidnows are not indpendent and we have to
                 //handle this case inside drawer since this is the only way to override window events
-                if (Event.current.type == EventType.ScrollWheel) Event.current.Use();
+                if (Event.current.type == EventType.ScrollWheel)
+                {
+                    Event.current.Use();
+                }
             }
         }
 

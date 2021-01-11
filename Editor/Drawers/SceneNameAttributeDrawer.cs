@@ -42,15 +42,14 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            const string warningMessage = "Scene does not exist. Check available Scenes in the Build options.";
-
             if (!SceneExists(property.stringValue))
             {
-                //set rect for the warning message vox
+                //set rect for the warning message field
                 var helpBoxRect = new Rect(position.x, 
                                            position.y, 
                                            position.width, Style.boxHeight);
-                EditorGUI.HelpBox(helpBoxRect, warningMessage, MessageType.Warning);
+                EditorGUI.HelpBox(helpBoxRect, "Scene does not exist. " +
+                                               "Check available Scenes in the Build options.", MessageType.Warning);
 
                 //adjust rect for standard property field
                 position.yMin += Style.boxHeight + Style.spacing * 2;

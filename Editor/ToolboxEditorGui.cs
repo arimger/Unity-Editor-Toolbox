@@ -13,66 +13,54 @@ namespace Toolbox.Editor
     public static partial class ToolboxEditorGui
     {
         /// <summary>
-        /// Draws horizontal line. Uses built-in layouting system.
+        /// Draws horizontal line.
+        /// Uses built-in layouting system.
         /// </summary>
-        /// <param name="color"></param>
-        /// <param name="thickness"></param>
-        /// <param name="padding"></param>
         public static void DrawLine(float thickness = 0.75f, float padding = 6.0f)
         {
-            DrawLine(thickness, padding, Style.standardLineColor);
+            DrawLine(thickness, padding, new Color(0.3f, 0.3f, 0.3f));
         }
 
         /// <summary>
-        /// Draws horizontal line. Uses built-in layouting system.
+        /// Draws horizontal line.
+        /// Uses built-in layouting system.
         /// </summary>
-        /// <param name="color"></param>
-        /// <param name="thickness"></param>
-        /// <param name="padding"></param>
         public static void DrawLine(float thickness, float padding, Color color)
         {
-            DrawLine(EditorGUILayout.GetControlRect(GUILayout.Height(padding + thickness)), thickness, padding, color);
+            var rect = EditorGUILayout.GetControlRect(GUILayout.Height(padding + thickness));
+            DrawLine(rect, thickness, padding, color);
         }
 
         /// <summary>
         /// Draws horizontal line.
         /// </summary>
-        /// <param name="color"></param>
-        /// <param name="thickness"></param>
-        /// <param name="padding"></param>
         public static void DrawLine(Rect rect, float thickness = 0.75f, float padding = 6.0f)
         {
-            DrawLine(rect, thickness, padding, Style.standardLineColor);
+            DrawLine(rect, thickness, padding, new Color(0.3f, 0.3f, 0.3f));
         }
 
         /// <summary>
         /// Draws horizontal line.
         /// </summary>
-        /// <param name="rect"></param>
-        /// <param name="thickness"></param>
-        /// <param name="padding"></param>
-        /// <param name="color"></param>
         public static void DrawLine(Rect rect, float thickness, float padding, Color color)
         {
-            rect.y += padding / 2;
-            rect.height = thickness;
-
+            rect = new Rect(rect.x, rect.y + padding / 2, rect.width, thickness);
             EditorGUI.DrawRect(rect, color);
         }
 
         /// <summary>
-        /// Draws header-like label in form of foldout. Uses built-in layouting system.
+        /// Draws header-like label in form of foldout.
+        /// Uses built-in layouting system.
         /// </summary>
-        /// <returns></returns>
         public static bool DrawHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick)
         {
             return DrawHeaderFoldout(foldout, label, toggleOnLabelClick, null);
         }
 
         /// <summary>
-        /// Draws header-like label in form of foldout. Uses built-in layouting system.
+        /// Draws header-like label in form of foldout.
+        /// Uses built-in layouting system.
         /// </summary>
-        /// <returns></returns>
         public static bool DrawHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle)
         {
             //where 30.0f - header height, 2.0f - additional padding
@@ -86,7 +74,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws header-like label in form of foldout.
         /// </summary>
-        /// <returns></returns>
         public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick)
         {
             return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, null);
@@ -95,7 +82,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws header-like label in form of foldout.
         /// </summary>
-        /// <returns></returns>
         public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle)
         {
             //draw boxed background
@@ -120,23 +106,14 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates a tooltip-only label field.
         /// </summary>
-        /// <param name="rect"></param>
-        /// <param name="tooltip"></param>
         public static void DrawTooltip(Rect rect, string tooltip)
         {
-            if (tooltip == null || tooltip.Length == 0)
-            {
-                return;
-            }
-
             GUI.Label(rect, new GUIContent(string.Empty, tooltip));
         }
 
         /// <summary>
         /// Draws texture using the built-in <see cref="GUI"/> class.
         /// </summary>
-        /// <param name="rect"></param>
-        /// <param name="texture"></param>
         public static void DrawTexture(Rect rect, Texture texture)
         {
             DrawTexture(rect, texture, ScaleMode.ScaleToFit, true);
@@ -145,8 +122,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws texture using the built-in <see cref="GUI"/> class.
         /// </summary>
-        /// <param name="rect"></param>
-        /// <param name="texture"></param>
         public static void DrawTexture(Rect rect, Texture texture, ScaleMode scaleMode)
         {
             DrawTexture(rect, texture, scaleMode, true);
@@ -155,8 +130,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws texture using the built-in <see cref="GUI"/> class.
         /// </summary>
-        /// <param name="rect"></param>
-        /// <param name="texture"></param>
         public static void DrawTexture(Rect rect, Texture texture, ScaleMode scaleMode, bool alphaBlend)
         {
             GUI.DrawTexture(rect, texture, scaleMode, alphaBlend);
@@ -165,21 +138,15 @@ namespace Toolbox.Editor
 
         internal static class Style
         {
-            internal static readonly Color standardLineColor = new Color(0.3f, 0.3f, 0.3f);
-
             internal static readonly GUIStyle box0Style;
             internal static readonly GUIStyle box1Style;
             internal static readonly GUIStyle box2Style;
 
-            internal static readonly GUIContent warningContent;
-
             static Style()
             {
                 box0Style = new GUIStyle(EditorStyles.inspectorFullWidthMargins);
-                box1Style = new GUIStyle(GUI.skin.box);
-                box2Style = new GUIStyle(EditorStyles.helpBox);
-
-                warningContent = EditorGUIUtility.IconContent("console.warnicon.sml");
+                box1Style = new GUIStyle("box");
+                box2Style = new GUIStyle("helpBox");
             }
         }
     }
@@ -189,18 +156,14 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates <see cref="ReorderableList"/> using standard background.
         /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
         public static ReorderableList CreateRoundList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true)
         {
             return new ReorderableList(property, elementLabel, draggable, hasHeader, fixedSize);
         }
 
         /// <summary>
-        /// Creates <see cref="ReorderableList"/> using a non-standard(box style) background.
+        /// Creates <see cref="ReorderableList"/> using a non-standard (boxed style) background.
         /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
         public static ReorderableList CreateBoxedList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true)
         {
             return new ReorderableList(property, elementLabel, draggable, hasHeader, fixedSize)
@@ -237,10 +200,8 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Creates <see cref="ReorderableList"/> using a non-standard(lined style) background.
+        /// Creates <see cref="ReorderableList"/> using a non-standard (lined style) background.
         /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
         public static ReorderableList CreateLinedList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true)
         {
             return new ReorderableList(property, elementLabel, draggable, hasHeader, fixedSize)
@@ -272,8 +233,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates <see cref="ReorderableList"/> without any additional background.
         /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
         public static ReorderableList CreateClearList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true)
         {
             return new ReorderableList(property, elementLabel, draggable, hasHeader, fixedSize)
@@ -295,9 +254,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates <see cref="ReorderableList"/> using provided <see cref="ListStyle"/> type.
         /// </summary>
-        /// <param name="property"></param>
-        /// <param name="style"></param>
-        /// <returns></returns>
         public static ReorderableList CreateList(SerializedProperty property, ListStyle style, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true)
         {
             switch (style)
@@ -328,7 +284,6 @@ namespace Toolbox.Editor
         /// Draws property using additional <see cref="PropertyDrawer"/>s and <see cref="Drawers.ToolboxAttributeDrawer"/>s.
         /// Uses built-in layouting system.
         /// </summary>
-        /// <param name="property"></param>
         public static void DrawToolboxProperty(SerializedProperty property)
         {
             ToolboxDrawerModule.GetPropertyHandler(property)?.OnGuiLayout();
@@ -338,7 +293,6 @@ namespace Toolbox.Editor
         /// Draws property in default way but children will support Toolbox drawers.
         /// Uses built-in layouting system.
         /// </summary>
-        /// <param name="property"></param>
         public static void DrawDefaultProperty(SerializedProperty property)
         {
             DrawDefaultProperty(property, null);
@@ -348,7 +302,6 @@ namespace Toolbox.Editor
         /// Draws property in default way but children will support Toolbox drawers.
         /// Uses built-in layouting system.
         /// </summary>
-        /// <param name="property"></param>
         public static void DrawDefaultProperty(SerializedProperty property, GUIContent label)
         {
             //draw standard foldout with built-in operations (like prefabs handling)
@@ -363,63 +316,49 @@ namespace Toolbox.Editor
                 return;
             }
 
-            var currentEvent = Event.current;
-            //TODO: re-examination:
-            //https://github.com/Unity-Technologies/UnityCsReference/blob/master/Editor/Mono/ScriptAttributeGUI/PropertyHandler.cs
-            //use current event if drag was performed otherwise, it will cause an error
-            if (currentEvent.type == EventType.DragPerform && GUI.changed)
-            {
-                currentEvent.Use();
-            }
-
-            var iterateThroughChildren = true;
-
-            //handle property references
-            var iterProperty = property.Copy();
-            var lastProperty = property.GetEndProperty();
+            var enterChildren = true;
+            //cache all needed property references
+            var targetProperty = property.Copy();
+            var endingProperty = property.GetEndProperty();
 
             EditorGUI.indentLevel++;
-
-            //iterate over all children (but only one level depth)
-            while (iterProperty.NextVisible(iterateThroughChildren))
+            //iterate over all children (but only 1 level depth)
+            while (targetProperty.NextVisible(enterChildren))
             {
-                if (SerializedProperty.EqualContents(iterProperty, lastProperty))
+                if (SerializedProperty.EqualContents(targetProperty, endingProperty))
                 {
                     break;
                 }
 
-                iterateThroughChildren = false;
-
-                //handle current property using Toolbox drawers
-                DrawToolboxProperty(iterProperty.Copy());
+                enterChildren = false;
+                //handle current property using Toolbox features
+                DrawToolboxProperty(targetProperty.Copy());
             }
 
-            //restore old indent level
             EditorGUI.indentLevel--;
         }
 
         /// <summary>
-        /// Draws property in native-default way. Uses built-in layouting system.
+        /// Draws property in native-default way.
+        /// Uses built-in layouting system.
         /// </summary>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
         public static void DrawNativeProperty(SerializedProperty property)
         {
             DrawNativeProperty(property, null);
         }
 
         /// <summary>
-        /// Draws property in native-default way. Uses built-in layouting system.
+        /// Draws property in native-default way.
+        /// Uses built-in layouting system.
         /// </summary>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
         public static void DrawNativeProperty(SerializedProperty property, GUIContent label)
         {
             EditorGUILayout.PropertyField(property, label, property.isExpanded);
         }
 
         /// <summary>
-        /// Draws provided property as a warning label. Uses built-in layouting system.
+        /// Draws provided property as a warning label.
+        /// Uses built-in layouting system.
         /// </summary>
         public static void DrawEmptyProperty(SerializedProperty property)
         {
@@ -427,11 +366,13 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Draws provided property as a warning label. Uses built-in layouting system.
+        /// Draws provided property as a warning label.
+        /// Uses built-in layouting system.
         /// </summary>
         public static void DrawEmptyProperty(SerializedProperty property, GUIContent label)
         {
-            DrawEmptyProperty(GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight), property, label);
+            var rect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight);
+            DrawEmptyProperty(rect, property, label);
         }
 
         /// <summary>
@@ -447,26 +388,7 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawEmptyProperty(Rect position, SerializedProperty property, GUIContent label)
         {
-            var xMin = position.xMin;
-            var xMax = position.xMax;
-            var yMin = position.yMin;
-            var yMax = position.yMax;
-
-            position.yMin -= EditorGUIUtility.standardVerticalSpacing;
-            position.yMax += EditorGUIUtility.standardVerticalSpacing;
-
-            EditorGUI.LabelField(position, Style.warningContent);
-
-            var width = Style.warningContent.image.width;
-
-            position.xMin = xMin + width;
-            position.xMax = xMax;
-            position.yMin = yMin;
-            position.yMax = yMax;
-
-            var content = label ?? new GUIContent(property.displayName);
-
-            EditorGUI.LabelField(position, content);
+            EditorGUI.LabelField(position, label ?? new GUIContent(property.displayName));
         }
     }
 }

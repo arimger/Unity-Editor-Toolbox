@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -14,14 +14,14 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             //adjust field width to the random button
-            var fieldRect = new Rect(position.x, 
-                                     position.y, 
-                                     position.width - Style.buttonWidth - Style.spacing, 
+            var fieldRect = new Rect(position.x,
+                                     position.y,
+                                     position.width - Style.buttonWidth - EditorGUIUtility.standardVerticalSpacing,
                                      position.height);
             //set button rect aligned to the field rect
-            var buttonRect = new Rect(position.xMax - Style.buttonWidth, 
-                                      position.y, 
-                                      Style.buttonWidth, 
+            var buttonRect = new Rect(position.xMax - Style.buttonWidth,
+                                      position.y,
+                                      Style.buttonWidth,
                                       position.height);
 
             EditorGUI.PropertyField(fieldRect, property, property.isExpanded);
@@ -53,7 +53,6 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
             internal static readonly float buttonWidth = 30.0f;
 
             internal static readonly GUIContent buttonLabel;

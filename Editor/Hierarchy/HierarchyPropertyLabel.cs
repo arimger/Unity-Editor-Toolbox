@@ -23,9 +23,23 @@ namespace Toolbox.Editor.Hierarchy
         protected GameObject target;
 
 
-        public virtual void Prepare(GameObject target, Rect availableRect)
+        public virtual bool Prepare(GameObject target, Rect availableRect)
         {
-            this.target = target;
+            return this.target = target;
+        }
+
+        public virtual bool Prepare(GameObject target, Rect availableRect, out float neededWidth)
+        {
+            if (Prepare(target, availableRect))
+            {
+                neededWidth = GetWidth();
+                return true;
+            }
+            else
+            {
+                neededWidth = 0.0f;
+                return false;
+            }
         }
 
         public virtual float GetWidth()
@@ -194,29 +208,34 @@ namespace Toolbox.Editor.Hierarchy
             }
 
 
-            public override void Prepare(GameObject target, Rect availableRect)
+            public override bool Prepare(GameObject target, Rect availableRect)
             {
-                base.Prepare(target, availableRect);
-
-                baseWidth = Style.minWidth;
-                var rect = availableRect;
-                rect.xMin = rect.xMax - baseWidth;
-                if (rect.Contains(Event.current.mousePosition))
+                var isValid = base.Prepare(target, availableRect);
+                if (isValid)
                 {
-                    isHighlighted = true;
-                    CacheComponents(target);
-                    summWidth = cachedComponents.Count > 1
-                             ? (cachedComponents.Count - 1) * baseWidth
-                             : baseWidth;
-                }
-                else
-                {
-                    isHighlighted = false;
-                    summWidth = baseWidth;
+                    baseWidth = Style.minWidth;
+                    var rect = availableRect;
+                    rect.xMin = rect.xMax - baseWidth;
+                    if (rect.Contains(Event.current.mousePosition))
+                    {
+                        isHighlighted = true;
+                        CacheComponents(target);
+                        summWidth = cachedComponents.Count > 1
+                            ? (cachedComponents.Count - 1) * baseWidth
+                            : baseWidth;
+                    }
+                    else
+                    {
+                        isHighlighted = false;
+                        summWidth = baseWidth;
+                    }
+
+                    componentIcon = componentIcon ?? EditorGUIUtility.IconContent("cs Script Icon").image;
+                    transformIcon = transformIcon ?? EditorGUIUtility.IconContent("Transform Icon").image;
+                    return true;
                 }
 
-                componentIcon = componentIcon ?? EditorGUIUtility.IconContent("cs Script Icon").image;
-                transformIcon = transformIcon ?? EditorGUIUtility.IconContent("Transform Icon").image;
+                return false;
             }
 
             public override float GetWidth()

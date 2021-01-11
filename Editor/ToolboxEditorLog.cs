@@ -30,7 +30,7 @@ namespace Toolbox.Editor
 
         internal static void WrongAttributeUsageWarning(Attribute attribute, SerializedProperty property)
         {
-            AttributeUsageWarning(attribute, property, "Associated attribute cannot be used on this property.");
+            AttributeUsageWarning(attribute, property, "Assigned attribute cannot be used on this property.");
         }
 
         internal static void WrongAttributeUsageWarning(Attribute attribute, SerializedProperty property, Type targetType)
@@ -40,7 +40,7 @@ namespace Toolbox.Editor
 
         internal static void WrongAttributeUsageWarning(Attribute attribute, SerializedProperty property, string targetType)
         {
-            AttributeUsageWarning(attribute, property, "Associated attribute can be used only on " + targetType + " type properties.");
+            AttributeUsageWarning(attribute, property, "Assigned attribute can be used only on " + targetType + " type properties.");
         }
 
         internal static void AttributeNotSupportedWarning(Attribute attribute)

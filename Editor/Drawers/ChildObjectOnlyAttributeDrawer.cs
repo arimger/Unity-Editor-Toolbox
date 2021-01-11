@@ -27,9 +27,9 @@ namespace Toolbox.Editor.Drawers
 
         protected override bool IsObjectValid(Object objectValue, SerializedProperty property)
         {
-            var target = property.serializedObject.targetObject as Component;
+            var component = property.serializedObject.targetObject as Component;
             var transfrom = GetTransform(objectValue);
-            return transfrom && transfrom != target.transform && transfrom.IsChildOf(target.transform);
+            return transfrom && transfrom != component.transform && transfrom.IsChildOf(component.transform);
         }
     }
 }

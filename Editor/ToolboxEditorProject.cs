@@ -22,11 +22,11 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// All custom folders linked to a path.
+        /// All custom folders mapped to a path.
         /// </summary>
         private readonly static Dictionary<string, FolderData> pathBasedFoldersData = new Dictionary<string, FolderData>();
         /// <summary>
-        /// All custom folders linked to a name.
+        /// All custom folders mapped to a name.
         /// </summary>
         private readonly static Dictionary<string, FolderData> nameBasedFoldersData = new Dictionary<string, FolderData>();
 
@@ -43,7 +43,7 @@ namespace Toolbox.Editor
                 return;
             }
 
-            //try to get path to the asset using given GUID
+            //try to get path to the asset using defined GUID
             var path = AssetDatabase.GUIDToAssetPath(guid);
 
             //try to determine if the found path has own data
@@ -62,9 +62,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Tries to retrive <see cref="FolderData"/> associated to given path.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
         private static bool TryGetFolderData(string path, out FolderData data)
         {
             return pathBasedFoldersData.TryGetValue(path, out data) || nameBasedFoldersData.TryGetValue(Path.GetFileName(path), out data);
@@ -73,11 +70,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Tries to retrive proper icon for given <see cref="FolderData"/> and <see cref="Rect"/>.
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="labelRect"></param>
-        /// <param name="icon"></param>
-        /// <param name="rect"></param>
-        /// <returns></returns>
         private static bool TryGetFolderIcon(FolderData data, Rect labelRect, out Texture icon, out Rect rect)
         {
             var isSmallIcon = labelRect.width > labelRect.height;
@@ -98,14 +90,11 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates a custom folder using given data.
         /// </summary>
-        /// <param name="data"></param>
         internal static void CreateCustomFolder(FolderData data)
         {
-            //TODO: data overriding validation
             switch (data.DataType)
             {
                 case FolderDataType.Path:
-                    //if (validationEnabled)
                     pathBasedFoldersData[data.Path] = data;
                     return;
                 case FolderDataType.Name:
@@ -117,8 +106,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Removes a custom folder using given data.
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
         internal static bool RemoveCustomFolder(FolderData data)
         {
             switch (data.DataType)
@@ -135,7 +122,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Removes all custom folders.
         /// </summary>
-        internal static void RemoveCustomFolders()
+        internal static void ClearCustomFolders()
         {
             pathBasedFoldersData.Clear();
             nameBasedFoldersData.Clear();
@@ -156,8 +143,8 @@ namespace Toolbox.Editor
 
             //NOTE: in older versions of the Unity Editor icons are not scaling properly 
 #if !UNITY_2019_3_OR_NEWER
-            var w = Mathf.Min(folderIconRect.width, Style.maxFolderWidth);
-            var h = Mathf.Min(folderIconRect.height, Style.maxFolderHeight);
+            var w = Mathf.Min(folderIconRect.width, Defaults.maxFolderWidth);
+            var h = Mathf.Min(folderIconRect.height, Defaults.maxFolderHeight);
 
             folderIconRect.x += (folderIconRect.width - w) / 2;
             folderIconRect.y += (folderIconRect.height - h) / 2;
@@ -169,9 +156,9 @@ namespace Toolbox.Editor
             // - icon width without offset 
             // - icon height without offset
             var iconPlaceWidth = folderIconRect.width - folderIconRect.width
-                                 * Style.folderWidthOffsetRatio;
+                                 * Defaults.folderWidthOffsetRatio;
             var iconPlaceHeight = folderIconRect.height - folderIconRect.height
-                                  * Style.folderHeightOffsetRatio;
+                                  * Defaults.folderHeightOffsetRatio;
 
             var centerX = folderIconRect.xMin + folderIconRect.width / 2 - iconPlaceWidth / 2;
             var centerY = folderIconRect.yMin + folderIconRect.height / 2 - iconPlaceHeight / 2;
@@ -194,7 +181,7 @@ namespace Toolbox.Editor
         internal static Rect GetSmallIconRect(Rect folderIconRect)
         {
             //prepare final rect for the 'small' icon
-            folderIconRect = new Rect(folderIconRect.xMin, folderIconRect.y, Style.minFolderWidth, Style.minFolderHeight);
+            folderIconRect = new Rect(folderIconRect.xMin, folderIconRect.y, Defaults.minFolderWidth, Defaults.minFolderHeight);
 
             folderIconRect.x += (folderIconRect.width - folderIconRect.width * SmallIconScale) / 2;
             folderIconRect.y += (folderIconRect.height - folderIconRect.height * SmallIconScale) / 2;
@@ -236,7 +223,7 @@ namespace Toolbox.Editor
         internal static Vector2 SmallIconPaddingRatio { get; set; } = new Vector2(0, 0);
 
 
-        internal static class Style
+        internal static class Defaults
         {
             /// <summary>
             /// Value based on clear space ratio between folder icon and width.
@@ -247,6 +234,7 @@ namespace Toolbox.Editor
             /// </summary>
             internal const float folderHeightOffsetRatio = 0.375f;
 
+#if !UNITY_2019_3_OR_NEWER
             /// <summary>
             /// Value used in versions before 2019.3+ to determine maximal width of the folder icon.
             /// </summary>
@@ -255,6 +243,7 @@ namespace Toolbox.Editor
             /// Value used in versions before 2019.3+ to determine maximal height of the folder icon.
             /// </summary>
             internal const float maxFolderHeight = 64.0f;
+#endif
             /// <summary>
             /// Minimal possible width of the folder icon.
             /// </summary>

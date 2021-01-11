@@ -23,6 +23,7 @@ namespace Toolbox.Editor
             ToolboxEditor.OnCloseToolboxEditor += OnCloseEditor;
         }
 
+
         /// <summary>
         /// Determines whether we are currently within any Editor's layout scope.
         /// </summary>
@@ -45,7 +46,7 @@ namespace Toolbox.Editor
 
         private static void OnCloseEditor(Editor editor)
         {
-            ValidateScope();
+            ValidateScopes();
 
             inEditorLayout = false;
             isExitedLayout = false;
@@ -55,7 +56,7 @@ namespace Toolbox.Editor
         /// Validates currently cached layout scopes (vertical and horizontal).
         /// </summary>
         /// <returns>true if scopes were clean.</returns>
-        private static bool ValidateScope()
+        private static bool ValidateScopes()
         {
             if (vLayoutClips > 0 || hLayoutClips > 0)
             {
@@ -66,12 +67,12 @@ namespace Toolbox.Editor
 
                 while (vLayoutClips > 0)
                 {
-                    EndVertical();
+                    CloseVertical();
                 }
 
                 while (hLayoutClips > 0)
                 {
-                    EndHorizontal();
+                    CloseHorizontal();
                 }
 
                 return false;
@@ -100,7 +101,7 @@ namespace Toolbox.Editor
             EditorGUILayout.BeginVertical(style, options);
         }
 
-        internal static void EndVertical()
+        internal static void CloseVertical()
         {
             if (vLayoutClips == 0)
             {
@@ -111,7 +112,6 @@ namespace Toolbox.Editor
             vLayoutClips--;
             EditorGUILayout.EndVertical();
         }
-
 
         internal static void BeginHorizontal()
         {
@@ -136,7 +136,7 @@ namespace Toolbox.Editor
             EditorGUILayout.BeginHorizontal(style, options);
         }
 
-        internal static void EndHorizontal()
+        internal static void CloseHorizontal()
         {
             if (hLayoutClips == 0)
             {

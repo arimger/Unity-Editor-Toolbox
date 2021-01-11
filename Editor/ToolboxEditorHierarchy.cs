@@ -32,7 +32,10 @@ namespace Toolbox.Editor
         }
 
 
-        private static readonly List<HierarchyPropertyLabel> allowedDrawers = new List<HierarchyPropertyLabel>();
+        /// <summary>
+        /// All valid and prepared labels drawed for each default <see cref="GameObject"/>.
+        /// </summary>
+        private static readonly List<HierarchyPropertyLabel> propertyLabels = new List<HierarchyPropertyLabel>();
 
 
         /// <summary>
@@ -105,13 +108,13 @@ namespace Toolbox.Editor
         /// </summary>
         private static void DrawHeaderItemLabel(Rect rect, GameObject gameObject, string label)
         {
-            EditorGUI.DrawRect(new Rect(rect.x, rect.y - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
-
-            //repaint background on proper event
             if (Event.current.type == EventType.Repaint)
             {
                 Style.backgroundStyle.Draw(rect, false, false, false, false);
             }
+
+            EditorGUI.DrawRect(new Rect(rect.x, rect.yMin - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
+            EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
 
             EditorGUI.DrawRect(new Rect(rect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
             EditorGUI.DrawRect(new Rect(rect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
@@ -121,10 +124,7 @@ namespace Toolbox.Editor
             //prepare content for the associated (fixed) label
             var itemContent = new GUIContent(label, iconContent.image);
 
-            //draw a custom label field for the provided GameObject
             EditorGUI.LabelField(rect, itemContent, Style.headerLabelStyle);
-
-            EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
         }
 
         /// <summary>
@@ -133,65 +133,55 @@ namespace Toolbox.Editor
         private static void DrawDefaultItemLabel(Rect rect, GameObject gameObject, string label)
         {
             var contentRect = rect;
-            var drawersCount = allowedDrawers.Count;
+            var labelsCount = propertyLabels.Count;
 
             EditorGUI.DrawRect(new Rect(contentRect.xMax, rect.y, Style.lineWidth, rect.height), Style.lineColor);
-            //determine if there is anything to draw
-            if (drawersCount > 0)
+            if (labelsCount > 0)
             {
                 var availableRect = contentRect;
-                //draw first the drawer element in a proper rect
-                //we have to adjust a given rect to our purpose
-                contentRect = AppendPropertyLabel(allowedDrawers[0], gameObject, availableRect);
-                availableRect.xMax -= contentRect.width;
-
-                EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
-
-                //draw each needed element content stored in the drawers collection
-                for (var i = 1; i < drawersCount; i++)
+                for (var i = 0; i < labelsCount; i++)
                 {
-                    contentRect = AppendPropertyLabel(allowedDrawers[i], gameObject, availableRect);
+                    //each property label has to be created in validated (adjusted) area 
+                    //depending on previously occupied rect we have to adjust current rect
+                    contentRect = AppendPropertyLabel(propertyLabels[i], gameObject, availableRect);
                     availableRect.xMax -= contentRect.width;
 
                     EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
                 }
-            }
 
-            //finally adjust available rect to the created content
-            if (contentRect.xMin < rect.xMin)
-            {
-                rect.xMin = contentRect.xMin;
+                //additionaly draw tooltip for the rest of the label
+                ToolboxEditorGui.DrawTooltip(availableRect, label);
             }
 
             //draw a horiozntal line but only if it is expected
             if (DrawHorizontalLines)
             {
-                EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
+                if (contentRect.xMin < rect.xMin)
+                {
+                    rect.xMin = contentRect.xMin;
+                }
+
+                EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
             }
-
-            contentRect.xMax = contentRect.xMin;
-            contentRect.xMin = rect.xMin;
-
-            //create an empty label field which will serve as a tooltip
-            EditorGUI.LabelField(contentRect, new GUIContent(string.Empty, label));
         }
 
 
         private static Rect AppendPropertyLabel(HierarchyPropertyLabel propertyLabel, GameObject target, Rect availableRect)
         {
-            //prepare currently maintaind label
-            propertyLabel.Prepare(target, availableRect);
-            var rect = availableRect;
-            rect.xMin = rect.xMax - propertyLabel.GetWidth();
-
-            //draw hierarchy overlay background
-            if (Event.current.type == EventType.Repaint)
+            //prepare currently used property label
+            if (propertyLabel.Prepare(target, availableRect, out var width))
             {
-                Style.backgroundStyle.Draw(rect, false, false, false, false);
+                availableRect.xMin = availableRect.xMax - width;
+                //draw hierarchy overlay background
+                if (Event.current.type == EventType.Repaint)
+                {
+                    Style.backgroundStyle.Draw(availableRect, false, false, false, false);
+                }
+
+                propertyLabel.OnGui(availableRect);
             }
 
-            propertyLabel.OnGui(rect);
-            return rect;
+            return availableRect;
         }
 
         /// <summary>
@@ -255,7 +245,7 @@ namespace Toolbox.Editor
             if (editor.target.name.StartsWith("#h"))
             {
                 var target = editor.target as GameObject;
-                EditorGUILayout.LabelField("Hierachy Header Object", Style.remarkLabelStyle);
+                EditorGUILayout.LabelField("Hierachy Header Object");
                 editor.serializedObject.Update();
                 target.tag = "EditorOnly";
                 editor.serializedObject.ApplyModifiedProperties();
@@ -278,13 +268,13 @@ namespace Toolbox.Editor
                     continue;
                 }
 
-                allowedDrawers.Add(propertyLabel);
+                propertyLabels.Add(propertyLabel);
             }
         }
 
         internal static void RemoveAllowedHierarchyContentCallbacks()
         {
-            allowedDrawers.Clear();
+            propertyLabels.Clear();
         }
 
         internal static void RepaintHierarchyOverlay() => EditorApplication.RepaintHierarchyWindow();

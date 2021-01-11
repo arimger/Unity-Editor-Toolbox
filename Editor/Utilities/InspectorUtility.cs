@@ -27,11 +27,7 @@ namespace Toolbox.Editor
                 CurrentTargetObjects = null;
             };
 
-            //we should determine whenever the last created Editor is destroyed so
-            //using the 'Selection' class is more like a workaround than a solution
-            //Selection.selectionChanged += () => OnEditorReload?.Invoke();
-
-            //we can use new Editors to check if 'OnEditorReload' should be called
+            //we can use each new Editor to check if 'OnEditorReload' should be called
             ToolboxEditor.OnBeginToolboxEditor += (editor) =>
             {
                 if (lastCachedEditor == null)
@@ -39,7 +35,7 @@ namespace Toolbox.Editor
                     OnEditorReload?.Invoke();
                 }
 
-                //cached Editor will be destroyed every time when object is deselected
+                //this Editor will be destroyed every time when object is deselected
                 lastCachedEditor = editor;
             };
         }
@@ -49,7 +45,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Forces the available Inspector Windows to repaint. 
+        /// Forces available Inspector Windows to repaint. 
         /// </summary>
         internal static void RepaintInspectors()
         {

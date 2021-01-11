@@ -46,7 +46,7 @@ namespace Toolbox.Editor
             ToolboxEditorProject.LargeIconPaddingRatio = settings.LargeIconPadding;
             ToolboxEditorProject.SmallIconPaddingRatio = settings.SmallIconPadding;
 
-            ToolboxEditorProject.RemoveCustomFolders();
+            ToolboxEditorProject.ClearCustomFolders();
 
             //create custom folders using stored data
             for (var i = 0; i < settings.CustomFolders.Count; i++)
