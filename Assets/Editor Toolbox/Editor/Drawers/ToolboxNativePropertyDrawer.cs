@@ -12,9 +12,6 @@ namespace Toolbox.Editor.Drawers
         /// Safe equivalent of the <see cref="GetPropertyHeight"/> method.
         /// Provided property is previously validated by the <see cref="IsPropertyValid(SerializedProperty)"/> method.
         /// </summary>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
-        /// <returns></returns>
         protected virtual float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             return EditorGUI.GetPropertyHeight(property, label);
@@ -24,9 +21,6 @@ namespace Toolbox.Editor.Drawers
         /// Safe equivalent of the <see cref="OnGUI"/> method.
         /// Provided property is previously validated by the <see cref="IsPropertyValid(SerializedProperty)"/> method.
         /// </summary>
-        /// <param name="position"></param>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
         protected virtual void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.PropertyField(position, property, label);
@@ -36,9 +30,6 @@ namespace Toolbox.Editor.Drawers
         /// <summary>
         /// Native call to return the expected height.
         /// </summary>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
-        /// <returns></returns>
         public override sealed float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             if (IsPropertyValid(property))
@@ -55,9 +46,6 @@ namespace Toolbox.Editor.Drawers
         /// <summary>
         /// Native call to draw the provided property.
         /// </summary>
-        /// <param name="position"></param>
-        /// <param name="property"></param>
-        /// <param name="label"></param>
         public override sealed void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (IsPropertyValid(property))
@@ -78,8 +66,6 @@ namespace Toolbox.Editor.Drawers
         /// <summary>
         /// Checks if provided property can be properly handled by this drawer.
         /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
         public virtual bool IsPropertyValid(SerializedProperty property)
         {
             return true;

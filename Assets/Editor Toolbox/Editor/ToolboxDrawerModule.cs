@@ -30,12 +30,12 @@ namespace Toolbox.Editor
         private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> listPropertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
 
         /// <summary>
-        /// Collection of specific drawers associated to particular <see cref="object"/> types.
+        /// Collection of specific drawers mapped to selected (picked) object types.
         /// </summary>
         private readonly static Dictionary<Type, ToolboxTargetTypeDrawer> targetTypeDrawers = new Dictionary<Type, ToolboxTargetTypeDrawer>();
 
         /// <summary>
-        /// Collection of currently cached handlers associated to special key.
+        /// Collection of currently cached handlers mapped to a unique property key.
         /// </summary>
         private static readonly Dictionary<string, ToolboxPropertyHandler> propertyHandlers = new Dictionary<string, ToolboxPropertyHandler>();
 
@@ -54,7 +54,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates all possible attribute-based drawers and add them to proper collections.
         /// </summary>
-        private static void CreateAttributeDrawers(IToolboxInspectorSettings settings)
+        private static void PrepareAssignableDrawers(IToolboxInspectorSettings settings)
         {
             void AddAttributeDrawer<T>(Type drawerType, Type attributeType, Dictionary<Type, T> drawersCollection) where T : ToolboxAttributeDrawer
             {
@@ -138,7 +138,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates all possible type-based drawers and add them to the related collection.
         /// </summary>
-        private static void CreateTargetTypeDrawers(IToolboxInspectorSettings settings)
+        private static void PrepareTargetTypeDrawers(IToolboxInspectorSettings settings)
         {
             var childrenTypesMap = new Dictionary<ToolboxTargetTypeDrawer, List<Type>>();
 
@@ -209,6 +209,7 @@ namespace Toolbox.Editor
             {
                 drawer.OnGuiReload();
             }
+
             foreach (var drawer in selfPropertyDrawers.Values)
             {
                 drawer.OnGuiReload();
@@ -239,9 +240,9 @@ namespace Toolbox.Editor
             ToolboxDrawersAllowed = settings.UseToolboxDrawers;
 
             //create all attribute-related drawers
-            CreateAttributeDrawers(settings);
+            PrepareAssignableDrawers(settings);
             //create all type-only-related drawers
-            CreateTargetTypeDrawers(settings);
+            PrepareTargetTypeDrawers(settings);
 
             //log errors into console only once
             validationEnabled = false;
@@ -262,11 +263,10 @@ namespace Toolbox.Editor
         /// <summary>
         /// Checks if provided type has an associated <see cref="ToolboxTargetTypeDrawer"/>.
         /// </summary>
-        internal static bool HasTargetTypeDrawer(Type propertyType)
+        internal static bool HasTargetTypeDrawer(Type type)
         {
-            return targetTypeDrawers.ContainsKey(propertyType);
+            return targetTypeDrawers.ContainsKey(type);
         }
-
 
         internal static ToolboxDecoratorDrawerBase GetDecoratorDrawer<T>(T attribute) where T : ToolboxDecoratorAttribute
         {
@@ -378,7 +378,6 @@ namespace Toolbox.Editor
         {
             return typeof(ToolboxTargetTypeDrawer).GetAllChildClasses();
         }
-
 
         /// <summary>
         /// Returns and/or creates (if needed) <see cref="ToolboxPropertyHandler"/> for given property.

@@ -119,12 +119,11 @@ namespace Toolbox.Editor.Internal
         {
             var currentEvent = Event.current;
 
-            //prepare base rects for the whole content and a particular element
+            //prepare base rect for the whole content window
             var contentRect = new Rect(0, 0, rect.width - Style.scrollbarStyle.fixedWidth, searchArray.ItemsCount * Style.height);
             var elementRect = new Rect(0, 0, rect.width, Style.height);
 
             scroll = GUI.BeginScrollView(rect, scroll, contentRect);
-
             //iterate over all searched and available items
             for (var i = 0; i < searchArray.ItemsCount; i++)
             {
@@ -173,7 +172,7 @@ namespace Toolbox.Editor.Internal
 
         public override void OnGUI(Rect rect)
         {
-            //set toolbar rect based on the built-in toolbar style
+            //set toolbar rect using the built-in toolbar height
             toolbarRect = new Rect(0, 0, rect.width, Style.toolbarStyle.fixedHeight);
             //set content rect adjusted to the toolbar container
             contentRect = Rect.MinMaxRect(0, toolbarRect.yMax, rect.xMax, rect.yMax);

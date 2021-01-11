@@ -15,19 +15,19 @@ namespace Toolbox.Editor
     internal class ToolboxPropertyHandler
     {
         /// <summary>
-        /// Type associated to the <see cref="property"/>.
+        /// Target property which contains all useful data about the associated field. 
         /// </summary>
-        private readonly Type type;
+        private readonly SerializedProperty property;
 
         /// <summary>
-        /// Data associated to the <see cref="property"/>.
+        /// Info associated to the <see cref="property"/>.
         /// </summary>
         private readonly FieldInfo fieldInfo;
 
         /// <summary>
-        /// Target property which contains all useful data about the associated field. 
+        /// Type associated to the <see cref="property"/>.
         /// </summary>
-        private readonly SerializedProperty property;
+        private readonly Type type;
 
         /// <summary>
         /// First cached <see cref="ToolboxPropertyAttribute"/>.
@@ -235,7 +235,7 @@ namespace Toolbox.Editor
         {
             //depending on previously gained data we can provide more action
             //using custom attributes and information about native drawers
-            //we can use associated ToolboxDrawers or/and draw property in the default way
+            //we can use all associated and allowed ToolboxDrawers (for each type)
 
             //begin all needed decorator drawers in the proper order
             BeginDecoratorDrawers();

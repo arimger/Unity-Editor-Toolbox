@@ -9,13 +9,12 @@ namespace Toolbox.Editor.Drawers
         private readonly static Color lineColor = new Color(0.3f, 0.3f, 0.3f);
 
 
-        private void DrawLine(Rect rect, float thickness, float propertyPadding, float propertySpacing)
+        private void DrawLine(Rect rect, float thickness, float padding, float spacing)
         {
-            //adjust rect to center between properties
-            rect.y -= propertySpacing / 2;
-            rect.y += propertyPadding / 2;
-            //adjust rect to correct tickness
+            rect.y -= spacing / 2;
+            rect.y += padding / 2;
             rect.height = thickness;
+
             EditorGUI.DrawRect(rect, lineColor);
         }
 
@@ -27,7 +26,8 @@ namespace Toolbox.Editor.Drawers
 
         public override void OnGUI(Rect rect)
         {
-            DrawLine(rect, Attribute.Thickness, Attribute.Padding, EditorGUIUtility.standardVerticalSpacing);
+            var spacing = EditorGUIUtility.standardVerticalSpacing;
+            DrawLine(rect, Attribute.Thickness, Attribute.Padding, spacing);
         }
 
 

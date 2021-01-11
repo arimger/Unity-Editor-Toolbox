@@ -19,15 +19,16 @@ namespace UnityEngine
         private int buildIndex;
 
 
-        public void OnBeforeSerialize()
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
+        { }
+
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
 #if UNITY_EDITOR
             TryGetBuildIndex(sceneReference, out buildIndex);
 #endif
         }
 
-        public void OnAfterDeserialize()
-        { }
 
 #if UNITY_EDITOR
         [InitializeOnLoadMethod]

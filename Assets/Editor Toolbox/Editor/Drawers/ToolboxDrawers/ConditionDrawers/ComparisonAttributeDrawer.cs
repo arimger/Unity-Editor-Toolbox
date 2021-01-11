@@ -7,30 +7,30 @@ namespace Toolbox.Editor.Drawers
     {
         protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, T attribute)
         {
-            var propertyToCheck = property.GetSibiling(attribute.ComparedPropertyName);
+            var propertyToCheck = property.GetSibiling(attribute.PropertyName);
             if (propertyToCheck == null)
             {
-                ToolboxEditorLog.PropertyNotFoundWarning(property, attribute.ComparedPropertyName);
+                ToolboxEditorLog.PropertyNotFoundWarning(property, attribute.PropertyName);
                 return PropertyCondition.Valid;
             }
 
-            //TODO: validate 'propertyToCheck' type with 'attribute.TargetConditionValue'
+            //TODO: validate 'propertyToCheck' type with 'attribute.ValueToMatch'
 
             switch (propertyToCheck.propertyType)
             {
                 case SerializedPropertyType.Integer:
-                    return OnComparisonResult(propertyToCheck.intValue.Equals(attribute.TargetConditionValue));
+                    return OnComparisonResult(propertyToCheck.intValue.Equals(attribute.ValueToMatch));
                 case SerializedPropertyType.Boolean:
-                    return OnComparisonResult(propertyToCheck.boolValue.Equals(attribute.TargetConditionValue));
+                    return OnComparisonResult(propertyToCheck.boolValue.Equals(attribute.ValueToMatch));
                 case SerializedPropertyType.Float:
-                    return OnComparisonResult(propertyToCheck.floatValue.Equals(attribute.TargetConditionValue));
+                    return OnComparisonResult(propertyToCheck.floatValue.Equals(attribute.ValueToMatch));
                 case SerializedPropertyType.String:
-                    return OnComparisonResult(propertyToCheck.stringValue.Equals(attribute.TargetConditionValue));
+                    return OnComparisonResult(propertyToCheck.stringValue.Equals(attribute.ValueToMatch));
                 case SerializedPropertyType.ObjectReference:
-                    var expectedValue = (bool)attribute.TargetConditionValue;
+                    var expectedValue = (bool)attribute.ValueToMatch;
                     return OnComparisonResult(propertyToCheck.objectReferenceValue == expectedValue);
                 case SerializedPropertyType.Enum:
-                    return OnComparisonResult(propertyToCheck.intValue.Equals((int)attribute.TargetConditionValue));
+                    return OnComparisonResult(propertyToCheck.intValue.Equals((int)attribute.ValueToMatch));
                 default:
                     ToolboxEditorLog.TypeNotSupportedWarning(property, propertyToCheck.type);
                     return PropertyCondition.Valid;

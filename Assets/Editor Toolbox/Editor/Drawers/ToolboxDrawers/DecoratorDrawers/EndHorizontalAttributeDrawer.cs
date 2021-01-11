@@ -8,7 +8,7 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGuiCloseSafe(EndHorizontalAttribute attribute)
         {
             //end horizontal group
-            ToolboxLayoutHelper.EndHorizontal();
+            ToolboxLayoutHelper.CloseHorizontal();
 
             //restore label & field 
             EditorGUIUtility.labelWidth = 0.0f;

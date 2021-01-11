@@ -87,15 +87,15 @@ namespace Toolbox.Editor.Drawers
         private static class Style
         {
 #if UNITY_2019_3_OR_NEWER
-            internal static readonly GUIStyle backgroundStyle = new GUIStyle(EditorStyles.helpBox)
+            internal static readonly GUIStyle backgroundStyle = new GUIStyle("helpBox")
 #else
-            internal static readonly GUIStyle backgroundStyle = new GUIStyle(GUI.skin.box)
+            internal static readonly GUIStyle backgroundStyle = new GUIStyle("box")
 #endif
             {
                 padding = new RectOffset(15, 0, 0, 0)
             };
-            internal static readonly GUIStyle scrollViewStyle = new GUIStyle(GUI.skin.verticalScrollbar);
-            internal static readonly GUIStyle spaceLabelStyle = new GUIStyle(GUI.skin.label)
+            internal static readonly GUIStyle scrollViewStyle = new GUIStyle("verticalScrollbar");
+            internal static readonly GUIStyle spaceLabelStyle = new GUIStyle("label")
             {
                 alignment = TextAnchor.MiddleCenter
             };

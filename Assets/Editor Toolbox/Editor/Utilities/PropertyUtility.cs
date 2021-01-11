@@ -13,7 +13,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates and returns unique (hash based) key for this property.
         /// </summary>
-        /// <returns></returns>
         internal static string GetPropertyHashKey(this SerializedProperty property)
         {
             var hash = property.serializedObject.GetHashCode();
@@ -23,7 +22,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates and returns unique (type based) key for this property.
         /// </summary>
-        /// <returns></returns>
         internal static string GetPropertyTypeKey(this SerializedProperty property)
         {
             var type = property.serializedObject.targetObject.GetType();
@@ -33,7 +31,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Returns <see cref="object"/> which truly declares this property.
         /// </summary>
-        /// <returns></returns>
         internal static object GetDeclaringObject(this SerializedProperty property)
         {
             return GetDeclaringObject(property, property.serializedObject.targetObject);
@@ -42,22 +39,21 @@ namespace Toolbox.Editor
         /// <summary>
         /// Returns <see cref="object"/> which truly declares this property.
         /// </summary>
-        /// <returns></returns>
         internal static object GetDeclaringObject(this SerializedProperty property, Object target)
         {
-            const BindingFlags propertyBindings = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+            const BindingFlags bindings = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 
             var members = GetPropertyFieldTree(property);
             var instance = target as object;
 
             if (members.Length > 1)
             {
-                var fieldInfo = target.GetType().GetField(members[0], propertyBindings);
+                var fieldInfo = target.GetType().GetField(members[0], bindings);
                 instance = fieldInfo.GetValue(target);
                 
                 for (var i = 1; i < members.Length - 1; i++)
                 {
-                    fieldInfo = instance.GetType().GetField(members[i], propertyBindings);
+                    fieldInfo = instance.GetType().GetField(members[i], bindings);
                     instance = fieldInfo.GetValue(instance);
                 }
             }
@@ -69,7 +65,6 @@ namespace Toolbox.Editor
         /// Returns proper <see cref="FieldInfo"/> value for this property, even if the property is an array element.
         /// </summary>
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
-        /// <returns></returns>
         internal static object GetProperValue(this SerializedProperty property, FieldInfo fieldInfo)
         {
             return GetProperValue(property, fieldInfo, property.serializedObject.targetObject);
@@ -80,7 +75,6 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
-        /// <returns></returns>
         internal static object GetProperValue(this SerializedProperty property, FieldInfo fieldInfo, object declaringObject)
         {
             if (fieldInfo == null)
@@ -167,7 +161,6 @@ namespace Toolbox.Editor
         /// Returns proper <see cref="Type"/> for this property, even if the property is an array element.
         /// </summary>
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
-        /// <returns></returns>
         internal static Type GetProperType(this SerializedProperty property, FieldInfo fieldInfo)
         {
             return GetProperType(property, fieldInfo, property.serializedObject.targetObject);
@@ -177,7 +170,6 @@ namespace Toolbox.Editor
         /// Returns proper <see cref="Type"/> for this property, even if the property is an array element.
         /// </summary>
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
-        /// <returns></returns>
         internal static Type GetProperType(this SerializedProperty property, FieldInfo fieldInfo, object declaringObject)
         {
             if (fieldInfo == null)

@@ -87,14 +87,7 @@ namespace Toolbox.Editor
 
         private static void OnGui()
         {
-            const float fromToolsOffsetX = 400.0f;
-#if UNITY_2019_1_OR_NEWER
-            const float fromStripOffsetX = 150.0f;
-#else
-            const float fromStripOffsetX = 100.0f;
-#endif
-
-            if (OnToolbarGui == null)
+            if (!IsToolbarAllowed || OnToolbarGui == null)
             {
                 return;
             }
@@ -102,8 +95,8 @@ namespace Toolbox.Editor
             var screenWidth = EditorGUIUtility.currentViewWidth;
             var toolbarRect = new Rect(0, 0, screenWidth, Style.rowHeight);
             //calculations known from UnityCsReference
-            toolbarRect.xMin += fromToolsOffsetX;
-            toolbarRect.xMax = (screenWidth - fromStripOffsetX) / 2;
+            toolbarRect.xMin += FromToolsOffset;
+            toolbarRect.xMax = (screenWidth - FromStripOffset) / 2;
             //additional rect styling
             toolbarRect.xMin += Style.spacing;
             toolbarRect.xMax -= Style.spacing;
@@ -116,14 +109,20 @@ namespace Toolbox.Editor
             }
 
             //begin drawing in calculated area
-            using (var area = new GUILayout.AreaScope(toolbarRect))
+            using (new GUILayout.AreaScope(toolbarRect))
             {
-                using (var group = new GUILayout.HorizontalScope())
+                using (new GUILayout.HorizontalScope())
                 {
                     OnToolbarGui?.Invoke();
                 }
             }
         }
+
+
+        public static bool IsToolbarAllowed { get; set; } = true;
+
+        public static float FromToolsOffset { get; set; } = 400.0f;
+        public static float FromStripOffset { get; set; } = 150.0f;
 
 
         public static event Action OnToolbarGui;

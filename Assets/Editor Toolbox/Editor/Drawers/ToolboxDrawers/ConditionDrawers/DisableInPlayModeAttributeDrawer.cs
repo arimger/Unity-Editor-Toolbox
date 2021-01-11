@@ -7,9 +7,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, DisableInPlayModeAttribute attribute)
         {
-            return EditorApplication.isPlayingOrWillChangePlaymode
-                ? PropertyCondition.Disabled
-                : PropertyCondition.Valid;
+            return EditorApplication.isPlayingOrWillChangePlaymode ? PropertyCondition.Disabled : PropertyCondition.Valid;
         }
     }
 }

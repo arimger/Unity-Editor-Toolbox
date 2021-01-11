@@ -56,7 +56,7 @@ namespace Toolbox.Editor.Internal
         public ElementCallbackDelegate elementHeightCallback;
 
 
-        private const string defaultElementName = "Element";
+        private const string defaultLabelFormat = "{0} {1}";
 
         /// <summary>
         /// Hotcontrol index unique for this instance.
@@ -436,7 +436,7 @@ namespace Toolbox.Editor.Internal
 
         private void UpdateDraggedY(Rect listRect)
         {
-            draggedY = Mathf.Clamp(Event.current.mousePosition.y - listRect.y, dragOffset, 
+            draggedY = Mathf.Clamp(Event.current.mousePosition.y - listRect.y, dragOffset,
                 listRect.height - (GetElementHeight(Index) - dragOffset));
         }
 
@@ -682,16 +682,35 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        public string GetElementName(SerializedProperty element, int index)
+        public string GetElementDefaultName(int index)
         {
+            return string.Format(defaultLabelFormat, "Element", index);
+        }
+
+        public string GetElementDefinedName(int index)
+        {
+            return ElementLabel != null
+                ? string.Format(defaultLabelFormat, ElementLabel, index) : null;
+        }
+
+        public string GetElementDisplayName(SerializedProperty element, int index)
+        {
+            //try to determine name using the internal API
             var elementName = element.displayName;
-            var defaultName = string.Format("{0} {1}", defaultElementName, index);
-            if (defaultName != elementName || ElementLabel == null)
+            var defaultName = GetElementDefaultName(index);
+            if (defaultName != elementName)
             {
                 return elementName;
             }
 
-            return elementName.Replace(defaultElementName, ElementLabel);
+            //try to override name using customized label
+            var definedName = GetElementDefinedName(index);
+            if (definedName == null)
+            {
+                return elementName;
+            }
+
+            return definedName;
         }
 
         public void SetKeyboardFocus()
@@ -776,8 +795,8 @@ namespace Toolbox.Editor.Internal
 
             EditorGUI.BeginDisabledGroup(List.hasMultipleDifferentValues);
             EditorGUI.BeginDisabledGroup(onCanAppendCallback != null && !onCanAppendCallback(this));
-            if (GUI.Button(appendButtonRect, onAppendDropdownCallback != null 
-                ? Style.iconToolbarDropContent 
+            if (GUI.Button(appendButtonRect, onAppendDropdownCallback != null
+                ? Style.iconToolbarDropContent
                 : Style.iconToolbarAddContent, Style.footerButtonStyle))
             {
                 if (onAppendDropdownCallback != null)
@@ -882,28 +901,14 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-        /// <summary>                                       
-        /// Draws the default Element background.
+        /// <summary>
+        /// Draws the default Element field.
         /// </summary>
-        public void DrawStandardElementBackground(Rect rect, int index, bool selected, bool focused, bool draggable)
+        public void DrawStandardElement(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
-            if (Event.current.type == EventType.Repaint)
-            {
-                if (selected)
-                {
-                    //additional height for selection rect + shadow
-                    //NOTE: shadow appears only before Unity 2019.3
-#if UNITY_2019_3_OR_NEWER
-                    var padding = Style.spacing;
-#else
-                    var padding = Style.spacing + Style.spacing / 2;
-#endif
-                    rect.yMax += padding / 2;
-                    rect.yMin -= padding / 2;
-                }
+            var element = List.GetArrayElementAtIndex(index);
 
-                Style.elementBackgroundStyle.Draw(rect, false, selected, selected, focused);
-            }
+            EditorGUI.PropertyField(rect, element, new GUIContent(GetElementDisplayName(element, index)), element.isExpanded);
         }
 
         /// <summary>
@@ -935,14 +940,28 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-        /// <summary>
-        /// Draws the default Element field.
+        /// <summary>                                       
+        /// Draws the default Element background.
         /// </summary>
-        public void DrawStandardElement(Rect rect, int index, bool selected, bool focused, bool draggable)
+        public void DrawStandardElementBackground(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
-            var element = List.GetArrayElementAtIndex(index);
+            if (Event.current.type == EventType.Repaint)
+            {
+                if (selected)
+                {
+                    //additional height for selection rect + shadow
+                    //NOTE: shadow appears only before Unity 2019.3
+#if UNITY_2019_3_OR_NEWER
+                    var padding = Style.spacing;
+#else
+                    var padding = Style.spacing + Style.spacing / 2;
+#endif
+                    rect.yMax += padding / 2;
+                    rect.yMin -= padding / 2;
+                }
 
-            EditorGUI.PropertyField(rect, element, new GUIContent(GetElementName(element, index)), element.isExpanded);
+                Style.elementBackgroundStyle.Draw(rect, false, selected, selected, focused);
+            }
         }
 
         #endregion
@@ -1029,7 +1048,7 @@ namespace Toolbox.Editor.Internal
         public string ElementLabel
         {
             get; set;
-        } = defaultElementName;
+        } = defaultLabelFormat;
 
         /// <summary>
         /// Nested 'Array.size' property.

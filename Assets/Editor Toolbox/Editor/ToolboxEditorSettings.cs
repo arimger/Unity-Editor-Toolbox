@@ -9,6 +9,9 @@ namespace Toolbox.Editor
     using Toolbox.Editor.Drawers;
     using Toolbox.Editor.Hierarchy;
 
+    internal interface IToolboxGeneralSettings
+    { }
+
     internal interface IToolboxHierarchySettings
     {
         bool UseToolboxHierarchy { get; }
@@ -49,7 +52,7 @@ namespace Toolbox.Editor
     }
 
     [CreateAssetMenu(fileName = "Editor Toolbox Settings", menuName = "Editor Toolbox/Settings")]
-    internal class ToolboxEditorSettings : ScriptableObject, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxInspectorSettings
+    internal class ToolboxEditorSettings : ScriptableObject, IToolboxGeneralSettings, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxInspectorSettings
     {
         [SerializeField]
         private bool useToolboxHierarchy = true;

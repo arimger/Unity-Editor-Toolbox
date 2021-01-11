@@ -17,7 +17,6 @@ namespace Toolbox.Editor.Drawers
 
             EditorGUI.BeginChangeCheck();
             EditorGUI.PropertyField(position, property, label);
-
             if (EditorGUI.EndChangeCheck())
             {
                 var vectorData = property.vector2Value;
