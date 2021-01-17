@@ -20,5 +20,7 @@ namespace UnityEngine
 
         public string Pattern { get; private set; }
         public string Message { get; private set; }
+
+        public bool HasMessage => !string.IsNullOrEmpty(Message);
     }
 }

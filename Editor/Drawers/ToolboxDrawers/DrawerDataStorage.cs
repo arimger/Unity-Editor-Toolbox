@@ -53,7 +53,6 @@ namespace Toolbox.Editor.Drawers
         public T ReturnItem(SerializedProperty property, T1 attribute)
         {
             var key = GetKey(property);
-
             if (items.TryGetValue(key, out T item))
             {
                 return item;

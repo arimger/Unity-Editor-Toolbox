@@ -28,6 +28,9 @@ namespace Toolbox.Editor
         /// Determines whether we are currently within any Editor's layout scope.
         /// </summary>
         private static bool inEditorLayout;
+        /// <summary>
+        /// Determines whether layout was prematurely exited by the external API.
+        /// </summary>
         private static bool isExitedLayout;
 
         private static int vLayoutClips;

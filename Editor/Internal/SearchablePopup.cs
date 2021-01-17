@@ -59,40 +59,41 @@ namespace Toolbox.Editor.Internal
         private void HandleKeyboard()
         {
             var currentEvent = Event.current;
-
-            if (currentEvent.type == EventType.KeyDown)
+            if (currentEvent.type != EventType.KeyDown)
             {
-                if (currentEvent.keyCode == KeyCode.DownArrow)
-                {
-                    GUI.FocusControl(null);
-                    optionIndex = Mathf.Min(searchArray.ItemsCount - 1, optionIndex + 1);
-                    scrollIndex = optionIndex;
-                    currentEvent.Use();
-                }
+                return;
+            }
 
-                if (currentEvent.keyCode == KeyCode.UpArrow)
-                {
-                    GUI.FocusControl(null);
-                    optionIndex = Mathf.Max(0, optionIndex - 1);
-                    scrollIndex = optionIndex;
-                    currentEvent.Use();
-                }
+            if (currentEvent.keyCode == KeyCode.DownArrow)
+            {
+                GUI.FocusControl(null);
+                optionIndex = Mathf.Min(searchArray.ItemsCount - 1, optionIndex + 1);
+                scrollIndex = optionIndex;
+                currentEvent.Use();
+            }
 
-                if (currentEvent.keyCode == KeyCode.Return)
-                {
-                    GUI.FocusControl(null);
-                    if (optionIndex >= 0 && optionIndex < searchArray.ItemsCount)
-                    {
-                        SelectItem(searchArray.GetItemAt(optionIndex).index);
-                    }
-                    currentEvent.Use();
-                }
+            if (currentEvent.keyCode == KeyCode.UpArrow)
+            {
+                GUI.FocusControl(null);
+                optionIndex = Mathf.Max(0, optionIndex - 1);
+                scrollIndex = optionIndex;
+                currentEvent.Use();
+            }
 
-                if (currentEvent.keyCode == KeyCode.Escape)
+            if (currentEvent.keyCode == KeyCode.Return)
+            {
+                GUI.FocusControl(null);
+                if (optionIndex >= 0 && optionIndex < searchArray.ItemsCount)
                 {
-                    GUI.FocusControl(null);
-                    editorWindow.Close();
+                    SelectItem(searchArray.GetItemAt(optionIndex).index);
                 }
+                currentEvent.Use();
+            }
+
+            if (currentEvent.keyCode == KeyCode.Escape)
+            {
+                GUI.FocusControl(null);
+                editorWindow.Close();
             }
         }
 
@@ -110,6 +111,7 @@ namespace Toolbox.Editor.Internal
             rect.yMin += Style.spacing;
             rect.yMax -= Style.spacing;
 
+            //draw toolbar and try to search for valid text
             searchArray.Search(searchField.OnGUI(rect, searchArray.Filter, Style.searchBoxStyle,
                                                                            Style.showCancelButtonStyle,
                                                                            Style.hideCancelButtonStyle));

@@ -151,7 +151,7 @@ namespace Toolbox.Editor
 
                 if (callOnValidate)
                 {
-                    //simulate OnValidate call since we changed only fieldInfo's value
+                    //simulate OnValidate call since we changed fieldInfo's value
                     InspectorUtility.SimulateOnValidate(targetObject);
                 }
             }

@@ -146,7 +146,7 @@ namespace Toolbox.Editor
 
             EditorGUI.BeginDisabledGroup(!useToolboxHierarchyProperty.boolValue);
 #if UNITY_2019_3_OR_NEWER
-            EditorGUILayout.BeginVertical(Style.groupStyle);
+            EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
             EditorGUILayout.LabelField("Row Data Types");
 #if UNITY_2019_3_OR_NEWER
@@ -154,7 +154,7 @@ namespace Toolbox.Editor
 #endif
             {
 #if UNITY_2019_3_OR_NEWER
-                EditorGUILayout.BeginVertical(Style.groupStyle);
+                EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
                 rowDataItemsList.DoLayoutList();
 #if UNITY_2019_3_OR_NEWER
@@ -226,7 +226,7 @@ namespace Toolbox.Editor
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
 #if UNITY_2019_3_OR_NEWER
-            EditorGUILayout.BeginVertical(Style.groupStyle);
+            EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
             EditorGUILayout.LabelField("Custom Folders");
 #if UNITY_2019_3_OR_NEWER
@@ -234,7 +234,7 @@ namespace Toolbox.Editor
 #endif
             {
 #if UNITY_2019_3_OR_NEWER
-                EditorGUILayout.BeginVertical(Style.groupStyle);
+                EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
                 customFoldersList.DoLayoutList();
 #if UNITY_2019_3_OR_NEWER
@@ -262,7 +262,7 @@ namespace Toolbox.Editor
             var validateInspector = false;
 
 #if UNITY_2019_3_OR_NEWER
-            EditorGUILayout.BeginVertical(Style.groupStyle);
+            EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
 #if UNITY_2019_3_OR_NEWER
             enabledToShowDrawerType = GUILayout.Toolbar(enabledToShowDrawerType, drawerHandlersShortNames, EditorStyles.toolbarButton);
@@ -280,14 +280,14 @@ namespace Toolbox.Editor
             EditorGUILayout.EndVertical();
 #endif
 #if UNITY_2019_3_OR_NEWER
-            EditorGUILayout.BeginVertical(Style.groupStyle);
+            EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
             drawerHandlersLists[enabledToShowDrawerType].DoLayoutList();
 #if UNITY_2019_3_OR_NEWER
             EditorGUILayout.EndVertical();
 #endif
 #if UNITY_2019_3_OR_NEWER
-            EditorGUILayout.BeginVertical(Style.groupStyle);
+            EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button(Style.clearListContent, EditorStyles.miniButtonLeft))
@@ -368,7 +368,7 @@ namespace Toolbox.Editor
             serializedObject.Update();
 
             //handle hierarchy settings section
-            hierarchyAnimBool.target = DrawHeaderFoldout(hierarchyAnimBool.target, Style.hierarchySettingsContent, true, Style.sectionHeaderStyle);
+            hierarchyAnimBool.target = DrawHeaderFoldout(hierarchyAnimBool.target, Style.hierarchySettingsContent, true, Style.sectionHeaderStyle, Style.headersGroupStyle);
             using (var group = new EditorGUILayout.FadeGroupScope(hierarchyAnimBool.faded))
             {
                 if (group.visible)
@@ -379,7 +379,7 @@ namespace Toolbox.Editor
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
             //handle project settings section
-            projectAnimBool.target = DrawHeaderFoldout(projectAnimBool.target, Style.projectSettingsContent, true, Style.sectionHeaderStyle);
+            projectAnimBool.target = DrawHeaderFoldout(projectAnimBool.target, Style.projectSettingsContent, true, Style.sectionHeaderStyle, Style.headersGroupStyle);
             using (var group = new EditorGUILayout.FadeGroupScope(projectAnimBool.faded))
             {
                 if (group.visible)
@@ -390,7 +390,7 @@ namespace Toolbox.Editor
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
             //handle inspector settings section
-            inspectorAnimBool.target = DrawHeaderFoldout(inspectorAnimBool.target, Style.inspectorSettingsContent, true, Style.sectionHeaderStyle);
+            inspectorAnimBool.target = DrawHeaderFoldout(inspectorAnimBool.target, Style.inspectorSettingsContent, true, Style.sectionHeaderStyle, Style.headersGroupStyle);
             using (var group = new EditorGUILayout.FadeGroupScope(inspectorAnimBool.faded))
             {
                 if (group.visible)
@@ -405,7 +405,8 @@ namespace Toolbox.Editor
 
         internal static class Style
         {
-            internal static readonly GUIStyle groupStyle;
+            internal static readonly GUIStyle headersGroupStyle;
+            internal static readonly GUIStyle layoutsGroupStyle;
             internal static readonly GUIStyle drawersHeaderStyle;
             internal static readonly GUIStyle sectionHeaderStyle;
 
@@ -432,11 +433,13 @@ namespace Toolbox.Editor
 
             static Style()
             {
+                headersGroupStyle = new GUIStyle(EditorStyles.helpBox);
 #if UNITY_2019_3_OR_NEWER
-                groupStyle = new GUIStyle(EditorStyles.helpBox);
+                layoutsGroupStyle = new GUIStyle(EditorStyles.helpBox);
 #else
-                groupStyle = new GUIStyle();
+                layoutsGroupStyle = new GUIStyle();
 #endif
+
                 drawersHeaderStyle = new GUIStyle(EditorStyles.label)
                 {
                     alignment = TextAnchor.MiddleCenter

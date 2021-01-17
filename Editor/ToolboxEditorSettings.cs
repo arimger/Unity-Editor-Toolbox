@@ -8,6 +8,7 @@ namespace Toolbox.Editor
 {
     using Toolbox.Editor.Drawers;
     using Toolbox.Editor.Hierarchy;
+    using Toolbox.Editor.Folders;
 
     internal interface IToolboxGeneralSettings
     { }
@@ -27,7 +28,6 @@ namespace Toolbox.Editor
 
         float LargeIconScale { get; }
         float SmallIconScale { get; }
-
         Vector2 LargeIconPadding { get; }
         Vector2 SmallIconPadding { get; }
 

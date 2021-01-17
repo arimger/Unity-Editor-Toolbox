@@ -6,10 +6,15 @@ namespace Toolbox.Editor.Internal
 {
     internal class FixedFieldsScope : IDisposable
     {
-        private readonly float labelWidth;
-        private readonly float fieldWidth;
+        private float labelWidth;
+        private float fieldWidth;
 
         public FixedFieldsScope()
+        {
+            Prepare();
+        }
+
+        public void Prepare()
         {
             labelWidth = EditorGUIUtility.labelWidth;
             fieldWidth = EditorGUIUtility.fieldWidth;

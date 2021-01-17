@@ -200,7 +200,7 @@ namespace Toolbox.Editor
             //get toolbox drawer for the property or draw it in the default way
             if (hasToolboxPropertyDrawer && (!hasNativePropertyDrawer || isArray))
             {
-                //NOTE: attribute-related drawers have priority 
+                //NOTE: attribute-related drawers have priority over type
                 if (hasToolboxPropertyAttributeDrawer)
                 {
                     //draw target property using the associated attribute
