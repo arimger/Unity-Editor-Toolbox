@@ -36,6 +36,7 @@ public class SampleBehaviour2 : MonoBehaviour
     [Label("1", skinStyle: SkinStyle.Box)]
 
     [ReorderableList(ListStyle.Boxed, elementLabel: "GameObject"), Tooltip("Sample List")]
+    [InLineEditor]
     public GameObject[] list;
 
     [Label("2", skinStyle: SkinStyle.Box)]

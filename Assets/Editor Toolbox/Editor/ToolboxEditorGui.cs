@@ -63,12 +63,30 @@ namespace Toolbox.Editor
         /// </summary>
         public static bool DrawHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle)
         {
+            return DrawHeaderFoldout(foldout, label, toggleOnLabelClick, headerStyle, new GUIStyle());
+        }
+
+        /// <summary>
+        /// Draws header-like label in form of foldout.
+        /// Uses built-in layouting system.
+        /// </summary>
+        public static bool DrawHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle, GUIStyle backgroundStyle)
+        {
+            return DrawHeaderFoldout(foldout, label, toggleOnLabelClick, headerStyle, backgroundStyle, EditorStyles.inspectorFullWidthMargins);
+        }
+
+        /// <summary>
+        /// Draws header-like label in form of foldout.
+        /// Uses built-in layouting system.
+        /// </summary>
+        public static bool DrawHeaderFoldout(bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle, GUIStyle backgroundStyle, GUIStyle foldoutStyle)
+        {
             //where 30.0f - header height, 2.0f - additional padding
             var rect = GUILayoutUtility.GetRect(1, 30.0f);
             rect.xMin = EditorGUIUtility.standardVerticalSpacing;
             rect.xMax = EditorGUIUtility.currentViewWidth;
 
-            return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, headerStyle);
+            return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, headerStyle, backgroundStyle, foldoutStyle);
         }
 
         /// <summary>
@@ -84,14 +102,26 @@ namespace Toolbox.Editor
         /// </summary>
         public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle)
         {
+            return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, headerStyle, new GUIStyle());
+        }
+
+        /// <summary>
+        /// Draws header-like label in form of foldout.
+        /// </summary>
+        public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle, GUIStyle backgroundStyle)
+        {
+            return DrawHeaderFoldout(rect, foldout, label, toggleOnLabelClick, headerStyle, backgroundStyle, EditorStyles.inspectorFullWidthMargins);
+        }
+
+        /// <summary>
+        /// Draws header-like label in form of foldout.
+        /// </summary>
+        public static bool DrawHeaderFoldout(Rect rect, bool foldout, GUIContent label, bool toggleOnLabelClick, GUIStyle headerStyle, GUIStyle backgroundStyle, GUIStyle foldoutStyle)
+        {
             //draw boxed background
             if (Event.current.type == EventType.Repaint)
             {
-#if UNITY_2019_3_OR_NEWER
-                Style.box2Style.Draw(rect, false, false, false, false);
-#else
-                Style.box1Style.Draw(rect, false, false, false, false);
-#endif
+                backgroundStyle.Draw(rect, false, false, false, false);
             }
 
             //create header label with additional padding
@@ -100,7 +130,7 @@ namespace Toolbox.Editor
             rect.xMin -= 10.0f;
 
             //create final foldout without label and arrow
-            return EditorGUI.Foldout(rect, foldout, GUIContent.none, toggleOnLabelClick, Style.box0Style);
+            return EditorGUI.Foldout(rect, foldout, GUIContent.none, toggleOnLabelClick,  foldoutStyle);
         }
 
         /// <summary>
@@ -134,21 +164,6 @@ namespace Toolbox.Editor
         {
             GUI.DrawTexture(rect, texture, scaleMode, alphaBlend);
         }
-
-
-        internal static class Style
-        {
-            internal static readonly GUIStyle box0Style;
-            internal static readonly GUIStyle box1Style;
-            internal static readonly GUIStyle box2Style;
-
-            static Style()
-            {
-                box0Style = new GUIStyle(EditorStyles.inspectorFullWidthMargins);
-                box1Style = new GUIStyle("box");
-                box2Style = new GUIStyle("helpBox");
-            }
-        }
     }
 
     public static partial class ToolboxEditorGui
@@ -166,6 +181,7 @@ namespace Toolbox.Editor
         /// </summary>
         public static ReorderableList CreateBoxedList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true)
         {
+            var backgroundStyle = new GUIStyle("box");
             return new ReorderableList(property, elementLabel, draggable, hasHeader, fixedSize)
             {
                 drawHeaderBackgroundCallback = (Rect rect) =>
@@ -173,14 +189,14 @@ namespace Toolbox.Editor
                     rect.y += EditorGUIUtility.standardVerticalSpacing / 2;
                     if (Event.current.type == EventType.Repaint)
                     {
-                        Style.box1Style.Draw(rect, false, false, false, false);
+                        backgroundStyle.Draw(rect, false, false, false, false);
                     }
                 },
                 drawMiddleBackgroundCallback = (Rect rect) =>
                 {
                     if (Event.current.type == EventType.Repaint)
                     {
-                        Style.box1Style.Draw(rect, false, false, false, false);
+                        backgroundStyle.Draw(rect, false, false, false, false);
                     }
                 },
                 drawFooterBackgroundCallback = (Rect rect) =>
@@ -188,7 +204,7 @@ namespace Toolbox.Editor
                     rect.y -= EditorGUIUtility.standardVerticalSpacing / 2;
                     if (Event.current.type == EventType.Repaint)
                     {
-                        Style.box1Style.Draw(rect, false, false, false, false);
+                        backgroundStyle.Draw(rect, false, false, false, false);
                     }
                 },
 #if UNITY_2019_3_OR_NEWER

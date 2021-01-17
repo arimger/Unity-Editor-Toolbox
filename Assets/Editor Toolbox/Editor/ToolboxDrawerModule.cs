@@ -349,7 +349,7 @@ namespace Toolbox.Editor
             }
             else
             {
-                //TODO: warning
+                ToolboxEditorLog.LogWarning("There is no type-based drawer associated to the " + propertyType + " type.");
                 return null;
             }
         }

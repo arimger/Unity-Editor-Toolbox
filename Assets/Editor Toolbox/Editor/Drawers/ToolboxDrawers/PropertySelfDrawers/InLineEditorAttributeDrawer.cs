@@ -118,9 +118,16 @@ namespace Toolbox.Editor.Drawers
             if (property.isExpanded)
             {
                 var editor = storage.ReturnItem(property, attribute);
+                if (editor.target != property.objectReferenceValue)
+                {
+                    //validate target value change (e.g. list reorder)
+                    storage.ClearItem(property);
+                    editor = storage.ReturnItem(property, attribute);
+                }
+
                 InspectorUtility.SetIsEditorExpanded(editor, true);
 
-                //make useage of the created (returned) instance
+                //make useage of the created (cached) Editor instance
                 using (new FixedFieldsScope())
                 {
                     DrawEditor(editor, attribute);

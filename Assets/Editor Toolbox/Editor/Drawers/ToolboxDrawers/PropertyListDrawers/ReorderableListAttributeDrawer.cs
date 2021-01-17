@@ -26,7 +26,6 @@ namespace Toolbox.Editor.Drawers
         /// <summary>
         /// Draws a <see cref="ReorderableList"/> if given property was previously cached or creates completely new instance.
         /// </summary>
-        /// <param name="property">Property to draw.</param>
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReorderableListAttribute attribute)
         {
             storage.ReturnItem(property, attribute).DoLayoutList();

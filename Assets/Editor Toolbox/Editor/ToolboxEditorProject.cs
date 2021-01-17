@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Toolbox.Editor
 {
+    using Toolbox.Editor.Folders;
+
     /// <summary>
     /// Static GUI representation for the Project Overlay.
     /// </summary>
@@ -21,21 +21,13 @@ namespace Toolbox.Editor
         }
 
 
-        /// <summary>
-        /// All custom folders mapped to a path.
-        /// </summary>
         private readonly static Dictionary<string, FolderData> pathBasedFoldersData = new Dictionary<string, FolderData>();
-        /// <summary>
-        /// All custom folders mapped to a name.
-        /// </summary>
         private readonly static Dictionary<string, FolderData> nameBasedFoldersData = new Dictionary<string, FolderData>();
 
 
         /// <summary>
         /// Draws icons and additional tooltips for matched assets.
         /// </summary>
-        /// <param name="guid"></param>
-        /// <param name="rect"></param>
         private static void OnItemCallback(string guid, Rect rect)
         {
             if (!IsOverlayAllowed)
@@ -49,12 +41,12 @@ namespace Toolbox.Editor
             //try to determine if the found path has own data
             if (TryGetFolderData(path, out var data))
             {
-                ToolboxEditorGui.DrawTooltip(rect, data.Tooltip);
-
                 if (TryGetFolderIcon(data, rect, out var icon, out var iconRect))
                 {
                     ToolboxEditorGui.DrawTexture(iconRect, icon);
                 }
+
+                ToolboxEditorGui.DrawTooltip(rect, data.Tooltip);
             }
         }
 
@@ -195,7 +187,6 @@ namespace Toolbox.Editor
             return folderIconRect;
         }
 
-
         internal static void RepaintProjectOverlay() => EditorApplication.RepaintProjectWindow();
 
 
@@ -252,95 +243,6 @@ namespace Toolbox.Editor
             /// Minimal possible height of the folder icon.
             /// </summary>
             internal const float minFolderHeight = 16.0f;
-        }
-    }
-
-    public enum FolderDataType
-    {
-        Path,
-        Name
-    }
-
-    public enum FolderIconType
-    {
-        Custom,
-        Editor
-    }
-
-    [Serializable]
-    public struct FolderData
-    {
-        //NOTE: all additional attributes are overrided by the custom FolderDataDrawer
-
-        [SerializeField, FormerlySerializedAs("type")]
-        private FolderDataType dataType;
-
-        [SerializeField, HideIf(nameof(dataType), FolderDataType.Name)]
-        private string name;
-        [SerializeField, HideIf(nameof(dataType), FolderDataType.Path), Directory, Tooltip("Relative path from Assets directory.")]
-        private string path;
-
-        [SerializeField, Tooltip("Will create additional tooltip for custom folders. Leave empty to ignore.")]
-        private string tooltip;
-
-        [SerializeField]
-        private FolderIconType iconType;
-
-        [SerializeField, HideIf(nameof(iconType), FolderIconType.Editor), FormerlySerializedAs("icon")]
-        private Texture largeIcon;
-        [SerializeField, HideIf(nameof(iconType), FolderIconType.Editor)]
-        private Texture smallIcon;
-
-        [SerializeField, HideIf(nameof(iconType), FolderIconType.Custom)]
-        private string iconName;
-
-
-        public FolderDataType DataType
-        {
-            get => dataType;
-            set => dataType = value;
-        }
-
-        public string Path
-        {
-            get => "Assets/" + path;
-            set => path = value;
-        }
-
-        public string Name
-        {
-            get => name;
-            set => name = value;
-        }
-
-        public string Tooltip
-        {
-            get => tooltip;
-            set => tooltip = value;
-        }
-
-        public FolderIconType IconType
-        {
-            get => iconType;
-            set => iconType = value;
-        }
-
-        public Texture LargeIcon
-        {
-            get => largeIcon;
-            set => largeIcon = value;
-        }
-
-        public Texture SmallIcon
-        {
-            get => smallIcon;
-            set => smallIcon = value;
-        }
-
-        public string IconName
-        {
-            get => iconName;
-            set => iconName = value;
         }
     }
 }

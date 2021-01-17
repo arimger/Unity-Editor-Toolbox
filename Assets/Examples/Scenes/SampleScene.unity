@@ -390,9 +390,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   list:
-  - {fileID: 977748987}
+  - {fileID: 0}
   - {fileID: 661896457}
-  - {fileID: 977748987}
+  - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
+  - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
+  - {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
+  - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   y: 220
   var14: 317
   var15: 8
@@ -614,7 +617,9 @@ MonoBehaviour:
   password: password
   vector2: {x: 0.18, y: 0.21}
   vector3: {x: 1, y: 0, z: 1}
-  prefab: {fileID: 0}
+  sceneReference: {fileID: 0}
+  childReference: {fileID: 0}
+  prefabReference: {fileID: 0}
   hexColor: 234CE0FF
   direction3d: {x: 0, y: 1, z: 0}
   direction2d: {x: 0, y: 1}

@@ -6,10 +6,14 @@ namespace Toolbox.Editor.Internal
 {
     internal class ZeroIndentScope : IDisposable
     {
-        private readonly int nextIndent = 0;
-        private readonly int prevIndent = 0;
+        private int prevIndent;
 
         public ZeroIndentScope()
+        {
+            Prepare(0);
+        }
+
+        public void Prepare(int nextIndent)
         {
             prevIndent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = nextIndent;

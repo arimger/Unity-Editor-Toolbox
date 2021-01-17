@@ -49,38 +49,39 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            EditorGUILayout.BeginHorizontal();
-            //NOTE1: we have to handle indentation for group
-            //NOTE2: 15.0f - internal 'indentPerLevel' value
-            GUILayout.Space(15.0f * EditorGUI.indentLevel);
-
-            EditorGUILayout.BeginVertical(Style.backgroundStyle);
-            var space = EditorGUIUtility.standardVerticalSpacing;
-            GUILayout.Space(space);
-            GUILayout.Space(space);
-
-            var minRange = (int)indexRange.x;
-            var maxRange = (int)indexRange.y;
-
-            if (minRange > 0)
+            using (new EditorGUILayout.HorizontalScope())
             {
-                EditorGUILayout.LabelField(Style.spaceContent, Style.spaceLabelStyle);
-            }
+                //NOTE1: we have to handle indentation for group
+                //NOTE2: 15.0f - internal 'indentPerLevel' value
+                GUILayout.Space(15.0f * EditorGUI.indentLevel);
+                using (new EditorGUILayout.VerticalScope(Style.backgroundStyle))
+                {
+                    var space = EditorGUIUtility.standardVerticalSpacing;
+                    GUILayout.Space(space);
+                    GUILayout.Space(space);
 
-            //draw all visible (in the range) properties
-            for (var i = minRange; i < maxRange; i++)
-            {
-                ToolboxEditorGui.DrawToolboxProperty(property.GetArrayElementAtIndex(i));
-            }
+                    var minRange = (int)indexRange.x;
+                    var maxRange = (int)indexRange.y;
 
-            if (maxRange < size)
-            {
-                EditorGUILayout.LabelField(Style.spaceContent, Style.spaceLabelStyle);
-            }
+                    if (minRange > 0)
+                    {
+                        EditorGUILayout.LabelField(Style.spaceContent, Style.spaceLabelStyle);
+                    }
 
-            GUILayout.Space(space);
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.EndHorizontal();
+                    //draw all visible (in the range) properties
+                    for (var i = minRange; i < maxRange; i++)
+                    {
+                        ToolboxEditorGui.DrawToolboxProperty(property.GetArrayElementAtIndex(i));
+                    }
+
+                    if (maxRange < size)
+                    {
+                        EditorGUILayout.LabelField(Style.spaceContent, Style.spaceLabelStyle);
+                    }
+
+                    GUILayout.Space(space);
+                }
+            }
         }
 
 

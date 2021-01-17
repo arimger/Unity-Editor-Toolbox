@@ -73,7 +73,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Simulates OnValidate broadcast call on the target object.
         /// </summary>
-        /// <param name="target"></param>
         internal static void SimulateOnValidate(Object target)
         {
             if (target == null)
@@ -91,8 +90,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Returns the visibility of the <see cref="Editor"/>.
         /// </summary>
-        /// <param name="editor"></param>
-        /// <returns></returns>
         internal static bool GetIsEditorExpanded(Editor editor)
         {
             return InternalEditorUtility.GetIsInspectorExpanded(editor.target);
@@ -101,8 +98,6 @@ namespace Toolbox.Editor
         /// <summary>
         /// Adjusts the visibility of the <see cref="Editor"/> using provided value.
         /// </summary>
-        /// <param name="editor"></param>
-        /// <param name="value"></param>
         internal static void SetIsEditorExpanded(Editor editor, bool value)
         {
             InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);

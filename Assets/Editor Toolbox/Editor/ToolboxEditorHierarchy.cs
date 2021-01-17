@@ -24,7 +24,6 @@ namespace Toolbox.Editor
             Default
         }
 
-
         static ToolboxEditorHierarchy()
         {
             EditorApplication.hierarchyWindowItemOnGUI -= OnItemCallback;
@@ -33,7 +32,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// All valid and prepared labels drawed for each default <see cref="GameObject"/>.
+        /// All valid and prepared label drawers for each item.
         /// </summary>
         private static readonly List<HierarchyPropertyLabel> propertyLabels = new List<HierarchyPropertyLabel>();
 
@@ -75,7 +74,7 @@ namespace Toolbox.Editor
 
 
         /// <summary>
-        /// Creates optional information about selected objects using the <see cref="Selection"/> class.
+        /// Creates optional information about selected objects using the internal <see cref="Selection"/> class.
         /// </summary>
         private static void DrawSceneHeaderLabel(Rect rect)
         {
@@ -100,7 +99,7 @@ namespace Toolbox.Editor
         /// </summary>
         private static void DrawEmptyItemLabel(Rect rect, GameObject gameObject, string label)
         {
-            //just keep internal label
+            //TODO: draw label without prefix
         }
 
         /// <summary>
@@ -210,6 +209,7 @@ namespace Toolbox.Editor
             return type;
         }
 
+        #region Methods: Utilities
 
         [MenuItem("GameObject/Editor Toolbox/Hierarchy Header", false, 10)]
         private static void CreateHeaderObject(MenuCommand menuCommand)
@@ -257,6 +257,7 @@ namespace Toolbox.Editor
             throw new NotImplementedException();
         }
 
+        #endregion
 
         internal static void CreateAllowedHierarchyContentCallbacks(params HierarchyObjectDataType[] items)
         {

@@ -59,7 +59,7 @@ namespace Toolbox.Editor.Internal
         private const string defaultLabelFormat = "{0} {1}";
 
         /// <summary>
-        /// Hotcontrol index unique for this instance.
+        /// Hotcontrol index, unique for this instance.
         /// </summary>
         private readonly int id = -1;
 
@@ -188,32 +188,33 @@ namespace Toolbox.Editor.Internal
                 //there was no content, so we will draw an empty element
                 itemElementRect.y = middleRect.y;
                 //draw the background
-                if (drawElementBackgroundCallback == null)
+                if (drawElementBackgroundCallback != null)
                 {
-                    DrawStandardElementBackground(itemElementRect, -1, false, false, false);
+                    drawElementBackgroundCallback(itemElementRect, -1, false, false);
                 }
                 else
                 {
-                    drawElementBackgroundCallback(itemElementRect, -1, false, false);
+                    DrawStandardElementBackground(itemElementRect, -1, false, false, false);
                 }
 
                 elementContentRect = itemElementRect;
                 elementContentRect.xMin += Style.padding;
                 elementContentRect.xMax -= Style.padding;
 
-                if (drawVoidedCallback == null)
+                if (drawVoidedCallback != null)
                 {
-                    EditorGUI.LabelField(elementContentRect, Style.emptyOrInvalidListContent);
+                    drawVoidedCallback(elementContentRect);
                 }
                 else
                 {
-                    drawVoidedCallback(elementContentRect);
+                    EditorGUI.LabelField(elementContentRect, Style.emptyOrInvalidListContent);
                 }
 
                 return;
             }
 
-            //if there are elements, we need to draw them - we will do this differently depending on if we are dragging or not
+            //if there are elements, we need to draw them - we will do
+            //this differently depending on if we are dragging or not
             if (Event.current.type == EventType.Repaint && IsDragging)
             {
                 //we are dragging, so we need to build the new list of target indices
@@ -436,7 +437,12 @@ namespace Toolbox.Editor.Internal
 
         private void UpdateDraggedY(Rect listRect)
         {
-            draggedY = Mathf.Clamp(Event.current.mousePosition.y - listRect.y, dragOffset,
+            UpdateDraggedY(listRect, Event.current.mousePosition);
+        }
+
+        private void UpdateDraggedY(Rect listRect, Vector2 mousePosition)
+        {
+            draggedY = Mathf.Clamp(mousePosition.y - listRect.y, dragOffset,
                 listRect.height - (GetElementHeight(Index) - dragOffset));
         }
 
@@ -484,9 +490,7 @@ namespace Toolbox.Editor.Internal
                         break;
                     }
 
-                    //clicking on the list should end editing any existing edits
-                    EditorGUIUtility.editingTextField = false;
-                    //pick the active element based on click position
+                    //pick the active element based on mouse position
                     Index = CalculateRowIndex(currentEvent.mousePosition.y - listRect.y);
 
                     if (Draggable)
@@ -497,6 +501,9 @@ namespace Toolbox.Editor.Internal
                         GUIUtility.hotControl = id;
                         nonDragTargetIndices = new List<int>();
                     }
+
+                    //clicking on the list should end editing any fields
+                    EditorGUIUtility.editingTextField = false;
 
                     SetKeyboardFocus();
                     currentEvent.Use();
@@ -1042,16 +1049,16 @@ namespace Toolbox.Editor.Internal
         } = 5;
 
         /// <summary>
-        /// Standard element label name.
+        /// Custom element label name.
         /// "<see cref="ElementLabel"/> {index}"
         /// </summary>
         public string ElementLabel
         {
             get; set;
-        } = defaultLabelFormat;
+        }
 
         /// <summary>
-        /// Nested 'Array.size' property.
+        /// Child Array.size property.
         /// </summary>
         public SerializedProperty Size
         {

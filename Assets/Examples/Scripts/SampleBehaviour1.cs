@@ -34,11 +34,11 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("6", skinStyle: SkinStyle.Box)]
 
-    [Indent(1)]
+    [IndentArea(1)]
     public int var3 = 1;
-    [Indent(2)]
+    [IndentArea(2)]
     public int var4 = 2;
-    [Indent(3)]
+    [IndentArea(3)]
     public int var5 = 3;
 
     [Label("7", skinStyle: SkinStyle.Box)]
@@ -80,7 +80,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("11", skinStyle: SkinStyle.Box)]
 
-    [ClassExtends(typeof(Object)), Tooltip("This variable is able to serialize Type.")]
+    [ClassExtends(typeof(Object), Grouping = ClassGrouping.ByNamespace), Tooltip("This variable is able to serialize Type.")]
     public SerializedType type1;
     [ClassImplements(typeof(System.Collections.ICollection))]
     public SerializedType type2;
@@ -125,7 +125,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("16", skinStyle: SkinStyle.Box)]
 
-    [Random(-10.0f, 10.0f)]
+    //[Random(-10.0f, 10.0f)]
     public float randomValue;
 
     [Label("17", skinStyle: SkinStyle.Box)]
@@ -162,15 +162,19 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("23", skinStyle: SkinStyle.Box)]
 
-    [Vector2Range(0, 1)]
+    //[Vector2Range(0, 1)]
     public Vector2 vector2;
-    [Vector3Range(0, 1)]
+    //[Vector3Range(0, 1)]
     public Vector3 vector3;
 
     [Label("24", skinStyle: SkinStyle.Box)]
 
-    [PrefabReference]
-    public GameObject prefab;
+    [SceneObjectOnly]
+    public GameObject sceneReference;
+    [ChildObjectOnly]
+    public GameObject childReference;
+    [PrefabObjectOnly]
+    public GameObject prefabReference;
 
     [Label("25", skinStyle: SkinStyle.Box)]
 
@@ -179,9 +183,9 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("26", skinStyle: SkinStyle.Box)]
 
-    [Vector3Direction]
+    //[Vector3Direction]
     public Vector3 direction3d;
-    [Vector2Direction]
+    //[Vector2Direction]
     public Vector2 direction2d;
 
     [Label("27", skinStyle: SkinStyle.Box)]
