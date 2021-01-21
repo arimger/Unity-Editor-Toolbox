@@ -9,12 +9,8 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Internal
 {
-    //using Style = ReorderableList.Style;
-
-    public class ReorderableList2
+    public class ReorderableList2 : ReorderableListBase
     {
-        public delegate void DrawRectCallbackDelegate(Rect rect);
-
         public DrawRectCallbackDelegate drawHeaderCallback;
         public DrawRectCallbackDelegate drawVoidedCallback;
         public DrawRectCallbackDelegate drawFooterCallback;
@@ -23,10 +19,6 @@ namespace Toolbox.Editor.Internal
         public DrawRectCallbackDelegate drawHeaderBackgroundCallback;
         public DrawRectCallbackDelegate drawFooterBackgroundCallback;
 
-
-        private const string defaultLabelFormat = "{0} {1}";
-
-        private readonly int id = -1;
 
         private float draggedY;
 
@@ -37,29 +29,17 @@ namespace Toolbox.Editor.Internal
         private Rect[] elementsRects;
 
 
-        public ReorderableList2(SerializedProperty list) : this(list, null, true, true, false)
+        public ReorderableList2(SerializedProperty list)
+            : base(list)
         { }
 
-        public ReorderableList2(SerializedProperty list, bool draggable) : this(list, null, draggable, true, false)
+        public ReorderableList2(SerializedProperty list, bool draggable)
+            : base(list, draggable)
         { }
 
-        public ReorderableList2(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool hasFixedSize)
-        {
-            if (list == null || list.isArray == false)
-            {
-                throw new ArgumentException("List should be an Array SerializedProperty.", nameof(list));
-            }
-
-            id = GetHashCode();
-
-            Draggable = draggable;
-            HasHeader = hasHeader;
-            HasFixedSize = hasFixedSize;
-            ElementLabel = elementLabel;
-
-            List = list;
-            Size = list.FindPropertyRelative("Array.size");
-        }
+        public ReorderableList2(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize)
+            : base(list, elementLabel, draggable, hasHeader, fixedSize)
+        { }
 
 
         public void DoList()
@@ -139,7 +119,11 @@ namespace Toolbox.Editor.Internal
                             //TODO:
                             if (Event.current.type == EventType.Repaint)
                             {
-                                Style.elementBackgroundStyle.Draw(lineGroup.rect, false, isActive, isActive, hasFocus);
+                                var backgroundRect = lineGroup.rect;
+                                backgroundRect.xMin -= 4.0f;
+                                backgroundRect.xMax += 4.0f;
+                                var isSelected = isActive || isTarget;
+                                DrawStandardElementBackground(backgroundRect, i, isSelected, hasFocus, Draggable);
                             }
 
                             var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.lineHeight), GUILayout.Width(Style.dragAreaWidth));
@@ -165,26 +149,6 @@ namespace Toolbox.Editor.Internal
 
                         elementsRects[i] = GUILayoutUtility.GetLastRect();
 
-                        //TODO: visualize selection target
-                        //if (isActive)
-                        //{
-                        //    var backgroundRect = new Rect(elementsRects[i]);
-                        //    backgroundRect.xMin -= 2.0f;
-                        //    backgroundRect.xMax += 2.0f;
-                        //    var color = hasFocus
-                        //        ? new Color(0.19f, 0.30f, 0.57f, 0.30f)
-                        //        : new Color(0.20f, 0.20f, 0.20f, 0.20f);
-                        //    var topLineRect = backgroundRect;
-                        //    topLineRect.yMin = topLineRect.yMin - 2.0f;
-                        //    topLineRect.yMax = topLineRect.yMin + 1.0f;
-                        //    var botLineRect = backgroundRect;
-                        //    botLineRect.yMax = botLineRect.yMax + 2.0f;
-                        //    botLineRect.yMin = botLineRect.yMax - 1.0f;
-                        //    EditorGUI.DrawRect(backgroundRect, color);
-                        //    EditorGUI.DrawRect(topLineRect, Color.blue);
-                        //    EditorGUI.DrawRect(botLineRect, Color.blue);
-                        //}
-
                         //TODO: visualize dragging target
                         if (isTarget)
                         {
@@ -201,10 +165,15 @@ namespace Toolbox.Editor.Internal
                                 draggingRect.yMax = elementsRect.yMax + 2.0f + 2.0f;
                             }
 
-                            draggingRect.xMin -= 2.0f;
+                            draggingRect.xMin += Style.dragAreaWidth;
                             draggingRect.xMax += 2.0f;
-                            EditorGUI.DrawRect(draggingRect, new Color(0.0f, 0.0f, 0.0f, 0.7f));
-                            EditorGUI.DrawRect(elementsRect, new Color(0.0f, 0.0f, 0.0f, 0.1f));
+                            EditorGUI.DrawRect(draggingRect, new Color(0.3f, 0.47f, 0.75f));
+
+                            //if (Event.current.type == EventType.Repaint)
+                            //{
+                            //    var style = new GUIStyle("TV Insertion");
+                            //    style.Draw(draggingRect, true, true, true, true);
+                            //}
                         }
 
                         if (isEnding)
@@ -229,7 +198,7 @@ namespace Toolbox.Editor.Internal
                     fullRect.yMax += elementsRects[i].height;
                 }
 
-                //TODO: visualize dragged label
+                //TODO:
                 var targetRect = new Rect(fullRect);
                 targetRect.y = draggedY;
                 targetRect.height = 0.0f;
@@ -237,18 +206,18 @@ namespace Toolbox.Editor.Internal
                 targetRect.yMax += 10.0f;
                 targetRect.xMax = targetRect.xMin + EditorGUIUtility.labelWidth - 4.0f;
 
-                if (Event.current.type == EventType.Repaint)
-                {
-                    //Style.middleBackgroundStyle.Draw(targetRect, false, false, false, false);
-                }
-
                 var handleRect = new Rect(targetRect);
                 handleRect.xMax = handleRect.xMin + Style.dragAreaWidth;
                 targetRect.xMin = targetRect.xMin + Style.dragAreaWidth + 4.0f;
 
-                DrawStandardHandle(handleRect, Index, true, true, Draggable);
-
-                EditorGUI.LabelField(targetRect, List.GetArrayElementAtIndex(Index).displayName);
+                if (drawHandleCallback != null)
+                {
+                    drawHandleCallback(handleRect);
+                }
+                else
+                {
+                    DrawStandardHandle(handleRect, Index, true, true, Draggable);
+                }
             }
 
             DoDraggingAndSelection();
@@ -256,7 +225,7 @@ namespace Toolbox.Editor.Internal
 
         private void DoListFooter()
         {
-            if (HasFixedSize)
+            if (FixedSize)
             {
                 return;
             }
@@ -320,12 +289,12 @@ namespace Toolbox.Editor.Internal
 
                 case EventType.MouseDown:
                     {
-                        if (Event.current.button != 0)
+                        if (currentEvent.button != 0)
                         {
                             break;
                         }
 
-                        var selectedIndex = GetCoveredElementIndex(currentEvent.mousePosition);
+                        var selectedIndex = GetCoveredElementIndex(currentEvent.mousePosition.y);
                         if (selectedIndex == -1)
                         {
                             break;
@@ -356,7 +325,7 @@ namespace Toolbox.Editor.Internal
                         }
 
                         IsDragging = true;
-                        lastCoveredIndex = GetCoveredElementIndex(currentEvent.mousePosition);
+                        lastCoveredIndex = GetCoveredElementIndex();
 
                         UpdateDraggedY();
                         currentEvent.Use();
@@ -376,7 +345,7 @@ namespace Toolbox.Editor.Internal
 
                         try
                         {
-                            var targetIndex = GetCoveredElementIndex(currentEvent.mousePosition);
+                            var targetIndex = GetCoveredElementIndex();
                             if (targetIndex != Index)
                             {
                                 if (List != null)
@@ -442,16 +411,17 @@ namespace Toolbox.Editor.Internal
 
         private int GetCoveredElementIndex()
         {
-            return GetCoveredElementIndex(Event.current.mousePosition);
+            return GetCoveredElementIndex(draggedY);
         }
 
-        private int GetCoveredElementIndex(Vector2 mousePosition)
+        private int GetCoveredElementIndex(float draggedY)
         {
             if (elementsRects != null)
             {
                 for (var i = 0; i < elementsRects.Length; i++)
                 {
-                    if (elementsRects[i].Contains(Event.current.mousePosition))
+                    if (elementsRects[i].yMin <= draggedY &&
+                        elementsRects[i].yMax >= draggedY)
                     {
                         return i;
                     }
@@ -459,73 +429,6 @@ namespace Toolbox.Editor.Internal
             }
 
             return -1;
-        }
-
-
-        public string GetElementDefaultName(int index)
-        {
-            return string.Format(defaultLabelFormat, "Element", index);
-        }
-
-        public string GetElementDefinedName(int index)
-        {
-            return ElementLabel != null
-                ? string.Format(defaultLabelFormat, ElementLabel, index) : null;
-        }
-
-        public string GetElementDisplayName(SerializedProperty element, int index)
-        {
-            var elementName = element.displayName;
-            var defaultName = GetElementDefaultName(index);
-            if (defaultName != elementName)
-            {
-                return elementName;
-            }
-
-            var definedName = GetElementDefinedName(index);
-            if (definedName == null)
-            {
-                return elementName;
-            }
-
-            return definedName;
-        }
-
-        public void SetKeyboardFocus()
-        {
-            GUIUtility.keyboardControl = id;
-        }
-
-        public bool HasKeyboardFocus()
-        {
-            return GUIUtility.keyboardControl == id;
-        }
-
-        public void CutKeyboardFocus()
-        {
-            if (GUIUtility.keyboardControl == id)
-            {
-                GUIUtility.keyboardControl = 0;
-            }
-        }
-
-        public void AppendElement()
-        {
-            Index = (List.arraySize += 1) - 1;
-        }
-
-        public void RemoveElement()
-        {
-            RemoveElement(Index);
-        }
-
-        public void RemoveElement(int index)
-        {
-            List.DeleteArrayElementAtIndex(index);
-            if (Index >= List.arraySize - 1)
-            {
-                Index = List.arraySize - 1;
-            }
         }
 
 
@@ -629,7 +532,7 @@ namespace Toolbox.Editor.Internal
             //adjust OX position and width for the size property
             rect.xMin = rect.xMax - Style.sizeAreaWidth;
 
-            using (new EditorGUI.DisabledScope(HasFixedSize))
+            using (new EditorGUI.DisabledScope(FixedSize))
             {
                 var property = Size;
 
@@ -664,9 +567,13 @@ namespace Toolbox.Editor.Internal
         public void DrawStandardElement(int index, bool selected, bool focused, bool draggable)
         {
             var element = List.GetArrayElementAtIndex(index);
+            var label = HasLabels 
+                ? new GUIContent(GetElementDisplayName(element, index))
+                : GUIContent.none;
+            //TODO: label
             //if (Event.current.type == EventType.Layout)
             {
-                ToolboxEditorGui.DrawToolboxProperty(element);
+                ToolboxEditorGui.DrawToolboxProperty(element, label);
             }
         }
 
@@ -724,93 +631,6 @@ namespace Toolbox.Editor.Internal
         }
 
         #endregion
-
-
-        public int Index
-        {
-            get; set;
-        } = -1;
-
-        public int Count
-        {
-            get
-            {
-                if (!List.hasMultipleDifferentValues)
-                {
-                    return List.arraySize;
-                }
-
-                //if we are during multi-selection
-                var smallerArraySize = List.arraySize;
-                foreach (var targetObject in List.serializedObject.targetObjects)
-                {
-                    using (var serializedObject = new SerializedObject(targetObject))
-                    {
-                        var property = serializedObject.FindProperty(List.propertyPath);
-                        smallerArraySize = Math.Min(property.arraySize, smallerArraySize);
-                    }
-                }
-                //return the smallest array size
-                return smallerArraySize;
-            }
-        }
-
-        public bool Draggable
-        {
-            get; set;
-        }
-
-        public bool IsDragging
-        {
-            get; private set;
-        }
-
-        public bool HasFixedSize
-        {
-            get; private set;
-        }
-
-        public bool HasHeader
-        {
-            get; set;
-        }
-
-        public float HeaderHeight { get; set; } = 18.0f;
-
-        public float FooterHeight { get; set; } = 20.0f;
-
-        /// <summary>
-        /// Standard spacing between elements.
-        /// </summary>
-        public float ElementSpacing
-        {
-            get; set;
-        } = 5.0f;
-
-        /// <summary>
-        /// Custom element label name.
-        /// "<see cref="ElementLabel"/> {index}"
-        /// </summary>
-        public string ElementLabel
-        {
-            get; set;
-        }
-
-        /// <summary>
-        /// Child Array.size property.
-        /// </summary>
-        public SerializedProperty Size
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Associated array property.
-        /// </summary>
-        public SerializedProperty List
-        {
-            get; private set;
-        }
 
 
         /// <summary>
