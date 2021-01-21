@@ -391,10 +391,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   list:
   - {fileID: 0}
-  - {fileID: 661896457}
-  - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   - {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
+  - {fileID: 661896457}
+  - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   y: 220
   var14: 317
@@ -620,7 +620,7 @@ MonoBehaviour:
   sceneReference: {fileID: 0}
   childReference: {fileID: 0}
   prefabReference: {fileID: 0}
-  hexColor: 234CE0FF
+  hexColor: 4D7AC0FF
   direction3d: {x: 0, y: 1, z: 0}
   direction2d: {x: 0, y: 1}
   sampleField:

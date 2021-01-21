@@ -33,7 +33,7 @@ public class SampleEditor : ToolboxEditor
         EditorGUILayout.Space();
 
         serializedObject.Update();
-        list.DoLayoutList();
+        list.DoList();
         EditorGUILayout.TextField("AAAAA", "AAAAAA");
         EditorGUILayout.ObjectField(new GUIContent("AAA"), target, typeof(Component), true);
         list2.DoList();

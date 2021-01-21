@@ -306,6 +306,15 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
+        /// Draws property using additional <see cref="PropertyDrawer"/>s and <see cref="Drawers.ToolboxAttributeDrawer"/>s.
+        /// Uses built-in layouting system.
+        /// </summary>
+        public static void DrawToolboxProperty(SerializedProperty property, GUIContent label)
+        {
+            ToolboxDrawerModule.GetPropertyHandler(property)?.OnGuiLayout(label);
+        }
+
+        /// <summary>
         /// Draws property in default way but children will support Toolbox drawers.
         /// Uses built-in layouting system.
         /// </summary>

@@ -9,21 +9,11 @@ namespace Toolbox.Editor.Internal
     /// <summary>
     /// Custom implementation of the <see cref="UnityEditorInternal.ReorderableList"/>.
     /// </summary>
-    public class ReorderableList
+    public class ReorderableList : ReorderableListBase
     {
-        public delegate float ElementCallbackDelegate(int index);
-
-        public delegate void DrawRectCallbackDelegate(Rect rect);
-
         public delegate void DrawIndexedRectCallbackDelegate(Rect rect, int index, bool isActive, bool isFocused);
 
-        public delegate void DrawRelatedRectCallbackDelegate(Rect rect, ReorderableList list);
-
-        public delegate bool CanChangeListCallbackDelegate(ReorderableList list);
-
-        public delegate void ChangeDetailsCallbackDelegate(ReorderableList list, int oldIndex, int newIndex);
-
-        public delegate void ChangeListCallbackDelegate(ReorderableList list);
+        public delegate float ElementHeightCallbackDelegate(int index);
 
 
         public DrawRectCallbackDelegate drawHeaderCallback;
@@ -40,64 +30,39 @@ namespace Toolbox.Editor.Internal
 
         public DrawRelatedRectCallbackDelegate onAppendDropdownCallback;
 
-        public ChangeListCallbackDelegate onAppendCallback;
-        public ChangeListCallbackDelegate onRemoveCallback;
-        public ChangeListCallbackDelegate onSelectCallback;
+        public ChangeListNowCallbackDelegate onAppendCallback;
+        public ChangeListNowCallbackDelegate onRemoveCallback;
+        public ChangeListNowCallbackDelegate onSelectCallback;
 
-        public ChangeListCallbackDelegate onChangedCallback;
-        public ChangeListCallbackDelegate onMouseUpCallback;
-        public ChangeListCallbackDelegate onReorderCallback;
+        public ChangeListNowCallbackDelegate onChangedCallback;
+        public ChangeListNowCallbackDelegate onMouseUpCallback;
+        public ChangeListNowCallbackDelegate onReorderCallback;
 
         public ChangeDetailsCallbackDelegate onDetailsCallback;
 
         public CanChangeListCallbackDelegate onCanAppendCallback;
         public CanChangeListCallbackDelegate onCanRemoveCallback;
 
-        public ElementCallbackDelegate elementHeightCallback;
+        public ElementHeightCallbackDelegate elementHeightCallback;
 
-
-        private const string defaultLabelFormat = "{0} {1}";
-
-        /// <summary>
-        /// Hotcontrol index, unique for this instance.
-        /// </summary>
-        private readonly int id = -1;
 
         private float draggedY;
         private float dragOffset;
 
-        private float headerHeight = 18.0f;
-        private float footerHeight = 20.0f;
-
         private List<int> nonDragTargetIndices;
 
 
-        public ReorderableList(SerializedProperty list) : this(list, null, true, true, false)
+        public ReorderableList(SerializedProperty list) 
+            : base(list)
         { }
 
-        public ReorderableList(SerializedProperty list, bool draggable) : this(list, null, draggable, true, false)
+        public ReorderableList(SerializedProperty list, bool draggable)
+            : base(list, draggable)
         { }
 
-        public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool hasFixedSize)
-        {
-            //validate parameters
-            if (list == null || list.isArray == false)
-            {
-                throw new ArgumentException("List should be an Array SerializedProperty.", nameof(list));
-            }
-
-            id = GetHashCode();
-
-            //set basic properties
-            Draggable = draggable;
-            HasHeader = hasHeader;
-            HasFixedSize = hasFixedSize;
-            ElementLabel = elementLabel;
-
-            //ser serialized data
-            List = list;
-            Size = list.FindPropertyRelative("Array.size");
-        }
+        public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize)
+            : base(list, elementLabel, draggable, hasHeader, fixedSize)
+        { }
 
 
         /// <summary>
@@ -405,7 +370,7 @@ namespace Toolbox.Editor.Internal
         private void DoListFooter(Rect footerRect)
         {
             //ignore footer if list has fixed size
-            if (HasFixedSize)
+            if (FixedSize)
             {
                 return;
             }
@@ -485,7 +450,7 @@ namespace Toolbox.Editor.Internal
                     break;
 
                 case EventType.MouseDown:
-                    if (!listRect.Contains(currentEvent.mousePosition) || Event.current.button != 0)
+                    if (!listRect.Contains(currentEvent.mousePosition) || currentEvent.button != 0)
                     {
                         break;
                     }
@@ -644,12 +609,14 @@ namespace Toolbox.Editor.Internal
 
         private float GetElementHeight(int index, bool includeChildren = true)
         {
-            if (elementHeightCallback == null)
+            if (elementHeightCallback != null)
+            {
+                return elementHeightCallback(index);
+            }
+            else
             {
                 return EditorGUI.GetPropertyHeight(List.GetArrayElementAtIndex(index), includeChildren);
             }
-
-            return elementHeightCallback(index);
         }
 
         private float GetElementYOffset(int index)
@@ -689,76 +656,13 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        public string GetElementDefaultName(int index)
-        {
-            return string.Format(defaultLabelFormat, "Element", index);
-        }
-
-        public string GetElementDefinedName(int index)
-        {
-            return ElementLabel != null
-                ? string.Format(defaultLabelFormat, ElementLabel, index) : null;
-        }
-
-        public string GetElementDisplayName(SerializedProperty element, int index)
-        {
-            //try to determine name using the internal API
-            var elementName = element.displayName;
-            var defaultName = GetElementDefaultName(index);
-            if (defaultName != elementName)
-            {
-                return elementName;
-            }
-
-            //try to override name using customized label
-            var definedName = GetElementDefinedName(index);
-            if (definedName == null)
-            {
-                return elementName;
-            }
-
-            return definedName;
-        }
-
-        public void SetKeyboardFocus()
-        {
-            GUIUtility.keyboardControl = id;
-        }
-
-        public bool HasKeyboardFocus()
-        {
-            return GUIUtility.keyboardControl == id;
-        }
-
-        public void CutKeyboardFocus()
-        {
-            if (GUIUtility.keyboardControl == id)
-            {
-                GUIUtility.keyboardControl = 0;
-            }
-        }
-
         public float GetHeight()
         {
             return MiddleHeight + HeaderHeight + FooterHeight;
         }
 
-        public void AppendElement()
-        {
-            Index = (List.arraySize += 1) - 1;
-        }
 
-        public void RemoveElement()
-        {
-            List.DeleteArrayElementAtIndex(Index);
-            if (Index >= List.arraySize - 1)
-            {
-                Index = List.arraySize - 1;
-            }
-        }
-
-
-        public void DoLayoutList()
+        public void DoList()
         {
             var headerRect = GUILayoutUtility.GetRect(0, HeaderHeight, GUILayout.ExpandWidth(true));
             var middleRect = GUILayoutUtility.GetRect(0, MiddleHeight, GUILayout.ExpandWidth(true));
@@ -879,7 +783,7 @@ namespace Toolbox.Editor.Internal
             //adjust OX position and width for the size property
             rect.xMin = rect.xMax - Style.sizeAreaWidth;
 
-            using (new EditorGUI.DisabledScope(HasFixedSize))
+            using (new EditorGUI.DisabledScope(FixedSize))
             {
                 var property = Size;
 
@@ -914,8 +818,10 @@ namespace Toolbox.Editor.Internal
         public void DrawStandardElement(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
             var element = List.GetArrayElementAtIndex(index);
-
-            EditorGUI.PropertyField(rect, element, new GUIContent(GetElementDisplayName(element, index)), element.isExpanded);
+            var label = HasLabels 
+                ? new GUIContent(GetElementDisplayName(element, index)) 
+                : new GUIContent();
+            EditorGUI.PropertyField(rect, element, label, element.isExpanded);
         }
 
         /// <summary>
@@ -974,103 +880,9 @@ namespace Toolbox.Editor.Internal
         #endregion
 
 
-        public int Index
-        {
-            get; set;
-        } = -1;
-
-        public int Count
-        {
-            get
-            {
-                if (!List.hasMultipleDifferentValues)
-                {
-                    return List.arraySize;
-                }
-
-                //if we are during multi-selection
-                var smallerArraySize = List.arraySize;
-                foreach (var targetObject in List.serializedObject.targetObjects)
-                {
-                    using (var serializedObject = new SerializedObject(targetObject))
-                    {
-                        var property = serializedObject.FindProperty(List.propertyPath);
-                        smallerArraySize = Math.Min(property.arraySize, smallerArraySize);
-                    }
-                }
-                //return the smallest array size
-                return smallerArraySize;
-            }
-        }
-
-        public bool Draggable
-        {
-            get; set;
-        }
-
-        public bool IsDragging
-        {
-            get; private set;
-        }
-
-        public bool HasFixedSize
-        {
-            get; private set;
-        }
-
-        public bool HasHeader
-        {
-            get; set;
-        }
-
-        public float HeaderHeight
-        {
-            get => HasHeader ? headerHeight : 0.0f;
-            set => headerHeight = value;
-        }
-
         public float MiddleHeight
         {
             get => GetRowHeight();
-        }
-
-        public float FooterHeight
-        {
-            get => HasFixedSize ? 0.0f : footerHeight;
-            set => footerHeight = value;
-        }
-
-        /// <summary>
-        /// Standard spacing between elements.
-        /// </summary>
-        public float ElementSpacing
-        {
-            get; set;
-        } = 5;
-
-        /// <summary>
-        /// Custom element label name.
-        /// "<see cref="ElementLabel"/> {index}"
-        /// </summary>
-        public string ElementLabel
-        {
-            get; set;
-        }
-
-        /// <summary>
-        /// Child Array.size property.
-        /// </summary>
-        public SerializedProperty Size
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Associated array property.
-        /// </summary>
-        public SerializedProperty List
-        {
-            get; private set;
         }
 
 

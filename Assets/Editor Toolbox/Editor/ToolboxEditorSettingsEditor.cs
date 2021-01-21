@@ -156,7 +156,7 @@ namespace Toolbox.Editor
 #if UNITY_2019_3_OR_NEWER
                 EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
-                rowDataItemsList.DoLayoutList();
+                rowDataItemsList.DoList();
 #if UNITY_2019_3_OR_NEWER
                 EditorGUILayout.EndVertical();
 #endif
@@ -236,7 +236,7 @@ namespace Toolbox.Editor
 #if UNITY_2019_3_OR_NEWER
                 EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
-                customFoldersList.DoLayoutList();
+                customFoldersList.DoList();
 #if UNITY_2019_3_OR_NEWER
                 EditorGUILayout.EndVertical();
 #endif
@@ -282,7 +282,7 @@ namespace Toolbox.Editor
 #if UNITY_2019_3_OR_NEWER
             EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
-            drawerHandlersLists[enabledToShowDrawerType].DoLayoutList();
+            drawerHandlersLists[enabledToShowDrawerType].DoList();
 #if UNITY_2019_3_OR_NEWER
             EditorGUILayout.EndVertical();
 #endif
