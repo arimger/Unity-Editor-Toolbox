@@ -25,7 +25,7 @@ Unity 2018.x or newer
 	```
 	https://github.com/arimger/Unity-Editor-Toolbox.git#upm
 	```
-	- 2 way: Copy and paste `Editor Toolbox` directory into your project (Assets/...)
+	- 2 way: Copy and paste `Editor Toolbox` directory into your project (Assets/...) + add dependencies
 - Open Edit/Project Settings/Editor Toolbox window
 - If settings file is not found, press "Refresh" button or create new one
 - Manage settings in your way
