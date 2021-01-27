@@ -14,21 +14,24 @@ namespace Toolbox.Editor.Internal
 
         public delegate float ElementHeightCallbackDelegate(int index);
 
-
-        public DrawIndexedRectCallbackDelegate drawElementHandleCallback;
         public DrawIndexedRectCallbackDelegate drawElementCallback;
+        public DrawIndexedRectCallbackDelegate drawElementHandleCallback;
         public DrawIndexedRectCallbackDelegate drawElementBackgroundCallback;
 
         public ElementHeightCallbackDelegate elementHeightCallback;
 
 
-        private float draggedY;
+        /// <summary>
+        /// Offset between a dragging handle and the real mouse position.
+        /// </summary>
         private float dragOffset;
 
         private List<int> nonDragTargetIndices;
 
+        private Rect middleRect;
 
-        public ReorderableList(SerializedProperty list) 
+
+        public ReorderableList(SerializedProperty list)
             : base(list)
         { }
 
@@ -41,22 +44,6 @@ namespace Toolbox.Editor.Internal
         { }
 
 
-        /// <summary>
-        /// Starts all drawing methods for each segment.
-        /// </summary>
-        private void DoList(Rect headerRect, Rect midderRect, Rect footerRect)
-        {
-            //make sure there is no indent while drawing
-            //NOTE: indentation will break some controls
-            using (new ZeroIndentScope())
-            {
-                DoListHeader(headerRect);
-                DoListMiddle(midderRect);
-                DoListFooter(footerRect);
-            }
-        }
-
-
         protected override void DoListMiddle()
         {
             var rect = GUILayoutUtility.GetRect(0, MiddleHeight, GUILayout.ExpandWidth(true));
@@ -65,6 +52,7 @@ namespace Toolbox.Editor.Internal
 
         protected override void DoListMiddle(Rect middleRect)
         {
+            this.middleRect = middleRect;
             //how many elements? If none, make space for showing default line that shows no elements are present
             var arraySize = Count;
 
@@ -128,7 +116,7 @@ namespace Toolbox.Editor.Internal
             if (Event.current.type == EventType.Repaint && IsDragging)
             {
                 //we are dragging, so we need to build the new list of target indices
-                var targetIndex = CalculateRowIndex();
+                var targetIndex = GetCoveredElementIndex(draggedY);
 
                 nonDragTargetIndices.Clear();
                 for (var i = 0; i < arraySize; i++)
@@ -205,8 +193,8 @@ namespace Toolbox.Editor.Internal
                     EditorGUIUtility.labelWidth += Style.dragAreaWidth;
                 }
 
-                //finally get position of the active element
-                elementY = draggedY - dragOffset + middleRect.y;
+                //calculate position of the active element
+                elementY = draggedY - dragOffset;
                 itemElementRect.y = elementY;
                 dragElementRect.y = elementY;
                 //adjust rect height to the active element
@@ -307,198 +295,31 @@ namespace Toolbox.Editor.Internal
                     EditorGUIUtility.labelWidth += Style.dragAreaWidth;
                 }
             }
-
-            //handle the interaction
-            DoDraggingAndSelection(middleRect);
         }
 
-
-        private void UpdateDraggedY(Rect listRect)
+        protected override void OnDrag(Event currentEvent)
         {
-            UpdateDraggedY(listRect, Event.current.mousePosition);
+            base.OnDrag(currentEvent);
+
+            //if we can drag, set the hot control and start dragging (storing the offset)
+            dragOffset = ((currentEvent.mousePosition.y - middleRect.y) - GetElementYOffset(Index)) / 2;
+            nonDragTargetIndices = new List<int>();
         }
 
-        private void UpdateDraggedY(Rect listRect, Vector2 mousePosition)
+        protected override void Update(Event currentEvent)
         {
-            draggedY = Mathf.Clamp(mousePosition.y - listRect.y, dragOffset,
-                listRect.height - (GetElementHeight(Index) - dragOffset));
+            base.Update(currentEvent);
         }
 
-        private void DoDraggingAndSelection(Rect listRect)
+        protected override void OnDrop(Event currentEvent)
         {
-            var isClicked = false;
-            var oldIndex = Index;
-            var currentEvent = Event.current;
-
-            switch (currentEvent.GetTypeForControl(id))
-            {
-                case EventType.KeyDown:
-                    if (GUIUtility.keyboardControl != id)
-                    {
-                        return;
-                    }
-
-                    //if we have keyboard focus, arrow through the list
-                    if (currentEvent.keyCode == KeyCode.DownArrow)
-                    {
-                        Index += 1;
-                        currentEvent.Use();
-                    }
-
-                    if (currentEvent.keyCode == KeyCode.UpArrow)
-                    {
-                        Index -= 1;
-                        currentEvent.Use();
-                    }
-
-                    if (currentEvent.keyCode == KeyCode.Escape && GUIUtility.hotControl == id)
-                    {
-                        GUIUtility.hotControl = 0;
-                        IsDragging = false;
-                        currentEvent.Use();
-                    }
-
-                    //don't allow arrowing through the ends of the list
-                    Index = Mathf.Clamp(Index, 0, List.arraySize - 1);
-                    break;
-
-                case EventType.MouseDown:
-                    if (!listRect.Contains(currentEvent.mousePosition) || currentEvent.button != 0)
-                    {
-                        break;
-                    }
-
-                    //pick the active element based on mouse position
-                    Index = CalculateRowIndex(currentEvent.mousePosition.y - listRect.y);
-
-                    if (Draggable)
-                    {
-                        //if we can drag, set the hot control and start dragging (storing the offset)
-                        dragOffset = (currentEvent.mousePosition.y - listRect.y) - GetElementYOffset(Index);
-                        UpdateDraggedY(listRect);
-                        GUIUtility.hotControl = id;
-                        nonDragTargetIndices = new List<int>();
-                    }
-
-                    //clicking on the list should end editing any fields
-                    EditorGUIUtility.editingTextField = false;
-
-                    SetKeyboardFocus();
-                    currentEvent.Use();
-                    isClicked = true;
-                    break;
-
-                case EventType.MouseDrag:
-                    if (!Draggable || GUIUtility.hotControl != id)
-                    {
-                        break;
-                    }
-
-                    //set dragging state on first MouseDrag event after we got hotcontrol 
-                    //to prevent animating elements when deleting elements by context menu
-                    IsDragging = true;
-
-                    //if we are dragging, update the position
-                    UpdateDraggedY(listRect);
-                    currentEvent.Use();
-                    break;
-
-                case EventType.MouseUp:
-                    if (!Draggable)
-                    {
-                        //if mouse up was on the same index as mouse down we fire a mouse up callback (useful if for beginning renaming on mouseup)
-                        if (onMouseUpCallback != null && IsMouseInActiveElement(listRect))
-                        {
-                            //set the keyboard control
-                            onMouseUpCallback(this);
-                        }
-
-                        break;
-                    }
-
-                    //hotcontrol is only set when list is draggable
-                    if (GUIUtility.hotControl != id)
-                    {
-                        break;
-                    }
-
-                    currentEvent.Use();
-                    IsDragging = false;
-
-                    try
-                    {
-                        //what will be the index of this if we release?
-                        var targetIndex = CalculateRowIndex();
-                        if (targetIndex != Index)
-                        {
-                            //if the target index is different than the current index
-                            if (List != null)
-                            {
-                                List.serializedObject.Update();
-                                //reorganize the target array and move current selected element
-                                List.MoveArrayElement(Index, targetIndex);
-
-                                //unfortunately it will break any EditorGUI.BeginCheck() scope
-                                //it has to be called since we edited the array property
-                                List.serializedObject.ApplyModifiedProperties();
-                                GUI.changed = true;
-                            }
-
-                            var oldActiveElement = Index;
-                            var newActiveElement = targetIndex;
-
-                            //update the active element, now that we've moved it
-                            Index = targetIndex;
-                            //give the user a callback
-                            if (onDetailsCallback != null)
-                            {
-                                onDetailsCallback(this, oldActiveElement, newActiveElement);
-                            }
-                            else
-                            {
-                                onReorderCallback?.Invoke(this);
-                            }
-
-                            onChangedCallback?.Invoke(this);
-                        }
-                        else
-                        {
-                            onMouseUpCallback?.Invoke(this);
-                        }
-                    }
-                    finally
-                    {
-                        //cleanup before we exit GUI
-                        GUIUtility.hotControl = 0;
-                        nonDragTargetIndices = null;
-                    }
-                    break;
-            }
-
-            //if the index has changed and there is a selected callback, call it
-            if ((Index != oldIndex || isClicked))
-            {
-                onSelectCallback?.Invoke(this);
-            }
+            base.OnDrop(currentEvent);
+            nonDragTargetIndices = null;
         }
 
-        private bool IsMouseInActiveElement(Rect listRect)
+        protected override int GetCoveredElementIndex(float localY)
         {
-            var mousePosition = Event.current.mousePosition;
-            var mouseRowIndex = CalculateRowIndex(mousePosition.y - listRect.y);
-
-            //check if mouse position is inside current row rect 
-            return mouseRowIndex == Index && GetRowRect(mouseRowIndex, listRect).Contains(mousePosition);
-        }
-
-        private int CalculateRowIndex()
-        {
-            return CalculateRowIndex(draggedY);
-        }
-
-        private int CalculateRowIndex(float localY)
-        {
-            var rowYOffset = 0.0f;
+            var rowYOffset = middleRect.yMin;
             var itemsCount = Count;
             for (var i = 0; i < itemsCount; i++)
             {
@@ -512,8 +333,14 @@ namespace Toolbox.Editor.Internal
                 rowYOffset += height;
             }
 
-            return itemsCount - 1;
+            return -1;
         }
+
+        protected override float GetDraggedY(Vector2 mousePosition)
+        {
+            return Mathf.Clamp(mousePosition.y, middleRect.yMin + dragOffset, middleRect.yMax - (GetRowHeight(Index) - dragOffset));
+        }
+
 
         private float GetRowHeight(int index)
         {
@@ -551,43 +378,30 @@ namespace Toolbox.Editor.Internal
             return offset;
         }
 
-        private float GetRowHeight()
-        {
-            var arraySize = Count;
-            var listHeight = Style.padding * 2;
-            if (arraySize != 0)
-            {
-                listHeight += GetElementYOffset(arraySize - 1) + GetRowHeight(arraySize - 1);
-            }
-
-            return listHeight;
-        }
-
         private Rect GetRowRect(int index, Rect listRect)
         {
             return new Rect(listRect.x, listRect.y + GetElementYOffset(index), listRect.width, GetElementHeight(index));
         }
 
 
-        public float GetHeight()
-        {
-            return MiddleHeight + HeaderHeight + FooterHeight;
-        }
-
-
-        public void DoList(Rect rect)
-        {
-            var headerRect = new Rect(rect.x, rect.y, rect.width, HeaderHeight);
-            var middleRect = new Rect(rect.x, headerRect.y + headerRect.height, rect.width, MiddleHeight);
-            var footerRect = new Rect(rect.x, middleRect.y + middleRect.height, rect.width, FooterHeight);
-
-            DoList(headerRect, middleRect, footerRect);
-        }
-
-
         public float MiddleHeight
         {
-            get => GetRowHeight();
+            get
+            {
+                var arraySize = Count;
+                var middleHeight = Style.padding * 2;
+                if (arraySize != 0)
+                {
+                    middleHeight += GetElementYOffset(arraySize - 1) + GetRowHeight(arraySize - 1);
+                }
+
+                return middleHeight;
+            }
+        }
+
+        public float EntireHeight
+        {
+            get => MiddleHeight + HeaderHeight + FooterHeight;
         }
     }
 }

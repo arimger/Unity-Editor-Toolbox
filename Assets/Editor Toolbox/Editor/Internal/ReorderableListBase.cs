@@ -22,7 +22,6 @@ namespace Toolbox.Editor.Internal
         public DrawRectCallbackDelegate drawHeaderCallback;
         public DrawRectCallbackDelegate drawVoidedCallback;
         public DrawRectCallbackDelegate drawFooterCallback;
-        public DrawRectCallbackDelegate drawHandleCallback;
 
         public DrawRectCallbackDelegate drawHeaderBackgroundCallback;
         public DrawRectCallbackDelegate drawFooterBackgroundCallback;
@@ -50,6 +49,8 @@ namespace Toolbox.Editor.Internal
         /// Hotcontrol index, unique for this instance.
         /// </summary>
         protected readonly int id = -1;
+
+        protected float draggedY;
 
 
         public ReorderableListBase(SerializedProperty list) : this(list, null, true, true, false)
@@ -79,6 +80,181 @@ namespace Toolbox.Editor.Internal
             List = list;
             Size = list.FindPropertyRelative("Array.size");
         }
+
+
+        private void DoDraggingAndSelection()
+        {
+            var isClicked = false;
+            var oldIndex = Index;
+            var currentEvent = Event.current;
+
+            switch (currentEvent.GetTypeForControl(id))
+            {
+                case EventType.KeyDown:
+                    {
+                        if (GUIUtility.keyboardControl != id)
+                        {
+                            return;
+                        }
+
+                        //if we have keyboard focus, arrow through the list
+                        if (currentEvent.keyCode == KeyCode.DownArrow)
+                        {
+                            Index += 1;
+                            currentEvent.Use();
+                        }
+
+                        if (currentEvent.keyCode == KeyCode.UpArrow)
+                        {
+                            Index -= 1;
+                            currentEvent.Use();
+                        }
+
+                        if (currentEvent.keyCode == KeyCode.Escape && GUIUtility.hotControl == id)
+                        {
+                            GUIUtility.hotControl = 0;
+                            IsDragging = false;
+                            currentEvent.Use();
+                        }
+
+                        //don't allow arrowing through the ends of the list
+                        Index = Mathf.Clamp(Index, 0, List.arraySize - 1);
+
+                    }
+
+                    break;
+
+                case EventType.MouseDown:
+                    {
+                        if (currentEvent.button != 0)
+                        {
+                            break;
+                        }
+
+                        //pick the active element based on mouse position
+                        var selectedIndex = GetCoveredElementIndex(currentEvent.mousePosition.y);
+                        if (selectedIndex == -1)
+                        {
+                            break;
+                        }
+
+                        Index = selectedIndex;
+
+                        if (Draggable)
+                        {
+                            OnDrag(currentEvent);
+                        }
+
+                        //clicking on the list should end editing any fields
+                        EditorGUIUtility.editingTextField = false;
+
+                        SetKeyboardFocus();
+                        currentEvent.Use();
+                        isClicked = true;
+                    }
+
+                    break;
+
+                case EventType.MouseDrag:
+                    {
+                        if (!Draggable || GUIUtility.hotControl != id)
+                        {
+                            break;
+                        }
+
+                        //set dragging state on first MouseDrag event after we got hotcontrol 
+                        //to prevent animating elements when deleting elements by context menu
+                        IsDragging = true;
+
+                        Update(currentEvent);
+                        currentEvent.Use();
+                    }
+
+                    break;
+
+                case EventType.MouseUp:
+                    {
+                        if (!Draggable)
+                        {
+                            if (onMouseUpCallback != null && IsMouseInActiveElement())
+                            {
+                                onMouseUpCallback(this);
+                            }
+
+                            break;
+                        }
+
+                        //hotcontrol is only set when list is draggable
+                        if (GUIUtility.hotControl != id)
+                        {
+                            break;
+                        }
+
+                        currentEvent.Use();
+                        IsDragging = false;
+
+                        try
+                        {
+                            //what will be the index of this if we release?
+                            var targetIndex = GetCoveredElementIndex(draggedY);
+                            if (targetIndex != Index)
+                            {
+                                //if the target index is different than the current index
+                                if (List != null)
+                                {
+                                    List.serializedObject.Update();
+                                    //reorganize the target array and move current selected element
+                                    List.MoveArrayElement(Index, targetIndex);
+
+                                    //unfortunately it will break any EditorGUI.BeginCheck() scope
+                                    //it has to be called since we edited the array property
+                                    List.serializedObject.ApplyModifiedProperties();
+                                    GUI.changed = true;
+                                }
+
+                                var oldActiveElement = Index;
+                                var newActiveElement = targetIndex;
+
+                                //update the active element, now that we've moved it
+                                Index = targetIndex;
+                                //give the user a callback
+                                if (onDetailsCallback != null)
+                                {
+                                    onDetailsCallback(this, oldActiveElement, newActiveElement);
+                                }
+                                else
+                                {
+                                    onReorderCallback?.Invoke(this);
+                                }
+
+                                onChangedCallback?.Invoke(this);
+                            }
+                            else
+                            {
+                                onMouseUpCallback?.Invoke(this);
+                            }
+                        }
+                        finally
+                        {
+                            //cleanup before we exit GUI
+                            OnDrop(currentEvent);
+                        }
+                    }
+
+                    break;
+            }
+
+            //if the index has changed and there is a selected callback, call it
+            if ((Index != oldIndex || isClicked))
+            {
+                onSelectCallback?.Invoke(this);
+            }
+        }
+
+
+        protected abstract void DoListMiddle();
+
+        protected abstract void DoListMiddle(Rect middleRect);
 
 
         protected virtual void DoListHeader()
@@ -172,10 +348,39 @@ namespace Toolbox.Editor.Internal
             }
         }
 
+        protected virtual void OnDrag(Event currentEvent)
+        {
+            draggedY = GetDraggedY(currentEvent.mousePosition);
+            GUIUtility.hotControl = id;
+        }
 
-        protected abstract void DoListMiddle();
+        protected virtual void Update(Event currentEvent)
+        {
+            draggedY = GetDraggedY(currentEvent.mousePosition);
+        }
 
-        protected abstract void DoListMiddle(Rect middleRect);
+        protected virtual void OnDrop(Event currentEvent)
+        {
+            GUIUtility.hotControl = 0;
+        }
+
+        protected virtual float GetDraggedY()
+        {
+            return GetDraggedY(Event.current.mousePosition);
+        }
+
+        protected virtual float GetDraggedY(Vector2 mousePosition)
+        {
+            return mousePosition.y;
+        }
+
+        protected virtual bool IsMouseInActiveElement()
+        {
+            //check if mouse position is inside current row rect 
+            return GetCoveredElementIndex(Event.current.mousePosition.y) == Index;
+        }
+
+        protected abstract int GetCoveredElementIndex(float localY);
 
 
         public string GetElementDefaultName(int index)
@@ -257,6 +462,8 @@ namespace Toolbox.Editor.Internal
                 DoListMiddle();
                 DoListFooter();
             }
+
+            DoDraggingAndSelection();
         }
 
 
@@ -407,7 +614,7 @@ namespace Toolbox.Editor.Internal
             if (Event.current.type == EventType.Repaint)
             {
                 //keep the dragging handle in the 1 row
-                rect.yMax = rect.yMin + EditorGUIUtility.singleLineHeight;
+                rect.yMax = rect.yMin + Style.lineHeight;
 
                 //prepare rect for the handle texture draw
                 var xDiff = rect.width - Style.handleWidth;
@@ -563,8 +770,11 @@ namespace Toolbox.Editor.Internal
 #endif
             internal static readonly float padding = 6.0f;
 
+#if UNITY_2018_3_OR_NEWER
             internal static readonly float lineHeight = EditorGUIUtility.singleLineHeight;
-
+#else
+            internal static readonly float lineHeight = 16.0f;
+#endif
             internal static readonly float footerWidth = 60.0f;
             internal static readonly float footerButtonWidth = 25.0f;
             internal static readonly float footerButtonHeight = 13.0f;
