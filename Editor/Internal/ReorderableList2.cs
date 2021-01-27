@@ -1,21 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using UnityEditor;
 using UnityEngine;
 
-//TODO:
-
 namespace Toolbox.Editor.Internal
 {
+    using Toolbox.Editor.Drawers;
+
+    /// <summary>
+    /// Experimental version of the <see cref="ReorderableList"/> dedicated for <see cref="ToolboxDrawer"/>s.
+    /// </summary>
     public class ReorderableList2 : ReorderableListBase
     {
-        private float draggedY;
+        public delegate void DrawElementCallbackDelegate(int index, bool isActive, bool isFocused);
+
+        public DrawRectCallbackDelegate drawHandleCallback;
+        //TODO:
+        public DrawElementCallbackDelegate drawElementCallback;
+
 
         private int lastCoveredIndex = -1;
-
-        private List<int> nonDragTargetIndices;
 
         private Rect[] elementsRects;
 
@@ -33,15 +38,31 @@ namespace Toolbox.Editor.Internal
         { }
 
 
+        private void ValidateElementsRects(int arraySize)
+        {
+            if (elementsRects == null)
+            {
+                elementsRects = new Rect[arraySize];
+                return;
+            }
+
+            if (elementsRects.Length != arraySize)
+            {
+                Array.Resize(ref elementsRects, arraySize);
+                return;
+            }
+        }
+
+
         protected override void DoListMiddle()
         {
-            //GUILayout.Space(-Style.spacing);
             using (var middleGroup = new EditorGUILayout.VerticalScope())
             {
                 DoListMiddle(middleGroup.rect);
             }
 
-            GUILayout.Space(-Style.spacing);
+            //NOTE: we have to remove standard spacing because of created layout group
+            GuiLayoutUtility.RemoveStandardSpacing();
 
             if (IsDragging)
             {
@@ -61,7 +82,6 @@ namespace Toolbox.Editor.Internal
 
                 var handleRect = new Rect(targetRect);
                 handleRect.xMax = handleRect.xMin + Style.dragAreaWidth;
-                targetRect.xMin = targetRect.xMin + Style.dragAreaWidth + 4.0f;
 
                 if (drawHandleCallback != null)
                 {
@@ -69,7 +89,7 @@ namespace Toolbox.Editor.Internal
                 }
                 else
                 {
-                    DrawStandardHandle(handleRect, Index, true, true, Draggable);
+                    DrawStandardElementHandle(handleRect, Index, true, true, Draggable);
                 }
             }
         }
@@ -133,7 +153,7 @@ namespace Toolbox.Editor.Internal
                             }
                             else
                             {
-                                DrawStandardHandle(rect, i, isActive, hasFocus, Draggable);
+                                DrawStandardElementHandle(rect, i, isActive, hasFocus, Draggable);
                             }
                         }
 
@@ -144,7 +164,7 @@ namespace Toolbox.Editor.Internal
                             EditorGUIUtility.labelWidth += Style.dragAreaWidth + 4.0f;
                         }
 
-                        GUILayout.Space(4.0f);
+                        GUILayout.Space(6.0f);
                     }
 
                     elementsRects[i] = GUILayoutUtility.GetLastRect();
@@ -182,178 +202,47 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-
-        private void DoDraggingAndSelection()
+        protected override void OnDrag(Event currentEvent)
         {
-            var currentEvent = Event.current;
-            switch (currentEvent.GetTypeForControl(id))
-            {
-                case EventType.KeyDown:
-                    {
-                        if (GUIUtility.keyboardControl != id)
-                        {
-                            return;
-                        }
-
-                        if (currentEvent.keyCode == KeyCode.DownArrow)
-                        {
-                            Index += 1;
-                            currentEvent.Use();
-                        }
-
-                        if (currentEvent.keyCode == KeyCode.UpArrow)
-                        {
-                            Index -= 1;
-                            currentEvent.Use();
-                        }
-
-                        if (currentEvent.keyCode == KeyCode.Escape && GUIUtility.hotControl == id)
-                        {
-                            GUIUtility.hotControl = 0;
-                            IsDragging = false;
-                            currentEvent.Use();
-                        }
-
-                        Index = Mathf.Clamp(Index, 0, List.arraySize - 1);
-                    }
-
-                    break;
-
-                case EventType.MouseDown:
-                    {
-                        if (currentEvent.button != 0)
-                        {
-                            break;
-                        }
-
-                        var selectedIndex = GetCoveredElementIndex(currentEvent.mousePosition.y);
-                        if (selectedIndex == -1)
-                        {
-                            break;
-                        }
-
-                        Index = selectedIndex;
-
-                        if (Draggable)
-                        {
-                            UpdateDraggedY(currentEvent.mousePosition);
-                            GUIUtility.hotControl = id;
-                            nonDragTargetIndices = new List<int>();
-                        }
-
-                        EditorGUIUtility.editingTextField = false;
-
-                        SetKeyboardFocus();
-                        currentEvent.Use();
-                    }
-
-                    break;
-
-                case EventType.MouseDrag:
-                    {
-                        if (!Draggable || GUIUtility.hotControl != id)
-                        {
-                            break;
-                        }
-
-                        IsDragging = true;
-                        lastCoveredIndex = GetCoveredElementIndex();
-
-                        UpdateDraggedY();
-                        currentEvent.Use();
-                    }
-
-                    break;
-
-                case EventType.MouseUp:
-                    {
-                        if (!Draggable || GUIUtility.hotControl != id)
-                        {
-                            break;
-                        }
-
-                        currentEvent.Use();
-                        IsDragging = false;
-
-                        try
-                        {
-                            var targetIndex = GetCoveredElementIndex();
-                            if (targetIndex != Index)
-                            {
-                                if (List != null)
-                                {
-                                    List.serializedObject.Update();
-                                    List.MoveArrayElement(Index, targetIndex);
-                                    List.serializedObject.ApplyModifiedProperties();
-                                    GUI.changed = true;
-                                }
-
-                                var oldActiveElement = Index;
-                                var newActiveElement = targetIndex;
-
-                                Index = targetIndex;
-                            }
-                        }
-                        finally
-                        {
-                            GUIUtility.hotControl = 0;
-                            nonDragTargetIndices = null;
-                            lastCoveredIndex = -1;
-                        }
-                    }
-
-                    break;
-            }
+            base.OnDrag(currentEvent);
+            lastCoveredIndex = Index;
         }
 
-        private void UpdateDraggedY()
+        protected override void Update(Event currentEvent)
         {
-            UpdateDraggedY(Event.current.mousePosition);
+            base.Update(currentEvent);
+            lastCoveredIndex = GetCoveredElementIndex(draggedY);
         }
 
-        private void UpdateDraggedY(Vector2 mousePosition)
+        protected override void OnDrop(Event currentEvent)
+        {
+            base.OnDrop(currentEvent);
+            lastCoveredIndex = -1;
+        }
+
+        protected override float GetDraggedY(Vector2 mousePosition)
         {
             if (elementsRects == null || elementsRects.Length == 0)
             {
-                draggedY = mousePosition.y;
-                return;
+                return mousePosition.y;
             }
             else
             {
-                var rect1 = elementsRects[0];
-                var rect2 = elementsRects.Last();
-                draggedY = Mathf.Clamp(mousePosition.y, rect1.yMin, rect2.yMax);
+                var spacing = ElementSpacing;
+                var minRect = elementsRects.First();
+                var maxRect = elementsRects.Last();
+                return Mathf.Clamp(mousePosition.y, minRect.yMin - spacing, maxRect.yMax + spacing);
             }
         }
 
-        private void ValidateElementsRects(int arraySize)
-        {
-            if (elementsRects == null)
-            {
-                elementsRects = new Rect[arraySize];
-                return;
-            }
-
-            if (elementsRects.Length != arraySize)
-            {
-                Array.Resize(ref elementsRects, arraySize);
-                return;
-            }
-        }
-
-        private int GetCoveredElementIndex()
-        {
-            return GetCoveredElementIndex(draggedY);
-        }
-
-        private int GetCoveredElementIndex(float draggedY)
+        protected override int GetCoveredElementIndex(float localY)
         {
             if (elementsRects != null)
             {
                 for (var i = 0; i < elementsRects.Length; i++)
                 {
-                    if (elementsRects[i].yMin <= draggedY &&
-                        elementsRects[i].yMax >= draggedY)
+                    if (elementsRects[i].yMin <= localY &&
+                        elementsRects[i].yMax >= localY)
                     {
                         return i;
                     }
@@ -364,13 +253,6 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        public override void DoList()
-        {
-            base.DoList();
-
-            DoDraggingAndSelection();
-        }
-
         #region Methods: Default interaction/draw calls
 
         /// <summary>
@@ -379,43 +261,10 @@ namespace Toolbox.Editor.Internal
         public void DrawStandardElement(int index, bool selected, bool focused, bool draggable)
         {
             var element = List.GetArrayElementAtIndex(index);
-            var label = HasLabels 
+            var label = HasLabels
                 ? new GUIContent(GetElementDisplayName(element, index))
-                : GUIContent.none;
-            //TODO: label
-            //if (Event.current.type == EventType.Layout)
-            {
-                ToolboxEditorGui.DrawToolboxProperty(element, label);
-            }
-        }
-
-        /// <summary>
-        /// Draws the default dragging Handle.
-        /// </summary>
-        public void DrawStandardHandle(Rect rect, int index, bool selected, bool focused, bool draggable)
-        {
-            if (Event.current.type == EventType.Repaint)
-            {
-                //keep the dragging handle in the 1 row
-                rect.yMax = rect.yMin + EditorGUIUtility.singleLineHeight;
-
-                //prepare rect for the handle texture draw
-                var xDiff = rect.width - Style.handleWidth;
-                rect.xMin += xDiff / 2;
-                rect.xMax -= xDiff / 2;
-
-                var yDiff = rect.height - Style.handleHeight;
-                rect.yMin += yDiff / 2;
-                rect.yMax -= yDiff / 2;
-#if UNITY_2019_3_OR_NEWER
-                rect.y += Style.spacing;
-#endif
-                //disable (if needed) and draw the handle
-                using (new EditorGUI.DisabledScope(!draggable))
-                {
-                    Style.dragHandleButtonStyle.Draw(rect, false, false, false, false);
-                }
-            }
+                : new GUIContent();
+            ToolboxEditorGui.DrawToolboxProperty(element, label);
         }
 
         #endregion

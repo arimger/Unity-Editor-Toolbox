@@ -44,6 +44,11 @@ namespace Toolbox.Editor
             GUILayout.EndHorizontal();
         }
 
-        //TODO:
+        public static void RemoveStandardSpacing()
+        {
+            GUILayout.Space(-EditorGUIUtility.standardVerticalSpacing);
+        }
+
+        //TODO: add more helper methods
     }
 }
