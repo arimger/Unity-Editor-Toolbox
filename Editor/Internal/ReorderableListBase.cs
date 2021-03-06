@@ -600,6 +600,7 @@ namespace Toolbox.Editor.Internal
         public void DrawStandardElement(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
             var element = List.GetArrayElementAtIndex(index);
+            //prepare dedicated label for target element
             var label = HasLabels
                 ? new GUIContent(GetElementDisplayName(element, index))
                 : new GUIContent();
@@ -651,8 +652,8 @@ namespace Toolbox.Editor.Internal
 #else
                     var padding = Style.spacing + Style.spacing / 2;
 #endif
-                    rect.yMax += padding / 2;
                     rect.yMin -= padding / 2;
+                    rect.yMax += padding / 2;
                 }
 
                 Style.elementBackgroundStyle.Draw(rect, false, selected, selected, focused);
