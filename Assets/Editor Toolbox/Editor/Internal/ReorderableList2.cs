@@ -63,35 +63,6 @@ namespace Toolbox.Editor.Internal
 
             //NOTE: we have to remove standard spacing because of created layout group
             GuiLayoutUtility.RemoveStandardSpacing();
-
-            if (IsDragging)
-            {
-                var fullRect = new Rect(elementsRects[0]);
-                for (var i = 1; i < elementsRects.Length; i++)
-                {
-                    fullRect.yMax += elementsRects[i].height;
-                }
-
-                //TODO:
-                var targetRect = new Rect(fullRect);
-                targetRect.y = draggedY;
-                targetRect.height = 0.0f;
-                targetRect.yMin -= 10.0f;
-                targetRect.yMax += 10.0f;
-                targetRect.xMax = targetRect.xMin + EditorGUIUtility.labelWidth - 4.0f;
-
-                var handleRect = new Rect(targetRect);
-                handleRect.xMax = handleRect.xMin + Style.dragAreaWidth;
-
-                if (drawHandleCallback != null)
-                {
-                    drawHandleCallback(handleRect);
-                }
-                else
-                {
-                    DrawStandardElementHandle(handleRect, Index, true, true, Draggable);
-                }
-            }
         }
 
         protected override void DoListMiddle(Rect middleRect)
@@ -133,16 +104,11 @@ namespace Toolbox.Editor.Internal
                     var isTarget = (i == lastCoveredIndex && !isActive);
                     var isEnding = (i == arraySize - 1);
 
-                    //TODO:
-                    using (var lineGroup = new EditorGUILayout.HorizontalScope())
+                    using (var elementGroup = new EditorGUILayout.HorizontalScope())
                     {
-                        //TODO:
-                        if (Event.current.type == EventType.Repaint)
-                        {
-                            var backgroundRect = lineGroup.rect;
-                            var isSelected = isActive || isTarget;
-                            DrawStandardElementBackground(backgroundRect, i, isSelected, hasFocus, Draggable);
-                        }
+                        var elementRect = elementGroup.rect;
+                        var isSelected = isActive || isTarget;
+                        DrawStandardElementBackground(elementRect, i, isSelected, hasFocus, Draggable);
 
                         var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.lineHeight), GUILayout.Width(Style.dragAreaWidth));
                         if (!IsDragging)
@@ -157,13 +123,15 @@ namespace Toolbox.Editor.Internal
                             }
                         }
 
-                        using (var itemGroup = new EditorGUILayout.VerticalScope())
+                        using (new EditorGUILayout.VerticalScope())
                         {
+                            //TODO: standard layout spacing
                             EditorGUIUtility.labelWidth -= Style.dragAreaWidth + 4.0f;
                             DrawStandardElement(i, isActive, hasFocus, Draggable);
                             EditorGUIUtility.labelWidth += Style.dragAreaWidth + 4.0f;
                         }
 
+                        //TODO: padding property
                         GUILayout.Space(6.0f);
                     }
 
@@ -199,6 +167,29 @@ namespace Toolbox.Editor.Internal
                 }
 
                 GUILayout.Space(8.0f);
+
+                if (IsDragging)
+                {
+                    var fullRect = new Rect(elementsRects[0]);
+                    for (var i = 1; i < elementsRects.Length; i++)
+                    {
+                        fullRect.yMax += elementsRects[i].height;
+                    }
+
+                    var targetRect = new Rect(fullRect.x, draggedY, fullRect.width, 0.0f);
+                    targetRect.yMin -= Style.lineHeight / 2;
+                    targetRect.yMax += Style.lineHeight / 2;
+                    targetRect.xMax = targetRect.xMin + Style.dragAreaWidth;
+
+                    if (drawHandleCallback != null)
+                    {
+                        drawHandleCallback(targetRect);
+                    }
+                    else
+                    {
+                        DrawStandardElementHandle(targetRect, Index, true, true, Draggable);
+                    }
+                }
             }
         }
 
