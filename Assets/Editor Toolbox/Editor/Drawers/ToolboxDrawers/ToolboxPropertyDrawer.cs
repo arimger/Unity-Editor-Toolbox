@@ -7,7 +7,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected virtual void OnGuiSafe(SerializedProperty property, GUIContent label, T attribute)
         {
-            ToolboxEditorGui.DrawDefaultProperty(property);
+            ToolboxEditorGui.DrawDefaultProperty(property, label);
         }
 
 
