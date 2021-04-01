@@ -18,21 +18,13 @@ namespace Toolbox.Editor.Drawers
         private static readonly DrawerDataStorage<Vector2, ScrollableItemsAttribute> storage;
 
 
-        protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ScrollableItemsAttribute attribute)
+        private void DrawSettingsBody(SerializedProperty property, ScrollableItemsAttribute attribute, out int size, out Vector2 indexRange)
         {
-            //create scope for our custom property + label
-            using var propertyScope = new PropertyScope(property, label);
-            if (!propertyScope.IsVisible)
-            {
-                return;
-            }
-
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(property.GetSize());
-            var size = property.arraySize;
-
+            size = property.arraySize;
             //get or initialize current ranges 
-            var indexRange = storage.ReturnItem(property, attribute);
+            indexRange = storage.ReturnItem(property, attribute);
 
             //create a min-max slider to determine the range of visible properties
             {
@@ -47,7 +39,10 @@ namespace Toolbox.Editor.Drawers
             indexRange.y = Mathf.Min(Mathf.RoundToInt(indexRange.y), size);
             storage.ApplyItem(property, indexRange);
             EditorGUI.indentLevel--;
+        }
 
+        private void DrawElementsBody(SerializedProperty property, ScrollableItemsAttribute attribute, int size, Vector2 indexRange)
+        {
             if (size == 0 || indexRange.x - indexRange.y == 0)
             {
                 return;
@@ -82,9 +77,25 @@ namespace Toolbox.Editor.Drawers
                 EditorGUILayout.LabelField(Style.spaceContent, Style.spaceLabelStyle);
             }
 
+
             GUILayout.Space(space);
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
+        }
+
+
+        protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ScrollableItemsAttribute attribute)
+        {
+            using (var propertyScope = new PropertyScope(property, label))
+            {
+                if (!propertyScope.IsVisible)
+                {
+                    return;
+                }
+
+                DrawSettingsBody(property, attribute, out var size, out var indexRange);
+                DrawElementsBody(property, attribute, size, indexRange);
+            }
         }
 
 

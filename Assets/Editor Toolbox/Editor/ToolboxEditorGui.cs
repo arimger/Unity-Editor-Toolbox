@@ -311,32 +311,34 @@ namespace Toolbox.Editor
             // - read current drag events
             // - draw foldout
             // - close property using EditorGUI.EndProperty method
-            using var propertyScope = new PropertyScope(property, label);
-            if (!propertyScope.IsVisible)
+            using (var propertyScope = new PropertyScope(property, label))
             {
-                return;
-            }
-
-            var enterChildren = true;
-            //cache all needed property references
-            var targetProperty = property.Copy();
-            var endingProperty = property.GetEndProperty();
-
-            EditorGUI.indentLevel++;
-            //iterate over all children (but only 1 level depth)
-            while (targetProperty.NextVisible(enterChildren))
-            {
-                if (SerializedProperty.EqualContents(targetProperty, endingProperty))
+                if (!propertyScope.IsVisible)
                 {
-                    break;
+                    return;
                 }
 
-                enterChildren = false;
-                //handle current property using Toolbox features
-                DrawToolboxProperty(targetProperty.Copy());
-            }
+                var enterChildren = true;
+                //cache all needed property references
+                var targetProperty = property.Copy();
+                var endingProperty = property.GetEndProperty();
 
-            EditorGUI.indentLevel--;
+                EditorGUI.indentLevel++;
+                //iterate over all children (but only 1 level depth)
+                while (targetProperty.NextVisible(enterChildren))
+                {
+                    if (SerializedProperty.EqualContents(targetProperty, endingProperty))
+                    {
+                        break;
+                    }
+
+                    enterChildren = false;
+                    //handle current property using Toolbox features
+                    DrawToolboxProperty(targetProperty.Copy());
+                }
+
+                EditorGUI.indentLevel--;
+            }
         }
 
         /// <summary>
