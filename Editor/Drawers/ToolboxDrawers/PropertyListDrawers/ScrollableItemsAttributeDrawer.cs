@@ -18,16 +18,21 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ScrollableItemsAttribute attribute)
         {
-            if (!EditorGUILayout.PropertyField(property, label, false))
+            using (var labelScope = new EditorGUILayout.VerticalScope())
             {
-                return;
-            }
+                label = EditorGUI.BeginProperty(labelScope.rect, label, property);
+                if (!(property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, label)))
+                {
+                    EditorGUI.EndProperty();
+                    return;
+                }
+            }    
 
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(property.GetSize());
             var size = property.arraySize;
 
-            //get or initialize current ranges 
+            //gets or initializes current ranges 
             var indexRange = storage.ReturnItem(property, attribute);
 
             //create a min-max slider to determine the range of visible properties
@@ -81,6 +86,7 @@ namespace Toolbox.Editor.Drawers
             GUILayout.Space(space);
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
+            EditorGUI.EndProperty();
         }
 
 
