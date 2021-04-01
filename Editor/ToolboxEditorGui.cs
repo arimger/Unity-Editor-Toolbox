@@ -311,7 +311,8 @@ namespace Toolbox.Editor
             // - read current drag events
             // - draw foldout
             // - close property using EditorGUI.EndProperty method
-            if (!EditorGUILayout.PropertyField(property, label, false))
+            using var propertyScope = new PropertyScope(property, label);
+            if (!propertyScope.IsVisible)
             {
                 return;
             }

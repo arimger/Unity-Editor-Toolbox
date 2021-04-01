@@ -4,6 +4,9 @@ using UnityEditor;
 
 namespace Toolbox.Editor.Internal
 {
+    /// <summary>
+    /// Stores and restores <see cref="EditorGUIUtility.labelWidth"/> and <see cref="EditorGUIUtility.fieldWidth"/>.
+    /// </summary>
     internal class FixedFieldsScope : IDisposable
     {
         private readonly float labelWidth;

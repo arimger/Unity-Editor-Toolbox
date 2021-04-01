@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    using Toolbox.Editor.Internal;
+
     public class ScrollableItemsAttributeDrawer : ToolboxListPropertyDrawer<ScrollableItemsAttribute>
     {
         static ScrollableItemsAttributeDrawer()
@@ -18,21 +20,18 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ScrollableItemsAttribute attribute)
         {
-            using (var labelScope = new EditorGUILayout.VerticalScope())
+            //create scope for our custom property + label
+            using var propertyScope = new PropertyScope(property, label);
+            if (!propertyScope.IsVisible)
             {
-                label = EditorGUI.BeginProperty(labelScope.rect, label, property);
-                if (!(property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, label)))
-                {
-                    EditorGUI.EndProperty();
-                    return;
-                }
-            }    
+                return;
+            }
 
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(property.GetSize());
             var size = property.arraySize;
 
-            //gets or initializes current ranges 
+            //get or initialize current ranges 
             var indexRange = storage.ReturnItem(property, attribute);
 
             //create a min-max slider to determine the range of visible properties
@@ -86,7 +85,6 @@ namespace Toolbox.Editor.Drawers
             GUILayout.Space(space);
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
-            EditorGUI.EndProperty();
         }
 
 
