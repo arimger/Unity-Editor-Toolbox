@@ -6,6 +6,12 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    /// <summary>
+    /// Internal system responsible for keeping and clearing data between <see cref="UnityEditor.Editor"/>s.
+    /// This small system works only for attribute-based drawers and should be defined as a static field.
+    /// </summary>
+    /// <typeparam name="T">Data to store.</typeparam>
+    /// <typeparam name="T1">Associated drawer attribute.</typeparam>
     internal class DrawerDataStorage<T, T1> where T1 : ToolboxAttribute
     {
         static DrawerDataStorage()

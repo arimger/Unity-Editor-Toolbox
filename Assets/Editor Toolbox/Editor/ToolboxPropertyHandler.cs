@@ -195,7 +195,7 @@ namespace Toolbox.Editor
             return ToolboxDrawerModule.GetConditionDrawer(conditionAttribute)?.OnGuiValidate(property, conditionAttribute) ?? conditionState;
         }
 
-        private void DrawProperty()
+        private void DrawProperty(GUIContent label)
         {
             //get toolbox drawer for the property or draw it in the default way
             if (hasToolboxPropertyDrawer && (!hasNativePropertyDrawer || isArray))
@@ -223,7 +223,7 @@ namespace Toolbox.Editor
                     //NOTE: since property has a custom drawer it will override any Toolbox-related one
                 }
 
-                OnGuiDefault();
+                OnGuiDefault(label);
             }
         }
 
@@ -232,6 +232,14 @@ namespace Toolbox.Editor
         /// Draw property using built-in layout system and cached <see cref="ToolboxAttributeDrawer"/>s.
         /// </summary>
         public void OnGuiLayout()
+        {
+            OnGuiLayout(label);
+        }
+
+        /// <summary>
+        /// Draw property using built-in layout system and cached <see cref="ToolboxAttributeDrawer"/>s.
+        /// </summary>
+        public void OnGuiLayout(GUIContent label)
         {
             //depending on previously gained data we can provide more action
             //using custom attributes and information about native drawers
@@ -248,7 +256,7 @@ namespace Toolbox.Editor
             {
                 using (new EditorGUI.DisabledScope(disable))
                 {
-                    DrawProperty();
+                    DrawProperty(label);
                 }
             }
 
@@ -259,8 +267,15 @@ namespace Toolbox.Editor
         /// <summary>
         /// Draws property in the default way, without additional <see cref="ToolboxAttributeDrawer"/>s.
         /// </summary>
-        /// <param name="property"></param>
         public void OnGuiDefault()
+        {
+            OnGuiDefault(label);
+        }
+
+        /// <summary>
+        /// Draws property in the default way, without additional <see cref="ToolboxAttributeDrawer"/>s.
+        /// </summary>
+        public void OnGuiDefault(GUIContent label)
         {
             //all "single" properties and native drawers should be drawn in the default way
             if (!property.hasVisibleChildren || hasNativePropertyDrawer)
