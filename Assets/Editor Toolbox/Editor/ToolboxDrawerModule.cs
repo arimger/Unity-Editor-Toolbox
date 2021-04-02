@@ -265,7 +265,7 @@ namespace Toolbox.Editor
         /// </summary>
         internal static bool HasTargetTypeDrawer(Type type)
         {
-            return targetTypeDrawers.ContainsKey(type);
+            return targetTypeDrawers.ContainsKey(type.IsGenericType ? type.GetGenericTypeDefinition() : type);
         }
 
         internal static ToolboxDecoratorDrawerBase GetDecoratorDrawer<T>(T attribute) where T : ToolboxDecoratorAttribute
@@ -343,7 +343,10 @@ namespace Toolbox.Editor
 
         internal static ToolboxTargetTypeDrawer GetTargetTypeDrawer(Type propertyType)
         {
-            if (targetTypeDrawers.TryGetValue(propertyType, out var drawer))
+            var targetType = propertyType.IsGenericType
+                ? propertyType.GetGenericTypeDefinition()
+                : propertyType;
+            if (targetTypeDrawers.TryGetValue(targetType, out var drawer))
             {
                 return drawer;
             }

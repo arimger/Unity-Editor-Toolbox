@@ -51,7 +51,11 @@ namespace Toolbox.Editor.Drawers
             var webRequest = GetImageRequest(url);
             yield return webRequest.SendWebRequest();
 
+#if UNITY_2020_1_OR_NEWER
+            if (webRequest.result != UnityWebRequest.Result.Success)
+#else
             if (webRequest.isHttpError || webRequest.isNetworkError)
+#endif
             {
                 onRequestResult?.Invoke(false, null);
             }
