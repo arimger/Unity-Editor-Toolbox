@@ -9,7 +9,7 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class ReorderableListAttribute : ToolboxListPropertyAttribute
     {
-        public ReorderableListAttribute(ListStyle style = ListStyle.Round, string elementLabel = null,  bool fixedSize = false, bool draggable = true)
+        public ReorderableListAttribute(ListStyle style = ListStyle.Round, string elementLabel = null, bool fixedSize = false, bool draggable = true)
         {
             Draggable = draggable;
             FixedSize = fixedSize;

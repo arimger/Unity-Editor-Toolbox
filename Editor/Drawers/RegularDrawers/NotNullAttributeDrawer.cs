@@ -1,9 +1,10 @@
-﻿using Toolbox.Editor.Internal;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    using Toolbox.Editor.Internal;
+
     [CustomPropertyDrawer(typeof(NotNullAttribute))]
     public class NotNullAttributeDrawer : ToolboxNativePropertyDrawer
     {

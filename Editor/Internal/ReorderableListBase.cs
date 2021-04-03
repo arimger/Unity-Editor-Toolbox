@@ -6,7 +6,8 @@ using UnityEngine;
 namespace Toolbox.Editor.Internal
 {
     /// <summary>
-    /// Base class for all reorderable list related implementations.
+    /// Base abstract class for all reorderable list related implementations.
+    /// Provides all needed properties and functions except property drawing.
     /// </summary>
     public abstract class ReorderableListBase
     {
@@ -17,6 +18,8 @@ namespace Toolbox.Editor.Internal
         public delegate void IsChangedListCallbackDelegate(ReorderableListBase list);
 
         public delegate void DrawRelatedRectCallbackDelegate(Rect rect, ReorderableListBase list);
+
+        public delegate void DrawIndexedRectCallbackDelegate(Rect rect, int index, bool isActive, bool isFocused);
 
 
         public DrawRectCallbackDelegate drawHeaderCallback;
@@ -42,6 +45,10 @@ namespace Toolbox.Editor.Internal
         public CanChangeListCallbackDelegate onCanAppendCallback;
         public CanChangeListCallbackDelegate onCanRemoveCallback;
 
+        public DrawIndexedRectCallbackDelegate drawElementCallback;
+        public DrawIndexedRectCallbackDelegate drawElementHandleCallback;
+        public DrawIndexedRectCallbackDelegate drawElementBackgroundCallback;
+
 
         protected const string defaultLabelFormat = "{0} {1}";
 
@@ -53,13 +60,19 @@ namespace Toolbox.Editor.Internal
         protected float draggedY;
 
 
-        public ReorderableListBase(SerializedProperty list) : this(list, null, true, true, false)
+        public ReorderableListBase(SerializedProperty list)
+            : this(list, null, true, true, false)
         { }
 
-        public ReorderableListBase(SerializedProperty list, bool draggable) : this(list, null, draggable, true, false)
+        public ReorderableListBase(SerializedProperty list, bool draggable)
+            : this(list, null, draggable, true, false)
         { }
 
         public ReorderableListBase(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize)
+            : this(list, elementLabel, draggable, hasHeader, fixedSize, true)
+        { }
+
+        public ReorderableListBase(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels)
         {
             //validate parameters
             if (list == null || list.isArray == false)
@@ -73,6 +86,7 @@ namespace Toolbox.Editor.Internal
             Draggable = draggable;
             HasHeader = hasHeader;
             FixedSize = fixedSize;
+            HasLabels = hasLabels;
             //set other properties
             ElementLabel = elementLabel;
 
@@ -80,6 +94,7 @@ namespace Toolbox.Editor.Internal
             List = list;
             Size = list.FindPropertyRelative("Array.size");
         }
+
 
 
         private void DoDraggingAndSelection()
@@ -472,7 +487,7 @@ namespace Toolbox.Editor.Internal
         /// <summary>
         /// Draws the default Footer.
         /// </summary>
-        public void DrawStandardFooter(Rect rect)
+        public virtual void DrawStandardFooter(Rect rect)
         {
             //set button area rect
             rect = new Rect(rect.xMax - Style.footerWidth, rect.y, Style.footerWidth, rect.height);
@@ -532,7 +547,7 @@ namespace Toolbox.Editor.Internal
         /// <summary>
         /// Draws the default Footer background.
         /// </summary>
-        public void DrawStandardFooterBackground(Rect rect)
+        public virtual void DrawStandardFooterBackground(Rect rect)
         {
             if (Event.current.type == EventType.Repaint)
             {
@@ -544,7 +559,7 @@ namespace Toolbox.Editor.Internal
         /// <summary>
         /// Draws the default Header.
         /// </summary>
-        public void DrawStandardHeader(Rect rect)
+        public virtual void DrawStandardHeader(Rect rect)
         {
             var label = EditorGUI.BeginProperty(rect, new GUIContent(List.displayName), List);
 
@@ -586,7 +601,7 @@ namespace Toolbox.Editor.Internal
         /// Draws the default Header background.
         /// </summary>
         /// <param name="rect"></param>
-        public void DrawStandardHeaderBackground(Rect rect)
+        public virtual void DrawStandardHeaderBackground(Rect rect)
         {
             if (Event.current.type == EventType.Repaint)
             {
@@ -597,7 +612,7 @@ namespace Toolbox.Editor.Internal
         /// <summary>
         /// Draws the default Element field.
         /// </summary>
-        public void DrawStandardElement(Rect rect, int index, bool selected, bool focused, bool draggable)
+        public virtual void DrawStandardElement(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
             var element = List.GetArrayElementAtIndex(index);
             //prepare dedicated label for target element
@@ -610,7 +625,7 @@ namespace Toolbox.Editor.Internal
         /// <summary>
         /// Draws the default dragging Handle.
         /// </summary>
-        public void DrawStandardElementHandle(Rect rect, int index, bool selected, bool focused, bool draggable)
+        public virtual void DrawStandardElementHandle(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
             if (Event.current.type == EventType.Repaint)
             {
@@ -639,7 +654,7 @@ namespace Toolbox.Editor.Internal
         /// <summary>                                       
         /// Draws the default Element background.
         /// </summary>
-        public void DrawStandardElementBackground(Rect rect, int index, bool selected, bool focused, bool draggable)
+        public virtual void DrawStandardElementBackground(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
             if (Event.current.type == EventType.Repaint)
             {
@@ -710,15 +725,9 @@ namespace Toolbox.Editor.Internal
             get; protected set;
         }
 
-        public bool HasHeader
-        {
-            get; set;
-        }
+        public bool HasHeader { get; set; } = true;
 
-        public bool HasLabels
-        {
-            get; set;
-        } = true;
+        public bool HasLabels { get; set; } = true;
 
         public float HeaderHeight { get; set; } = 18.0f;
 
@@ -727,10 +736,7 @@ namespace Toolbox.Editor.Internal
         /// <summary>
         /// Standard spacing between elements.
         /// </summary>
-        public float ElementSpacing
-        {
-            get; set;
-        } = 5;
+        public float ElementSpacing { get; set; } = 5;
 
         /// <summary>
         /// Custom element label name.
@@ -759,7 +765,7 @@ namespace Toolbox.Editor.Internal
 
 
         /// <summary>
-        /// Static representation of the standard list style.
+        /// Static representation of the standard list styling.
         /// Provides all needed <see cref="GUIStyle"/>s, paddings, widths, heights, etc.
         /// </summary>
         internal static class Style
@@ -815,7 +821,7 @@ namespace Toolbox.Editor.Internal
                 sizePropertyStyle = new GUIStyle(EditorStyles.miniTextField)
                 {
                     alignment = TextAnchor.MiddleRight,
-                    //NOTE: in newer releases, the font size has to be adjusted
+                    //NOTE: the font size has to be adjusted in newer releases
 #if UNITY_2019_3_OR_NEWER
                     fixedHeight = 14.0f,
                     fontSize = 10
