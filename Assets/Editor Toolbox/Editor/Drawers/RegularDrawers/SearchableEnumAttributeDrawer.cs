@@ -11,9 +11,12 @@ namespace Toolbox.Editor.Drawers
         private static EditorWindow lastSearchableWindow;
 
 
-        private bool IsTargetWindowFocused()
+        /// <summary>
+        /// Checks if user is still focusing the proper (searchable) window.
+        /// </summary>
+        private bool IsNonTargetWindowFocused()
         {
-            return lastSearchableWindow && lastSearchableWindow == EditorWindow.mouseOverWindow;
+            return lastSearchableWindow && lastSearchableWindow != EditorWindow.mouseOverWindow;
         }
 
 
@@ -56,7 +59,7 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.EndProperty();
 
             //handle situation when inspector window captures ScrollWheel event
-            if (!IsTargetWindowFocused())
+            if (IsNonTargetWindowFocused())
             {
                 //NOTE: unfortunately PopupWidnows are not indpendent and we have to
                 //override internal events to prevent scrolling the Inspector Window
