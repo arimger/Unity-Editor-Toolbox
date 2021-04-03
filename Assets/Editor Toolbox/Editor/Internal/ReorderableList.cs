@@ -6,17 +6,11 @@ using UnityEngine;
 namespace Toolbox.Editor.Internal
 {
     /// <summary>
-    /// Custom implementation of the <see cref="UnityEditorInternal.ReorderableList"/>.
+    /// Custom re-implementation of the <see cref="UnityEditorInternal.ReorderableList"/>.
     /// </summary>
     public class ReorderableList : ReorderableListBase
     {
-        public delegate void DrawIndexedRectCallbackDelegate(Rect rect, int index, bool isActive, bool isFocused);
-
         public delegate float ElementHeightCallbackDelegate(int index);
-
-        public DrawIndexedRectCallbackDelegate drawElementCallback;
-        public DrawIndexedRectCallbackDelegate drawElementHandleCallback;
-        public DrawIndexedRectCallbackDelegate drawElementBackgroundCallback;
 
         public ElementHeightCallbackDelegate elementHeightCallback;
 
@@ -41,6 +35,10 @@ namespace Toolbox.Editor.Internal
 
         public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize)
             : base(list, elementLabel, draggable, hasHeader, fixedSize)
+        { }
+
+        public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels) 
+            : base(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels)
         { }
 
 
@@ -117,7 +115,6 @@ namespace Toolbox.Editor.Internal
             {
                 //we are dragging, so we need to build the new list of target indices
                 var targetIndex = GetCoveredElementIndex(draggedY);
-
                 nonDragTargetIndices.Clear();
                 for (var i = 0; i < arraySize; i++)
                 {
@@ -126,7 +123,11 @@ namespace Toolbox.Editor.Internal
                         nonDragTargetIndices.Add(i);
                     }
                 }
-                nonDragTargetIndices.Insert(targetIndex, -1);
+
+                if (targetIndex != -1)
+                {
+                    nonDragTargetIndices.Insert(targetIndex, -1);
+                }
 
                 //now draw each element in the list (excluding the active element)
                 var targetSeen = false;
@@ -381,6 +382,21 @@ namespace Toolbox.Editor.Internal
         private Rect GetRowRect(int index, Rect listRect)
         {
             return new Rect(listRect.x, listRect.y + GetElementYOffset(index), listRect.width, GetElementHeight(index));
+        }
+
+
+        public void DoList(Rect rect)
+        {
+            var headerRect = new Rect(rect.x, rect.y, rect.width, HeaderHeight);
+            var middleRect = new Rect(rect.x, headerRect.y + headerRect.height, rect.width, MiddleHeight);
+            var footerRect = new Rect(rect.x, middleRect.y + middleRect.height, rect.width, FooterHeight);
+
+            using (new ZeroIndentScope())
+            {
+                DoListHeader(headerRect);
+                DoListMiddle(middleRect);
+                DoListFooter(footerRect);
+            }
         }
 
 

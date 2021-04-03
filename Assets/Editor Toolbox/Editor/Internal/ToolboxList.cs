@@ -9,32 +9,30 @@ namespace Toolbox.Editor.Internal
     using Toolbox.Editor.Drawers;
 
     /// <summary>
-    /// Experimental version of the <see cref="ReorderableList"/> dedicated for <see cref="ToolboxDrawer"/>s.
+    /// Version of the <see cref="ReorderableList"/> dedicated for <see cref="ToolboxDrawer"/>s.
+    /// Can be used only together with the internal layouting system.
     /// </summary>
-    public class ReorderableList2 : ReorderableListBase
+    public class ToolboxList : ReorderableListBase
     {
-        public delegate void DrawElementCallbackDelegate(int index, bool isActive, bool isFocused);
-
-        public DrawRectCallbackDelegate drawHandleCallback;
-        //TODO:
-        public DrawElementCallbackDelegate drawElementCallback;
-
-
         private int lastCoveredIndex = -1;
 
         private Rect[] elementsRects;
 
 
-        public ReorderableList2(SerializedProperty list)
+        public ToolboxList(SerializedProperty list)
             : base(list)
         { }
 
-        public ReorderableList2(SerializedProperty list, bool draggable)
+        public ToolboxList(SerializedProperty list, bool draggable)
             : base(list, draggable)
         { }
 
-        public ReorderableList2(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize)
+        public ToolboxList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize)
             : base(list, elementLabel, draggable, hasHeader, fixedSize)
+        { }
+
+        public ToolboxList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels)
+            : base(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels)
         { }
 
 
@@ -53,12 +51,18 @@ namespace Toolbox.Editor.Internal
             }
         }
 
+        private Rect GetHandleRect()
+        {
+            return EditorGUILayout.GetControlRect(GUILayout.Height(Style.lineHeight), GUILayout.Width(Style.dragAreaWidth));
+        }
+
 
         protected override void DoListMiddle()
         {
             using (var middleGroup = new EditorGUILayout.VerticalScope())
             {
-                DoListMiddle(middleGroup.rect);
+                var middleRect = middleGroup.rect;
+                DoListMiddle(middleRect);
             }
 
             //NOTE: we have to remove standard spacing because of created layout group
@@ -104,30 +108,31 @@ namespace Toolbox.Editor.Internal
                     var isTarget = (i == lastCoveredIndex && !isActive);
                     var isEnding = (i == arraySize - 1);
 
-                    using (var elementGroup = new EditorGUILayout.HorizontalScope())
+                    using (var rowGroup = new EditorGUILayout.HorizontalScope())
                     {
-                        var elementRect = elementGroup.rect;
+                        var groupsRect = rowGroup.rect;
                         var isSelected = isActive || isTarget;
-                        DrawStandardElementBackground(elementRect, i, isSelected, hasFocus, Draggable);
+                        DrawStandardElementBackground(groupsRect, i, isSelected, hasFocus, Draggable);
 
-                        var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.lineHeight), GUILayout.Width(Style.dragAreaWidth));
+                        var handleRect = GetHandleRect();
                         if (!IsDragging)
                         {
-                            if (drawHandleCallback != null)
+                            if (drawElementHandleCallback != null)
                             {
-                                drawHandleCallback(rect);
+                                drawElementHandleCallback(handleRect, i, isActive, hasFocus);
                             }
                             else
                             {
-                                DrawStandardElementHandle(rect, i, isActive, hasFocus, Draggable);
+                                DrawStandardElementHandle(handleRect, i, isActive, hasFocus, Draggable);
                             }
                         }
 
-                        using (new EditorGUILayout.VerticalScope())
+                        using (var elementGroup = new EditorGUILayout.VerticalScope())
                         {
+                            var elementRect = elementGroup.rect;
                             //TODO: standard layout spacing
                             EditorGUIUtility.labelWidth -= Style.dragAreaWidth + 4.0f;
-                            DrawStandardElement(i, isActive, hasFocus, Draggable);
+                            DrawStandardElement(elementRect, i, isActive, hasFocus, Draggable);
                             EditorGUIUtility.labelWidth += Style.dragAreaWidth + 4.0f;
                         }
 
@@ -181,9 +186,9 @@ namespace Toolbox.Editor.Internal
                     targetRect.yMax += Style.lineHeight / 2;
                     targetRect.xMax = targetRect.xMin + Style.dragAreaWidth;
 
-                    if (drawHandleCallback != null)
+                    if (drawElementHandleCallback != null)
                     {
-                        drawHandleCallback(targetRect);
+                        drawElementHandleCallback(targetRect, Index, true, true);
                     }
                     else
                     {
@@ -246,10 +251,8 @@ namespace Toolbox.Editor.Internal
 
         #region Methods: Default interaction/draw calls
 
-        /// <summary>
-        /// Draws the default Element field.
-        /// </summary>
-        public void DrawStandardElement(int index, bool selected, bool focused, bool draggable)
+        /// <inheritdoc/>
+        public override void DrawStandardElement(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
             var element = List.GetArrayElementAtIndex(index);
             var label = HasLabels
