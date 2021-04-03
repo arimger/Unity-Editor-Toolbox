@@ -130,7 +130,7 @@ namespace Toolbox.Editor
             rect.xMin -= 10.0f;
 
             //create final foldout without label and arrow
-            return EditorGUI.Foldout(rect, foldout, GUIContent.none, toggleOnLabelClick,  foldoutStyle);
+            return EditorGUI.Foldout(rect, foldout, GUIContent.none, toggleOnLabelClick, foldoutStyle);
         }
 
         /// <summary>
@@ -316,6 +316,7 @@ namespace Toolbox.Editor
 
         /// <summary>
         /// Draws property in default way but children will support Toolbox drawers.
+        /// 'Default way' means it will create foldout-based property if children are visible.
         /// Uses built-in layouting system.
         /// </summary>
         public static void DrawDefaultProperty(SerializedProperty property)
@@ -325,10 +326,28 @@ namespace Toolbox.Editor
 
         /// <summary>
         /// Draws property in default way but children will support Toolbox drawers.
+        /// 'Default way' means it will create foldout-based property if children are visible.
         /// Uses built-in layouting system.
         /// </summary>
         public static void DrawDefaultProperty(SerializedProperty property, GUIContent label)
         {
+            DrawDefaultProperty(property, label, DrawNativeProperty, DrawToolboxProperty);
+        }
+
+        /// <summary>
+        /// Draws property in default way but each single property is handled by custom action.
+        /// 'Default way' means it will create foldout-based property if children are visible.
+        /// Uses built-in layouting system.
+        /// </summary>
+        public static void DrawDefaultProperty(SerializedProperty property, GUIContent label,
+            Action<SerializedProperty, GUIContent> drawParentAction, Action<SerializedProperty> drawElementAction)
+        {
+            if (!property.hasVisibleChildren)
+            {
+                drawParentAction(property, label);
+                return;
+            }
+
             //draw standard foldout with built-in operations (like prefabs handling)
             //native steps to re-create:
             // - get foldout rect
@@ -359,7 +378,7 @@ namespace Toolbox.Editor
 
                     enterChildren = false;
                     //handle current property using Toolbox features
-                    DrawToolboxProperty(targetProperty.Copy());
+                    drawElementAction(targetProperty.Copy());
                 }
 
                 EditorGUI.indentLevel--;
