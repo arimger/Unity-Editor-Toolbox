@@ -93,6 +93,8 @@ namespace Toolbox.Editor.Internal
             //ser serialized data
             List = list;
             Size = list.FindPropertyRelative("Array.size");
+
+            Index = -1;
         }
 
 
@@ -272,22 +274,22 @@ namespace Toolbox.Editor.Internal
         protected abstract void DoListMiddle(Rect middleRect);
 
 
-        protected virtual void DoListHeader()
+        protected virtual bool DoListHeader()
         {
             if (!HasHeader)
             {
-                return;
+                return false;
             }
 
             var rect = GUILayoutUtility.GetRect(0, HeaderHeight, GUILayout.ExpandWidth(true));
-            DoListHeader(rect);
+            return DoListHeader(rect);
         }
 
-        protected virtual void DoListHeader(Rect headerRect)
+        protected virtual bool DoListHeader(Rect headerRect)
         {
             if (!HasHeader)
             {
-                return;
+                return false;
             }
 
             //draw the background on repaint
@@ -318,25 +320,27 @@ namespace Toolbox.Editor.Internal
             {
                 DrawStandardHeader(headerRect);
             }
+
+            return true;
         }
 
-        protected virtual void DoListFooter()
+        protected virtual bool DoListFooter()
         {
             if (FixedSize)
             {
-                return;
+                return false;
             }
 
             var rect = GUILayoutUtility.GetRect(0, FooterHeight, GUILayout.ExpandWidth(true));
-            DoListFooter(rect);
+            return DoListFooter(rect);
         }
 
-        protected virtual void DoListFooter(Rect footerRect)
+        protected virtual bool DoListFooter(Rect footerRect)
         {
             //ignore footer if list has fixed size
             if (FixedSize)
             {
-                return;
+                return false;
             }
 
             //draw the background on repaint event
@@ -361,6 +365,8 @@ namespace Toolbox.Editor.Internal
             {
                 DrawStandardFooter(footerRect);
             }
+
+            return true;
         }
 
         protected virtual void OnDrag(Event currentEvent)
@@ -684,7 +690,7 @@ namespace Toolbox.Editor.Internal
         public int Index
         {
             get; set;
-        } = -1;
+        }
 
         public int Count
         {
@@ -720,23 +726,20 @@ namespace Toolbox.Editor.Internal
             get; protected set;
         }
 
-        public bool FixedSize
-        {
-            get; protected set;
-        }
+        public virtual bool FixedSize { get; set; } = true;
 
-        public bool HasHeader { get; set; } = true;
+        public virtual bool HasHeader { get; set; } = true;
 
-        public bool HasLabels { get; set; } = true;
+        public virtual bool HasLabels { get; set; } = true;
 
-        public float HeaderHeight { get; set; } = 18.0f;
+        public virtual float HeaderHeight { get; set; } = 18.0f;
 
-        public float FooterHeight { get; set; } = 20.0f;
+        public virtual float FooterHeight { get; set; } = 20.0f;
 
         /// <summary>
         /// Standard spacing between elements.
         /// </summary>
-        public float ElementSpacing { get; set; } = 5;
+        public virtual float ElementSpacing { get; set; } = 5.0f;
 
         /// <summary>
         /// Custom element label name.
