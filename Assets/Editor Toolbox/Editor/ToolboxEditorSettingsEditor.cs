@@ -31,10 +31,10 @@ namespace Toolbox.Editor
         private SerializedProperty largeIconPaddingProperty;
         private SerializedProperty smallIconPaddingProperty;
 
-        private ReorderableList rowDataItemsList;
-        private ReorderableList customFoldersList;
+        private ReorderableListBase rowDataItemsList;
+        private ReorderableListBase customFoldersList;
 
-        private ReorderableList[] drawerHandlersLists;
+        private ReorderableListBase[] drawerHandlersLists;
 
         private string[] drawerHandlersLongNames;
         private string[] drawerHandlersShortNames;
@@ -87,7 +87,7 @@ namespace Toolbox.Editor
             //inspector-related properties
             useToolboxDrawersProperty = serializedObject.FindProperty("useToolboxDrawers");
 
-            drawerHandlersLists = new ReorderableList[5];
+            drawerHandlersLists = new ReorderableListBase[5];
 #if UNITY_2019_3_OR_NEWER
             drawerHandlersLists[0] = CreateClearList(serializedObject.FindProperty("decoratorDrawerHandlers"), hasHeader: false);
             drawerHandlersLists[1] = CreateClearList(serializedObject.FindProperty("conditionDrawerHandlers"), hasHeader: false);
