@@ -51,17 +51,88 @@ namespace Toolbox.Editor.Internal
             }
         }
 
+        private void DrawElementRow(int index, bool isActive, bool isTarget, bool hasFocus)
+        {
+            using (var elementRowGroup = new EditorGUILayout.HorizontalScope())
+            {
+                var elementRowRect = elementRowGroup.rect;
+                var isSelected = isActive || isTarget;
+                elementsRects[index] = elementRowRect;
+                //draw element background (handle selection and targeting)
+                if (drawElementBackgroundCallback != null)
+                {
+                    drawElementBackgroundCallback(elementRowRect, index, isSelected, hasFocus);
+                }
+                else
+                {
+                    DrawStandardElementBackground(elementRowRect, index, isSelected, hasFocus, Draggable);
+                }
+
+                //prepare handle-related properties
+                var handleRect = GetHandleRect();
+                var drawHandle = !IsDragging;
+                //draw handles only for static array or currently dragged element
+                if (isSelected && IsDragging)
+                {
+                    drawHandle = true;
+                    handleRect = GetHandleRect(draggedY);
+                }
+
+                //draw dragging handle
+                if (drawHandle)
+                {
+                    if (drawElementHandleCallback != null)
+                    {
+                        drawElementHandleCallback(handleRect, index, isActive, hasFocus);
+                    }
+                    else
+                    {
+                        DrawStandardElementHandle(handleRect, index, isActive, hasFocus, Draggable);
+                    }
+                }
+
+                //draw the real property in separate vertical group
+                using (var elementGroup = new EditorGUILayout.VerticalScope())
+                {
+                    var elementRect = elementGroup.rect;
+                    //adjust label width to the dragging area + layout
+                    EditorGUIUtility.labelWidth -= Style.dragAreaWidth - GuiLayoutUtility.layoutPadding;
+                    if (drawElementCallback != null)
+                    {
+                        drawElementCallback(elementRect, index, isActive, hasFocus);
+                    }
+                    else
+                    {
+                        DrawStandardElement(elementRect, index, isActive, hasFocus, Draggable);
+                    }
+                    EditorGUIUtility.labelWidth += Style.dragAreaWidth - GuiLayoutUtility.layoutPadding;
+                }
+
+                //create additional space between element and right margin
+                DrawEmptySpace(Style.padding);
+            }
+        }
+
+        /// <summary>
+        /// Creates empty space in a layout-based structure.
+        /// </summary>
+        private void DrawEmptySpace(float space)
+        {
+            GUILayout.Space(space);
+        }
+
         /// <summary>
         /// Creates control rect for dragging area.
         /// </summary>
         private Rect GetHandleRect()
         {
-            return EditorGUILayout.GetControlRect(GUILayout.Height(Style.lineHeight), GUILayout.Width(Style.dragAreaWidth));
+            return EditorGUILayout.GetControlRect(GUILayout.Width(Style.dragAreaWidth),
+                                                  GUILayout.Height(Style.lineHeight));
         }
 
         /// <summary>
         /// Creates <see cref="Rect"/> to represent the position of the dragged handle.
-        /// It's based on <see cref="elementsRects"/> so it's crucial to update known rects before call.
+        /// It's based on <see cref="elementsRects"/> so it's crucial to update known rects before a call.
         /// </summary>
         private Rect GetHandleRect(float draggedY)
         {
@@ -101,68 +172,6 @@ namespace Toolbox.Editor.Internal
             return rect;
         }
 
-        private void DrawRowGroup(int index, bool isActive, bool isTarget, bool hasFocus)
-        {
-            using (var rowGroup = new EditorGUILayout.HorizontalScope())
-            {
-                var rowRect = rowGroup.rect;
-                var isSelected = isActive || isTarget;
-                elementsRects[index] = rowRect;
-                if (drawElementBackgroundCallback != null)
-                {
-                    drawElementBackgroundCallback(rowRect, index, isSelected, hasFocus);
-                }
-                else
-                {
-                    DrawStandardElementBackground(rowRect, index, isSelected, hasFocus, Draggable);
-                }
-
-                var handleRect = GetHandleRect();
-                var drawHandle = false;
-                //draw handles only for static array or currently dragged element
-                if (isSelected)
-                {
-                    drawHandle = true;
-                    handleRect = GetHandleRect(draggedY);
-                }
-                else if (!IsDragging)
-                {
-                    drawHandle = true;
-                }
-
-                if (drawHandle)
-                {
-                    if (drawElementHandleCallback != null)
-                    {
-                        drawElementHandleCallback(handleRect, index, isActive, hasFocus);
-                    }
-                    else
-                    {
-                        DrawStandardElementHandle(handleRect, index, isActive, hasFocus, Draggable);
-                    }
-                }
-
-                using (var elementGroup = new EditorGUILayout.VerticalScope())
-                {
-                    var elementRect = elementGroup.rect;
-                    //TODO: standard layout spacing
-                    EditorGUIUtility.labelWidth -= Style.dragAreaWidth + 4.0f;
-                    if (drawElementCallback != null)
-                    {
-                        drawElementCallback(elementRect, index, isActive, hasFocus);
-                    }
-                    else
-                    {
-                        DrawStandardElement(elementRect, index, isActive, hasFocus, Draggable);
-                    }
-                    EditorGUIUtility.labelWidth += Style.dragAreaWidth + 4.0f;
-                }
-
-                //TODO: padding property
-                GUILayout.Space(6.0f);
-            }
-        }
-
 
         protected override void DoListMiddle()
         {
@@ -175,6 +184,7 @@ namespace Toolbox.Editor.Internal
 
         protected override void DoListMiddle(Rect middleRect)
         {
+            //draw the background in repaint
             if (Event.current.type == EventType.Repaint)
             {
                 if (drawMiddleBackgroundCallback != null)
@@ -188,6 +198,7 @@ namespace Toolbox.Editor.Internal
             }
 
             var arraySize = Count;
+            //handle empty or invalid array 
             if (List == null || List.isArray == false || arraySize == 0)
             {
                 var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.lineHeight));
@@ -202,18 +213,24 @@ namespace Toolbox.Editor.Internal
             }
             else
             {
+                //make sure rects array is valid
                 ValidateElementsRects(arraySize);
 
-                GUILayout.Space(8.0f);
+                DrawEmptySpace(Style.padding);
+                //if there are elements, we need to draw them - we will do
+                //this differently depending on if we are dragging or not
                 for (var i = 0; i < arraySize; i++)
                 {
+                    //cache related properties
                     var isActive = (i == Index);
                     var hasFocus = (i == Index && HasKeyboardFocus());
                     var isTarget = (i == lastCoveredIndex && !isActive);
                     var isEnding = (i == arraySize - 1);
 
-                    DrawRowGroup(i, isActive, isActive, hasFocus);
+                    //draw current array element
+                    DrawElementRow(i, isActive, isTarget, hasFocus);
 
+                    //draw dragging target gap
                     if (isTarget)
                     {
                         DrawTargetGap(i, Index, GapColor, GapWidth, ElementSpacing, Style.dragAreaWidth);
@@ -224,10 +241,10 @@ namespace Toolbox.Editor.Internal
                         continue;
                     }
 
-                    GUILayout.Space(ElementSpacing);
+                    DrawEmptySpace(ElementSpacing);
                 }
 
-                GUILayout.Space(8.0f);
+                DrawEmptySpace(Style.padding);
             }
         }
 

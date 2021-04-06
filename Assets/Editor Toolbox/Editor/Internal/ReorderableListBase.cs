@@ -568,12 +568,11 @@ namespace Toolbox.Editor.Internal
         public virtual void DrawStandardHeader(Rect rect)
         {
             var label = EditorGUI.BeginProperty(rect, new GUIContent(List.displayName), List);
-
             var diff = rect.height - Style.sizePropertyStyle.fixedHeight;
             var oldY = rect.y;
 
 #if !UNITY_2019_3_OR_NEWER
-            //adjust OY position to middle of the conent
+            //adjust OY position to middle of the content
             rect.y += diff / 2;
 #endif
             //display the property label using the preprocessed name by BeginProperty method
@@ -671,7 +670,7 @@ namespace Toolbox.Editor.Internal
 #if UNITY_2019_3_OR_NEWER
                     var padding = Style.spacing;
 #else
-                    var padding = Style.spacing + Style.spacing / 2;
+                    var padding = Style.spacing + 1.0f;
 #endif
                     rect.yMin -= padding / 2;
                     rect.yMax += padding / 2;
@@ -771,7 +770,7 @@ namespace Toolbox.Editor.Internal
         /// Static representation of the standard list styling.
         /// Provides all needed <see cref="GUIStyle"/>s, paddings, widths, heights, etc.
         /// </summary>
-        internal static class Style
+        protected static class Style
         {
 #if UNITY_2018_3_OR_NEWER
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;

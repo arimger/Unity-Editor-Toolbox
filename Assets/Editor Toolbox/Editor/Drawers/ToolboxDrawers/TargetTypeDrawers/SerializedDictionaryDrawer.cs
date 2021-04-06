@@ -12,7 +12,28 @@ namespace Toolbox.Editor.Drawers
         {
             var listProperty = property.FindPropertyRelative("pairs");
             var keyCollision = property.FindPropertyRelative("keyCollision");
-            ToolboxEditorGui.DrawToolboxProperty(listProperty, label);
+            ToolboxEditorGui.DrawDefaultProperty(listProperty, label, null, (p) =>
+            {
+                if (p.name.Equals("size"))
+                {
+                    ToolboxEditorGui.DrawDefaultProperty(p);
+                    return;
+                }
+
+                using (var scope = new EditorGUILayout.HorizontalScope())
+                {
+                    using (var scope1 = new EditorGUILayout.VerticalScope())
+                    {
+                        ToolboxEditorGui.DrawDefaultProperty(p);
+                    }
+
+                    //TODO: 'remove' button but only for dictionary elements
+                }
+            });
+
+            //TODO: 'append' button right after dictionary elements
+            //TODO: custom styling
+
             if (keyCollision.boolValue)
             {
                 EditorGUILayout.HelpBox(Style.warningContent.text, MessageType.Warning);

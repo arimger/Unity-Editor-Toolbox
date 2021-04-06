@@ -25,12 +25,12 @@ namespace Toolbox.Editor.Drawers
         {
             SetBackgroundColor(attribute.Color);
 
-            GuiLayoutUtility.BeginStrechedVertical(Style.layoutStyle);
+            GuiLayoutUtility.BeginFixedVertical(Style.layoutStyle);
         }
 
         protected override void OnGuiCloseSafe(HighlightAttribute attribute)
         {
-            GuiLayoutUtility.CloseStretchedVertical();
+            GuiLayoutUtility.CloseFixedVertical();
         }
 
 

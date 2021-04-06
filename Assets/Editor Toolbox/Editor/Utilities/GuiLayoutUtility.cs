@@ -11,20 +11,20 @@ namespace Toolbox.Editor
         /// <summary>
         /// Base padding for the vertical groups to keep them fixed relative to non-layout elements.
         /// </summary>
-        private static readonly float layoutPadding = -2 * EditorGUIUtility.standardVerticalSpacing;
+        public static readonly float layoutPadding = -2 * EditorGUIUtility.standardVerticalSpacing;
 
 
         public static void BeginStrechedVertical()
         {
-            BeginStrechedVertical(new GUIStyle());
+            BeginFixedVertical(new GUIStyle());
         }
 
-        public static void BeginStrechedVertical(GUIStyle style)
+        public static void BeginFixedVertical(GUIStyle style)
         {
-            BeginStrechedVertical(style, layoutPadding);
+            BeginFixedVertical(style, layoutPadding);
         }
 
-        public static void BeginStrechedVertical(GUIStyle style, float padding)
+        public static void BeginFixedVertical(GUIStyle style, float padding)
         {
             //NOTE: horizontal layout as a parent allow us to create additional padding
             GUILayout.BeginHorizontal();
@@ -32,12 +32,12 @@ namespace Toolbox.Editor
             GUILayout.BeginVertical(style);
         }
 
-        public static void CloseStretchedVertical()
+        public static void CloseFixedVertical()
         {
-            CloseStretchedVertical(layoutPadding);
+            CloseFixedVertical(layoutPadding);
         }
 
-        public static void CloseStretchedVertical(float padding)
+        public static void CloseFixedVertical(float padding)
         {
             GUILayout.EndVertical();
             GUILayout.Space(padding);
@@ -47,6 +47,11 @@ namespace Toolbox.Editor
         public static void RemoveStandardSpacing()
         {
             GUILayout.Space(-EditorGUIUtility.standardVerticalSpacing);
+        }
+
+        public static void CreateSpace(float space)
+        {
+            GUILayout.Space(space);
         }
 
         //TODO: add more helper methods
