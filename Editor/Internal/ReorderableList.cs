@@ -318,6 +318,11 @@ namespace Toolbox.Editor.Internal
             nonDragTargetIndices = null;
         }
 
+        protected override float GetDraggedY(Vector2 mousePosition)
+        {
+            return Mathf.Clamp(mousePosition.y, middleRect.yMin + dragOffset, middleRect.yMax - (GetRowHeight(Index) - dragOffset));
+        }
+
         protected override int GetCoveredElementIndex(float localY)
         {
             var rowYOffset = middleRect.yMin;
@@ -337,9 +342,9 @@ namespace Toolbox.Editor.Internal
             return -1;
         }
 
-        protected override float GetDraggedY(Vector2 mousePosition)
+        protected override int GetCoveredElementIndex(Vector2 mousePosition)
         {
-            return Mathf.Clamp(mousePosition.y, middleRect.yMin + dragOffset, middleRect.yMax - (GetRowHeight(Index) - dragOffset));
+            return middleRect.Contains(mousePosition) ? GetCoveredElementIndex(mousePosition.y) : -1;
         }
 
 

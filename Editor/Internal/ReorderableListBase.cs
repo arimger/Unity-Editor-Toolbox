@@ -98,7 +98,6 @@ namespace Toolbox.Editor.Internal
         }
 
 
-
         private void DoDraggingAndSelection()
         {
             var isClicked = false;
@@ -149,7 +148,7 @@ namespace Toolbox.Editor.Internal
                         }
 
                         //pick the active element based on mouse position
-                        var selectedIndex = GetCoveredElementIndex(currentEvent.mousePosition.y);
+                        var selectedIndex = GetCoveredElementIndex(currentEvent.mousePosition);
                         if (selectedIndex == -1)
                         {
                             break;
@@ -403,6 +402,8 @@ namespace Toolbox.Editor.Internal
 
         protected abstract int GetCoveredElementIndex(float localY);
 
+        protected abstract int GetCoveredElementIndex(Vector2 mousePosition);
+
 
         public string GetElementDefaultName(int index)
         {
@@ -567,7 +568,7 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public virtual void DrawStandardHeader(Rect rect)
         {
-            var label = EditorGUI.BeginProperty(rect, new GUIContent(List.displayName), List);
+            var label = EditorGUI.BeginProperty(rect, DefaultTitle, List);
             var diff = rect.height - Style.sizePropertyStyle.fixedHeight;
             var oldY = rect.y;
 
@@ -575,7 +576,7 @@ namespace Toolbox.Editor.Internal
             //adjust OY position to middle of the content
             rect.y += diff / 2;
 #endif
-            //display the property label using the preprocessed name by BeginProperty method
+            //display the property label using the preprocessed name
             EditorGUI.LabelField(rect, label);
 
             //adjust OY position to the middle of the element row
@@ -634,9 +635,6 @@ namespace Toolbox.Editor.Internal
         {
             if (Event.current.type == EventType.Repaint)
             {
-                //keep the dragging handle in the 1 row
-                rect.yMax = rect.yMin + Style.lineHeight;
-
                 //prepare rect for the handle texture draw
                 var xDiff = rect.width - Style.handleWidth;
                 rect.xMin += xDiff / 2;
@@ -731,7 +729,7 @@ namespace Toolbox.Editor.Internal
 
         public virtual bool HasLabels { get; set; } = true;
 
-        public virtual float HeaderHeight { get; set; } = 18.0f;
+        public virtual float HeaderHeight { get; set; } = 20.0f;
 
         public virtual float FooterHeight { get; set; } = 20.0f;
 
@@ -739,6 +737,14 @@ namespace Toolbox.Editor.Internal
         /// Standard spacing between elements.
         /// </summary>
         public virtual float ElementSpacing { get; set; } = 5.0f;
+
+        /// <summary>
+        /// Default label of the <see cref="List"/> property.
+        /// </summary>
+        public GUIContent DefaultTitle
+        {
+            get => new GUIContent(List.displayName);
+        }
 
         /// <summary>
         /// Custom element label name.
