@@ -23,7 +23,7 @@ namespace Toolbox.Editor.Internal
 
 
         public DrawRectCallbackDelegate drawHeaderCallback;
-        public DrawRectCallbackDelegate drawVoidedCallback;
+        public DrawRectCallbackDelegate drawVacantCallback;
         public DrawRectCallbackDelegate drawFooterCallback;
 
         public DrawRectCallbackDelegate drawHeaderBackgroundCallback;

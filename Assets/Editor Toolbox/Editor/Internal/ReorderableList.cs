@@ -97,9 +97,9 @@ namespace Toolbox.Editor.Internal
                 elementContentRect.xMin += Style.padding;
                 elementContentRect.xMax -= Style.padding;
 
-                if (drawVoidedCallback != null)
+                if (drawVacantCallback != null)
                 {
-                    drawVoidedCallback(elementContentRect);
+                    drawVacantCallback(elementContentRect);
                 }
                 else
                 {

@@ -96,11 +96,12 @@ namespace Toolbox.Editor.Internal
                     }
                 }
 
+                var style = EditorStyles.inspectorFullWidthMargins;
                 //draw the real property in separate vertical group
-                using (var elementGroup = new EditorGUILayout.VerticalScope(EditorStyles.inspectorFullWidthMargins))
+                using (var elementGroup = new EditorGUILayout.VerticalScope(style))
                 {
                     var elementRect = elementGroup.rect;
-                    //adjust label width to the dragging area + layout
+                    //adjust label width to the known dragging area
                     EditorGUIUtility.labelWidth -= Style.dragAreaWidth;
                     if (drawElementCallback != null)
                     {
@@ -118,12 +119,29 @@ namespace Toolbox.Editor.Internal
             }
         }
 
+        private void DrawVacantList()
+        {
+            var style = EditorStyles.inspectorFullWidthMargins;
+            using (var vacantGroup = new EditorGUILayout.VerticalScope(style))
+            {
+                var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.lineHeight));
+                if (drawVacantCallback != null)
+                {
+                    drawVacantCallback(rect);
+                }
+                else
+                {
+                    //TODO: how about additional label?
+                }
+            }
+        }
+
         /// <summary>
         /// Creates empty space in a layout-based structure.
         /// </summary>
         private void DrawEmptySpace(float space)
         {
-            GUILayout.Space(space);
+            GuiLayoutUtility.CreateSpace(space);
         }
 
         /// <summary>
@@ -161,6 +179,7 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         private Rect DrawTargetGap(int targetIndex, int draggingIndex, Color color, float width, float padding, float margin)
         {
+            //TODO: refactor
             var targetsRect = elementsRects[targetIndex];
             var rect = new Rect(targetsRect);
             if (targetIndex < draggingIndex)
@@ -209,15 +228,7 @@ namespace Toolbox.Editor.Internal
             //handle empty or invalid array 
             if (List == null || List.isArray == false || arraySize == 0)
             {
-                var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.lineHeight));
-                if (drawVoidedCallback != null)
-                {
-                    drawVoidedCallback(rect);
-                }
-                else
-                {
-                    //TODO:
-                }
+                DrawVacantList();
             }
             else
             {
