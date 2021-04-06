@@ -18,6 +18,10 @@ namespace Toolbox.Editor.Internal
 
         private Rect[] elementsRects;
 
+        private Rect footerRect;
+        private Rect middleRect;
+        private Rect headerRect;
+
 
         public ToolboxEditorList(SerializedProperty list)
             : base(list)
@@ -56,6 +60,7 @@ namespace Toolbox.Editor.Internal
             using (var elementRowGroup = new EditorGUILayout.HorizontalScope())
             {
                 var elementRowRect = elementRowGroup.rect;
+                //EditorGUI.DrawRect(elementRowRect, Color.red);
                 var isSelected = isActive || isTarget;
                 elementsRects[index] = elementRowRect;
                 //draw element background (handle selection and targeting)
@@ -69,7 +74,7 @@ namespace Toolbox.Editor.Internal
                 }
 
                 //prepare handle-related properties
-                var handleRect = GetHandleRect();
+                var handleRect = GetHandleRect(elementRowRect);
                 var drawHandle = !IsDragging;
                 //draw handles only for static array or currently dragged element
                 if (isSelected && IsDragging)
@@ -92,11 +97,11 @@ namespace Toolbox.Editor.Internal
                 }
 
                 //draw the real property in separate vertical group
-                using (var elementGroup = new EditorGUILayout.VerticalScope())
+                using (var elementGroup = new EditorGUILayout.VerticalScope(EditorStyles.inspectorFullWidthMargins))
                 {
                     var elementRect = elementGroup.rect;
                     //adjust label width to the dragging area + layout
-                    EditorGUIUtility.labelWidth -= Style.dragAreaWidth - GuiLayoutUtility.layoutPadding;
+                    EditorGUIUtility.labelWidth -= Style.dragAreaWidth;
                     if (drawElementCallback != null)
                     {
                         drawElementCallback(elementRect, index, isActive, hasFocus);
@@ -105,11 +110,11 @@ namespace Toolbox.Editor.Internal
                     {
                         DrawStandardElement(elementRect, index, isActive, hasFocus, Draggable);
                     }
-                    EditorGUIUtility.labelWidth += Style.dragAreaWidth - GuiLayoutUtility.layoutPadding;
+                    EditorGUIUtility.labelWidth += Style.dragAreaWidth;
                 }
 
                 //create additional space between element and right margin
-                DrawEmptySpace(Style.padding);
+                DrawEmptySpace(Style.spacing);
             }
         }
 
@@ -122,12 +127,14 @@ namespace Toolbox.Editor.Internal
         }
 
         /// <summary>
-        /// Creates control rect for dragging area.
+        /// Creates empty space for the dragging area and returns adjusted <see cref="Rect"/>.
         /// </summary>
-        private Rect GetHandleRect()
+        private Rect GetHandleRect(Rect rowRect)
         {
-            return EditorGUILayout.GetControlRect(GUILayout.Width(Style.dragAreaWidth),
-                                                  GUILayout.Height(Style.lineHeight));
+            var handleRect = new Rect(rowRect);
+            handleRect.xMax = handleRect.xMin + Style.dragAreaWidth;
+            DrawEmptySpace(Style.dragAreaWidth);
+            return handleRect;
         }
 
         /// <summary>
@@ -184,6 +191,7 @@ namespace Toolbox.Editor.Internal
 
         protected override void DoListMiddle(Rect middleRect)
         {
+            this.middleRect = middleRect;
             //draw the background in repaint
             if (Event.current.type == EventType.Repaint)
             {
@@ -253,16 +261,21 @@ namespace Toolbox.Editor.Internal
             return base.DoListHeader();
         }
 
+        protected override bool DoListHeader(Rect headerRect)
+        {
+            this.headerRect = headerRect;
+            return base.DoListHeader(headerRect);
+        }
+
         protected override bool DoListFooter()
         {
-            if (FixedSize)
-            {
-                return false;
-            }
-
-            //NOTE: we have to remove standard spacing because of created layout group
-            GuiLayoutUtility.RemoveStandardSpacing();
             return base.DoListFooter();
+        }
+
+        protected override bool DoListFooter(Rect footerRect)
+        {
+            this.footerRect = footerRect;
+            return base.DoListFooter(footerRect);
         }
 
         protected override void OnDrag(Event currentEvent)
@@ -313,6 +326,11 @@ namespace Toolbox.Editor.Internal
             }
 
             return -1;
+        }
+
+        protected override int GetCoveredElementIndex(Vector2 mousePosition)
+        {
+            return middleRect.Contains(mousePosition) ? GetCoveredElementIndex(mousePosition.y) : -1;
         }
 
 
