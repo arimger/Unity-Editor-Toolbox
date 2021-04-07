@@ -71,14 +71,6 @@ Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associa
 
 &nbsp;
 
-#### HelpAttribute
-
-```csharp
-//NOTE: HelpAttribute moved to ToolboxAttributes (Decorators)
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/helpbox.png)
-
 #### TagSelectorAttribute
 
 ```csharp
@@ -388,6 +380,9 @@ public int var2;
 public int var3;
 [EndIndent]
 public int var4;
+
+[IndentArea(4)]
+public int var5;
 ```
 ```csharp
 [SpaceArea(spaceBefore = 10.0f, spaceAfter = 5.0f, Order = 1)]
@@ -398,8 +393,13 @@ public int var1;
 public int var1;
 ```
 ```csharp
-[EditorButton("MyMethodName", "<b>My</b> Custom Label", activityType: ButtonActivityType.OnPlayMode)]
+[EditorButton(nameof(MyMethod), "<b>My</b> Custom Label", activityType: ButtonActivityType.OnPlayMode)]
 public int var1;
+
+private void MyMethod()
+{
+	Debug.Log("MyMethod is invoked");
+}
 ```
 ```csharp
 [Highlight(0, 1, 0)]
@@ -416,6 +416,8 @@ public int var1;
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/imagearea.png)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/helpbox.png)
 
 #### ToolboxConditionDrawers
 
