@@ -177,19 +177,19 @@ namespace Toolbox.Editor.Internal
         /// <summary>
         /// Creates small, colored rect to visualize the dragging target (gap between elements).
         /// </summary>
-        private Rect DrawTargetGap(int targetIndex, int draggingIndex, Color color, float width, float padding, float margin)
+        private Rect DrawTargetGap(int targetIndex, int draggingIndex, Color color, float width, float margin)
         {
-            //TODO: refactor
+            //TODO: refactor + custom texture/method for the gap
             var targetsRect = elementsRects[targetIndex];
             var rect = new Rect(targetsRect);
             if (targetIndex < draggingIndex)
             {
-                rect.yMax = rect.yMin - padding;
+                rect.yMax = rect.yMin;
                 rect.yMin = rect.yMax - width;
             }
             else
             {
-                rect.yMin = rect.yMax + padding;
+                rect.yMin = rect.yMax;
                 rect.yMax = rect.yMin + width;
             }
 
@@ -224,7 +224,9 @@ namespace Toolbox.Editor.Internal
                 }
             }
 
-            var arraySize = Count;
+            var arraySize = Count;                
+            //make sure rects array is valid
+            ValidateElementsRects(arraySize);
             //handle empty or invalid array 
             if (List == null || List.isArray == false || arraySize == 0)
             {
@@ -232,9 +234,6 @@ namespace Toolbox.Editor.Internal
             }
             else
             {
-                //make sure rects array is valid
-                ValidateElementsRects(arraySize);
-
                 DrawEmptySpace(Style.padding);
                 //if there are elements, we need to draw them - we will do
                 //this differently depending on if we are dragging or not
@@ -252,7 +251,7 @@ namespace Toolbox.Editor.Internal
                     //draw dragging target gap
                     if (isTarget)
                     {
-                        DrawTargetGap(i, Index, GapColor, GapWidth, ElementSpacing, Style.dragAreaWidth);
+                        DrawTargetGap(i, Index, GapColor, GapWidth, Style.dragAreaWidth);
                     }
 
                     if (isEnding)
@@ -260,6 +259,7 @@ namespace Toolbox.Editor.Internal
                         continue;
                     }
 
+                    //create spacing for elements
                     DrawEmptySpace(ElementSpacing);
                 }
 
