@@ -20,25 +20,21 @@ namespace Toolbox.Editor.Drawers
 
         private void DrawSettingsBody(SerializedProperty property, ScrollableItemsAttribute attribute, out int size, out Vector2 indexRange)
         {
-            EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(property.GetSize());
             size = property.arraySize;
             //get or initialize current ranges 
             indexRange = storage.ReturnItem(property, attribute);
 
-            //create a min-max slider to determine the range of visible properties
+            using (new DisabledScope(true))
             {
-                var enabled = GUI.enabled;
-                GUI.enabled = true;
+                //create a min-max slider to determine the range of visible properties
                 EditorGUILayout.MinMaxSlider(Style.rangeContent, ref indexRange.x, ref indexRange.y, 0, size);
-                GUI.enabled = enabled;
             }
 
             //fix values to the integral part
             indexRange.x = Mathf.Max(Mathf.RoundToInt(indexRange.x), 0);
             indexRange.y = Mathf.Min(Mathf.RoundToInt(indexRange.y), size);
             storage.ApplyItem(property, indexRange);
-            EditorGUI.indentLevel--;
         }
 
         private void DrawElementsBody(SerializedProperty property, ScrollableItemsAttribute attribute, int size, Vector2 indexRange)
@@ -48,38 +44,12 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            using (new EditorGUILayout.HorizontalScope())
+            var minRange = (int)indexRange.x;
+            var maxRange = (int)indexRange.y;
+            //draw all visible (in the range) properties
+            for (var i = minRange; i < maxRange; i++)
             {
-                //NOTE1: we have to handle indentation for group
-                //NOTE2: 15.0f - internal 'indentPerLevel' value
-                GUILayout.Space(15.0f * EditorGUI.indentLevel);
-                using (new EditorGUILayout.VerticalScope(Style.backgroundStyle))
-                {
-                    var space = EditorGUIUtility.standardVerticalSpacing;
-                    GUILayout.Space(space);
-                    GUILayout.Space(space);
-
-                    var minRange = (int)indexRange.x;
-                    var maxRange = (int)indexRange.y;
-
-                    if (minRange > 0)
-                    {
-                        EditorGUILayout.LabelField(Style.spaceContent, Style.spaceLabelStyle);
-                    }
-
-                    //draw all visible (in the range) properties
-                    for (var i = minRange; i < maxRange; i++)
-                    {
-                        ToolboxEditorGui.DrawToolboxProperty(property.GetArrayElementAtIndex(i));
-                    }
-
-                    if (maxRange < size)
-                    {
-                        EditorGUILayout.LabelField(Style.spaceContent, Style.spaceLabelStyle);
-                    }
-
-                    GUILayout.Space(space);
-                }
+                ToolboxEditorGui.DrawToolboxProperty(property.GetArrayElementAtIndex(i));
             }
         }
 
@@ -93,29 +63,22 @@ namespace Toolbox.Editor.Drawers
                     return;
                 }
 
+                EditorGUI.indentLevel++;
                 DrawSettingsBody(property, attribute, out var size, out var indexRange);
                 DrawElementsBody(property, attribute, size, indexRange);
+                EditorGUI.indentLevel--;
             }
         }
 
 
         private static class Style
         {
-#if UNITY_2019_3_OR_NEWER
-            internal static readonly GUIStyle backgroundStyle = new GUIStyle("helpBox")
-#else
-            internal static readonly GUIStyle backgroundStyle = new GUIStyle("box")
-#endif
-            {
-                padding = new RectOffset(15, 0, 0, 0)
-            };
+            //TODO: apply custom styling for the drawer
             internal static readonly GUIStyle scrollViewStyle = new GUIStyle("verticalScrollbar");
             internal static readonly GUIStyle spaceLabelStyle = new GUIStyle("label")
             {
                 alignment = TextAnchor.MiddleCenter
             };
-
-            internal static readonly GUIContent spaceContent = new GUIContent("...");
             internal static readonly GUIContent rangeContent = new GUIContent("Min/Max", "Range of the min. and max. visible element.");
         }
     }

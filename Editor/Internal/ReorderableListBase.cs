@@ -505,7 +505,7 @@ namespace Toolbox.Editor.Internal
             var margin = Style.footerMargin;
             var padding = Style.footerPadding;
 
-            //set proper rect for each buttons
+            //set proper rect for each button
             var appendButtonRect = new Rect(rect.xMin + margin, rect.y - padding, buttonWidth, buttonHeight);
 
             EditorGUI.BeginDisabledGroup(List.hasMultipleDifferentValues);

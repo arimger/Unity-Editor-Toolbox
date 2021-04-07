@@ -182,6 +182,7 @@ namespace Toolbox.Editor.Internal
             //TODO: refactor + custom texture/method for the gap
             var targetsRect = elementsRects[targetIndex];
             var rect = new Rect(targetsRect);
+            //handle differently situation above and under target
             if (targetIndex < draggingIndex)
             {
                 rect.yMax = rect.yMin;

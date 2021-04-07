@@ -46,7 +46,7 @@ namespace UnityEngine
         private readonly Dictionary<TK, TV> dictionary = new Dictionary<TK, TV>();
 
         [SerializeField, HideInInspector]
-        private bool keyCollision;
+        private bool error;
 
 
         private void UpdateIndexes(int removedIndex)
@@ -65,7 +65,7 @@ namespace UnityEngine
         {
             dictionary.Clear();
             indexByKey.Clear();
-            keyCollision = false;
+            error = false;
 
             for (int i = 0; i < pairs.Count; i++)
             {
@@ -77,7 +77,7 @@ namespace UnityEngine
                 }
                 else
                 {
-                    keyCollision = true;
+                    error = true;
                 }
             }
         }
@@ -188,9 +188,9 @@ namespace UnityEngine
         /// Duplicated keys (pairs) won't be added to the final dicitonary.
         /// This property is crucial for Editor-related functions.
         /// </summary>
-        public bool KeyCollision
+        public bool Error
         {
-            get => keyCollision;
+            get => error;
         }
 
         public TV this[TK key]
