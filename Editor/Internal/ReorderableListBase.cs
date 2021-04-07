@@ -728,9 +728,11 @@ namespace Toolbox.Editor.Internal
         public virtual bool HasHeader { get; set; } = true;
 
         public virtual bool HasLabels { get; set; } = true;
-
+#if UNITY_2020_1_OR_NEWER
         public virtual float HeaderHeight { get; set; } = 20.0f;
-
+#else
+        public virtual float HeaderHeight { get; set; } = 18.0f;
+#endif
         public virtual float FooterHeight { get; set; } = 20.0f;
 
         /// <summary>
