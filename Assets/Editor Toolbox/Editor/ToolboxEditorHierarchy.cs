@@ -259,7 +259,7 @@ namespace Toolbox.Editor
 
         #endregion
 
-        internal static void CreateAllowedHierarchyContentCallbacks(params HierarchyObjectDataType[] items)
+        internal static void CreateAllowedHierarchyContentCallbacks(params HierarchyItemDataType[] items)
         {
             foreach (var item in items)
             {

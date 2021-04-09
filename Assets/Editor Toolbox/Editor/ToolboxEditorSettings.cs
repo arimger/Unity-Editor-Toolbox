@@ -19,7 +19,7 @@ namespace Toolbox.Editor
         bool DrawHorizontalLines { get; }
         bool ShowSelectionsCount { get; }
 
-        List<HierarchyObjectDataType> RowDataTypes { get; }
+        List<HierarchyItemDataType> RowDataTypes { get; }
     }
 
     internal interface IToolboxProjectSettings
@@ -63,7 +63,7 @@ namespace Toolbox.Editor
 
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         [FormerlySerializedAs("rowDataItems")]
-        private List<HierarchyObjectDataType> rowDataTypes = Defaults.rowDataTypes;
+        private List<HierarchyItemDataType> rowDataTypes = Defaults.rowDataTypes;
 
         [SerializeField]
         private bool useToolboxFolders = true;
@@ -100,9 +100,9 @@ namespace Toolbox.Editor
         private bool projectSettingsDirty;
         private bool inspectorSettingsDirty;
 
-        internal event Action OnHierarchySettingsChanged;
-        internal event Action OnProjectSettingsChanged;
-        internal event Action OnInspectorSettingsChanged;
+        internal event Action<IToolboxHierarchySettings> OnHierarchySettingsChanged;
+        internal event Action<IToolboxProjectSettings> OnProjectSettingsChanged;
+        internal event Action<IToolboxInspectorSettings> OnInspectorSettingsChanged;
 
 
         #region Methods: Internal/data validation
@@ -114,6 +114,7 @@ namespace Toolbox.Editor
         {
             hierarchySettingsDirty = true;
         }
+
         /// <summary>
         /// Forces Project settings validation in the next <see cref="OnValidate"/> call.
         /// </summary>
@@ -121,6 +122,7 @@ namespace Toolbox.Editor
         {
             projectSettingsDirty = true;
         }
+
         /// <summary>
         /// Forces Inspector settings validation in the next <see cref="OnValidate"/> call.
         /// </summary>
@@ -132,17 +134,17 @@ namespace Toolbox.Editor
 
         internal void ValidateHierarchySettings()
         {
-            OnHierarchySettingsChanged?.Invoke();
+            OnHierarchySettingsChanged?.Invoke(this);
         }
 
         internal void ValidateProjectSettings()
         {
-            OnProjectSettingsChanged?.Invoke();
+            OnProjectSettingsChanged?.Invoke(this);
         }
 
         internal void ValidateInspectorSettings()
         {
-            OnInspectorSettingsChanged?.Invoke();
+            OnInspectorSettingsChanged?.Invoke(this);
         }
 
         internal void Validate()
@@ -270,7 +272,7 @@ namespace Toolbox.Editor
             set => useToolboxHierarchy = value;
         }
 
-        public List<HierarchyObjectDataType> RowDataTypes
+        public List<HierarchyItemDataType> RowDataTypes
         {
             get => rowDataTypes;
             set => rowDataTypes = value;
@@ -371,13 +373,13 @@ namespace Toolbox.Editor
             internal const float smallFolderIconXPaddingDefault = 0.15f;
             internal const float smallFolderIconYPaddingDefault = 0.15f;
 
-            internal readonly static List<HierarchyObjectDataType> rowDataTypes = new List<HierarchyObjectDataType>()
+            internal readonly static List<HierarchyItemDataType> rowDataTypes = new List<HierarchyItemDataType>()
             {
-                HierarchyObjectDataType.Icon,
-                HierarchyObjectDataType.Toggle,
-                HierarchyObjectDataType.Tag,
-                HierarchyObjectDataType.Layer,
-                HierarchyObjectDataType.Script
+                HierarchyItemDataType.Icon,
+                HierarchyItemDataType.Toggle,
+                HierarchyItemDataType.Tag,
+                HierarchyItemDataType.Layer,
+                HierarchyItemDataType.Script
             };
         }
     }

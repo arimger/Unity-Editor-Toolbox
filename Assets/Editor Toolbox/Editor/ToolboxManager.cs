@@ -121,9 +121,9 @@ namespace Toolbox.Editor
             if (Settings = AssetDatabase.LoadAssetAtPath<ToolboxEditorSettings>(SettingsPath))
             {
                 //subscribe to all related events
-                Settings.OnHierarchySettingsChanged += () => ManageHierarchyCore(Settings);
-                Settings.OnProjectSettingsChanged += () => ManageProjectCore(Settings);
-                Settings.OnInspectorSettingsChanged += () => ManageInspectorCore(Settings);
+                Settings.OnHierarchySettingsChanged += ManageHierarchyCore;
+                Settings.OnProjectSettingsChanged += ManageProjectCore;
+                Settings.OnInspectorSettingsChanged += ManageInspectorCore;
                 //initialize core functionalities
                 Settings.Validate();
                 return true;
@@ -139,9 +139,12 @@ namespace Toolbox.Editor
         {
             //find and re-import this script file
             var guids = AssetDatabase.FindAssets(nameof(ToolboxManager));
-            if (guids == null || guids.Length == 0) return;
-            var path = AssetDatabase.GUIDToAssetPath(guids[0]);
+            if (guids == null || guids.Length == 0)
+            {
+                return;
+            }
 
+            var path = AssetDatabase.GUIDToAssetPath(guids[0]);
             AssetDatabase.ImportAsset(path);
         }
 

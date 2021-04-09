@@ -568,19 +568,12 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public virtual void DrawStandardHeader(Rect rect)
         {
-            var label = EditorGUI.BeginProperty(rect, DefaultTitle, List);
-            var diff = rect.height - Style.sizePropertyStyle.fixedHeight;
-            var oldY = rect.y;
-
-#if !UNITY_2019_3_OR_NEWER
-            //adjust OY position to middle of the content
-            rect.y += diff / 2;
-#endif
+            var label = EditorGUI.BeginProperty(rect, TitleLabel, List);
             //display the property label using the preprocessed name
-            EditorGUI.LabelField(rect, label);
+            EditorGUI.LabelField(rect, label, Style.namePropertyStyle);
 
+            var diff = rect.height - Style.sizePropertyStyle.fixedHeight;
             //adjust OY position to the middle of the element row
-            rect.y = oldY;
             rect.yMin += diff / 2;
             rect.yMax -= diff / 2;
             //adjust OX position and width for the size property
@@ -741,11 +734,11 @@ namespace Toolbox.Editor.Internal
         public virtual float ElementSpacing { get; set; } = 5.0f;
 
         /// <summary>
-        /// Default label of the <see cref="List"/> property.
+        /// Current label of the List. NULL means it will be the default one.
         /// </summary>
-        public GUIContent DefaultTitle
+        public GUIContent TitleLabel
         {
-            get => new GUIContent(List.displayName);
+            get; set;
         }
 
         /// <summary>
@@ -812,6 +805,7 @@ namespace Toolbox.Editor.Internal
             internal static readonly GUIContent iconToolbarRemoveContent;
             internal static readonly GUIContent emptyOrInvalidListContent;
 
+            internal static readonly GUIStyle namePropertyStyle;
             internal static readonly GUIStyle sizePropertyStyle;
             internal static readonly GUIStyle footerButtonStyle;
             internal static readonly GUIStyle dragHandleButtonStyle;
@@ -828,6 +822,10 @@ namespace Toolbox.Editor.Internal
                 iconToolbarRemoveContent = EditorGUIUtility.TrIconContent("Toolbar Minus", "Remove selection from list");
                 emptyOrInvalidListContent = EditorGUIUtility.TrTextContent("List is Empty");
 
+                namePropertyStyle = new GUIStyle(EditorStyles.label)
+                {
+                    alignment = TextAnchor.MiddleLeft
+                };
                 sizePropertyStyle = new GUIStyle(EditorStyles.miniTextField)
                 {
                     alignment = TextAnchor.MiddleRight,

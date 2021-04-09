@@ -84,8 +84,6 @@ namespace Toolbox.Editor.Drawers
         /// <summary>
         /// Handles the property drawing process and tries to create a inlined version of the <see cref="Editor"/>.
         /// </summary>
-        /// <param name="property"></param>
-        /// <param name="attribute"></param>
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, InLineEditorAttribute attribute)
         {
             using (new EditorGUILayout.HorizontalScope())

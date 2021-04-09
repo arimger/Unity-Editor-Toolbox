@@ -391,7 +391,6 @@ namespace Toolbox.Editor
             {
                 //NOTE: maybe type-based key?
                 var propertyKey = property.GetPropertyHashKey();
-
                 if (propertyHandlers.TryGetValue(propertyKey, out var propertyHandler))
                 {
                     return propertyHandler;
