@@ -6,15 +6,6 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Hierarchy
 {
-    public enum HierarchyObjectDataType
-    {
-        Icon,
-        Toggle,
-        Tag,
-        Layer,
-        Script
-    }
-
     /// <summary>
     /// Base class for all custom, Hierarchy-related labels based on targeted <see cref="GameObject"/>.
     /// </summary>
@@ -51,21 +42,21 @@ namespace Toolbox.Editor.Hierarchy
 
 
         /// <summary>
-        /// Returns built-in label class associated to provided <see cref="HierarchyObjectDataType"/>.
+        /// Returns built-in label class associated to provided <see cref="HierarchyItemDataType"/>.
         /// </summary>
-        public static HierarchyPropertyLabel GetPropertyLabel(HierarchyObjectDataType dataType)
+        public static HierarchyPropertyLabel GetPropertyLabel(HierarchyItemDataType dataType)
         {
             switch (dataType)
             {
-                case HierarchyObjectDataType.Icon:
+                case HierarchyItemDataType.Icon:
                     return new HierarchyIconLabel();
-                case HierarchyObjectDataType.Toggle:
+                case HierarchyItemDataType.Toggle:
                     return new HierarchyToggleLabel();
-                case HierarchyObjectDataType.Tag:
+                case HierarchyItemDataType.Tag:
                     return new HierarchyTagLabel();
-                case HierarchyObjectDataType.Layer:
+                case HierarchyItemDataType.Layer:
                     return new HierarchyLayerLabel();
-                case HierarchyObjectDataType.Script:
+                case HierarchyItemDataType.Script:
                     return new HierarchyScriptLabel();
             }
 

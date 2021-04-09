@@ -2,17 +2,10 @@
 using System.Collections.Generic;
 
 using UnityEditor;
-using UnityEngine;
 
-namespace Toolbox.Editor.Drawers
+namespace Toolbox.Editor.Internal
 {
-    /// <summary>
-    /// Internal system responsible for keeping and clearing data between <see cref="UnityEditor.Editor"/>s.
-    /// This small system works only for attribute-based drawers and should be defined as a static field.
-    /// </summary>
-    /// <typeparam name="T">Data to store.</typeparam>
-    /// <typeparam name="T1">Associated drawer attribute.</typeparam>
-    internal class DrawerDataStorage<T, T1> where T1 : ToolboxAttribute
+    abstract class DrawerDataStorage
     {
         static DrawerDataStorage()
         {
@@ -25,19 +18,36 @@ namespace Toolbox.Editor.Drawers
             };
         }
 
-        private static readonly List<DrawerDataStorage<T, T1>> storages = new List<DrawerDataStorage<T, T1>>();
+
+        protected DrawerDataStorage()
+        {
+            storages.Add(this);
+        }
 
 
-        public DrawerDataStorage(bool isPersistant, Func<SerializedProperty, T1, T> createMethod) : this(isPersistant, createMethod, null)
+        //TODO: clean up
+        private static readonly List<DrawerDataStorage> storages = new List<DrawerDataStorage>();
+
+
+        public abstract void ClearItems();
+    }
+
+    /// <summary>
+    /// Internal system responsible for keeping and clearing data between <see cref="UnityEditor.Editor"/>s.
+    /// This small system works only for attribute-based drawers and should be defined as a static field.
+    /// </summary>
+    /// <typeparam name="T">Data to store.</typeparam>
+    /// <typeparam name="T1">Any type needed for storage item creation. Pass <see cref="EventArgs.Empty"/> if no additional data is needed.</typeparam>
+    internal class DrawerDataStorage<T, T1> : DrawerDataStorage
+    {
+        internal DrawerDataStorage(bool isPersistant, Func<SerializedProperty, T1, T> createMethod) : this(isPersistant, createMethod, null)
         { }
 
-        public DrawerDataStorage(bool isPersistant, Func<SerializedProperty, T1, T> createMethod, Action<T> removeMethod)
+        internal DrawerDataStorage(bool isPersistant, Func<SerializedProperty, T1, T> createMethod, Action<T> removeMethod)
         {
             this.isPersistant = isPersistant;
             this.createMethod = createMethod;
             this.removeMethod = removeMethod;
-
-            storages.Add(this);
         }
 
 
@@ -56,7 +66,7 @@ namespace Toolbox.Editor.Drawers
                 : property.GetPropertyHashKey();
         }
 
-        public T ReturnItem(SerializedProperty property, T1 attribute)
+        public T ReturnItem(SerializedProperty property, T1 args)
         {
             var key = GetKey(property);
             if (items.TryGetValue(key, out T item))
@@ -65,13 +75,25 @@ namespace Toolbox.Editor.Drawers
             }
             else
             {
-                return items[key] = createMethod(property, attribute);
+                return items[key] = createMethod(property, args);
             }
+        }
+
+        public void ApplyItem(SerializedProperty property, T1 args)
+        {
+            ApplyItem(property, createMethod(property, args));
         }
 
         public void ApplyItem(SerializedProperty property, T item)
         {
-            items[GetKey(property)] = item;
+            var key = GetKey(property);
+            items[key] = item;
+        }
+
+        public bool HasItem(SerializedProperty property)
+        {
+            var key = GetKey(property);
+            return items.ContainsKey(key);
         }
 
         public void ClearItem(SerializedProperty property)
@@ -92,7 +114,7 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-        public void ClearItems()
+        public override void ClearItems()
         {
             if (isPersistant)
             {

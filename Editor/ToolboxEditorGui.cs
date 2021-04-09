@@ -208,9 +208,9 @@ namespace Toolbox.Editor
                     }
                 },
 #if UNITY_2019_3_OR_NEWER
-                FooterHeight = 17
+                FooterHeight = 17.0f
 #else
-                FooterHeight = 14
+                FooterHeight = 14.0f
 #endif
             };
         }
@@ -238,10 +238,10 @@ namespace Toolbox.Editor
                     DrawLine(rect);
                 },
 #if UNITY_2019_3_OR_NEWER
-                HeaderHeight = 21,
-                FooterHeight = 17
+                HeaderHeight = 21.0f,
+                FooterHeight = 17.0f
 #else
-                FooterHeight = 15
+                FooterHeight = 15.0f
 #endif
             };
         }
@@ -260,9 +260,9 @@ namespace Toolbox.Editor
                 drawFooterBackgroundCallback = (Rect rect) =>
                 { },
 #if UNITY_2019_3_OR_NEWER
-                FooterHeight = 17
+                FooterHeight = 17.0f
 #else
-                FooterHeight = 15
+                FooterHeight = 15.0f
 #endif
             };
         }
@@ -284,13 +284,13 @@ namespace Toolbox.Editor
 
     public static partial class ToolboxEditorGui
     {
-        [Obsolete]
+        [Obsolete("Toolbox-related functions are only layout-based.")]
         public static void DrawToolboxProperty(Rect position, SerializedProperty property)
         {
             throw new NotImplementedException();
         }
 
-        [Obsolete]
+        [Obsolete("Toolbox-related functions are only layout-based.")]
         public static void DrawToolboxProperty(Rect position, SerializedProperty property, GUIContent label)
         {
             throw new NotImplementedException();
@@ -435,7 +435,11 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawEmptyProperty(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUI.LabelField(position, label ?? new GUIContent(property.displayName));
+            label = label ?? new GUIContent(property.displayName);
+#if UNITY_2019_1_OR_NEWER
+            label.image = EditorGuiUtility.GetHelpIcon(MessageType.Warning);
+#endif
+            EditorGUI.LabelField(position, label);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Toolbox.Editor.Internal
                 }
                 else
                 {
-                    property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, label);
+                    property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, label, true);
                 }
             }
         }
