@@ -39,6 +39,7 @@ Unity 2018.x or newer
 	- [Regular Drawers](#regulardrawers)
 	- [Toolbox Drawers](#toolboxdrawers)
 - [Reorderable List](#reorderable-list)
+- [Serialized Types](#serialized-types)
 - [Editor Extensions](#editor-extensions)
 	- [Hierarchy](#hierarchy)
 	- [Project](#project)
@@ -80,10 +81,6 @@ public string var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/tagselector.png)
 
-#### SeparatorAttribute
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/separator.png)
-
 #### ProgressBarAttribute
 
 ```csharp
@@ -114,34 +111,6 @@ public Vector2 var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/minmaxslider.png)
 
-#### IndentAttribute
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/indent.png)
-
-#### ConditionalShowAttribute & ConditionalHideAttribute
-
-```csharp
-//REMARK: use the 'ShowIf'/'HideIf' attribute instead
-public bool toggle;
-[ConditionalShow(nameof(toggle), true)]
-public float var1;
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/showif1.png)\
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/showif2.png)
-
-#### ConditionalEnableAttribute & ConditionalDisableAttribute
-
-```csharp
-//REMARK: use the 'EnableIf'/'DisableIf' attribute instead
-public bool toggle;
-[ConditionalEnable(nameof(toggle), true)]
-public float var1;
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enableif1.png)\
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enableif2.png)
-
 #### AssetPreviewAttribute
 
 ```csharp
@@ -161,24 +130,6 @@ public Component var2;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/suffix.png)
 
-#### ClassExtends/ClassImplementsAttribute
-
-```csharp
-[ClassExtends(typeof(Collider))] //or [ClassImplements(typeof(interface))] for interfaces
-public SerializedType var1;
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializedtype.png)
-
-#### ReadOnlyFieldAttribute
-
-```csharp
-//REMARK: use the 'Disable' attribute instead
-[ReadOnlyField]
-public int var1;
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/readonly.png)
 
 #### EnumFlagAttribute
 
@@ -217,35 +168,11 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExampl
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull2.png)
 
-#### RandomAttribute
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/random.png)
 
 #### DirectoryAttribute
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory2.png)
-
-#### BroadcastButtonAttribute
-
-```csharp
-//REMARK: use the 'EditorButton' attribute instead
-//NOTE: [ExecuteAlways] or [ExecuteInEditMode] needed in the Edit mode
-
-[BroadcastButton(nameof(MyMethod), "Click me to broadcast message", ButtonActivityType.OnEditMode, order = 100)]
-public int var1;
-
-private void MyMethod()
-{
-	Debug.Log("MyMethod is invoked");
-}
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/button1.png)
-
-#### InstanceButtonAttribute
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/button2.png)
 
 #### SceneNameAttribute
 
@@ -277,15 +204,6 @@ public KeyCode enumSearch;
 ```csharp
 [Clamp(minValue = 1.5f, maxValue = 11.3f)]
 public double var1;
-```
-
-#### Vector2DirectionAttribute & Vector3DirectionAttribute
-
-```csharp
-[Vector2Direction]
-public Vector2 direction2d;
-[Vector3Direction]
-public Vector3 direction3d;
 ```
 
 #### PasswordAttribute
@@ -419,6 +337,8 @@ public int var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/helpbox.png)
 
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/button.png)
+
 #### ToolboxConditionDrawers
 
 Enable/disable or show/hide properties using custom conditions. You can use them together with any other type of drawer.
@@ -447,6 +367,9 @@ public int[] vars1 = new [] { 1, 2, 3, 4 };
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/disabled.png)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enableif1.png)\
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enableif2.png)
 
 #### InLineEditorAttribute
 
@@ -504,6 +427,46 @@ public List<string> standardStyleList;
 public GameObject[] boxedStyleList = new GameObject[4];
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list3.png)
+
+## Serialized Types
+
+#### SerializedType
+
+```csharp
+[ClassExtends(typeof(Collider))] //or [ClassImplements(typeof(interface))] for interfaces
+public SerializedType var1;
+
+public void Usage()
+{
+	var type = var1.Type;
+}
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializedtype.png)
+
+#### SerializedScene
+
+```csharp
+public SerializedScene scene;
+
+public void Usage()
+{
+	UnityEngine.SceneManagement.SceneManager.LoadScene(scene.BuildIndex);
+}
+```
+
+#### SerializedDictionary<TK, TV>
+
+```csharp
+public SerializedDictionary<int, GameObject> dictionary;
+
+public void Usage()
+{
+	dictionary.Add(3, new GameObject("TestObject"));
+	dictionary.ContainsKey(2);
+	//etc. like standard System.Collections.Generic.Dictionary<>
+}
+```
 
 ## Editor Extensions
 
