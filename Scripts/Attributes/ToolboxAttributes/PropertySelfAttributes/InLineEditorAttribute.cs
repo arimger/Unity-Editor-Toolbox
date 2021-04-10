@@ -4,7 +4,8 @@ namespace UnityEngine
 {
     /// <summary>
     /// Draws an associated built-in Editor.
-    /// Supported types: any <see cref="Object"/>.
+    /// 
+    /// <para>Supported types: any <see cref="Object"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class InLineEditorAttribute : ToolboxSelfPropertyAttribute

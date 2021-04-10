@@ -4,7 +4,8 @@ namespace UnityEngine
 {
     /// <summary>
     /// Draws an additional suffix label.
-    /// Supported types: all.
+    /// 
+    /// <para>Supported types: all.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class SuffixAttribute : PropertyAttribute

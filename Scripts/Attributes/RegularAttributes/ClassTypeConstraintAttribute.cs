@@ -33,7 +33,8 @@ namespace UnityEngine
 
     /// <summary>
     /// Allows to pick proper type using popup control.
-    /// Supported types: <see cref="SerializedType"/>.
+    /// 
+    /// <para>Supported types: <see cref="SerializedType"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public abstract class ClassTypeConstraintAttribute : PropertyAttribute
@@ -124,10 +125,7 @@ namespace UnityEngine
         public ClassGrouping Grouping { get; set; } = ClassGrouping.None;
     }
 
-    /// <summary>
-    /// Constraint that allows selection of classes that extend a specific class.
-    /// Supported types: <see cref="SerializedType"/>.
-    /// </summary>
+    ///<inheritdoc/>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public sealed class ClassExtendsAttribute : ClassTypeConstraintAttribute
     {
@@ -158,10 +156,7 @@ namespace UnityEngine
         }
     }
 
-    /// <summary>
-    /// Constraint that allows selection of classes that implement a specific interface.
-    /// Supported types: <see cref="SerializedType"/>.
-    /// </summary>
+    ///<inheritdoc/>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public sealed class ClassImplementsAttribute : ClassTypeConstraintAttribute
     {

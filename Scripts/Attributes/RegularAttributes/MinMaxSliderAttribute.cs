@@ -3,8 +3,9 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Draws min-max slider.
-    /// Supported types: <see cref="Vector2"/>.
+    /// Creates min-max slider.
+    /// 
+    /// <para>Supported types: <see cref="Vector2"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class MinMaxSliderAttribute : PropertyAttribute

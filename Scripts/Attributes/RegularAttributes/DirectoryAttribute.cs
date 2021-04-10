@@ -4,7 +4,8 @@ namespace UnityEngine
 {
     /// <summary>
     /// Allows to pick project-related directory using built-in tool.
-    /// Supported types: <see cref="string"/>.
+    /// 
+    /// <para>Supported types: <see cref="string"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class DirectoryAttribute : PropertyAttribute

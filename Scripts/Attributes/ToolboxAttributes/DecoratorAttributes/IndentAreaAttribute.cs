@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Toolbox-based equivalent of the <see cref="IndentAttribute"/>.
+    /// Changes indent level of the property.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class IndentAreaAttribute : ToolboxDecoratorAttribute

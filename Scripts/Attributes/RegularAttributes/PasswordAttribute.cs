@@ -4,7 +4,8 @@ namespace UnityEngine
 {
     /// <summary>
     /// Draws a password field.
-    /// Supported types: <see cref="string"/>.
+    /// 
+    /// <para>Supported types: <see cref="string"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class PasswordAttribute : PropertyAttribute

@@ -3,8 +3,21 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Draws color picker and sets color hex code.
-    /// Supported types: any type with children.
+    /// Changes label by the current value of targeted child.
+    /// <example>
+    /// <code>
+    /// [System.Serializable]
+    /// public class CustomType
+    /// {
+    ///     public KeyCode foo;
+    /// }
+    /// 
+    /// [LabelByChild("foo")]
+    /// public CustomType bar;
+    /// </code>
+    /// In given example label of the 'bar' field in the Inspector Window will be always equal to the value of the 'foo' field.
+    /// </example>
+    /// <para>Supported types: any type with children.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class LabelByChildAttribute : PropertyAttribute

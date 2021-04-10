@@ -119,8 +119,7 @@ namespace Toolbox.Editor.Drawers
                 if (editor.target != property.objectReferenceValue)
                 {
                     //validate target value change (e.g. list reorder)
-                    storage.ClearItem(property);
-                    editor = storage.ReturnItem(property, attribute);
+                    editor = storage.ApplyItem(property, attribute);
                 }
 
                 InspectorUtility.SetIsEditorExpanded(editor, true);

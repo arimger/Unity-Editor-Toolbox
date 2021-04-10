@@ -4,7 +4,8 @@ namespace UnityEngine
 {
     /// <summary>
     /// Hides property label.
-    /// Supported types: all.
+    /// 
+    /// <para>Supported types: all.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class HideLabelAttribute : PropertyAttribute

@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Draws a HelpBox within the Inspector Window above serialized field.
+    /// Creates a HelpBox within the Inspector Window above a serialized field.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class HelpAttribute : ToolboxDecoratorAttribute
