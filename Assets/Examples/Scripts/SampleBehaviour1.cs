@@ -125,7 +125,8 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("16", skinStyle: SkinStyle.Box)]
 
-    //[Random(-10.0f, 10.0f)]
+    //TODO: examples
+    [Random(-10.0f, 10.0f)]
     public float randomValue;
 
     [Label("17", skinStyle: SkinStyle.Box)]
@@ -162,13 +163,6 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("23", skinStyle: SkinStyle.Box)]
 
-    //[Vector2Range(0, 1)]
-    public Vector2 vector2;
-    //[Vector3Range(0, 1)]
-    public Vector3 vector3;
-
-    [Label("24", skinStyle: SkinStyle.Box)]
-
     [SceneObjectOnly]
     public GameObject sceneReference;
     [ChildObjectOnly]
@@ -176,19 +170,13 @@ public class SampleBehaviour1 : MonoBehaviour
     [PrefabObjectOnly]
     public GameObject prefabReference;
 
-    [Label("25", skinStyle: SkinStyle.Box)]
+    [Label("24", skinStyle: SkinStyle.Box)]
 
+    //TODO: examples
     [HexColor]
     public string hexColor;
 
-    [Label("26", skinStyle: SkinStyle.Box)]
-
-    //[Vector3Direction]
-    public Vector3 direction3d;
-    //[Vector2Direction]
-    public Vector2 direction2d;
-
-    [Label("27", skinStyle: SkinStyle.Box)]
+    [Label("25", skinStyle: SkinStyle.Box)]
 
     [LabelByChild("var3.var2")]
     public SampleClass1 sampleField;
@@ -210,7 +198,7 @@ public class SampleBehaviour1 : MonoBehaviour
         public string var2;
     }
 
-    [Label("28", skinStyle: SkinStyle.Box)]
+    [Label("26", skinStyle: SkinStyle.Box)]
 
     public SerializedScene scene;
 }

@@ -5,7 +5,8 @@ namespace UnityEngine
     /// <summary>
     /// Draws collection in form of the scrollable list.
     /// It's a perfect way to optimize large arrays within the Inspector Window.
-    /// Supported types: any <see cref="System.Collections.IList"/>.
+    /// 
+    /// <para>Supported types: any <see cref="System.Collections.IList"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class ScrollableItemsAttribute : ToolboxListPropertyAttribute

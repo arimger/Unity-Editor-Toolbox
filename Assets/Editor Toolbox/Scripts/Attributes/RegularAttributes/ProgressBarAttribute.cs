@@ -3,8 +3,9 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Draws progress bar.
-    /// Supported types: <see cref="int"/>, <see cref="float"/>, <see cref="double"/>.
+    /// Creates a progress bar.
+    /// 
+    /// <para>Supported types: <see cref="int"/>, <see cref="float"/>, <see cref="double"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class ProgressBarAttribute : PropertyAttribute

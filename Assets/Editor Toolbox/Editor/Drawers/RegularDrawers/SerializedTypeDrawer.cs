@@ -72,12 +72,11 @@ namespace Toolbox.Editor.Drawers
             }
 
             var refType = !string.IsNullOrEmpty(refProperty.stringValue) ? Type.GetType(refProperty.stringValue) : null;
-            var refTypes = new List<Type>();
-            var refLabels = new List<string>() { "<None>" };
+            var options = new List<string>() { "<None>" };
             var index = -1;
 
             //get stored types if possible or create new item
-            if (!filteredTypes.TryGetValue(refAttribute.AssemblyType, out refTypes))
+            if (!filteredTypes.TryGetValue(refAttribute.AssemblyType, out var refTypes))
             {
                 filteredTypes[refAttribute.AssemblyType] = refTypes = refAttribute.GetFilteredTypes();
             }
@@ -92,7 +91,7 @@ namespace Toolbox.Editor.Drawers
                     index = i;
                 }
 
-                refLabels.Add(menuLabel);
+                options.Add(menuLabel);
             }
 
             //draw the reference property
@@ -101,7 +100,7 @@ namespace Toolbox.Editor.Drawers
             //draw the proper label field
             position = EditorGUI.PrefixLabel(position, label);
 
-            index = EditorGUI.Popup(position, index + 1, refLabels.ToArray());
+            index = EditorGUI.Popup(position, index + 1, options.ToArray());
             //get the correct class reference, index = 0 is reserved to <None> type
             refProperty.stringValue = index >= 1 ? SerializedType.GetClassReference(refTypes[index - 1]) : string.Empty;
             EditorGUI.EndProperty();

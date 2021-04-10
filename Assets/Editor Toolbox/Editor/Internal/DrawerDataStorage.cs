@@ -75,22 +75,27 @@ namespace Toolbox.Editor.Internal
             }
             else
             {
-                return items[key] = createMethod(property, args);
+                return items[key] = CreateItem(property, args);
             }
         }
 
-        public void ApplyItem(SerializedProperty property, T1 args)
+        public T CreateItem(SerializedProperty property, T1 args)
         {
-            ApplyItem(property, createMethod(property, args));
+            return createMethod(property, args);
         }
 
-        public void ApplyItem(SerializedProperty property, T item)
+        public T ApplyItem(SerializedProperty property, T1 args)
+        {
+            return ApplyItem(property, createMethod(property, args));
+        }
+
+        public T ApplyItem(SerializedProperty property, T item)
         {
             var key = GetKey(property);
-            items[key] = item;
+            return items[key] = item;
         }
 
-        public bool HasItem(SerializedProperty property)
+        public bool Contains(SerializedProperty property)
         {
             var key = GetKey(property);
             return items.ContainsKey(key);

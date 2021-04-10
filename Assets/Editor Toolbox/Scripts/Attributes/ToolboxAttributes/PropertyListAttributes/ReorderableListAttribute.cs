@@ -4,7 +4,8 @@ namespace UnityEngine
 {
     /// <summary>
     /// Draws collection in form of the reorderable list.
-    /// Supported types: any <see cref="System.Collections.IList"/>.
+    /// 
+    /// <para>Supported types: any <see cref="System.Collections.IList"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class ReorderableListAttribute : ToolboxListPropertyAttribute

@@ -4,7 +4,8 @@ namespace UnityEngine
 {
     /// <summary>
     /// Replaces old label with <see cref="NewLabel"/> value.
-    /// Supported types: all.
+    /// 
+    /// <para>Supported types: all.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class NewLabelAttribute : PropertyAttribute

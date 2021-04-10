@@ -4,6 +4,7 @@ namespace UnityEngine
 {
     /// <summary>
     /// Extended version of the built-in <see cref="SpaceAttribute"/>.
+    /// Allows creating space before and after serialized field.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class SpaceAreaAttribute : ToolboxDecoratorAttribute

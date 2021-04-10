@@ -4,7 +4,8 @@ namespace UnityEngine
 {
     /// <summary>
     /// Validates target's value using regular expression and given pattern.
-    /// Supported types: <see cref="string"/>.
+    /// 
+    /// <para>Supported types: <see cref="string"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class RegexValueAttribute : ToolboxSelfPropertyAttribute
