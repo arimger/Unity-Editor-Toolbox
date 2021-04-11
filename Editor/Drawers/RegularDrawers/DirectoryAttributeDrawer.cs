@@ -21,13 +21,9 @@ namespace Toolbox.Editor.Drawers
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             //validate property type and serialized path
-            if (IsPathValid(property.stringValue, Attribute.RelativePath))
-            {
-                return base.GetPropertyHeightSafe(property, label);
-            }
-
-            //return adjusted height (include help box)
-            return base.GetPropertyHeightSafe(property, label) + Style.boxHeight + Style.spacing * 2;
+            return IsPathValid(property.stringValue, Attribute.RelativePath) 
+                ? base.GetPropertyHeightSafe(property, label) 
+                : base.GetPropertyHeightSafe(property, label) + Style.boxHeight + Style.spacing * 2;
         }
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)

@@ -340,7 +340,7 @@ namespace Toolbox.Editor
 
             if (GUILayout.Button(Style.validListContent, EditorStyles.miniButtonRight))
             {
-                ToolboxEditorLog.LogMessage("Function not implemented, force recompilation to validate drawers assignment.");
+                ToolboxEditorLog.Log("Function not implemented, force recompilation to validate drawers assignment.");
             }
             EditorGUILayout.EndHorizontal();
 #if UNITY_2019_3_OR_NEWER

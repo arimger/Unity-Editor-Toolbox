@@ -70,7 +70,7 @@ namespace Toolbox.Editor
 
         internal static void PropertyLocation(SerializedProperty property)
         {
-            LogMessage(GetPropertyLocation(property));
+            Log(GetPropertyLocation(property));
         }
 
         internal static void PrefabExpectedWarning()
@@ -90,20 +90,28 @@ namespace Toolbox.Editor
         }
 
 
-        internal static void LogMessage(string message)
-        {
-            Debug.LogFormat(format, tag, message);
-        }
-
         internal static void LogWarning(string message)
         {
-            Debug.LogWarningFormat(format, tag, message);
+            LogMessage(message, LogType.Warning);
         }
-
 
         internal static void LogError(string message)
         {
-            Debug.LogErrorFormat(format, tag, message);
+            LogMessage(message, LogType.Error);
+        }
+
+        internal static void Log(string message)
+        {
+            LogMessage(message, LogType.Log);
+        }
+
+        internal static void LogMessage(string message, LogType logType)
+        {
+#if UNITY_2019_1_OR_NEWER
+            Debug.LogFormat(logType, LogOption.NoStacktrace, null, format, tag, message);
+#else
+            Debug.unityLogger.LogFormat(logType, format, tag, message);
+#endif
         }
     }
 }
