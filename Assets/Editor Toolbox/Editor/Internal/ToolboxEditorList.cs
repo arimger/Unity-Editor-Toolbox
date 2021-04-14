@@ -60,7 +60,6 @@ namespace Toolbox.Editor.Internal
             using (var elementRowGroup = new EditorGUILayout.HorizontalScope())
             {
                 var elementRowRect = elementRowGroup.rect;
-                //EditorGUI.DrawRect(elementRowRect, Color.red);
                 var isSelected = isActive || isTarget;
                 elementsRects[index] = elementRowRect;
                 //draw element background (handle selection and targeting)
@@ -225,7 +224,7 @@ namespace Toolbox.Editor.Internal
                 }
             }
 
-            var arraySize = Count;                
+            var arraySize = Count;
             //make sure rects array is valid
             ValidateElementsRects(arraySize);
             //handle empty or invalid array 
@@ -363,6 +362,21 @@ namespace Toolbox.Editor.Internal
 
         /// <inheritdoc/>
         public override float ElementSpacing { get; set; } = 1.0f;
+
+        public Rect LastHeaderRect
+        {
+            get => headerRect;
+        }
+
+        public Rect LastMiddleRect
+        {
+            get => middleRect;
+        }
+
+        public Rect LastFooterRect
+        {
+            get => footerRect;
+        }
 
         public Color GapColor { get; set; } = new Color(0.3f, 0.47f, 0.75f);
 

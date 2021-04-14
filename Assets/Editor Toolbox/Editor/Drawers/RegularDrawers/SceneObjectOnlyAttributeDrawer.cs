@@ -22,7 +22,7 @@ namespace Toolbox.Editor.Drawers
 
         protected override string GetWarningMessage()
         {
-            return "Assigned value has to be instantiated the Scene.";
+            return "Assigned object has to be instantiated in the Scene.";
         }
 
         protected override bool IsObjectValid(Object objectValue, SerializedProperty property)

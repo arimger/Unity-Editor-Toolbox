@@ -486,6 +486,15 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   var36: 1
+  dictionary:
+    pairs:
+    - key: 5
+      value: {fileID: 977748987}
+    - key: 2
+      value: {fileID: 534669902}
+    - key: 3
+      value: {fileID: 2037155952}
+    error: 0
 --- !u!4 &661896459
 Transform:
   m_ObjectHideFlags: 2
@@ -637,7 +646,7 @@ MonoBehaviour:
   preview: {fileID: 5059060190599569102, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
   var10: 2.16
   type1:
-    classReference: SampleBehaviour1, Assembly-CSharp
+    classReference: 
   type2:
     classReference: System.CodeDom.CodeNamespaceImportCollection, System
   var11: Im read only
@@ -950,74 +959,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 14
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1642427164
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1642427166}
-  - component: {fileID: 1642427165}
-  m_Layer: 0
-  m_Name: TestObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1642427165
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1642427164}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05b4ae496616fdc408b6475d76ca7418, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  intttt: 0
-  ints:
-  - {x: 0.0000041170315, y: 7.37e-43, z: 1.8727951e+31, w: 1.42e-43}
-  - {x: 1.160791e-39, y: 7.36e-43, z: 4.6e-44, w: 0}
-  - {x: 0.0000041170315, y: 7.37e-43, z: 0.000004117046, w: 7.37e-43}
-  - {x: 1.160836e-39, y: 7.36e-43, z: 6.9e-44, w: 1.42e-43}
-  ints1: 00000000000000000000000000000000
-  q: {x: 0, y: 0, z: 0, w: 0}
-  dict:
-    pairs:
-    - key: 1
-      value: 0
-    - key: 3
-      value: 0
-    - key: 3
-      value: 0
-    error: 1
-  dict1:
-    pairs: []
-    error: 0
-  ho1: {fileID: 0}
-  dict3:
-    pairs: []
-    error: 0
-  ho: {fileID: 0}
---- !u!4 &1642427166
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1642427164}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1661307763
 GameObject:

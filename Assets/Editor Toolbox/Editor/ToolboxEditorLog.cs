@@ -89,7 +89,6 @@ namespace Toolbox.Editor
             LogWarning("Settings initialization needed. Go to <b>Edit/Project Settings.../Editor Toolbox</b> and find an existing Settings file ('Refresh') or create new.");
         }
 
-
         internal static void LogWarning(string message)
         {
             LogMessage(message, LogType.Warning);

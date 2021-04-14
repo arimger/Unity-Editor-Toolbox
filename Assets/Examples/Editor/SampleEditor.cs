@@ -1,7 +1,6 @@
-﻿using Toolbox.Editor;
-using Toolbox.Editor.Internal;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
+using Toolbox.Editor;
 
 [CustomEditor(typeof(SampleBehaviour2))]
 public class SampleEditor : ToolboxEditor

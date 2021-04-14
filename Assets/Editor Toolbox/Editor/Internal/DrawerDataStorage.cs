@@ -95,12 +95,6 @@ namespace Toolbox.Editor.Internal
             return items[key] = item;
         }
 
-        public bool Contains(SerializedProperty property)
-        {
-            var key = GetKey(property);
-            return items.ContainsKey(key);
-        }
-
         public void ClearItem(SerializedProperty property)
         {
             var key = GetKey(property);

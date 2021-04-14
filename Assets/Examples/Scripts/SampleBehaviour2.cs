@@ -140,4 +140,11 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [DisableInPlayMode]
     public int var36;
+
+#if UNITY_2020_1_OR_NEWER
+    [Label("12", skinStyle: SkinStyle.Box)]
+
+    [Help("Assign dedicated drawer in the Toolbox Settings")]
+    public SerializedDictionary<int, GameObject> dictionary;
+#endif
 }

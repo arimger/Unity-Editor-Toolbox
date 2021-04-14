@@ -125,7 +125,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("16", skinStyle: SkinStyle.Box)]
 
-    //TODO: examples
+    //NOTE: examples
     [Random(-10.0f, 10.0f)]
     public float randomValue;
 
@@ -172,7 +172,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("24", skinStyle: SkinStyle.Box)]
 
-    //TODO: examples
+    //NOTE: examples
     [HexColor]
     public string hexColor;
 

@@ -283,9 +283,10 @@ namespace Toolbox.Editor
     {
         public static SerializedProperty GetSibiling(this SerializedProperty property, string propertyPath)
         {
-            return property.depth == 0 || property.GetParent() == null
+            var propertyParent = property.GetParent();
+            return propertyParent == null
                 ? property.serializedObject.FindProperty(propertyPath)
-                : property.GetParent().FindPropertyRelative(propertyPath);
+                : propertyParent.FindPropertyRelative(propertyPath);
         }
 
         public static SerializedProperty GetParent(this SerializedProperty property)
@@ -324,7 +325,6 @@ namespace Toolbox.Editor
         public static SerializedProperty GetArray(this SerializedProperty element)
         {
             var elements = element.propertyPath.Replace("Array.data[", "[").Split('.');
-
             if (!elements[elements.Length - 1].Contains("["))
             {
                 return null;

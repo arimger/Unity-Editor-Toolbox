@@ -1,9 +1,13 @@
 ﻿using System;
 
 using UnityEngine;
+using UnityEditor;
 
 namespace Toolbox.Editor.Internal
 {
+    /// <summary>
+    /// Fixed version of the <see cref="EditorGUI.DisabledScope"/>.
+    /// </summary>
     internal class DisabledScope : IDisposable
     {
         private bool wasEnabled;
