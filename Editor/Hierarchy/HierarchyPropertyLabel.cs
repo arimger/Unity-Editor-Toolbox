@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Hierarchy
 {
+    //TODO: refactor
+
     /// <summary>
     /// Base class for all custom, Hierarchy-related labels based on targeted <see cref="GameObject"/>.
     /// </summary>

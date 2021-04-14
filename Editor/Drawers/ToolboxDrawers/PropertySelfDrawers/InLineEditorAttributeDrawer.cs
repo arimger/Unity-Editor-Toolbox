@@ -41,7 +41,7 @@ namespace Toolbox.Editor.Drawers
 
         private void DrawEditor(Editor editor, InLineEditorAttribute attribute)
         {
-            using (new EditorGUILayout.VerticalScope(Style.inlinedStyle))
+            using (new EditorGUILayout.VerticalScope(Style.backgroundStyle))
             {
                 //draw and prewarm the inlined Editor version
                 DrawEditor(editor, attribute.DrawPreview, attribute.DrawSettings, attribute.PreviewHeight);
@@ -71,7 +71,7 @@ namespace Toolbox.Editor.Drawers
                         //for example:
                         // - audio management for the AudioClip
                         // - material preview for the Material
-                        using (new EditorGUILayout.HorizontalScope(Style.settingStyle))
+                        using (new EditorGUILayout.HorizontalScope(Style.settingsStyle))
                         {
                             editor.OnPreviewSettings();
                         }
@@ -141,10 +141,10 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal static readonly GUIStyle inlinedStyle;
+            internal static readonly GUIStyle backgroundStyle;
             internal static readonly GUIStyle foldoutStyle;
             internal static readonly GUIStyle previewStyle;
-            internal static readonly GUIStyle settingStyle;
+            internal static readonly GUIStyle settingsStyle;
 
             internal static readonly GUIContent foldoutContent = new GUIContent("Edit", "Show/Hide Editor");
 
@@ -155,7 +155,7 @@ namespace Toolbox.Editor.Drawers
 
             static Style()
             {
-                inlinedStyle = new GUIStyle(EditorStyles.helpBox)
+                backgroundStyle = new GUIStyle(EditorStyles.helpBox)
                 {
                     padding = new RectOffset(13, 13, 8, 8)
                 };
@@ -172,7 +172,7 @@ namespace Toolbox.Editor.Drawers
                 previewStyle = new GUIStyle();
                 previewStyle.normal.background = EditorGuiUtility.CreateColorTexture();
 
-                settingStyle = new GUIStyle()
+                settingsStyle = new GUIStyle()
                 {
 #if UNITY_2019_3_OR_NEWER
                     padding = new RectOffset(4, 0, 0, 0)

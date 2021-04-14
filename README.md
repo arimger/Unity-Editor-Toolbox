@@ -413,6 +413,11 @@ Custom implementation of standard ReorderableList (UnityEditorInternal). Usable 
 var list = new ReorderableList(SerializedProperty property, string elementLabel, bool draggable, bool hasHeader, bool fixedSize);
 ```
 ```csharp
+[ReorderableList, InLineEditor]
+public Canvas[] vars1;
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list4.png)
+```csharp
 [ReorderableList(ListStyle.Lined, "Item")]
 public List<int> linedStyleList;
 ```
@@ -432,6 +437,8 @@ public GameObject[] boxedStyleList = new GameObject[4];
 
 #### SerializedType
 
+Allows to serialize Types and pick them through a dedicated picker.
+
 ```csharp
 [ClassExtends(typeof(Collider))] //or [ClassImplements(typeof(interface))] for interfaces
 public SerializedType var1;
@@ -446,6 +453,8 @@ public void Usage()
 
 #### SerializedScene
 
+Allows to serialize SceneAssets and use them in Runtime.
+
 ```csharp
 public SerializedScene scene;
 
@@ -457,7 +466,12 @@ public void Usage()
 
 #### SerializedDictionary<TK, TV>
 
+Allows to serialize and use Dictionaries. The presented class implements the IDictionary interface so it can be easily used like the standard version.
+
+Requires atleast Unity 2020.1.x becouse of generic serialization and has to be assigned in the Settings file.
+
 ```csharp
+#if UNITY_2020_1_OR_NEWER
 public SerializedDictionary<int, GameObject> dictionary;
 
 public void Usage()
@@ -465,8 +479,14 @@ public void Usage()
 	dictionary.Add(3, new GameObject("TestObject"));
 	dictionary.ContainsKey(2);
 	//etc. like standard System.Collections.Generic.Dictionary<>
+	var nativeDictionary = dictionary.BuiltNativeDictionary();
 }
+#endif
 ```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/dictionary1.png)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/dictionary2.png)
 
 ## Editor Extensions
 
