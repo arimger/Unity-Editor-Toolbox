@@ -466,9 +466,9 @@ public void Usage()
 
 #### SerializedDictionary<TK, TV>
 
-Allows to serialize and use Dictionaries. The presented class implements the IDictionary interface so it can be easily used like the standard version.
+Allows to serialize and use Dictionaries. The presented class implements the IDictionary interface, so it can be easily used like the standard version.
 
-Requires atleast Unity 2020.1.x becouse of generic serialization and has to be assigned in the Settings file.
+Requires at least Unity 2020.1.x because of generic serialization and has to be assigned in the Settings file.
 
 ```csharp
 #if UNITY_2020_1_OR_NEWER
