@@ -354,6 +354,10 @@ public int var1;
 public KeyCode enumValue = KeyCode.A;
 [EnableIf(nameof(enumValue), KeyCode.A)] //or DisableIfAttribute
 public int var1;
+
+public float floatValue;
+[EnableIf(nameof(floatValue), 2.0f, TestMethod = ComparisionTestMethod.GreaterEqual)]
+public int var2;
 ```
 
 ```csharp
