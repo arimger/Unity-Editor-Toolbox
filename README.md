@@ -23,7 +23,7 @@ Unity 2018.x or newer
 - Install Editor Toolbox package:
 	- 1 way: Find Unity Package Manager (Window/Package Manager) and add package using this git URL:
 	```
-	https://github.com/arimger/Unity-Editor-Toolbox.git#upm
+https://github.com/arimger/Unity-Editor-Toolbox.git#upm
 	```
 	- 2 way: Copy and paste `Editor Toolbox` directory into your project (Assets/...) + add dependencies
 - Open Edit/Project Settings/Editor Toolbox window
