@@ -174,9 +174,13 @@ namespace Toolbox.Editor.Drawers
 
         public override bool IsPropertyValid(SerializedProperty property)
         {
+            if (property.propertyType != SerializedPropertyType.Enum)
+            {
+                return false;
+            }
+
             declaringObject = property.GetDeclaringObject();
-            return property.propertyType == SerializedPropertyType.Enum &&
-                   Attribute.IsDefined(property.GetProperType(fieldInfo, declaringObject), typeof(FlagsAttribute));
+            return Attribute.IsDefined(property.GetProperType(fieldInfo, declaringObject), typeof(FlagsAttribute));
         }
 
 
