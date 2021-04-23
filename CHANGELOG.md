@@ -1,4 +1,21 @@
+## 0.8.2 [03.04.2021]
+
+### Added:
+- Additional comparison methods for the built-in conditional attributes
+
 ## 0.8.1 [03.04.2021]
+
+### Added:
+- SerializedDictionary + associated drawer
+- Layout-based ReorderableList implementation
+- Support for ToolboxDrawers in the ReorderableList
+- Possibility to hide labels in the ReorderableList
+
+### Changed:
+- Fix items focusing on nested lists
+- Fix empty list drawing
+- Fix scrolling behaviour outside SearchablePopup
+- Unification of available attributes
 
 ## 0.7.5 [06.01.2021]
 
