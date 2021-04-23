@@ -474,6 +474,8 @@ Allows to serialize and use Dictionaries. The presented class implements the IDi
 
 Requires at least Unity 2020.1.x because of generic serialization and has to be assigned in the Settings file.
 
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/dictionary3.png)
+
 ```csharp
 #if UNITY_2020_1_OR_NEWER
 public SerializedDictionary<int, GameObject> dictionary;

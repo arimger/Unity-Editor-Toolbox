@@ -71,7 +71,7 @@ namespace Toolbox.Editor.Drawers
                     case ComparisionTestMethod.LessEqual:
                         return propertyToCheck.intValue <= (int)valueToMatch;
                     case ComparisionTestMethod.Mask:
-                        return (propertyToCheck.intValue & (int)valueToMatch) == propertyToCheck.intValue;
+                        return (propertyToCheck.intValue & (int)valueToMatch) == (int)valueToMatch;
                     default:
                         return false;
                 }
