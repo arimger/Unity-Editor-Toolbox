@@ -37,7 +37,22 @@ namespace Toolbox.Editor.Drawers
                 };
                 list.drawElementCallback += (rect, index, isActive, isFocused) =>
                 {
-                    list.DrawStandardElement(rect, index, isActive, isFocused, true);
+                    var element = pairsProperty.GetArrayElementAtIndex(index);
+                    var content = list.GetElementContent(element, index);
+
+                    using (var propertyScope = new PropertyScope(element, content))
+                    {
+                        if (!propertyScope.IsVisible)
+                        {
+                            return;
+                        }
+
+                        //draw key/value children and use new, shortened labels
+                        EditorGUI.indentLevel++;
+                        EditorGUILayout.PropertyField(element.FindPropertyRelative("key"), new GUIContent("K"));
+                        EditorGUILayout.PropertyField(element.FindPropertyRelative("value"), new GUIContent("V"));
+                        EditorGUI.indentLevel--;
+                    }
                 };
                 return list;
             });
