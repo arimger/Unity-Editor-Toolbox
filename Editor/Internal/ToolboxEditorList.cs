@@ -351,10 +351,7 @@ namespace Toolbox.Editor.Internal
         public override void DrawStandardElement(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
             var element = List.GetArrayElementAtIndex(index);
-            var label = HasLabels
-                ? new GUIContent(GetElementDisplayName(element, index))
-                : new GUIContent();
-            ToolboxEditorGui.DrawToolboxProperty(element, label);
+            ToolboxEditorGui.DrawToolboxProperty(element, GetElementContent(element, index));
         }
 
         #endregion

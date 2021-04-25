@@ -290,7 +290,7 @@ namespace Toolbox.Editor
             EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button(Style.clearListContent, EditorStyles.miniButtonLeft))
+            if (GUILayout.Button(Style.clearAllContent, EditorStyles.miniButtonLeft))
             {
                 Undo.RecordObject(target, "Clear Drawers");
                 switch (enabledToShowDrawerType)
@@ -314,7 +314,7 @@ namespace Toolbox.Editor
                 validateInspector = true;
             }
 
-            if (GUILayout.Button(Style.assignAllContent, EditorStyles.miniButtonMid))
+            if (GUILayout.Button(Style.overrideContent, EditorStyles.miniButtonMid))
             {
                 Undo.RecordObject(target, "Assign Drawers");
                 switch (enabledToShowDrawerType)
@@ -338,9 +338,9 @@ namespace Toolbox.Editor
                 validateInspector = true;
             }
 
-            if (GUILayout.Button(Style.validListContent, EditorStyles.miniButtonRight))
+            if (GUILayout.Button(Style.validateContent, EditorStyles.miniButtonRight))
             {
-                ToolboxEditorLog.Log("Function not implemented, force recompilation to validate drawers assignment.");
+                ToolboxEditorLog.Log("Function not implemented.");
             }
             EditorGUILayout.EndHorizontal();
 #if UNITY_2019_3_OR_NEWER
@@ -410,9 +410,9 @@ namespace Toolbox.Editor
             internal static readonly GUIStyle drawersHeaderStyle;
             internal static readonly GUIStyle sectionHeaderStyle;
 
-            internal static readonly GUIContent clearListContent = new GUIContent("Clear");
-            internal static readonly GUIContent assignAllContent = new GUIContent("Assign all possible");
-            internal static readonly GUIContent validListContent = new GUIContent("Validate");
+            internal static readonly GUIContent clearAllContent = new GUIContent("Clear");
+            internal static readonly GUIContent overrideContent = new GUIContent("Assign all possible");
+            internal static readonly GUIContent validateContent = new GUIContent("Validate");
 
 #if UNITY_2019_3_OR_NEWER
             internal static readonly GUIContent hierarchySettingsContent = new GUIContent("Hierarchy",

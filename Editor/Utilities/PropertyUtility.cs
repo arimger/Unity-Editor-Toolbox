@@ -16,7 +16,7 @@ namespace Toolbox.Editor
         internal static string GetPropertyHashKey(this SerializedProperty property)
         {
             var hash = property.serializedObject.GetHashCode();
-            return hash + "." + property.propertyPath;
+            return string.Format("{0}.{1}", hash, property.propertyPath);
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Toolbox.Editor
         internal static string GetPropertyTypeKey(this SerializedProperty property)
         {
             var type = property.serializedObject.targetObject.GetType();
-            return type + "." + property.propertyPath;
+            return string.Format("{0}.{1}", type, property.propertyPath);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Toolbox.Editor
             {
                 var fieldInfo = target.GetType().GetField(members[0], bindings);
                 instance = fieldInfo.GetValue(target);
-                
+
                 for (var i = 1; i < members.Length - 1; i++)
                 {
                     fieldInfo = instance.GetType().GetField(members[i], bindings);

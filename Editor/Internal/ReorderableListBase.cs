@@ -436,6 +436,11 @@ namespace Toolbox.Editor.Internal
             return definedName;
         }
 
+        public GUIContent GetElementContent(SerializedProperty element, int index)
+        {
+            return HasLabels ? new GUIContent(GetElementDisplayName(element, index)) : GUIContent.none;
+        }
+
         public void SetKeyboardFocus()
         {
             GUIUtility.keyboardControl = id;
@@ -615,10 +620,8 @@ namespace Toolbox.Editor.Internal
         {
             var element = List.GetArrayElementAtIndex(index);
             //prepare dedicated label for target element
-            var label = HasLabels
-                ? new GUIContent(GetElementDisplayName(element, index))
-                : new GUIContent();
-            EditorGUI.PropertyField(rect, element, label, element.isExpanded);
+            var content = GetElementContent(element, index);
+            EditorGUI.PropertyField(rect, element, content, element.isExpanded);
         }
 
         /// <summary>

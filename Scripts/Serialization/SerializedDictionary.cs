@@ -14,9 +14,9 @@ namespace UnityEngine
         [Serializable]
         private struct KeyValuePair
         {
-            [SerializeField, NewLabel("K")]
+            [SerializeField]
             private TK key;
-            [SerializeField, NewLabel("V")]
+            [SerializeField]
             private TV value;
 
             public KeyValuePair(TK key, TV value)
