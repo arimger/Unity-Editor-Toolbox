@@ -13,6 +13,7 @@ namespace Toolbox.Editor.Drawers
             var scopeStyle = GetScopeStyle(attribute.SkinStyle);
             var labelStyle = GetLabelStyle(attribute.FontStyle);
 
+            GUILayout.Space(attribute.SpaceBefore);
             //create (optionally) the vertical scope group
             using (CreateScopeIfNeeded(scopeStyle))
             {
@@ -20,6 +21,8 @@ namespace Toolbox.Editor.Drawers
                 labelStyle.fontStyle = attribute.FontStyle;
                 EditorGUILayout.LabelField(GetContent(attribute), labelStyle);
             }
+
+            GUILayout.Space(attribute.SpaceAfter);
         }
 
 
@@ -51,7 +54,7 @@ namespace Toolbox.Editor.Drawers
                 var content = EditorGUIUtility.TrIconContent(attribute.Asset);
                 if (content.image == null)
                 {
-                    ToolboxEditorLog.AttributeUsageWarning(attribute, "Cannot find icon asset '" + attribute.Asset + "'.");
+                    ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("Cannot find icon asset '{0}'.", attribute.Asset));
                 }
 
                 content.text = attribute.Label;
