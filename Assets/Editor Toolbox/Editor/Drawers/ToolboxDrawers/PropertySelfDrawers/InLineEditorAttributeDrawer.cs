@@ -109,7 +109,8 @@ namespace Toolbox.Editor.Drawers
                     return;
                 }
 
-                property.isExpanded = GUILayout.Toggle(property.isExpanded, Style.foldoutContent, Style.foldoutStyle, Style.foldoutOptions);
+                property.isExpanded = GUILayout.Toggle(property.isExpanded, 
+                    Style.foldoutContent, Style.foldoutStyle, Style.foldoutOptions);
             }
 
             //create additional Editor for the associated reference 
