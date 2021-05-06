@@ -139,7 +139,6 @@ namespace Toolbox.Editor
                 {
                     var index = GetPropertyElementIndex(property);
                     var list = fieldInfo.GetValue(targetParent) as IList;
-
                     list[index] = value;
                     fieldInfo.SetValue(targetParent, list);
                 }
@@ -212,7 +211,7 @@ namespace Toolbox.Editor
 
         internal static FieldInfo GetFieldInfo(this SerializedProperty property)
         {
-            return GetFieldInfo(property, out var type);
+            return GetFieldInfo(property, out _);
         }
 
         internal static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType)
@@ -241,7 +240,6 @@ namespace Toolbox.Editor
             for (var i = 0; i < parts.Length; i++)
             {
                 var member = parts[i];
-
                 if (i < parts.Length - 1 && member == "Array" && parts[i + 1].StartsWith("data["))
                 {
                     if (IsSerializableArrayType(type))

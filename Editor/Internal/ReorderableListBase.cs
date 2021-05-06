@@ -14,12 +14,13 @@ namespace Toolbox.Editor.Internal
         public delegate void DrawRectCallbackDelegate(Rect rect);
 
         public delegate bool CanChangeListCallbackDelegate(ReorderableListBase list);
-        public delegate void ChangeDetailsCallbackDelegate(ReorderableListBase list, int oldIndex, int newIndex);
         public delegate void IsChangedListCallbackDelegate(ReorderableListBase list);
+        public delegate void ReorderedItemCallbackDelegate(ReorderableListBase list, int oldIndex, int newIndex);
 
         public delegate void DrawRelatedRectCallbackDelegate(Rect rect, ReorderableListBase list);
-
         public delegate void DrawIndexedRectCallbackDelegate(Rect rect, int index, bool isActive, bool isFocused);
+
+        public delegate object OverrideNewElementDelegate(int index);
 
 
         public DrawRectCallbackDelegate drawHeaderCallback;
@@ -38,9 +39,7 @@ namespace Toolbox.Editor.Internal
 
         public IsChangedListCallbackDelegate onChangedCallback;
         public IsChangedListCallbackDelegate onMouseUpCallback;
-        public IsChangedListCallbackDelegate onReorderCallback;
-
-        public ChangeDetailsCallbackDelegate onDetailsCallback;
+        public ReorderedItemCallbackDelegate onReorderCallback;
 
         public CanChangeListCallbackDelegate onCanAppendCallback;
         public CanChangeListCallbackDelegate onCanRemoveCallback;
@@ -48,6 +47,8 @@ namespace Toolbox.Editor.Internal
         public DrawIndexedRectCallbackDelegate drawElementCallback;
         public DrawIndexedRectCallbackDelegate drawElementHandleCallback;
         public DrawIndexedRectCallbackDelegate drawElementBackgroundCallback;
+
+        public OverrideNewElementDelegate overrideNewElementCallback;
 
 
         protected const string defaultLabelFormat = "{0} {1}";
@@ -233,16 +234,8 @@ namespace Toolbox.Editor.Internal
 
                                 //update the active element, now that we've moved it
                                 Index = targetIndex;
-                                //give the user a callback
-                                if (onDetailsCallback != null)
-                                {
-                                    onDetailsCallback(this, oldActiveElement, newActiveElement);
-                                }
-                                else
-                                {
-                                    onReorderCallback?.Invoke(this);
-                                }
-
+                                //give the user desired callbacks
+                                onReorderCallback?.Invoke(this, oldActiveElement, newActiveElement);
                                 onChangedCallback?.Invoke(this);
                             }
                             else
@@ -462,6 +455,16 @@ namespace Toolbox.Editor.Internal
         public void AppendElement()
         {
             Index = (List.arraySize += 1) - 1;
+            if (overrideNewElementCallback == null)
+            {
+                return;
+            }
+
+            //make sure serialized data is up-to-date
+            List.serializedObject.ApplyModifiedProperties();
+            var element = List.GetArrayElementAtIndex(Index);
+            //update property directly by the reflection
+            element.SetProperValue(element.GetFieldInfo(), null, false);
         }
 
         public void RemoveElement()
