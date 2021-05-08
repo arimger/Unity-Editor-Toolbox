@@ -11,7 +11,7 @@ namespace Toolbox.Editor.Drawers
         {
             storage = new DrawerDataStorage<ReorderableListBase, ReorderableListAttribute>(false, (p, a) =>
             {
-                return ToolboxEditorGui.CreateList(p, 
+                return ToolboxEditorGui.CreateList(p,
                     a.ListStyle,
                     a.ElementLabel,
                     a.FixedSize,

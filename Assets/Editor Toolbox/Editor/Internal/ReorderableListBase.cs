@@ -462,9 +462,10 @@ namespace Toolbox.Editor.Internal
 
             //make sure serialized data is up-to-date
             List.serializedObject.ApplyModifiedProperties();
-            var element = List.GetArrayElementAtIndex(Index);
+            var property = List.GetArrayElementAtIndex(Index);
+            var newValue = overrideNewElementCallback(Index);
             //update property directly by the reflection
-            element.SetProperValue(element.GetFieldInfo(), null, false);
+            property.SetProperValue(property.GetFieldInfo(), newValue, false);
         }
 
         public void RemoveElement()
@@ -770,6 +771,14 @@ namespace Toolbox.Editor.Internal
         public SerializedProperty List
         {
             get; protected set;
+        }
+
+        /// <summary>
+        /// Associated <see cref="SerializedObject"/>.
+        /// </summary>
+        public SerializedObject SerializedObject
+        {
+            get => List.serializedObject;
         }
 
 

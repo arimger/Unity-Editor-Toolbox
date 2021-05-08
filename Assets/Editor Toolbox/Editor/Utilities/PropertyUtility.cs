@@ -179,9 +179,7 @@ namespace Toolbox.Editor
             //handle situation when property is an array element
             if (IsSerializableArrayElement(property, fieldInfo))
             {
-                var index = GetPropertyElementIndex(property);
                 var list = fieldInfo.GetValue(declaringObject) as IList;
-
                 return list[0].GetType();
             }
             //return fieldInfo value based on property's target object
