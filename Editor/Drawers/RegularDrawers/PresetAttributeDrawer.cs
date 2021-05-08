@@ -10,6 +10,7 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(PresetAttribute))]
     public class PresetAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        //TODO: move it to the ReflectionUtility
         private const BindingFlags presetBinding = BindingFlags.Instance | BindingFlags.Static |
                                                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly;
 

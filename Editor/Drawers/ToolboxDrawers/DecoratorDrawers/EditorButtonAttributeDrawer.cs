@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Reflection;
 
 using UnityEditor;
@@ -27,7 +26,7 @@ namespace Toolbox.Editor.Drawers
             return true;
         }
 
-        private bool IsCoroutine(Type targetType, MethodInfo method)
+        private bool IsCoroutine(MethodInfo method)
         {
             return method.ReturnType == typeof(IEnumerator);
         }
@@ -50,29 +49,27 @@ namespace Toolbox.Editor.Drawers
                             : attribute.ExtraLabel;
                 var tooltip = attribute.Tooltip;
                 var content = new GUIContent(label, tooltip);
-                
+
                 if (GUILayout.Button(content, Style.buttonStyle))
                 {
-                    var targetType = targetObjects[0].GetType();
-                    var method = targetType.GetMethod(attribute.MethodName,
-                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+                    var methodInfo = ReflectionUtility.GetObjectMethod(attribute.MethodName, targetObjects);
                     //validate method name (check if method exists)
-                    if (method == null)
+                    if (methodInfo == null)
                     {
-                        ToolboxEditorLog.AttributeUsageWarning(attribute, attribute.MethodName + " method not found.");
+                        ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method not found.", attribute.MethodName));
                         return;
                     }
 
                     //validate parameters count and log warning
-                    var parameters = method.GetParameters();
+                    var parameters = methodInfo.GetParameters();
                     if (parameters.Length > 0)
                     {
-                        ToolboxEditorLog.AttributeUsageWarning(attribute, attribute.MethodName + " method has to be parameterless.");
+                        ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method has to be parameterless.", attribute.MethodName));
                         return;
                     }
 
                     //invoke method for all selected components
-                    var isCoroutine = IsCoroutine(targetType, method);
+                    var isCoroutine = IsCoroutine(methodInfo);
                     for (var i = 0; i < targetObjects.Length; i++)
                     {
                         var target = targetObjects[i];
@@ -81,7 +78,7 @@ namespace Toolbox.Editor.Drawers
                             continue;
                         }
 
-                        var result = method.Invoke(target, null);
+                        var result = methodInfo.Invoke(target, null);
                         //additionaly run Coroutine if possible
                         if (isCoroutine)
                         {
