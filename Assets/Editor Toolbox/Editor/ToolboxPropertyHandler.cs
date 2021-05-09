@@ -140,21 +140,7 @@ namespace Toolbox.Editor
             var attributes = fieldInfo.GetCustomAttributes<ToolboxAttribute>();
             foreach (var attribute in attributes)
             {
-                switch (attribute)
-                {
-                    case ToolboxListPropertyAttribute listPropertyAttribute:
-                        TryAssignListPropertyAttribute(listPropertyAttribute);
-                        break;
-                    case ToolboxSelfPropertyAttribute selfPropertyAttribute:
-                        TryAssignSelfPropertyAttribute(selfPropertyAttribute);
-                        break;
-                    case ToolboxDecoratorAttribute decoratorAttribute:
-                        TryAssignDecoratorAttribute(decoratorAttribute);
-                        break;
-                    case ToolboxConditionAttribute conditionAttribute:
-                        TryAssignConditionAttribute(conditionAttribute);
-                        break;
-                }
+                HandleNewAttribute(attribute);
             }
 
             //check if property has a custom attribute or target type drawer
@@ -173,6 +159,33 @@ namespace Toolbox.Editor
             //check if property has custom conditon drawer
             hasToolboxConditionDrawer = conditionAttribute != null;
         }
+
+        private void HandleNewAttribute(ToolboxAttribute attribute)
+        {
+            switch (attribute)
+            {
+                case ToolboxListPropertyAttribute a:
+                    TryAssignListPropertyAttribute(a);
+                    break;
+                case ToolboxSelfPropertyAttribute a:
+                    TryAssignSelfPropertyAttribute(a);
+                    break;
+                case ToolboxDecoratorAttribute a:
+                    TryAssignDecoratorAttribute(a);
+                    break;
+                case ToolboxConditionAttribute a:
+                    TryAssignConditionAttribute(a);
+                    break;
+                case ToolboxCompositionAttribute a:
+                    var composition = a.Process();
+                    foreach (var newAttribute in composition)
+                    {
+                        HandleNewAttribute(newAttribute);
+                    }
+                    break;
+            }
+        }
+
 
         private bool TryAssignListPropertyAttribute(ToolboxListPropertyAttribute attribute)
         {
@@ -204,7 +217,7 @@ namespace Toolbox.Editor
 
         private bool TryAssignDecoratorAttribute(ToolboxDecoratorAttribute attribute)
         {
-            //prevent decorators drawing for children (needed for array properties)
+            //prevent decorators drawing for children (for array properties)
             if (isChild)
             {
                 return false;
@@ -221,7 +234,8 @@ namespace Toolbox.Editor
 
         private bool TryAssignConditionAttribute(ToolboxConditionAttribute attribute)
         {
-            //prevent condition checks for children (needed for array properties)
+            //prevent condition checks for children (for array properties)
+            //we can only have on condition attribute per serialized property
             if (conditionAttribute != null || isChild)
             {
                 return false;
