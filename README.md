@@ -413,7 +413,7 @@ public GameObject[] largeArray = new GameObject[19];
 
 #### ToolboxCompositionAttributes
 
-Using **ToolboxCompositionAttributes** you are able to create custom patterns of frequantly used **ToolboxAttributes**.
+Using this attributes you are able to create custom patterns of frequently grouped **ToolboxAttributes**.
 
 
 ```csharp
@@ -436,7 +436,7 @@ public class TitleAttribute : ToolboxCompositionAttribute
 				ApplyIndent = true
 			}
 		};
-		}
+	}
 
 
 	public string Label { get; private set; }
