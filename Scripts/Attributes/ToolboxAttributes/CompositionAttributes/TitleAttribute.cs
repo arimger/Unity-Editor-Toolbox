@@ -5,10 +5,13 @@ using UnityEditor;
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// Standardized header, it's composition of the <see cref="LabelAttribute"/> and the <see cref="LineAttribute"/>.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
-    public class LabelWithLineAttribute : ToolboxCompositionAttribute
+    public class TitleAttribute : ToolboxCompositionAttribute
     {
-        public LabelWithLineAttribute(string label)
+        public TitleAttribute(string label)
         {
             Label = label;
         }
@@ -25,7 +28,10 @@ namespace UnityEngine
                     SpaceAfter = -EditorGUIUtility.standardVerticalSpacing
 #endif
                 },
-                new LineAttribute(padding:0)
+                new LineAttribute(padding: 0)
+                {
+                    ApplyIndent = true
+                }
             };
         }
 

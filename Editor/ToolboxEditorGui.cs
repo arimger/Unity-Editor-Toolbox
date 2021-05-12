@@ -27,7 +27,21 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawLine(float thickness, float padding, Color color)
         {
+            DrawLine(thickness, padding, color, false);
+        }
+
+        /// <summary>
+        /// Draws horizontal line.
+        /// Uses built-in layouting system.
+        /// </summary>
+        public static void DrawLine(float thickness, float padding, Color color, bool applyIndent)
+        {
             var rect = EditorGUILayout.GetControlRect(GUILayout.Height(padding + thickness));
+            if (applyIndent)
+            {
+                rect = EditorGUI.IndentedRect(rect);
+            }
+
             DrawLine(rect, thickness, padding, color);
         }
 
