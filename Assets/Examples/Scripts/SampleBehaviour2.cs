@@ -51,6 +51,7 @@ public class SampleBehaviour2 : MonoBehaviour
     [BeginIndent]
     public int var17;
     public int var18;
+    [Title("Standard Header")]
     public GameObject go;
     [Label("<color=red><b>Custom Header</b></color>")]
     [EndIndent]
@@ -147,4 +148,14 @@ public class SampleBehaviour2 : MonoBehaviour
     [Help("Assign dedicated drawer in the Toolbox Settings")]
     public SerializedDictionary<int, GameObject> dictionary;
 #endif
+
+    [Label("13", skinStyle: SkinStyle.Box)]
+
+    [ReorderableListExposed(OverrideNewElementMethodName = nameof(GetValue))]
+    public int[] ints;
+
+    public int GetValue()
+    {
+        return ints.Length * Random.Range(1, 5);
+    }
 }
