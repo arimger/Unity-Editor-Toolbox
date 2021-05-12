@@ -429,9 +429,25 @@ namespace Toolbox.Editor
 
         internal static int GetPropertyElementIndex(SerializedProperty element)
         {
-            const int indexPosition = 2;
-            var indexChar = element.propertyPath[element.propertyPath.Length - indexPosition];
-            return indexChar - '0';
+            if (!IsSerializableArrayElement(element))
+            {
+                return -1;
+            }
+
+            var indexString = string.Empty;
+            var propertyPath = element.propertyPath;
+            for (var i = propertyPath.Length - 2; i >= 0; i--)
+            {
+                var character = propertyPath[i];
+                if (character.Equals('['))
+                {
+                    break;
+                }
+
+                indexString = character + indexString;
+            }
+;
+            return int.Parse(indexString);
         }
 
         internal static string[] GetPropertyFieldTree(SerializedProperty property)

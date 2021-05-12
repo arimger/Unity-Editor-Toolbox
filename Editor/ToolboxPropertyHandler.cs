@@ -165,10 +165,10 @@ namespace Toolbox.Editor
             switch (attribute)
             {
                 case ToolboxListPropertyAttribute a:
-                    TryAssignListPropertyAttribute(a);
+                    TryAssignPropertyAttribute(a);
                     break;
                 case ToolboxSelfPropertyAttribute a:
-                    TryAssignSelfPropertyAttribute(a);
+                    TryAssignPropertyAttribute(a);
                     break;
                 case ToolboxDecoratorAttribute a:
                     TryAssignDecoratorAttribute(a);
@@ -186,8 +186,7 @@ namespace Toolbox.Editor
             }
         }
 
-
-        private bool TryAssignListPropertyAttribute(ToolboxListPropertyAttribute attribute)
+        private bool TryAssignPropertyAttribute(ToolboxListPropertyAttribute attribute)
         {
             //we can only have one property attribute for an array property
             if (propertyAttribute != null || !isArray)
@@ -201,7 +200,7 @@ namespace Toolbox.Editor
             }
         }
 
-        private bool TryAssignSelfPropertyAttribute(ToolboxSelfPropertyAttribute attribute)
+        private bool TryAssignPropertyAttribute(ToolboxSelfPropertyAttribute attribute)
         {
             //we can only have one property attribute for a non-array property
             if (propertyAttribute != null || isArray)
