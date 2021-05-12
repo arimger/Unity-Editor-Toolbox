@@ -22,9 +22,7 @@ Unity 2018.x or newer
 
 - Install Editor Toolbox package:
 	- 1 way: Find Unity Package Manager (Window/Package Manager) and add package using this git URL:
-	```
-	https://github.com/arimger/Unity-Editor-Toolbox.git#upm
-	```
+	```https://github.com/arimger/Unity-Editor-Toolbox.git#upm```
 	- 2 way: Copy and paste `Editor Toolbox` directory into your project (Assets/...) + add dependencies
 - Open Edit/Project Settings/Editor Toolbox window
 - If settings file is not found, press "Refresh" button or create new one
@@ -339,7 +337,7 @@ public int var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/button.png)
 
-#### ToolboxConditionDrawers
+#### ToolboxConditionAttributes 
 
 Enable/disable or show/hide properties using custom conditions. You can use them together with any other type of drawer.
 Every ToolboxConditionDrawer supports boolean, int, string and enum types and works even with array/list properties.
@@ -362,6 +360,12 @@ public int var2;
 
 ```csharp
 [DisableInPlayMode]
+public int var1;
+```
+
+```csharp
+public bool boolValue = true;
+[ShowWarningIf(nameof(boolValue), false, "Message", DisableField = true)]
 public int var1;
 ```
 
@@ -406,6 +410,43 @@ public GameObject[] largeArray = new GameObject[19];
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scrollableitems.png)
+
+#### ToolboxCompositionAttributes
+
+Using **ToolboxCompositionAttributes** you are able to create custom patterns of frequantly used **ToolboxAttributes**.
+
+
+```csharp
+[AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+public class TitleAttribute : ToolboxCompositionAttribute
+{
+	public TitleAttribute(string label)
+	{
+		Label = label;
+	}
+
+
+	public override ToolboxAttribute[] Process()
+	{
+		return new ToolboxAttribute[]
+		{
+			new LabelAttribute(Label),
+			new LineAttribute(padding: 0)
+			{
+				ApplyIndent = true
+			}
+		};
+		}
+
+
+	public string Label { get; private set; }
+}
+```
+
+```csharp
+[Title("Header")]
+public int var1;
+```
 
 ## Reorderable List
 
