@@ -27,10 +27,12 @@ namespace Toolbox.Editor.Folders
 
         [SerializeField, HideIf(nameof(dataType), FolderDataType.Name)]
         private string name;
-        [SerializeField, HideIf(nameof(dataType), FolderDataType.Path), Directory, Tooltip("Relative path from Assets directory.")]
+        [SerializeField, HideIf(nameof(dataType), FolderDataType.Path), Directory]
+        [Tooltip("Relative path from Assets directory.")]
         private string path;
 
-        [SerializeField, Tooltip("Will create additional tooltip for custom folders. Leave empty to ignore.")]
+        [SerializeField, TextArea(minLines: 0, maxLines: 3)]
+        [Tooltip("Will create additional tooltip for custom folders. Leave empty to ignore.")]
         private string tooltip;
 
         [SerializeField]

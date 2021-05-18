@@ -20,12 +20,22 @@ namespace Toolbox.Editor
 
         internal static void AttributeUsageWarning(Attribute attribute, string message)
         {
-            LogWarning(attribute.GetType().Name + ": " + message);
+            AttributeUsageWarning(attribute.GetType(), message);
+        }
+
+        internal static void AttributeUsageWarning(Type attributeType, string message)
+        {
+            LogWarning(attributeType.Name + ": " + message);
         }
 
         internal static void AttributeUsageWarning(Attribute attribute, SerializedProperty property, string message)
         {
-            LogWarning(attribute.GetType().Name + ": " + GetPropertyLocation(property) + ": " + message);
+            AttributeUsageWarning(attribute.GetType(), property, message);
+        }
+
+        internal static void AttributeUsageWarning(Type attributeType, SerializedProperty property, string message)
+        {
+            LogWarning(attributeType.Name + ": " + GetPropertyLocation(property) + ": " + message);
         }
 
         internal static void WrongAttributeUsageWarning(Attribute attribute, SerializedProperty property)

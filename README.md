@@ -42,13 +42,12 @@ Unity 2018.x or newer
 	- [Hierarchy](#hierarchy)
 	- [Project](#project)
 	- [Toolbar](#toolbar)
+	- [Utilities](#utilities)
 - [Editor Extras](#editor-extras)
 
 ## Settings
 
 The most important file, it allows the user to manage all available features. Can be accessed from the Project Settings window (Edit/Project Settings.../Editor Toolbox) or directly inside the Project window. Make sure to have one valid settings file per project.
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/settings.png)
 
 Available features are divided into three groups:
 - Hierarchy
@@ -62,13 +61,6 @@ Each module is described in its respective section.
 ### Regular Drawers <a name="regulardrawers"></a>
 
 Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associated **PropertyAttribute**.
-
-&nbsp;
-
-> Editor Toolbox/Scripts/Attributes/\
-> Editor Toolbox/Editor/Drawers/
-
-&nbsp;
 
 #### TagSelectorAttribute
 
@@ -241,11 +233,11 @@ public SampleClass1 var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild2.png)
 
-#### PrefabReferenceAttribute
-
 #### ChildObjectOnlyAttribute
 
 #### SceneObjectOnlyAttribute
+
+#### PrefabObjectOnlyAttribute
 
 #### LeftToggleAttribute
 
@@ -258,13 +250,6 @@ public SampleClass1 var1;
 Drawers are based on classes inherited from the **ToolboxDrawer** class and associated **ToolboxAttribute**. With this powerful custom system you are able to create really flexible drawers. You can use them without limitations (they work with sub-classes and as array children). Every ToolboxDrawer is layout-based. For proper work they need at least one settings file located in your project. You can find predefined one here - `Editor Toolbox/EditorSettings.asset`.
 
 Examples **'How to'** create custom ToolboxDrawers you can find [HERE](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Assets/Editor%20Toolbox/HOWTO.md).
-
-&nbsp;
-
-> Editor Toolbox/Scripts/Attributes/ToolboxAttributes\
-> Editor Toolbox/Editor/Drawers/ToolboxDrawers
-
-&nbsp;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inspector.png)
 
@@ -413,7 +398,7 @@ public GameObject[] largeArray = new GameObject[19];
 
 #### ToolboxCompositionAttributes
 
-Using this attributes you are able to create custom patterns of frequently grouped **ToolboxAttributes**.
+Using this attribute you are able to implement custom patterns of frequently grouped **ToolboxAttributes**.
 
 
 ```csharp
@@ -452,8 +437,6 @@ public int var1;
 
 Custom implementation of standard ReorderableList (UnityEditorInternal). Usable as an attribute in serialized fields or a single object in custom Editors.
 
-> Editor Toolbox/Editor/Internal/ReorderableList.cs
-
 ```csharp
 var list = new ReorderableList(SerializedProperty property, string elementLabel, bool draggable, bool hasHeader, bool fixedSize);
 ```
@@ -477,6 +460,17 @@ public List<string> standardStyleList;
 public GameObject[] boxedStyleList = new GameObject[4];
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list3.png)
+
+
+```csharp
+[ReorderableListExposed(OverrideNewElementMethodName = nameof(GetValue))]
+public int[] list;
+
+private int GetValue()
+{
+	return list.Length + Random.Range(0, 4);
+}
+```
 
 ## Serialized Types
 
@@ -548,8 +542,6 @@ Each row can contain:
 - Toggle to enable/disable GameObject
 - Icon
 
-> Editor Toolbox/Editor/ToolboxEditorHierarchy.cs
-
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/hierarchy.png)
 
 ### Project <a name="project"></a>
@@ -563,8 +555,6 @@ Properties that can be edited include:
 - Optional tooltip
 - Large icon
 - Small icon
-
-> Editor Toolbox/Editor/ToolboxEditorProject.cs
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/project1.png)
 
@@ -618,7 +608,7 @@ public static class MyEditorUtility
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/toolbar.png)
 
-### Utilities 
+### Utilities <a name="utilities"></a>
 
 Copy and paste all components from/to particular GameObject.
 

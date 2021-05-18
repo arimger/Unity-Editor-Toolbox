@@ -1,5 +1,16 @@
 ## 0.8.5 [13.05.2021]
 
+### Added:
+- Composition attributes
+- ReorderableListExposedAttribute
+- OnValueChangedAttribute
+- ShowIfWarningAttribute
+- Equation test methods for comparison attributes
+
+### Changed:
+- Fix finding indexes of the serialized elements within reflection-based drawers
+- Fix the 'Value' label appearance in the SerializedDictionary drawer when the Value property is an array
+
 ## 0.8.2 [03.04.2021]
 
 ### Added:
