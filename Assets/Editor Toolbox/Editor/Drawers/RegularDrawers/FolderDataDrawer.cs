@@ -79,22 +79,17 @@ namespace Toolbox.Editor.Drawers
                 var typeProperty = property.FindPropertyRelative("dataType");
                 var nameProperty = property.FindPropertyRelative("name");
                 var pathProperty = property.FindPropertyRelative("path");
+                var tooltipProperty = property.FindPropertyRelative("tooltip");
 
                 //check if type is path-based or name-based
-                if (typeProperty.intValue == 0)
-                {
-                    height += EditorGUI.GetPropertyHeight(pathProperty);
-                }
-                else
-                {
-                    height += EditorGUI.GetPropertyHeight(nameProperty);
-                }
-
-                height += Style.spacing * 4;
-                height += Style.height;
+                height += typeProperty.intValue == 0
+                    ? EditorGUI.GetPropertyHeight(pathProperty)
+                    : EditorGUI.GetPropertyHeight(nameProperty);
+                height += EditorGUI.GetPropertyHeight(tooltipProperty);
                 height += Style.height;
                 height += Style.height;
                 height += Style.largeFolderHeight;
+                height += Style.spacing * 4;
                 return height;
             }
 
@@ -122,7 +117,6 @@ namespace Toolbox.Editor.Drawers
             label.text = string.IsNullOrEmpty(propertyName) ? label.text : propertyName;
 
             var propertyPosition = new Rect(position.x, position.y, position.width, Style.height);
-
             if (!(property.isExpanded = EditorGUI.Foldout(propertyPosition, property.isExpanded, label, true, Style.propertyFoldoutStyle)))
             {
                 EditorGUI.EndProperty();
@@ -130,8 +124,8 @@ namespace Toolbox.Editor.Drawers
                 //adjust position for small icon and draw it in label field
                 var typeIconRect = new Rect(position.xMax - Style.smallFolderWidth,
 #if UNITY_2019_3_OR_NEWER
-                                            position.yMin, 
-                                            Style.smallFolderWidth, 
+                                            position.yMin,
+                                            Style.smallFolderWidth,
                                             Style.smallFolderHeight);
 #else
                                             position.yMin - Style.spacing,
@@ -187,9 +181,11 @@ namespace Toolbox.Editor.Drawers
                 summaryFieldHeight += rawPropertyHeight;
             }
 
+            propertyPosition.height = EditorGUI.GetPropertyHeight(tooltipProperty);
             EditorGUI.PropertyField(propertyPosition, tooltipProperty, false);
-            propertyPosition.y += rawPropertyHeight;
-            summaryFieldHeight += rawPropertyHeight;
+            propertyPosition.y += propertyPosition.height + Style.spacing;
+            summaryFieldHeight += propertyPosition.height + Style.spacing;
+            propertyPosition.height = Style.height;
 
             //adjust rect for folder icons + button strip
             propertyPosition.y += Style.spacing;
@@ -197,7 +193,6 @@ namespace Toolbox.Editor.Drawers
             propertyPosition.width = Style.largeFolderWidth;
 
             var selectorHash = GetSelectorHash(property);
-
             //draw large icon property picker
             if (GUI.Button(propertyPosition, Style.largeIconPickerContent, Style.largeIconPickerStyle))
             {
@@ -220,7 +215,6 @@ namespace Toolbox.Editor.Drawers
                 //get proper action id by removing unique property hash code
                 var rawPickId = EditorGUIUtility.GetObjectPickerControlID();
                 var controlId = rawPickId - selectorHash;
-
                 //determine the target property using predefined values
                 SerializedProperty iconProperty = null;
                 switch (controlId)
@@ -248,7 +242,6 @@ namespace Toolbox.Editor.Drawers
             var largeIcon = largeIconProperty.objectReferenceValue as Texture;
             var smallIcon = smallIconProperty.objectReferenceValue as Texture;
             DrawFolderIconsStrip(position, largeIcon, smallIcon);
-
             EditorGUI.indentLevel--;
             EditorGUI.EndProperty();
         }

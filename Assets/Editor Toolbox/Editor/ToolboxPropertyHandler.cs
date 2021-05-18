@@ -246,7 +246,6 @@ namespace Toolbox.Editor
             }
         }
 
-
         private void DrawProperty(GUIContent label)
         {
             //get toolbox drawer for the property or draw it in the default way
