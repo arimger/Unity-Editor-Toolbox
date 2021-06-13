@@ -47,6 +47,10 @@ namespace Toolbox
             return false;
         }
 
+        /// <summary>
+        /// Returns all child classes of the given <see cref="Type"/>.
+        /// Additionally abstract and obsolete types may be ignored.
+        /// </summary>
         public static List<Type> GetAllChildClasses(this Type baseType, bool allowAbstract = false, bool ignoreObsolete = true)
         {
             var types = new List<Type>();

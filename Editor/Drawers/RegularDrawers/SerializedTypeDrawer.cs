@@ -11,6 +11,12 @@ namespace Toolbox.Editor.Drawers
     public sealed class SerializedTypeDrawer : ToolboxNativePropertyDrawer
     {
         /// <summary>
+        /// Dictionary used to store all previously filtered types.
+        /// </summary>
+        private readonly static Dictionary<Type, List<Type>> filteredTypes = new Dictionary<Type, List<Type>>();
+
+
+        /// <summary>
         /// Creates formatted type name depending on <see cref="ClassGrouping"/> value.
         /// </summary>
         /// <param name="type">Type to display.</param>
@@ -18,7 +24,6 @@ namespace Toolbox.Editor.Drawers
         private static string FormatGroupedTypeName(Type type, ClassGrouping grouping)
         {
             var name = type.FullName;
-
             switch (grouping)
             {
                 default:
@@ -47,51 +52,69 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-
         /// <summary>
-        /// Dictionary used to store all previously filtered types.
+        /// Returns valid <see cref="string"/> equivalent of the referenced <see cref="Type"/>.
         /// </summary>
-        private readonly static Dictionary<Type, List<Type>> filteredTypes = new Dictionary<Type, List<Type>>();
+        private static string GetClassReferencValue(int selectedType, List<Type> types)
+        {
+            return selectedType > 0 ? SerializedType.GetClassReference(types[selectedType - 1]) : string.Empty;
+        }
+
+        private bool IsDefaultField(Attribute attribute)
+        {
+            return IsDefaultField(attribute as ClassTypeConstraintAttribute);
+        }
+
+        private bool IsDefaultField(ClassTypeConstraintAttribute attribute)
+        {
+            return attribute == null || attribute.AssemblyType == null;
+        }
 
 
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
-            return EditorStyles.popup.CalcHeight(GUIContent.none, 0);
+            return IsDefaultField(attribute)
+                ? EditorGUI.GetPropertyHeight(property)
+                : EditorStyles.popup.CalcHeight(GUIContent.none, 0);
         }
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            var refAttribute = Attribute;
-            var refProperty = property.FindPropertyRelative("classReference");
-
-            //validate serialized data
-            if (refAttribute == null || refAttribute.AssemblyType == null)
+            var attribute = Attribute;
+            //TODO: default drawer for fields without attributes
+            //validate serialized field
+            if (IsDefaultField(attribute))
             {
-                EditorGUI.PropertyField(position, property, label);
+                EditorGUI.PropertyField(position, property, label, property.isExpanded);
                 return;
             }
 
-            var refType = !string.IsNullOrEmpty(refProperty.stringValue) ? Type.GetType(refProperty.stringValue) : null;
-            var options = new List<string>() { "<None>" };
-            var index = -1;
-
-            //get stored types if possible or create new item
-            if (!filteredTypes.TryGetValue(refAttribute.AssemblyType, out var refTypes))
+            //TODO: cache different filter settings
+            //get stored types if possible or try to cache them
+            if (!filteredTypes.TryGetValue(attribute.AssemblyType, out var refTypes))
             {
-                filteredTypes[refAttribute.AssemblyType] = refTypes = refAttribute.GetFilteredTypes();
+                filteredTypes[attribute.AssemblyType] = refTypes = attribute.GetFilteredTypes();
             }
 
-            //create labels from filtered types
-            for (int i = 0; i < refTypes.Count; i++)
+            var referenceProperty = property.FindPropertyRelative("classReference");
+            var referenceValue = referenceProperty.stringValue;
+            var referenceType = !string.IsNullOrEmpty(referenceValue) ? Type.GetType(referenceValue) : null;
+            var optionsCount = refTypes.Count + 1;
+            var options = new string[optionsCount];
+            var index = 0;
+
+            //create labels for all types
+            options[0] = "<None>";
+            for (var i = 1; i < optionsCount; i++)
             {
-                var menuType = refTypes[i];
-                var menuLabel = FormatGroupedTypeName(menuType, refAttribute.Grouping);
-                if (menuType == refType)
+                var menuType = refTypes[i - 1];
+                var menuLabel = FormatGroupedTypeName(menuType, attribute.Grouping);
+                if (menuType == referenceType)
                 {
                     index = i;
                 }
 
-                options.Add(menuLabel);
+                options[i] = menuLabel;
             }
 
             //draw the reference property
@@ -100,13 +123,28 @@ namespace Toolbox.Editor.Drawers
             //draw the proper label field
             position = EditorGUI.PrefixLabel(position, label);
 
-            index = EditorGUI.Popup(position, index + 1, options.ToArray());
-            //get the correct class reference, index = 0 is reserved to <None> type
-            refProperty.stringValue = index >= 1 ? SerializedType.GetClassReference(refTypes[index - 1]) : string.Empty;
+            //try to draw associated popup
+            if (attribute.AddTextSearchField)
+            {
+                var buttonLabel = new GUIContent(options[index]);
+                ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
+                {
+                    referenceProperty.serializedObject.Update();
+                    referenceProperty.stringValue = GetClassReferencValue(i, refTypes);
+                    referenceProperty.serializedObject.ApplyModifiedProperties();
+                });
+            }
+            else
+            {
+                index = EditorGUI.Popup(position, index, options);
+                referenceProperty.stringValue = GetClassReferencValue(index, refTypes);
+            }
+
             EditorGUI.EndProperty();
         }
 
 
+        ///<inheritdoc/>
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.type == nameof(SerializedType);

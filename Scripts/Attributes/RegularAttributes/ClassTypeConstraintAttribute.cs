@@ -47,14 +47,13 @@ namespace UnityEngine
         /// <summary>
         /// Get all proper types from executing assembly.
         /// </summary>
-        /// <returns></returns>
         public List<Type> GetFilteredTypes()
         {
             var types = new List<Type>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in assemblies)
             {
-                types.AddRange(GetFilteredAssemblyTypes(assembly));
+                types.AddRange(GetFilteredTypes(assembly));
             }
 
             types.Sort((a, b) => a.FullName.CompareTo(b.FullName));
@@ -64,9 +63,7 @@ namespace UnityEngine
         /// <summary>
         /// Get all filtered type from provided assembly.
         /// </summary>
-        /// <param name="assembly"></param>
-        /// <returns></returns>
-        public List<Type> GetFilteredAssemblyTypes(Assembly assembly)
+        public List<Type> GetFilteredTypes(Assembly assembly)
         {
             var types = new List<Type>();
             foreach (var type in assembly.GetTypes())
@@ -123,6 +120,11 @@ namespace UnityEngine
         /// Defaults to <see cref="ClassGrouping.None"/> unless explicitly specified.
         /// </summary>
         public ClassGrouping Grouping { get; set; } = ClassGrouping.None;
+
+        /// <summary>
+        /// Indicates if created popup menu should have an additional search field.
+        /// </summary>
+        public bool AddTextSearchField { get; set; }
     }
 
     ///<inheritdoc/>

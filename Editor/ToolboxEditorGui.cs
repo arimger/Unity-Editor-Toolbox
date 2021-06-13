@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using UnityEditor;
 using UnityEngine;
@@ -177,6 +178,63 @@ namespace Toolbox.Editor
         public static void DrawTexture(Rect rect, Texture texture, ScaleMode scaleMode, bool alphaBlend)
         {
             GUI.DrawTexture(rect, texture, scaleMode, alphaBlend);
+        }
+    }
+
+    public static partial class ToolboxEditorGui
+    {
+        private static EditorWindow lastTargetedWindow;
+
+
+        /// <summary>
+        /// Checks if user is still focusing the proper (searchable) window.
+        /// </summary>
+        private static bool IsNonTargetWindowFocused()
+        {
+            return lastTargetedWindow && lastTargetedWindow != EditorWindow.mouseOverWindow;
+        }
+
+        private static void OnPopupWindowCreated()
+        {
+            lastTargetedWindow = EditorWindow.focusedWindow;
+        }
+
+        private static void OnPopupWindowUpdated()
+        {
+            //handle situation when inspector window captures ScrollWheel event
+            if (IsNonTargetWindowFocused())
+            {
+                //NOTE: unfortunately PopupWidnows are not indpendent and we have to
+                //override internal events to prevent scrolling the Inspector Window
+                if (Event.current.type == EventType.ScrollWheel)
+                {
+                    Event.current.Use();
+                }
+            }
+        }
+
+
+        public static void DrawSearchablePopup(Rect rect, GUIContent label, int currentIndex, string[] options, Action<int> onSelect)
+        {
+            DrawSearchablePopup(rect, label, currentIndex, options, onSelect, EditorStyles.miniPullDown);
+        }
+
+        public static void DrawSearchablePopup(Rect rect, GUIContent label, int currentIndex, string[] options, Action<int> onSelect, GUIStyle style)
+        {
+            if (EditorGUI.DropdownButton(rect, label, FocusType.Keyboard, style))
+            {
+                try
+                {
+                    SearchablePopup.Show(rect, currentIndex, options, onSelect);
+                }
+                catch (ExitGUIException)
+                {
+                    OnPopupWindowCreated();
+                    throw;
+                }
+            }
+
+            OnPopupWindowUpdated();
         }
     }
 
