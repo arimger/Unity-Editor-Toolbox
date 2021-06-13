@@ -433,6 +433,8 @@ public class TitleAttribute : ToolboxCompositionAttribute
 public int var1;
 ```
 
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/title.png)
+
 ## Reorderable List
 
 Custom implementation of standard ReorderableList (UnityEditorInternal). Usable as an attribute in serialized fields or a single object in custom Editors.
@@ -479,7 +481,7 @@ private int GetValue()
 Allows to serialize Types and pick them through a dedicated picker.
 
 ```csharp
-[ClassExtends(typeof(Collider))] //or [ClassImplements(typeof(interface))] for interfaces
+[ClassExtends(typeof(Collider), Grouping = ClassGrouping.None, AddTextSearchField = false)] //or [ClassImplements(typeof(interface))] for interfaces
 public SerializedType var1;
 
 public void Usage()
@@ -502,6 +504,8 @@ public void Usage()
 	UnityEngine.SceneManagement.SceneManager.LoadScene(scene.BuildIndex);
 }
 ```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializedscene.png)
 
 #### SerializedDictionary<TK, TV>
 

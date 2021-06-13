@@ -14,6 +14,9 @@ namespace Toolbox.Editor.Internal
     /// </summary>
     public class SearchablePopup : PopupWindowContent
     {
+        /// <summary>
+        /// Creates searchable popup using given properties.
+        /// </summary>
         public static void Show(Rect activatorRect, int current, string[] options, Action<int> onSelect)
         {
             PopupWindow.Show(activatorRect, new SearchablePopup(current, options, onSelect));
@@ -25,8 +28,6 @@ namespace Toolbox.Editor.Internal
         private readonly SearchArray searchArray;
         private readonly SearchField searchField;
 
-        private readonly int startIndex;
-
         private int optionIndex = -1;
         private int scrollIndex = -1;
 
@@ -36,12 +37,16 @@ namespace Toolbox.Editor.Internal
         private Rect contentRect;
 
 
+        /// <summary>
+        /// Constructor should be called only internally by the <see cref="Show(Rect, int, string[], Action{int})"/> method.
+        /// </summary>
         private SearchablePopup(int startIndex, string[] options, Action<int> onSelect)
         {
-            this.startIndex = startIndex;
-
             searchArray = new SearchArray(options);
             searchField = new SearchField();
+
+            optionIndex = startIndex;
+            scrollIndex = startIndex;
 
             this.onSelect = onSelect;
             this.onSelect += (i) =>
@@ -56,7 +61,7 @@ namespace Toolbox.Editor.Internal
             onSelect(index);
         }
 
-        private void HandleKeyboard()
+        private void HandleInput()
         {
             var currentEvent = Event.current;
             if (currentEvent.type != EventType.KeyDown)
@@ -134,12 +139,14 @@ namespace Toolbox.Editor.Internal
                     GUI.ScrollTo(elementRect);
                     scrollIndex = -1;
                 }
+
                 if (elementRect.Contains(currentEvent.mousePosition))
                 {
                     if (currentEvent.type == EventType.MouseMove || currentEvent.type == EventType.ScrollWheel)
                     {
                         optionIndex = i;
                     }
+
                     if (currentEvent.type == EventType.MouseDown)
                     {
                         SelectItem(searchArray.GetItemAt(i).index);
@@ -153,7 +160,7 @@ namespace Toolbox.Editor.Internal
 
                 //draw proper label for the associated item
                 elementRect.xMin += Style.indent;
-                GUI.Label(elementRect, searchArray.GetItemAt(i).label);
+                GUI.Label(elementRect, GetElementContent(elementRect, i));
                 elementRect.xMin -= Style.indent;
                 elementRect.y = elementRect.yMax;
             }
@@ -161,17 +168,39 @@ namespace Toolbox.Editor.Internal
             GUI.EndScrollView();
         }
 
+        private GUIContent GetElementContent(Rect rect, int index)
+        {
+            var itemLabel = searchArray.GetItemAt(index).label;
+            var content = new GUIContent(itemLabel);
+            var labelSize = EditorStyles.label.CalcSize(content);
+            if (labelSize.x > rect.width)
+            {
+                content.tooltip = itemLabel;
+            }
 
+            return content;
+        }
+
+
+        /// <summary>
+        /// Called each time new <see cref="SearchablePopup"/> is created.
+        /// </summary>
         public override void OnOpen()
         {
             EditorApplication.update += editorWindow.Repaint;
         }
 
+        /// <summary>
+        /// Called each time new <see cref="SearchablePopup"/> is closed.
+        /// </summary>
         public override void OnClose()
         {
             EditorApplication.update -= editorWindow.Repaint;
         }
 
+        /// <summary>
+        /// Called each time <see cref="SearchablePopup"/> has to be drawed.
+        /// </summary>
         public override void OnGUI(Rect rect)
         {
             //set toolbar rect using the built-in toolbar height
@@ -179,7 +208,7 @@ namespace Toolbox.Editor.Internal
             //set content rect adjusted to the toolbar container
             contentRect = Rect.MinMaxRect(0, toolbarRect.yMax, rect.xMax, rect.yMax);
 
-            HandleKeyboard();
+            HandleInput();
             DrawToolbar(toolbarRect);
             DrawContent(contentRect);
             //additionally disable all GUI controls
@@ -192,7 +221,6 @@ namespace Toolbox.Editor.Internal
             public struct Item
             {
                 public int index;
-
                 public string label;
 
                 public Item(int index, string label)
@@ -223,13 +251,11 @@ namespace Toolbox.Editor.Internal
                 }
 
                 items.Clear();
-
                 for (var i = 0; i < options.Length; i++)
                 {
                     if (string.IsNullOrEmpty(filter) || options[i].ToLower().Contains(filter.ToLower()))
                     {
                         var item = new Item(i, options[i]);
-
                         if (string.Equals(options[i], filter, StringComparison.CurrentCultureIgnoreCase))
                         {
                             items.Insert(0, item);
@@ -262,7 +288,7 @@ namespace Toolbox.Editor.Internal
             internal static readonly float indent = 8.0f;
             internal static readonly float height = EditorGUIUtility.singleLineHeight;
             internal static readonly float padding = 6.0f;
-            internal static readonly float spacing = 2.0f;
+            internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
 
             internal static GUIStyle toolbarStyle;
             internal static GUIStyle scrollbarStyle;

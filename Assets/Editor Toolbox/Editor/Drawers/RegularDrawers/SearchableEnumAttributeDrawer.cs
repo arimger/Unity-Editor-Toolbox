@@ -3,23 +3,9 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    using Toolbox.Editor.Internal;
-
     [CustomPropertyDrawer(typeof(SearchableEnumAttribute))]
     public class SearchableEnumAttributeDrawer : ToolboxNativePropertyDrawer
     {
-        private static EditorWindow lastSearchableWindow;
-
-
-        /// <summary>
-        /// Checks if user is still focusing the proper (searchable) window.
-        /// </summary>
-        private bool IsNonTargetWindowFocused()
-        {
-            return lastSearchableWindow && lastSearchableWindow != EditorWindow.mouseOverWindow;
-        }
-
-
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             return base.GetPropertyHeightSafe(property, label);
@@ -39,35 +25,13 @@ namespace Toolbox.Editor.Drawers
             //draw the prefix label
             position = EditorGUI.PrefixLabel(position, id, label);
             //draw dropdown button, will be used to activate popup
-            if (EditorGUI.DropdownButton(position, buttonLabel, FocusType.Keyboard))
+            ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, property.enumValueIndex, property.enumDisplayNames, (i) =>
             {
-                try
-                {
-                    SearchablePopup.Show(position, property.enumValueIndex, property.enumDisplayNames, (i) =>
-                    {
-                        property.serializedObject.Update();
-                        property.enumValueIndex = i;
-                        property.serializedObject.ApplyModifiedProperties();
-                    });
-                }
-                catch (ExitGUIException)
-                {
-                    lastSearchableWindow = EditorWindow.focusedWindow;
-                    throw;
-                }
-            }
+                property.serializedObject.Update();
+                property.enumValueIndex = i;
+                property.serializedObject.ApplyModifiedProperties();
+            });
             EditorGUI.EndProperty();
-
-            //handle situation when inspector window captures ScrollWheel event
-            if (IsNonTargetWindowFocused())
-            {
-                //NOTE: unfortunately PopupWidnows are not indpendent and we have to
-                //override internal events to prevent scrolling the Inspector Window
-                if (Event.current.type == EventType.ScrollWheel)
-                {
-                    Event.current.Use();
-                }
-            }
         }
 
 

@@ -12,7 +12,7 @@ namespace UnityEngine
         {
             return type != null
                 ? type.FullName + ", " + type.Assembly.GetName().Name
-                : "";
+                : string.Empty;
         }
 
 
