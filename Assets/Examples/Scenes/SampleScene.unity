@@ -427,10 +427,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   list:
+  - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   - {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
   - {fileID: 0}
   - {fileID: 661896457}
-  - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   y: 220
@@ -495,6 +495,7 @@ MonoBehaviour:
     - key: 3
       value: {fileID: 2037155952}
     error: 0
+  ints: 
 --- !u!4 &661896459
 Transform:
   m_ObjectHideFlags: 2
@@ -629,6 +630,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c96bc1945c12e5246b1faac636a63516, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aa:
+    classReference: 
+  aaa:
+    classReference: UnityEngine.AvatarMask, UnityEngine.AnimationModule
   var1: 82
   targetTag: Untagged
   progressBar: 25.4
@@ -648,7 +653,7 @@ MonoBehaviour:
   type1:
     classReference: 
   type2:
-    classReference: System.CodeDom.CodeNamespaceImportCollection, System
+    classReference: TMPro.TMP_SubMeshUI, Unity.TextMeshPro
   var11: Im read only
   var12: 0
   enumFlag1: 39
