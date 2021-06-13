@@ -1,3 +1,8 @@
+## 0.8.6 [13.06.2021]
+
+### Added:
+- Additional search field for the SerializedType drawer
+
 ## 0.8.5 [13.05.2021]
 
 ### Added:
