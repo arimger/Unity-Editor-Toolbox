@@ -414,7 +414,7 @@ namespace Toolbox.Editor
         public static void DrawDefaultProperty(SerializedProperty property, GUIContent label,
             Action<SerializedProperty, GUIContent> drawParentAction, Action<SerializedProperty> drawElementAction)
         {
-            if (!property.hasVisibleChildren)
+            if (!PropertyUtility.HasVisibleChildrenFields(property))
             {
                 drawParentAction(property, label);
                 return;

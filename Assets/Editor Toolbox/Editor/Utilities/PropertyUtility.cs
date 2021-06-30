@@ -387,6 +387,24 @@ namespace Toolbox.Editor
             return false;
         }
 
+        internal static bool HasVisibleChildrenFields(SerializedProperty property)
+        {
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.Vector3:
+                case SerializedPropertyType.Vector2:
+                case SerializedPropertyType.Vector3Int:
+                case SerializedPropertyType.Vector2Int:
+                case SerializedPropertyType.Rect:
+                case SerializedPropertyType.RectInt:
+                case SerializedPropertyType.Bounds:
+                case SerializedPropertyType.BoundsInt:
+                    return false;
+            }
+
+            return property.hasVisibleChildren;
+        }
+
         internal static bool IsSerializableArrayType(Type type)
         {
             return typeof(IList).IsAssignableFrom(type);
