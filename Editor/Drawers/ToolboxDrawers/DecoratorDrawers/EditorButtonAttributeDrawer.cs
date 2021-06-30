@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Reflection;
 
+using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
-using Unity.EditorCoroutines.Editor;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -31,6 +31,43 @@ namespace Toolbox.Editor.Drawers
             return method.ReturnType == typeof(IEnumerator);
         }
 
+        private void CallMethods(EditorButtonAttribute attribute, Object[] targetObjects)
+        {
+            var methodInfo = ReflectionUtility.GetObjectMethod(attribute.MethodName, targetObjects);
+            //validate method name (check if method exists)
+            if (methodInfo == null)
+            {
+                ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method not found.", attribute.MethodName));
+                return;
+            }
+
+            //validate parameters count and log warning
+            var parameters = methodInfo.GetParameters();
+            if (parameters.Length > 0)
+            {
+                ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method has to be parameterless.", attribute.MethodName));
+                return;
+            }
+
+            //invoke method for all selected components
+            var isCoroutine = IsCoroutine(methodInfo);
+            for (var i = 0; i < targetObjects.Length; i++)
+            {
+                var target = targetObjects[i];
+                if (target == null)
+                {
+                    continue;
+                }
+
+                var result = methodInfo.Invoke(target, null);
+                //additionaly run Coroutine if possible
+                if (isCoroutine)
+                {
+                    EditorCoroutineUtility.StartCoroutineOwnerless((IEnumerator)result);
+                }
+            }
+        }
+
 
         protected override void OnGuiCloseSafe(EditorButtonAttribute attribute)
         {
@@ -52,39 +89,7 @@ namespace Toolbox.Editor.Drawers
 
                 if (GUILayout.Button(content, Style.buttonStyle))
                 {
-                    var methodInfo = ReflectionUtility.GetObjectMethod(attribute.MethodName, targetObjects);
-                    //validate method name (check if method exists)
-                    if (methodInfo == null)
-                    {
-                        ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method not found.", attribute.MethodName));
-                        return;
-                    }
-
-                    //validate parameters count and log warning
-                    var parameters = methodInfo.GetParameters();
-                    if (parameters.Length > 0)
-                    {
-                        ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method has to be parameterless.", attribute.MethodName));
-                        return;
-                    }
-
-                    //invoke method for all selected components
-                    var isCoroutine = IsCoroutine(methodInfo);
-                    for (var i = 0; i < targetObjects.Length; i++)
-                    {
-                        var target = targetObjects[i];
-                        if (target == null)
-                        {
-                            continue;
-                        }
-
-                        var result = methodInfo.Invoke(target, null);
-                        //additionaly run Coroutine if possible
-                        if (isCoroutine)
-                        {
-                            EditorCoroutineUtility.StartCoroutineOwnerless((IEnumerator)result);
-                        }
-                    }
+                    CallMethods(attribute, targetObjects);
                 }
             }
         }
