@@ -10,7 +10,7 @@ namespace Toolbox.Editor
     using Toolbox.Editor.Internal;
 
     [CustomEditor(typeof(ToolboxEditorSettings), true, isFallback = false)]
-    [CanEditMultipleObjects, InitializeOnLoad]
+    [CanEditMultipleObjects]
     internal class ToolboxEditorSettingsEditor : ToolboxEditor
     {
         private ToolboxEditorSettings currentTarget;
@@ -46,11 +46,11 @@ namespace Toolbox.Editor
             currentTarget = target as ToolboxEditorSettings;
 
             //internal properties cached by 'EditorPrefs'
-            hierarchyAnimBool = new AnimBool(EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".HierarchyEnabled", false));
-            projectAnimBool = new AnimBool(EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", false));
-            inspectorAnimBool = new AnimBool(EditorPrefs.GetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", false));
+            hierarchyAnimBool = new AnimBool(EditorPrefs.GetBool(string.Format("{0}.HierarchyEnabled", nameof(ToolboxEditorSettings)), false));
+            projectAnimBool = new AnimBool(EditorPrefs.GetBool(string.Format("{0}.ProjectEnabled", nameof(ToolboxEditorSettings)), false));
+            inspectorAnimBool = new AnimBool(EditorPrefs.GetBool(string.Format("{0}.InspectorEnabled", nameof(ToolboxEditorSettings)), false));
 
-            enabledToShowDrawerType = EditorPrefs.GetInt(nameof(ToolboxEditorSettings) + ".PickedDrawerType", 0);
+            enabledToShowDrawerType = EditorPrefs.GetInt(string.Format("{0}.PickedDrawerType", nameof(ToolboxEditorSettings)), 0);
 
             var repaintAction = new UnityAction(() =>
             {
@@ -68,7 +68,7 @@ namespace Toolbox.Editor
             drawHorizontalLinesProperty = serializedObject.FindProperty("drawHorizontalLines");
             showSelectionsCountProperty = serializedObject.FindProperty("showSelectionsCount");
 #if UNITY_2019_3_OR_NEWER
-			rowDataItemsList = CreateClearList(serializedObject.FindProperty("rowDataTypes"), hasHeader: false, elementLabel: "Position");
+            rowDataItemsList = CreateClearList(serializedObject.FindProperty("rowDataTypes"), hasHeader: false, elementLabel: "Position");
 #else
             rowDataItemsList = CreateLinedList(serializedObject.FindProperty("rowDataTypes"), hasHeader: false, elementLabel: "Position");
 #endif
@@ -80,7 +80,7 @@ namespace Toolbox.Editor
             largeIconPaddingProperty = serializedObject.FindProperty("largeIconPadding");
             smallIconPaddingProperty = serializedObject.FindProperty("smallIconPadding");
 #if UNITY_2019_3_OR_NEWER
-			customFoldersList = CreateClearList(serializedObject.FindProperty("customFolders"), hasHeader: false);
+            customFoldersList = CreateClearList(serializedObject.FindProperty("customFolders"), hasHeader: false);
 #else
             customFoldersList = CreateLinedList(serializedObject.FindProperty("customFolders"), hasHeader: false);
 #endif
@@ -129,11 +129,10 @@ namespace Toolbox.Editor
 
         private void OnDisable()
         {
-            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".HierarchyEnabled", hierarchyAnimBool.target);
-            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".ProjectEnabled", projectAnimBool.target);
-            EditorPrefs.SetBool(nameof(ToolboxEditorSettings) + ".InspectorEnabled", inspectorAnimBool.target);
-
-            EditorPrefs.SetInt(nameof(ToolboxEditorSettings) + ".PickedDrawerType", enabledToShowDrawerType);
+            EditorPrefs.SetBool(string.Format("{0}.HierarchyEnabled", nameof(ToolboxEditorSettings)), hierarchyAnimBool.target);
+            EditorPrefs.SetBool(string.Format("{0}.ProjectEnabled", nameof(ToolboxEditorSettings)), projectAnimBool.target);
+            EditorPrefs.SetBool(string.Format("{0}.InspectorEnabled", nameof(ToolboxEditorSettings)), inspectorAnimBool.target);
+            EditorPrefs.SetInt(string.Format("{0}.PickedDrawerType", nameof(ToolboxEditorSettings)), enabledToShowDrawerType);
         }
 
         private void DrawHierarchySettings()
@@ -171,6 +170,7 @@ namespace Toolbox.Editor
             {
                 currentTarget.SetHierarchySettingsDirty();
             }
+
             EditorGUI.indentLevel--;
         }
 
@@ -201,6 +201,7 @@ namespace Toolbox.Editor
             {
                 largeIconPaddingProperty.vector2Value = new Vector2(x, y);
             }
+
             EditorGUI.indentLevel--;
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Small Icon Properties");
@@ -213,6 +214,7 @@ namespace Toolbox.Editor
             {
                 smallIconPaddingProperty.vector2Value = new Vector2(x, y);
             }
+
             EditorGUI.indentLevel--;
 
             EditorGUILayout.BeginHorizontal();
@@ -248,6 +250,7 @@ namespace Toolbox.Editor
             {
                 currentTarget.SetProjectSettingsDirty();
             }
+
             EditorGUI.indentLevel--;
         }
 
@@ -260,7 +263,6 @@ namespace Toolbox.Editor
             EditorGUILayout.Space();
 
             var validateInspector = false;
-
 #if UNITY_2019_3_OR_NEWER
             EditorGUILayout.BeginVertical(Style.layoutsGroupStyle);
 #endif
@@ -292,56 +294,21 @@ namespace Toolbox.Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button(Style.clearAllContent, EditorStyles.miniButtonLeft))
             {
-                Undo.RecordObject(target, "Clear Drawers");
-                switch (enabledToShowDrawerType)
-                {
-                    case 0:
-                        currentTarget.DecoratorDrawerHandlers.Clear();
-                        break;
-                    case 1:
-                        currentTarget.ConditionDrawerHandlers.Clear();
-                        break;
-                    case 2:
-                        currentTarget.SelfPropertyDrawerHandlers.Clear();
-                        break;
-                    case 3:
-                        currentTarget.ListPropertyDrawerHandlers.Clear();
-                        break;
-                    case 4:
-                        currentTarget.TargetTypeDrawerHandlers.Clear();
-                        break;
-                }
+                ClearAllDrawers();
                 validateInspector = true;
             }
 
             if (GUILayout.Button(Style.overrideContent, EditorStyles.miniButtonMid))
             {
-                Undo.RecordObject(target, "Assign Drawers");
-                switch (enabledToShowDrawerType)
-                {
-                    case 0:
-                        currentTarget.SetAllPossibleDecoratorDrawers();
-                        break;
-                    case 1:
-                        currentTarget.SetAllPossibleConditionDrawers();
-                        break;
-                    case 2:
-                        currentTarget.SetAllPossibleSelfPropertyDrawers();
-                        break;
-                    case 3:
-                        currentTarget.SetAllPossibleListPropertyDrawers();
-                        break;
-                    case 4:
-                        currentTarget.SetAllPossibleTargetTypeDrawers();
-                        break;
-                }
+                ApplyAllDrawers();
                 validateInspector = true;
             }
 
             if (GUILayout.Button(Style.validateContent, EditorStyles.miniButtonRight))
             {
-                ToolboxEditorLog.Log("Function not implemented.");
+                ValidateDrawers();
             }
+
             EditorGUILayout.EndHorizontal();
 #if UNITY_2019_3_OR_NEWER
             EditorGUILayout.EndVertical();
@@ -354,19 +321,73 @@ namespace Toolbox.Editor
             }
 
             EditorGUI.EndDisabledGroup();
-
             if (EditorGUI.EndChangeCheck())
             {
                 currentTarget.SetInspectorSettingsDirty();
             }
+
             EditorGUI.indentLevel--;
+        }
+
+        private void ApplyAllDrawers()
+        {
+            Undo.RecordObject(target, "Assign Drawers");
+            switch (enabledToShowDrawerType)
+            {
+                case 0:
+                    currentTarget.SetAllPossibleDecoratorDrawers();
+                    break;
+                case 1:
+                    currentTarget.SetAllPossibleConditionDrawers();
+                    break;
+                case 2:
+                    currentTarget.SetAllPossibleSelfPropertyDrawers();
+                    break;
+                case 3:
+                    currentTarget.SetAllPossibleListPropertyDrawers();
+                    break;
+                case 4:
+                    currentTarget.SetAllPossibleTargetTypeDrawers();
+                    break;
+            }
+
+            EditorUtility.SetDirty(target);
+        }
+
+        private void ClearAllDrawers()
+        {
+            Undo.RecordObject(target, "Clear Drawers");
+            switch (enabledToShowDrawerType)
+            {
+                case 0:
+                    currentTarget.DecoratorDrawerHandlers.Clear();
+                    break;
+                case 1:
+                    currentTarget.ConditionDrawerHandlers.Clear();
+                    break;
+                case 2:
+                    currentTarget.SelfPropertyDrawerHandlers.Clear();
+                    break;
+                case 3:
+                    currentTarget.ListPropertyDrawerHandlers.Clear();
+                    break;
+                case 4:
+                    currentTarget.TargetTypeDrawerHandlers.Clear();
+                    break;
+            }
+
+            EditorUtility.SetDirty(target);
+        }
+
+        private void ValidateDrawers()
+        {
+            ToolboxEditorLog.Log("Function not implemented.");
         }
 
 
         public override void DrawCustomInspector()
         {
             serializedObject.Update();
-
             //handle hierarchy settings section
             hierarchyAnimBool.target = DrawHeaderFoldout(hierarchyAnimBool.target, Style.hierarchySettingsContent, true, Style.sectionHeaderStyle, Style.headersGroupStyle);
             using (var group = new EditorGUILayout.FadeGroupScope(hierarchyAnimBool.faded))

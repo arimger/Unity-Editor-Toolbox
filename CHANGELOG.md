@@ -1,3 +1,14 @@
+## 0.8.9 [01.07.2021]
+
+### Added:
+- IgnoreParentAttribute
+- ShowDisabledIfAttribute
+- HideDisabledIfAttribute
+
+### Changed:
+- Fix assigning and clearing multiple drawers at once
+- Fix drawing default numeric types (Vector2, Vector3, etc.)
+
 ## 0.8.6 [13.06.2021]
 
 ### Added:
