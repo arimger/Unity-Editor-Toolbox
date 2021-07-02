@@ -200,8 +200,7 @@ namespace Toolbox.Editor
 
         public void SetAllPossibleDecoratorDrawers()
         {
-            decoratorDrawerHandlers?.Clear();
-
+            decoratorDrawerHandlers.Clear();
             var types = ToolboxDrawerModule.GetAllPossibleDecoratorDrawers();
             for (var i = 0; i < types.Count; i++)
             {
@@ -211,8 +210,7 @@ namespace Toolbox.Editor
 
         public void SetAllPossibleConditionDrawers()
         {
-            conditionDrawerHandlers?.Clear();
-
+            conditionDrawerHandlers.Clear();
             var types = ToolboxDrawerModule.GetAllPossibleConditionDrawers();
             for (var i = 0; i < types.Count; i++)
             {
@@ -222,8 +220,7 @@ namespace Toolbox.Editor
 
         public void SetAllPossibleSelfPropertyDrawers()
         {
-            selfPropertyDrawerHandlers?.Clear();
-
+            selfPropertyDrawerHandlers.Clear();
             var types = ToolboxDrawerModule.GetAllPossibleSelfPropertyDrawers();
             for (var i = 0; i < types.Count; i++)
             {
@@ -233,8 +230,7 @@ namespace Toolbox.Editor
 
         public void SetAllPossibleListPropertyDrawers()
         {
-            listPropertyDrawerHandlers?.Clear();
-
+            listPropertyDrawerHandlers.Clear();
             var types = ToolboxDrawerModule.GetAllPossibleListPropertyDrawers();
             for (var i = 0; i < types.Count; i++)
             {
@@ -244,8 +240,7 @@ namespace Toolbox.Editor
 
         public void SetAllPossibleTargetTypeDrawers()
         {
-            targetTypeDrawerHandlers?.Clear();
-
+            targetTypeDrawerHandlers.Clear();
             var types = ToolboxDrawerModule.GetAllPossibleTargetTypeDrawers();
             for (var i = 0; i < types.Count; i++)
             {

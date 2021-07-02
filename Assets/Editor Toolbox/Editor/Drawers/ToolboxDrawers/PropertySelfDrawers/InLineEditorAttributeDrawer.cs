@@ -124,7 +124,6 @@ namespace Toolbox.Editor.Drawers
                 }
 
                 InspectorUtility.SetIsEditorExpanded(editor, true);
-
                 //make useage of the created (cached) Editor instance
                 using (new FixedFieldsScope())
                 {

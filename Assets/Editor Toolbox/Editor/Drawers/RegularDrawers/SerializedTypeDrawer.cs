@@ -6,14 +6,14 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    [CustomPropertyDrawer(typeof(ClassTypeConstraintAttribute), true)]
+    [CustomPropertyDrawer(typeof(TypeConstraintAttribute), true)]
     [CustomPropertyDrawer(typeof(SerializedType))]
     public sealed class SerializedTypeDrawer : ToolboxNativePropertyDrawer
     {
         /// <summary>
-        /// Dictionary used to store all previously filtered types.
+        /// Dictionary used to store all previously filtered types matched to the targt attribute.
         /// </summary>
-        private readonly static Dictionary<Type, List<Type>> filteredTypes = new Dictionary<Type, List<Type>>();
+        private readonly static Dictionary<int, List<Type>> cachedfilteredTypes = new Dictionary<int, List<Type>>();
 
 
         /// <summary>
@@ -60,46 +60,73 @@ namespace Toolbox.Editor.Drawers
             return selectedType > 0 ? SerializedType.GetClassReference(types[selectedType - 1]) : string.Empty;
         }
 
-        private bool IsDefaultField(Attribute attribute)
-        {
-            return IsDefaultField(attribute as ClassTypeConstraintAttribute);
-        }
-
-        private bool IsDefaultField(ClassTypeConstraintAttribute attribute)
+        private bool IsDefaultField(TypeConstraintAttribute attribute)
         {
             return attribute == null || attribute.AssemblyType == null;
+        }
+
+        /// <summary>
+        /// Creates default constraint attribute if the given one is invalid.
+        /// </summary>
+        private TypeConstraintAttribute GetVerifiedAttribute(Attribute attribute)
+        {
+            return GetVerifiedAttribute(attribute as TypeConstraintAttribute);
+        }
+
+        /// <summary>
+        /// Creates default constraint attribute if the given one is invalid.
+        /// </summary>
+        private TypeConstraintAttribute GetVerifiedAttribute(TypeConstraintAttribute attribute)
+        {
+            return IsDefaultField(attribute) ? GetDefaultConstraint() : attribute;
+        }
+
+        /// <summary>
+        /// Returns default <see cref="TypeConstraintAttribute"/>.
+        /// </summary>
+        private TypeConstraintAttribute GetDefaultConstraint()
+        {
+            return new ClassExtendsAttribute()
+            {
+                AddTextSearchField = true
+            };
+        }
+
+        /// <summary>
+        /// Returns all <see cref="Type"/>s associated to the given constraint.
+        /// </summary>
+        private List<Type> GetFilteredTypes(TypeConstraintAttribute attribute)
+        {
+            var hashCode = attribute.GetHashCode();
+            if (cachedfilteredTypes.TryGetValue(hashCode, out var filteredTypes))
+            {
+                return filteredTypes;
+            }
+            else
+            {
+                return cachedfilteredTypes[hashCode] = attribute.GetFilteredTypes();
+            }
         }
 
 
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
-            return IsDefaultField(attribute)
-                ? EditorGUI.GetPropertyHeight(property)
-                : EditorStyles.popup.CalcHeight(GUIContent.none, 0);
+            return EditorStyles.popup.CalcHeight(GUIContent.none, 0);
         }
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            var attribute = Attribute;
-            //TODO: default drawer for fields without attributes
-            //validate serialized field
-            if (IsDefaultField(attribute))
-            {
-                EditorGUI.PropertyField(position, property, label, property.isExpanded);
-                return;
-            }
-
-            //TODO: cache different filter settings
-            //get stored types if possible or try to cache them
-            if (!filteredTypes.TryGetValue(attribute.AssemblyType, out var refTypes))
-            {
-                filteredTypes[attribute.AssemblyType] = refTypes = attribute.GetFilteredTypes();
-            }
+            var validAttribute = GetVerifiedAttribute(attribute);
 
             var referenceProperty = property.FindPropertyRelative("classReference");
             var referenceValue = referenceProperty.stringValue;
-            var referenceType = !string.IsNullOrEmpty(referenceValue) ? Type.GetType(referenceValue) : null;
-            var optionsCount = refTypes.Count + 1;
+            var referenceType = !string.IsNullOrEmpty(referenceValue)
+                ? Type.GetType(referenceValue)
+                : null;
+
+            var filteredTypes = GetFilteredTypes(validAttribute);
+
+            var optionsCount = filteredTypes.Count + 1;
             var options = new string[optionsCount];
             var index = 0;
 
@@ -107,8 +134,8 @@ namespace Toolbox.Editor.Drawers
             options[0] = "<None>";
             for (var i = 1; i < optionsCount; i++)
             {
-                var menuType = refTypes[i - 1];
-                var menuLabel = FormatGroupedTypeName(menuType, attribute.Grouping);
+                var menuType = filteredTypes[i - 1];
+                var menuLabel = FormatGroupedTypeName(menuType, validAttribute.Grouping);
                 if (menuType == referenceType)
                 {
                     index = i;
@@ -124,20 +151,20 @@ namespace Toolbox.Editor.Drawers
             position = EditorGUI.PrefixLabel(position, label);
 
             //try to draw associated popup
-            if (attribute.AddTextSearchField)
+            if (validAttribute.AddTextSearchField)
             {
                 var buttonLabel = new GUIContent(options[index]);
                 ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
                 {
                     referenceProperty.serializedObject.Update();
-                    referenceProperty.stringValue = GetClassReferencValue(i, refTypes);
+                    referenceProperty.stringValue = GetClassReferencValue(i, filteredTypes);
                     referenceProperty.serializedObject.ApplyModifiedProperties();
                 });
             }
             else
             {
                 index = EditorGUI.Popup(position, index, options);
-                referenceProperty.stringValue = GetClassReferencValue(index, refTypes);
+                referenceProperty.stringValue = GetClassReferencValue(index, filteredTypes);
             }
 
             EditorGUI.EndProperty();
@@ -149,8 +176,5 @@ namespace Toolbox.Editor.Drawers
         {
             return property.type == nameof(SerializedType);
         }
-
-
-        private ClassTypeConstraintAttribute Attribute => attribute as ClassTypeConstraintAttribute;
     }
 }

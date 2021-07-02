@@ -19,11 +19,8 @@ namespace UnityEngine
         }
 
         public bool HasHeader { get; set; } = true;
-
         public bool HasLabels { get; set; } = true;
-
         public bool Draggable { get; private set; }
-
         public bool FixedSize { get; private set; }
 
         public ListStyle ListStyle { get; private set; }
