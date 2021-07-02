@@ -37,12 +37,13 @@ namespace UnityEngine
     /// <para>Supported types: <see cref="SerializedType"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public abstract class ClassTypeConstraintAttribute : PropertyAttribute
+    public abstract class TypeConstraintAttribute : PropertyAttribute
     {
-        protected ClassTypeConstraintAttribute(Type assemblyType)
+        protected TypeConstraintAttribute(Type assemblyType)
         {
             AssemblyType = assemblyType;
         }
+
 
         /// <summary>
         /// Get all proper types from executing assembly.
@@ -84,7 +85,6 @@ namespace UnityEngine
             return types;
         }
 
-
         /// <summary>
         /// Determines whether the specified <see cref="Type"/> satisfies filter constraint.
         /// </summary>
@@ -98,17 +98,19 @@ namespace UnityEngine
             return (AllowAbstract || !type.IsAbstract) && (AllowObsolete || !IsDefined(type, typeof(ObsoleteAttribute)));
         }
 
+        ///<inheritdoc/>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var result = 0;
+                result = (result * 397) ^ AssemblyType.GetHashCode();
+                result = (result * 397) ^ AllowAbstract.GetHashCode();
+                result = (result * 397) ^ AllowObsolete.GetHashCode();
+                return result;
+            }
+        }
 
-        /// <summary>
-        /// Gets or sets whether abstract classes can be selected from drop-down.
-        /// Defaults to a value of <c>false</c> unless explicitly specified.
-        /// </summary>
-        public bool AllowAbstract { get; private set; }
-        /// <summary>
-        /// Gets or sets whether obsolete classes can be selected from drop-down.
-        /// Defaults to a value of <c>false</c> unless explicitly specified.
-        /// </summary>
-        public bool AllowObsolete { get; private set; }
 
         /// <summary>
         /// Associated type which will define what type we are looking for.
@@ -116,25 +118,36 @@ namespace UnityEngine
         public Type AssemblyType { get; private set; }
 
         /// <summary>
-        /// Gets or sets grouping of selectable classes.
-        /// Defaults to <see cref="ClassGrouping.None"/> unless explicitly specified.
+        /// Gets or sets whether abstract classes can be selected from drop-down.
+        /// Defaults to a value of <c>false</c> unless explicitly specified.
         /// </summary>
-        public ClassGrouping Grouping { get; set; } = ClassGrouping.None;
+        public bool AllowAbstract { get; set; }
+        /// <summary>
+        /// Gets or sets whether obsolete classes can be selected from drop-down.
+        /// Defaults to a value of <c>false</c> unless explicitly specified.
+        /// </summary>
+        public bool AllowObsolete { get; set; }
 
         /// <summary>
         /// Indicates if created popup menu should have an additional search field.
         /// </summary>
         public bool AddTextSearchField { get; set; }
+
+        /// <summary>
+        /// Gets or sets grouping of selectable classes.
+        /// Defaults to <see cref="ClassGrouping.None"/> unless explicitly specified.
+        /// </summary>
+        public ClassGrouping Grouping { get; set; } = ClassGrouping.None;
     }
 
     ///<inheritdoc/>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public sealed class ClassExtendsAttribute : ClassTypeConstraintAttribute
+    public sealed class ClassExtendsAttribute : TypeConstraintAttribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClassExtendsAttribute"/> class.
         /// </summary>
-        public ClassExtendsAttribute() : base(null)
+        public ClassExtendsAttribute() : base(typeof(object))
         { }
 
         /// <summary>
@@ -160,7 +173,7 @@ namespace UnityEngine
 
     ///<inheritdoc/>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public sealed class ClassImplementsAttribute : ClassTypeConstraintAttribute
+    public sealed class ClassImplementsAttribute : TypeConstraintAttribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClassImplementsAttribute"/> class.
