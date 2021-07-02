@@ -356,6 +356,17 @@ namespace Toolbox.Editor.Internal
 
         #endregion
 
+        /// <inheritdoc/>
+        public override void DoList()
+        {
+            //pack eveything in one, vertical scope
+            //it will keep sections always in order
+            using (new EditorGUILayout.VerticalScope())
+            {
+                base.DoList();
+            }
+        }
+
 
         /// <inheritdoc/>
         public override float ElementSpacing { get; set; } = 1.0f;
