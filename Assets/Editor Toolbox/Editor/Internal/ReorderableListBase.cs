@@ -483,6 +483,9 @@ namespace Toolbox.Editor.Internal
         }
 
 
+        /// <summary>
+        /// Draws whole list at once.
+        /// </summary>
         public virtual void DoList()
         {
             //NOTE: indentation will break some controls
