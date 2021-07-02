@@ -1,13 +1,15 @@
-## 0.8.9 [01.07.2021]
+## 0.8.11 [02.07.2021]
 
 ### Added:
 - IgnoreParentAttribute
 - ShowDisabledIfAttribute
 - HideDisabledIfAttribute
+- Default constraint to the SerializedType drawer
 
 ### Changed:
 - Fix assigning and clearing multiple drawers at once
 - Fix drawing default numeric types (Vector2, Vector3, etc.)
+- Fix drawing ReorderableList within horizontal groups
 
 ## 0.8.6 [13.06.2021]
 
