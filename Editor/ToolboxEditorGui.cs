@@ -433,26 +433,43 @@ namespace Toolbox.Editor
                     return;
                 }
 
-                var enterChildren = true;
-                //cache all needed property references
-                var targetProperty = property.Copy();
-                var endingProperty = property.GetEndProperty();
 
                 EditorGUI.indentLevel++;
-                //iterate over all children (but only 1 level depth)
-                while (targetProperty.NextVisible(enterChildren))
-                {
-                    if (SerializedProperty.EqualContents(targetProperty, endingProperty))
-                    {
-                        break;
-                    }
+                DrawPropertyChildren(property, drawElementAction);
+                EditorGUI.indentLevel--;
+            }
+        }
 
-                    enterChildren = false;
-                    //handle current property using Toolbox features
-                    drawElementAction(targetProperty.Copy());
+        /// <summary>
+        /// Draws property's children but only one level deep.
+        /// </summary>
+        public static void DrawPropertyChildren(SerializedProperty property)
+        {
+            DrawPropertyChildren(property, DrawToolboxProperty);
+        }
+
+        /// <summary>
+        /// Draws property's children but only one level deep.
+        /// </summary>
+        public static void DrawPropertyChildren(SerializedProperty property, Action<SerializedProperty> drawElementAction)
+        {
+            var enterChildren = true;
+            //cache all needed property references
+            var targetProperty = property.Copy();
+            var endingProperty = property.GetEndProperty();
+
+            //iterate over all children (but only 1 level depth)
+            while (targetProperty.NextVisible(enterChildren))
+            {
+                if (SerializedProperty.EqualContents(targetProperty, endingProperty))
+                {
+                    break;
                 }
 
-                EditorGUI.indentLevel--;
+                enterChildren = false;
+                var childProperty = targetProperty.Copy();
+                //handle current property using Toolbox features
+                drawElementAction(childProperty);
             }
         }
 
