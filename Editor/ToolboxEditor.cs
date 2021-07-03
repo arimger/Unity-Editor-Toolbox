@@ -88,7 +88,7 @@ namespace Toolbox.Editor
 
 
         public static event Action<Editor> OnBeginToolboxEditor;
-        public static event Action<Editor> OnBreakToolboxEditor; 
+        public static event Action<Editor> OnBreakToolboxEditor;
         public static event Action<Editor> OnCloseToolboxEditor;
     }
 }
