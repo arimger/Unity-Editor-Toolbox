@@ -1,7 +1,6 @@
 ﻿using System;
-
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Internal
 {
@@ -13,21 +12,13 @@ namespace Toolbox.Editor.Internal
     {
         private readonly SerializedProperty property;
 
-        public PropertyScope(SerializedProperty property, GUIContent label, Action<GUIContent> drawLabelAction = null)
+        public PropertyScope(SerializedProperty property, GUIContent label)
         {
             this.property = property;
-            using (var labelScope = new EditorGUILayout.VerticalScope())
-            {
-                label = EditorGUI.BeginProperty(labelScope.rect, label, property);
-                if (drawLabelAction != null)
-                {
-                    drawLabelAction(label);
-                }
-                else
-                {
-                    property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, label, true);
-                }
-            }
+            var rowHeight = EditorGUIUtility.singleLineHeight;
+            var rect = EditorGUILayout.GetControlRect(true, rowHeight);
+            label = EditorGUI.BeginProperty(rect, label, property);
+            property.isExpanded = EditorGUI.Foldout(rect, property.isExpanded, label, true);
         }
 
         public void Dispose()

@@ -89,7 +89,7 @@ namespace Toolbox.Editor
 
         internal static void BeginVertical()
         {
-            BeginVertical(new GUIStyle());
+            BeginVertical(GUIStyle.none);
         }
 
         internal static void BeginVertical(GUIStyle style, params GUILayoutOption[] options)
@@ -118,7 +118,7 @@ namespace Toolbox.Editor
 
         internal static void BeginHorizontal()
         {
-            BeginHorizontal(new GUIStyle());
+            BeginHorizontal(GUIStyle.none);
         }
 
         internal static void BeginHorizontal(GUIStyle style, params GUILayoutOption[] options)

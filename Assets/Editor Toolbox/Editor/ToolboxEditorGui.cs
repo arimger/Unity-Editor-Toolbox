@@ -433,7 +433,6 @@ namespace Toolbox.Editor
                     return;
                 }
 
-
                 EditorGUI.indentLevel++;
                 DrawPropertyChildren(property, drawElementAction);
                 EditorGUI.indentLevel--;
@@ -457,7 +456,6 @@ namespace Toolbox.Editor
             //cache all needed property references
             var targetProperty = property.Copy();
             var endingProperty = property.GetEndProperty();
-
             //iterate over all children (but only 1 level depth)
             while (targetProperty.NextVisible(enterChildren))
             {

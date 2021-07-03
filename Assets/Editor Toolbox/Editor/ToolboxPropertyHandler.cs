@@ -313,7 +313,7 @@ namespace Toolbox.Editor
         /// </summary>
         private void BeginVerticalLayoutBody()
         {
-            EditorGUILayout.BeginVertical(ToolboxStyles.ZeroMargins);
+            EditorGUILayout.BeginVertical();
         }
 
         private void CloseVerticalLayoutBody()
