@@ -7,7 +7,10 @@ namespace Toolbox.Editor.Drawers
     {
         static BeginHorizontalGroupAttributeDrawer()
         {
-            storage = new ControlDataStorage<Vector2>((i, defaultValue) => defaultValue);
+            storage = new ControlDataStorage<Vector2>((id, defaultValue) =>
+            {
+                return defaultValue;
+            });
         }
 
         /// <summary>
@@ -16,25 +19,28 @@ namespace Toolbox.Editor.Drawers
         private static readonly ControlDataStorage<Vector2> storage;
 
 
-        private void HandleScrollView()
+        private void HandleScrollView(float fixedHeight)
         {
             var controlId = storage.GetControlId();
             var oldScroll = storage.ReturnItem(controlId, Vector2.zero);
-            var newScroll = EditorGUILayout.BeginScrollView(oldScroll);
+            var newScroll = fixedHeight > 0.0f
+                ? EditorGUILayout.BeginScrollView(oldScroll, GUILayout.Height(fixedHeight))
+                : EditorGUILayout.BeginScrollView(oldScroll);
             storage.AppendItem(controlId, newScroll);
         }
 
-        private void AdjustLeftMargin()
+        private void ApplyIndentLevel()
         {
-            EditorGUILayout.Space(Style.extraLeftPadding);
+            GUILayout.Space(Style.extraIndentLevel);
         }
 
 
         protected override void OnGuiBeginSafe(BeginHorizontalGroupAttribute attribute)
         {
-            var width = EditorGUIUtility.currentViewWidth;
-            EditorGUIUtility.labelWidth = width * attribute.LabelToWidthRatio;
-            EditorGUIUtility.fieldWidth = width * attribute.FieldToWidthRatio;
+            var fixedWidth = EditorGUIUtility.currentViewWidth;
+            var fixedHeight = attribute.Height;
+            EditorGUIUtility.labelWidth = fixedWidth * attribute.LabelToWidthRatio;
+            EditorGUIUtility.fieldWidth = fixedWidth * attribute.FieldToWidthRatio;
 
             ToolboxLayoutHelper.BeginVertical(Style.groupBackgroundStyle);
             if (attribute.HasLabel)
@@ -42,18 +48,18 @@ namespace Toolbox.Editor.Drawers
                 GUILayout.Label(attribute.Label, EditorStyles.boldLabel);
             }
 
-            HandleScrollView();
+            HandleScrollView(fixedHeight);
             ToolboxLayoutHelper.BeginHorizontal();
-            AdjustLeftMargin();
+            ApplyIndentLevel();
         }
 
 
         private static class Style
         {
             /// <summary>
-            /// Additional padding applied to keep foldout-based labels within the group.
+            /// Additional indent applied to keep foldout-based labels within the group.
             /// </summary>
-            internal static readonly float extraLeftPadding = 8.0f;
+            internal static readonly float extraIndentLevel = 8.0f;
 
             internal static readonly GUIStyle groupBackgroundStyle;
 
