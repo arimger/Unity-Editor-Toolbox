@@ -12,7 +12,7 @@ namespace Toolbox.Editor.Drawers
     {
         static SerializedDictionaryDrawer()
         {
-            storage = new DrawerDataStorage<ReorderableListBase, CreationArgs>(false, (p, a) =>
+            storage = new PropertyDataStorage<ReorderableListBase, CreationArgs>(false, (p, a) =>
             {
                 var pairsProperty = a.pairsProperty;
                 var errorProperty = a.errorProperty;
@@ -22,7 +22,7 @@ namespace Toolbox.Editor.Drawers
                 {
                     //cache preprocessed label to get prefab related functions
                     var label = EditorGUI.BeginProperty(rect, null, p);
-                    //create additional warning message if there is key collision
+                    //create additional warning message if there is a collision
                     if (errorProperty.boolValue)
                     {
                         label.image = EditorGuiUtility.GetHelpIcon(MessageType.Warning);
@@ -58,7 +58,7 @@ namespace Toolbox.Editor.Drawers
             });
         }
 
-        private static readonly DrawerDataStorage<ReorderableListBase, CreationArgs> storage;
+        private static readonly PropertyDataStorage<ReorderableListBase, CreationArgs> storage;
 
 
         public override void OnGui(SerializedProperty property, GUIContent label)

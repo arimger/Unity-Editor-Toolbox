@@ -12,7 +12,7 @@ namespace Toolbox.Editor.Drawers
     {
         static ReorderableListExposedAttributeDrawer()
         {
-            storage = new DrawerDataStorage<ReorderableListBase, ReorderableListExposedAttribute>(false, (p, a) =>
+            storage = new PropertyDataStorage<ReorderableListBase, ReorderableListExposedAttribute>(false, (p, a) =>
             {
                 //create list in the standard way
                 var list = ToolboxEditorGui.CreateList(p,
@@ -28,7 +28,7 @@ namespace Toolbox.Editor.Drawers
             });
         }
 
-        private static readonly DrawerDataStorage<ReorderableListBase, ReorderableListExposedAttribute> storage;
+        private static readonly PropertyDataStorage<ReorderableListBase, ReorderableListExposedAttribute> storage;
 
 
         private static void ConnectCallbacks(ReorderableListBase list, ReorderableListExposedAttribute attribute)
@@ -47,7 +47,6 @@ namespace Toolbox.Editor.Drawers
             {
                 return methodInfo.Invoke(listTarget.targetObject, null);
             };
-            //TODO: add more useful callbacks to expose
         }
 
         private static MethodInfo FindMethod(SerializedObject target, string methodName, Type expectedReturnType = null)

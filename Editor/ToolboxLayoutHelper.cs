@@ -87,21 +87,21 @@ namespace Toolbox.Editor
         }
 
 
-        internal static void BeginVertical()
+        internal static Rect BeginVertical()
         {
-            BeginVertical(GUIStyle.none);
+            return BeginVertical(GUIStyle.none);
         }
 
-        internal static void BeginVertical(GUIStyle style, params GUILayoutOption[] options)
+        internal static Rect BeginVertical(GUIStyle style, params GUILayoutOption[] options)
         {
             if (!inEditorLayout)
             {
                 ToolboxEditorLog.LogWarning("Begin vertical layout group action can be executed only within the Toolbox Editor.");
-                return;
+                return Rect.zero;
             }
 
             vLayoutClips++;
-            EditorGUILayout.BeginVertical(style, options);
+            return EditorGUILayout.BeginVertical(style, options);
         }
 
         internal static void CloseVertical()
@@ -116,27 +116,27 @@ namespace Toolbox.Editor
             EditorGUILayout.EndVertical();
         }
 
-        internal static void BeginHorizontal()
+        internal static Rect BeginHorizontal()
         {
-            BeginHorizontal(GUIStyle.none);
+            return BeginHorizontal(GUIStyle.none);
         }
 
-        internal static void BeginHorizontal(GUIStyle style, params GUILayoutOption[] options)
+        internal static Rect BeginHorizontal(GUIStyle style, params GUILayoutOption[] options)
         {
             if (!inEditorLayout)
             {
                 ToolboxEditorLog.LogWarning("Begin horizontal layout group action can be executed only within the Toolbox Editor.");
-                return;
+                return Rect.zero;
             }
 
             if (hLayoutClips > 0)
             {
                 ToolboxEditorLog.LogWarning("Nested horizontal layout groups are not supported.");
-                return;
+                return Rect.zero;
             }
 
             hLayoutClips++;
-            EditorGUILayout.BeginHorizontal(style, options);
+            return EditorGUILayout.BeginHorizontal(style, options);
         }
 
         internal static void CloseHorizontal()

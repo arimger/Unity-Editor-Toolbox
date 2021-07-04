@@ -16,9 +16,9 @@ namespace Toolbox.Editor.Internal
         {
             this.property = property;
             var rowHeight = EditorGUIUtility.singleLineHeight;
-            var rect = EditorGUILayout.GetControlRect(true, rowHeight);
-            label = EditorGUI.BeginProperty(rect, label, property);
-            property.isExpanded = EditorGUI.Foldout(rect, property.isExpanded, label, true);
+            var labelRect = EditorGUILayout.GetControlRect(true, rowHeight);
+            label = EditorGUI.BeginProperty(labelRect, label, property);
+            property.isExpanded = EditorGUI.Foldout(labelRect, property.isExpanded, label, true);
         }
 
         public void Dispose()
