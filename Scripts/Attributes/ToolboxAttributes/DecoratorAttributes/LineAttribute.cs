@@ -12,11 +12,17 @@ namespace UnityEngine
         {
             Thickness = Math.Max(thickness, 0);
             Padding = padding;
+            IsHorizontal = true;
         }
 
         public float Thickness { get; private set; }
 
         public float Padding { get; private set; }
+
+        /// <summary>
+        /// Indicates if the line should be horizontal, otherwise will be drawn vertically.
+        /// </summary>
+        public bool IsHorizontal { get; set; }
 
         /// <summary>
         /// Indicates if drawer should apply additional indent to the line's width.
@@ -33,17 +39,9 @@ namespace UnityEngine
         /// </summary>
         public Color GuiColor
         {
-            get
-            {
-                if (ColorUtility.TryParseHtmlString(HexColor, out var color))
-                {
-                    return color;
-                }
-                else
-                {
-                    return new Color(0.3f, 0.3f, 0.3f);
-                }
-            }
+            get => ColorUtility.TryParseHtmlString(HexColor, out var color)
+                ? color
+                : new Color(0.3f, 0.3f, 0.3f);
         }
     }
 }
