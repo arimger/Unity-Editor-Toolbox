@@ -9,13 +9,13 @@ namespace Toolbox.Editor.Drawers
     {
         static ScrollableItemsAttributeDrawer()
         {
-            storage = new DrawerDataStorage<Vector2, ScrollableItemsAttribute>(true, (p, a) =>
+            storage = new PropertyDataStorage<Vector2, ScrollableItemsAttribute>(true, (p, a) =>
             {
                 return new Vector2(a.DefaultMinIndex, a.DefaultMaxIndex);
             });
         }
 
-        private static readonly DrawerDataStorage<Vector2, ScrollableItemsAttribute> storage;
+        private static readonly PropertyDataStorage<Vector2, ScrollableItemsAttribute> storage;
 
 
         private void DrawSettingsBody(SerializedProperty property, ScrollableItemsAttribute attribute, out int size, out Vector2 indexRange)
@@ -34,7 +34,7 @@ namespace Toolbox.Editor.Drawers
             //fix values to the integral part
             indexRange.x = Mathf.Max(Mathf.RoundToInt(indexRange.x), 0);
             indexRange.y = Mathf.Min(Mathf.RoundToInt(indexRange.y), size);
-            storage.ApplyItem(property, indexRange);
+            storage.AppendItem(property, indexRange);
         }
 
         private void DrawElementsBody(SerializedProperty property, ScrollableItemsAttribute attribute, int size, Vector2 indexRange)
