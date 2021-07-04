@@ -6,7 +6,11 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(LineAttribute attribute)
         {
-            ToolboxEditorGui.DrawLine(attribute.Thickness, attribute.Padding, attribute.GuiColor, attribute.ApplyIndent);
+            ToolboxEditorGui.DrawLine(attribute.Thickness,
+                                      attribute.Padding,
+                                      attribute.GuiColor,
+                                      attribute.IsHorizontal,
+                                      attribute.ApplyIndent);
         }
     }
 }
