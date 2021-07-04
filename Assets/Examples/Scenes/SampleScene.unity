@@ -99,7 +99,7 @@ LightmapSettings:
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: 4f45668bfc38b4c4bb6229eef4382cbb,
     type: 2}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: ccb01454973bb9a40bf3814633c8db30,
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 8aebe3ea7163bc84194ae1d81c850abb,
     type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -487,15 +487,23 @@ MonoBehaviour:
   - {fileID: 0}
   var36: 1
   dictionary:
-    pairs:
-    - key: 5
-      value: {fileID: 977748987}
-    - key: 2
-      value: {fileID: 534669902}
-    - key: 3
-      value: {fileID: 2037155952}
+    pairs: []
     error: 0
-  ints: 
+  ints: 01000000080000000c00000010000000
+  q: {x: 0, y: 0, z: 0, w: 0}
+  gameObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
+  - {fileID: 0}
+  floats:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
 --- !u!4 &661896459
 Transform:
   m_ObjectHideFlags: 2
@@ -630,10 +638,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c96bc1945c12e5246b1faac636a63516, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aa:
-    classReference: 
-  aaa:
-    classReference: UnityEngine.AvatarMask, UnityEngine.AnimationModule
   var1: 82
   targetTag: Untagged
   progressBar: 25.4

@@ -1,3 +1,12 @@
+## 0.8.13 [04.07.2021]
+
+### Added:
+- Begin/EndHorizontalGroupAttribute
+
+### Changed:
+- Fix overall layouting issues
+- Fix IgnoreParentAttribute issues
+
 ## 0.8.11 [02.07.2021]
 
 ### Added:

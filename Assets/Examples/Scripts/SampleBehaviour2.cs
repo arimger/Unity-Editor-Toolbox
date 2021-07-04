@@ -163,4 +163,14 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [IgnoreParent]
     public Quaternion q;
+
+    [Label("15", skinStyle: SkinStyle.Box)]
+
+    [BeginHorizontalGroup(label: "Horizontal Group")]
+    [ReorderableList, InLineEditor]
+    public GameObject[] gameObjects;
+    [SpaceArea]
+    [EndHorizontalGroup]
+    [ReorderableList]
+    public float[] floats;
 }
