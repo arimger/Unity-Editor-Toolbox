@@ -11,7 +11,7 @@ namespace Toolbox.Editor.Drawers
     {
         static InLineEditorAttributeDrawer()
         {
-            storage = new DrawerDataStorage<Editor, InLineEditorAttribute>(false,
+            storage = new PropertyDataStorage<Editor, InLineEditorAttribute>(false,
                 (p, a) =>
                 {
                     var value = p.objectReferenceValue;
@@ -36,7 +36,7 @@ namespace Toolbox.Editor.Drawers
                 });
         }
 
-        private static readonly DrawerDataStorage<Editor, InLineEditorAttribute> storage;
+        private static readonly PropertyDataStorage<Editor, InLineEditorAttribute> storage;
 
 
         private void DrawEditor(Editor editor, InLineEditorAttribute attribute)
@@ -110,7 +110,9 @@ namespace Toolbox.Editor.Drawers
                 }
 
                 property.isExpanded = GUILayout.Toggle(property.isExpanded, 
-                    Style.foldoutContent, Style.foldoutStyle, Style.foldoutOptions);
+                    Style.foldoutContent, 
+                    Style.foldoutStyle, 
+                    Style.foldoutOptions);
             }
 
             //create additional Editor for the associated reference 
@@ -120,7 +122,7 @@ namespace Toolbox.Editor.Drawers
                 if (editor.target != property.objectReferenceValue)
                 {
                     //validate target value change (e.g. list reorder)
-                    editor = storage.ApplyItem(property, attribute);
+                    editor = storage.CreateItem(property, attribute);
                 }
 
                 InspectorUtility.SetIsEditorExpanded(editor, true);

@@ -268,12 +268,6 @@ namespace Toolbox.Editor
             }
             else
             {
-                if (hasToolboxPropertyDrawer)
-                {
-                    //TODO: warning
-                    //NOTE: since property has a custom drawer it will override any Toolbox-related one
-                }
-
                 OnGuiDefault(label);
             }
         }
@@ -314,6 +308,19 @@ namespace Toolbox.Editor
             return ToolboxDrawerModule.GetConditionDrawer(conditionAttribute)?.OnGuiValidate(property, conditionAttribute) ?? PropertyCondition.Valid;
         }
 
+        /// <summary>
+        /// Begins vertical group to "pack" all property-related controls into one body.
+        /// </summary>
+        private void BeginVerticalLayoutBody()
+        {
+            EditorGUILayout.BeginVertical();
+        }
+
+        private void CloseVerticalLayoutBody()
+        {
+            EditorGUILayout.EndVertical();
+        }
+
 
         /// <summary>
         /// Draw property using built-in layout system and cached <see cref="ToolboxAttributeDrawer"/>s.
@@ -343,7 +350,9 @@ namespace Toolbox.Editor
             {
                 using (new EditorGUI.DisabledScope(disable))
                 {
+                    BeginVerticalLayoutBody();
                     DrawProperty(label);
+                    CloseVerticalLayoutBody();
                 }
             }
 

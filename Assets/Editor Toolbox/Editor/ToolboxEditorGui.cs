@@ -12,6 +12,14 @@ namespace Toolbox.Editor
     /// </summary>
     public static partial class ToolboxEditorGui
     {
+        private static Rect GetLineRect(Rect rect, float thickness, float padding, bool horizontal)
+        {
+            return horizontal
+                ? new Rect(rect.x, rect.y + padding / 2, rect.width, thickness)
+                : new Rect(rect.x + padding / 2, rect.y, thickness, rect.height);
+        }
+
+
         /// <summary>
         /// Draws horizontal line.
         /// Uses built-in layouting system.
@@ -27,22 +35,34 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawLine(float thickness, float padding, Color color)
         {
-            DrawLine(thickness, padding, color, false);
+            DrawLine(thickness, padding, color, true);
         }
 
         /// <summary>
         /// Draws horizontal line.
         /// Uses built-in layouting system.
         /// </summary>
-        public static void DrawLine(float thickness, float padding, Color color, bool applyIndent)
+        public static void DrawLine(float thickness, float padding, Color color, bool horizontal)
         {
-            var rect = EditorGUILayout.GetControlRect(GUILayout.Height(padding + thickness));
+            DrawLine(thickness, padding, color, horizontal, false);
+        }
+
+        /// <summary>
+        /// Draws horizontal line.
+        /// Uses built-in layouting system.
+        /// </summary>
+        public static void DrawLine(float thickness, float padding, Color color, bool horizontal, bool applyIndent)
+        {
+            var area = padding + thickness;
+            var rect = horizontal
+                ? EditorGUILayout.GetControlRect(GUILayout.Height(area), GUILayout.ExpandWidth(true))
+                : EditorGUILayout.GetControlRect(GUILayout.Width(area), GUILayout.ExpandHeight(true));
             if (applyIndent)
             {
                 rect = EditorGUI.IndentedRect(rect);
             }
 
-            DrawLine(rect, thickness, padding, color);
+            DrawLine(rect, thickness, padding, color, horizontal);
         }
 
         /// <summary>
@@ -50,16 +70,15 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawLine(Rect rect, float thickness = 0.75f, float padding = 6.0f)
         {
-            DrawLine(rect, thickness, padding, new Color(0.3f, 0.3f, 0.3f));
+            DrawLine(rect, thickness, padding, new Color(0.3f, 0.3f, 0.3f), true);
         }
 
         /// <summary>
         /// Draws horizontal line.
         /// </summary>
-        public static void DrawLine(Rect rect, float thickness, float padding, Color color)
+        public static void DrawLine(Rect rect, float thickness, float padding, Color color, bool horizontal)
         {
-            rect = new Rect(rect.x, rect.y + padding / 2, rect.width, thickness);
-            EditorGUI.DrawRect(rect, color);
+            EditorGUI.DrawRect(GetLineRect(rect, thickness, padding, horizontal), color);
         }
 
         /// <summary>
@@ -433,26 +452,41 @@ namespace Toolbox.Editor
                     return;
                 }
 
-                var enterChildren = true;
-                //cache all needed property references
-                var targetProperty = property.Copy();
-                var endingProperty = property.GetEndProperty();
-
                 EditorGUI.indentLevel++;
-                //iterate over all children (but only 1 level depth)
-                while (targetProperty.NextVisible(enterChildren))
-                {
-                    if (SerializedProperty.EqualContents(targetProperty, endingProperty))
-                    {
-                        break;
-                    }
+                DrawPropertyChildren(property, drawElementAction);
+                EditorGUI.indentLevel--;
+            }
+        }
 
-                    enterChildren = false;
-                    //handle current property using Toolbox features
-                    drawElementAction(targetProperty.Copy());
+        /// <summary>
+        /// Draws property's children but only one level deep.
+        /// </summary>
+        public static void DrawPropertyChildren(SerializedProperty property)
+        {
+            DrawPropertyChildren(property, DrawToolboxProperty);
+        }
+
+        /// <summary>
+        /// Draws property's children but only one level deep.
+        /// </summary>
+        public static void DrawPropertyChildren(SerializedProperty property, Action<SerializedProperty> drawElementAction)
+        {
+            var enterChildren = true;
+            //cache all needed property references
+            var targetProperty = property.Copy();
+            var endingProperty = property.GetEndProperty();
+            //iterate over all children (but only 1 level depth)
+            while (targetProperty.NextVisible(enterChildren))
+            {
+                if (SerializedProperty.EqualContents(targetProperty, endingProperty))
+                {
+                    break;
                 }
 
-                EditorGUI.indentLevel--;
+                enterChildren = false;
+                var childProperty = targetProperty.Copy();
+                //handle current property using Toolbox features
+                drawElementAction(childProperty);
             }
         }
 

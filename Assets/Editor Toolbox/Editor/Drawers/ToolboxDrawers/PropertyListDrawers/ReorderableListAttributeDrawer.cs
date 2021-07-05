@@ -9,7 +9,7 @@ namespace Toolbox.Editor.Drawers
     {
         static ReorderableListAttributeDrawer()
         {
-            storage = new DrawerDataStorage<ReorderableListBase, ReorderableListAttribute>(false, (p, a) =>
+            storage = new PropertyDataStorage<ReorderableListBase, ReorderableListAttribute>(false, (p, a) =>
             {
                 return ToolboxEditorGui.CreateList(p,
                     a.ListStyle,
@@ -21,7 +21,7 @@ namespace Toolbox.Editor.Drawers
             });
         }
 
-        private static readonly DrawerDataStorage<ReorderableListBase, ReorderableListAttribute> storage;
+        private static readonly PropertyDataStorage<ReorderableListBase, ReorderableListAttribute> storage;
 
 
         /// <summary>

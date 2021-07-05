@@ -107,7 +107,7 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [Label("7", skinStyle: SkinStyle.Box)]
 
-    [BeginHorizontal]
+    [BeginHorizontal(labelToWidthRatio: 0.1f)]
     public int var29;
     public int var30;
     //NOTE: custom sample created within the Examples
@@ -158,4 +158,19 @@ public class SampleBehaviour2 : MonoBehaviour
     {
         return ints.Length * Random.Range(1, 5);
     }
+
+    [Label("14", skinStyle: SkinStyle.Box)]
+
+    [IgnoreParent]
+    public Quaternion q;
+
+    [Label("15", skinStyle: SkinStyle.Box)]
+
+    [BeginHorizontalGroup(label: "Horizontal Group")]
+    [ReorderableList, InLineEditor]
+    public GameObject[] gameObjects;
+    [SpaceArea]
+    [EndHorizontalGroup]
+    [ReorderableList]
+    public float[] floats;
 }

@@ -268,11 +268,18 @@ public int var3;
 public int var4;
 ```
 ```csharp
-[BeginHorizontal]
+[BeginHorizontal(labelToWidthRatio: 0.1f)]
 public int var1;
 public int var2;
 [EndHorizontal]
 public int var3;
+
+[BeginHorizontalGroup(label: "Horizontal Group")]
+public GameObject gameObject;
+[SpaceArea]
+[EndHorizontalGroup]
+[ReorderableList]
+public int[] ints;
 ```
 ```csharp
 [BeginIndent]
@@ -315,6 +322,8 @@ public int var1;
 public int var1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/horizontal.png)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/imagearea.png)
 
