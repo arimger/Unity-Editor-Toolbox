@@ -202,4 +202,11 @@ public class SampleBehaviour1 : MonoBehaviour
     [Label("26", skinStyle: SkinStyle.Box)]
 
     public SerializedScene scene;
+
+    [Label("27", skinStyle: SkinStyle.Box)]
+    
+    [FormattedNumber]
+    public int largeNumber;
+    [FormattedNumber("c")]
+    public float currency;
 }
