@@ -206,7 +206,7 @@ public class SampleBehaviour1 : MonoBehaviour
     [Label("27", skinStyle: SkinStyle.Box)]
     
     [FormattedNumber]
-    public int largeNumber;
+    public int bigNumber;
     [FormattedNumber("c")]
     public float currency;
 }

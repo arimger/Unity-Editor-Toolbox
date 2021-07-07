@@ -699,7 +699,7 @@ MonoBehaviour:
   scene:
     sceneReference: {fileID: 102900000, guid: f11034f4657f51a47aac14f26410c500, type: 3}
     buildIndex: 0
-  largeNumber: 5167000
+  bigNumber: 12345678
   currency: 20.41
 --- !u!4 &959025299
 Transform:
