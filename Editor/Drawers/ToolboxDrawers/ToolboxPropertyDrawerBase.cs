@@ -11,7 +11,6 @@ namespace Toolbox.Editor.Drawers
 
         public abstract void OnGui(SerializedProperty property, GUIContent label, ToolboxAttribute attribute);
 
-
         public virtual void OnGuiReload()
         { }
     }
