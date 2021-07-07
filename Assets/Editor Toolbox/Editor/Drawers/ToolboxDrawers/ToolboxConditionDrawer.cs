@@ -21,7 +21,6 @@ namespace Toolbox.Editor.Drawers
             return OnGuiValidate(property, attribute as T);         
         }
 
-
         public PropertyCondition OnGuiValidate(SerializedProperty property, T attribute)
         {
             if (attribute == null)

@@ -26,7 +26,6 @@ namespace Toolbox.Editor.Drawers
             OnGui(property, label, attribute as T);
         }
 
-
         public void OnGui(SerializedProperty property, GUIContent label, T attribute)
         {
             if (attribute == null)
@@ -37,15 +36,14 @@ namespace Toolbox.Editor.Drawers
             if (IsPropertyValid(property))
             {
                 OnGuiSafe(property, label, attribute);
+                return;
             }
-            else
-            {
-                var warningContent = new GUIContent(property.displayName + " has invalid property drawer");
-                //create additional warning log to the console window
-                ToolboxEditorLog.WrongAttributeUsageWarning(attribute, property);
-                //create additional warning label based on the property name
-                ToolboxEditorGui.DrawEmptyProperty(property, warningContent);
-            }
+
+            var warningContent = new GUIContent(string.Format("{0} has invalid property drawer", property.displayName));
+            //create additional warning log to the Console window
+            ToolboxEditorLog.WrongAttributeUsageWarning(attribute, property);
+            //create additional warning label based on the property name
+            ToolboxEditorGui.DrawEmptyProperty(property, warningContent);
         }
     }
 }
