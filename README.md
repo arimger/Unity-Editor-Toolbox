@@ -243,6 +243,15 @@ public SampleClass1 var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/lefttoggle.png)
 
+#### FormattedNumberAttribute
+
+```csharp
+[FormattedNumber]
+public int bigNumber;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/formattednumber.png)
+
 ---
 
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
@@ -533,7 +542,7 @@ public void Usage()
 	dictionary.Add(3, new GameObject("TestObject"));
 	dictionary.ContainsKey(2);
 	//etc. like standard System.Collections.Generic.Dictionary<>
-	var nativeDictionary = dictionary.BuiltNativeDictionary();
+	var nativeDictionary = dictionary.BuildNativeDictionary();
 }
 #endif
 ```
