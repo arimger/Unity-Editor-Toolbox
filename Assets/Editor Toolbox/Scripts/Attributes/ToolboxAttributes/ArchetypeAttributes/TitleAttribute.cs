@@ -9,7 +9,7 @@ namespace UnityEngine
     /// Standardized header, it's composition of the <see cref="LabelAttribute"/> and the <see cref="LineAttribute"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
-    public class TitleAttribute : ToolboxCompositionAttribute
+    public class TitleAttribute : ToolboxArchetypeAttribute
     {
         public TitleAttribute(string label)
         {

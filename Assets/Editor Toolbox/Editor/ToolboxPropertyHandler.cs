@@ -176,7 +176,7 @@ namespace Toolbox.Editor
                 case ToolboxConditionAttribute a:
                     TryAssignConditionAttribute(a);
                     break;
-                case ToolboxCompositionAttribute a:
+                case ToolboxArchetypeAttribute a:
                     var composition = a.Process();
                     foreach (var newAttribute in composition)
                     {
