@@ -7,7 +7,7 @@ namespace Toolbox.Editor
 
     /// <summary>
     /// Helper class to handle and validate creation of <see cref="GUILayout"/> and <see cref="EditorGUILayout"/> groups.
-    /// Remark: can be used only within the Toolbox Editors.
+    /// <para>Remark: can be used only within the Toolbox Editors.</para>
     /// </summary>
     [InitializeOnLoad]
     internal static class ToolboxLayoutHelper
