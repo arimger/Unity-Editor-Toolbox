@@ -414,14 +414,14 @@ public GameObject[] largeArray = new GameObject[19];
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scrollableitems.png)
 
-#### ToolboxCompositionAttributes
+#### ToolboxArchetypeAttributes
 
 Using this attribute you are able to implement custom patterns of frequently grouped **ToolboxAttributes**.
 
 
 ```csharp
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
-public class TitleAttribute : ToolboxCompositionAttribute
+public class TitleAttribute : ToolboxArchetypeAttribute
 {
 	public TitleAttribute(string label)
 	{
