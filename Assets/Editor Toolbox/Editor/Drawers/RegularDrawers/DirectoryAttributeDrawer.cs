@@ -39,14 +39,13 @@ namespace Toolbox.Editor.Drawers
             }
 
             position.height = Style.rowHeight;
-            position.width -= Style.directoryButtonWidth + Style.spacing;
-            //draw the default string property field
+            position.xMax -= Style.pickerWidth + Style.spacing;
             EditorGUI.PropertyField(position, property, label);
-            position.x = position.xMax + Style.spacing;
-            position.width = Style.directoryButtonWidth;
+            position.xMin += position.width;
+            position.xMax += Style.pickerWidth + Style.spacing;
 
             //create additional pick directory button
-            if (GUI.Button(position, Style.directoryButtonContent, EditorStyles.miniButton))
+            if (GUI.Button(position, Style.pickerContent, EditorStyles.miniButton))
             {
                 var relativePath = Attribute.RelativePath;
                 var baseDataPath = Application.dataPath;
@@ -94,13 +93,13 @@ namespace Toolbox.Editor.Drawers
             internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.5f;
 #endif
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
-            internal static readonly float directoryButtonWidth = 30.0f;
+            internal static readonly float pickerWidth = 30.0f;
 
-            internal static readonly GUIContent directoryButtonContent;
+            internal static readonly GUIContent pickerContent;
 
             static Style()
             {
-                directoryButtonContent = new GUIContent(EditorGUIUtility.FindTexture("Folder Icon"), "Pick directory");
+                pickerContent = new GUIContent(EditorGUIUtility.FindTexture("Folder Icon"), "Pick directory");
             }
         }
     }

@@ -8,8 +8,6 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(FolderData))]
     internal class FolderDataDrawer : PropertyDrawer
     {
-        private const string selectorEventName = "ObjectSelectorUpdated";
-
         private const int largeIconPickedId = 1001;
         private const int smallIconPickedId = 1002;
 
@@ -81,15 +79,15 @@ namespace Toolbox.Editor.Drawers
                 var pathProperty = property.FindPropertyRelative("path");
                 var tooltipProperty = property.FindPropertyRelative("tooltip");
 
-                //check if type is path-based or name-based
-                height += typeProperty.intValue == 0
-                    ? EditorGUI.GetPropertyHeight(pathProperty)
-                    : EditorGUI.GetPropertyHeight(nameProperty);
                 height += EditorGUI.GetPropertyHeight(tooltipProperty);
                 height += Style.height;
                 height += Style.height;
                 height += Style.largeFolderHeight;
                 height += Style.spacing * 4;
+                //check if type is path-based or name-based
+                height += typeProperty.intValue == 0
+                    ? EditorGUI.GetPropertyHeight(pathProperty)
+                    : EditorGUI.GetPropertyHeight(nameProperty);
                 return height;
             }
 
@@ -210,7 +208,7 @@ namespace Toolbox.Editor.Drawers
             }
 
             //catch object selection event and assign it to proper property
-            if (Event.current.commandName == selectorEventName)
+            if (Event.current.commandName == "ObjectSelectorUpdated")
             {
                 //get proper action id by removing unique property hash code
                 var rawPickId = EditorGUIUtility.GetObjectPickerControlID();
