@@ -9,6 +9,7 @@ namespace Toolbox.Editor
     {
         private readonly static Assembly editorAssembly = typeof(UnityEditor.Editor).Assembly;
 
+
         /// <summary>
         /// Returns <see cref="MethodInfo"/> of the searched method within the Editor <see cref="Assembly"/>.
         /// </summary>

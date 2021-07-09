@@ -40,7 +40,6 @@ namespace Toolbox.Editor
             };
         }
 
-        private static Editor validationEditor;
         private static Editor lastCachedEditor;
 
 
