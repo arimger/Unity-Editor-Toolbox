@@ -29,32 +29,18 @@ namespace Toolbox.Editor.Drawers
             return false;
         }
 
-
-        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        private Rect DrawWarningMessage(Rect position)
         {
-            return SceneExists(property.stringValue)
-                ? base.GetPropertyHeightSafe(property, label)
-                : base.GetPropertyHeightSafe(property, label) + Style.boxHeight + Style.spacing * 2;
+            position = new Rect(position.x,
+                                position.y,
+                                position.width, Style.boxHeight);
+            EditorGUI.HelpBox(position, "Scene does not exist. " +
+                                        "Check available Scenes in the Build options.", MessageType.Warning);
+            return position;
         }
 
-        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
+        private void HandleTargetPicker(Rect position, SerializedProperty property)
         {
-            if (!SceneExists(property.stringValue))
-            {
-                var helpBoxRect = new Rect(position.x,
-                                           position.y,
-                                           position.width, Style.boxHeight);
-                EditorGUI.HelpBox(helpBoxRect, "Scene does not exist. " +
-                                               "Check available Scenes in the Build options.", MessageType.Warning);
-                position.yMin += Style.boxHeight + Style.spacing * 2;
-            }
-
-            position.height = Style.rowHeight;
-            position.xMax -= Style.pickerWidth + Style.spacing;
-            EditorGUI.PropertyField(position, property, label);
-            position.xMin += position.width;
-            position.xMax += Style.pickerWidth + Style.spacing;
-
             var controlId = GUIUtility.GetControlID(FocusType.Keyboard);
             if (GUI.Button(position, Style.pickerButtonContent, EditorStyles.miniButton))
             {
@@ -75,6 +61,31 @@ namespace Toolbox.Editor.Drawers
                     }
                 }
             }
+        }
+
+
+        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
+        {
+            return SceneExists(property.stringValue)
+                ? base.GetPropertyHeightSafe(property, label)
+                : base.GetPropertyHeightSafe(property, label) + Style.boxHeight + Style.spacing * 2;
+        }
+
+        protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
+        {
+            if (!SceneExists(property.stringValue))
+            {
+                position = DrawWarningMessage(position);
+                position.yMin = position.yMax + Style.spacing;
+                position.yMax = position.yMin + Style.rowHeight;
+            }
+
+            position.xMax -= Style.pickerWidth + Style.spacing;
+            EditorGUI.PropertyField(position, property, label);
+            position.xMax += Style.pickerWidth + Style.spacing;
+            position.xMin = position.xMax - Style.pickerWidth;
+
+            HandleTargetPicker(position, property);
         }
 
 
@@ -99,7 +110,8 @@ namespace Toolbox.Editor.Drawers
 
             static Style()
             {
-                pickerButtonContent = new GUIContent(EditorGUIUtility.FindTexture("UnityLogoLarge"), "Pick SceneAsset");
+                pickerButtonContent = EditorGUIUtility.IconContent("SceneAsset Icon");
+                pickerButtonContent.tooltip = "Pick Scene";
             }
         }
     }
