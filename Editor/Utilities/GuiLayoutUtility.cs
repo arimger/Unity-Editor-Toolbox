@@ -16,7 +16,7 @@ namespace Toolbox.Editor
 
         public static void BeginStrechedVertical()
         {
-            BeginFixedVertical(new GUIStyle());
+            BeginFixedVertical(GUIStyle.none);
         }
 
         public static void BeginFixedVertical(GUIStyle style)
