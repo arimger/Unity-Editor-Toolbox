@@ -95,9 +95,8 @@ namespace Toolbox.Editor.Internal
                     }
                 }
 
-                var style = EditorStyles.inspectorFullWidthMargins;
                 //draw the real property in separate vertical group
-                using (var elementGroup = new EditorGUILayout.VerticalScope(style))
+                using (var elementGroup = new EditorGUILayout.VerticalScope(Style.contentGroupStyle))
                 {
                     var elementRect = elementGroup.rect;
                     //adjust label width to the known dragging area
@@ -120,10 +119,9 @@ namespace Toolbox.Editor.Internal
 
         private void DrawVacantList()
         {
-            var style = EditorStyles.inspectorFullWidthMargins;
-            using (var vacantGroup = new EditorGUILayout.VerticalScope(style))
+            using (var verticalGroup = new EditorGUILayout.VerticalScope(Style.contentGroupStyle))
             {
-                var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.lineHeight));
+                var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.minEmptyHeight));
                 if (drawVacantCallback != null)
                 {
                     drawVacantCallback(rect);
@@ -228,43 +226,42 @@ namespace Toolbox.Editor.Internal
             //make sure rects array is valid
             ValidateElementsRects(arraySize);
             //handle empty or invalid array 
-            if (List == null || List.isArray == false || arraySize == 0)
+            if (!IsPropertyValid || IsCollapsed || IsEmpty)
             {
                 DrawVacantList();
+                return;
             }
-            else
+
+            DrawEmptySpace(Style.padding);
+            //if there are elements, we need to draw them - we will do
+            //this differently depending on if we are dragging or not
+            for (var i = 0; i < arraySize; i++)
             {
-                DrawEmptySpace(Style.padding);
-                //if there are elements, we need to draw them - we will do
-                //this differently depending on if we are dragging or not
-                for (var i = 0; i < arraySize; i++)
+                //cache related properties
+                var isActive = (i == Index);
+                var hasFocus = (i == Index && HasKeyboardFocus());
+                var isTarget = (i == lastCoveredIndex && !isActive);
+                var isEnding = (i == arraySize - 1);
+
+                //draw current array element
+                DrawElementRow(i, isActive, isTarget, hasFocus);
+
+                //draw dragging element gap
+                if (isTarget)
                 {
-                    //cache related properties
-                    var isActive = (i == Index);
-                    var hasFocus = (i == Index && HasKeyboardFocus());
-                    var isTarget = (i == lastCoveredIndex && !isActive);
-                    var isEnding = (i == arraySize - 1);
-
-                    //draw current array element
-                    DrawElementRow(i, isActive, isTarget, hasFocus);
-
-                    //draw dragging target gap
-                    if (isTarget)
-                    {
-                        DrawTargetGap(i, Index, GapColor, GapWidth, Style.dragAreaWidth);
-                    }
-
-                    if (isEnding)
-                    {
-                        continue;
-                    }
-
-                    //create spacing for elements
-                    DrawEmptySpace(ElementSpacing);
+                    DrawTargetGap(i, Index, GapColor, GapWidth, Style.dragAreaWidth);
                 }
 
-                DrawEmptySpace(Style.padding);
+                if (isEnding)
+                {
+                    continue;
+                }
+
+                //create spacing for elements
+                DrawEmptySpace(ElementSpacing);
             }
+
+            DrawEmptySpace(Style.padding);
         }
 
         protected override bool DoListHeader()

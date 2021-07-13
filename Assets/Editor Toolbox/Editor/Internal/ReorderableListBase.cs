@@ -501,7 +501,7 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        #region Methods: Default interaction/draw calls
+        #region Methods: Default interaction/draw calls/controls
 
         /// <summary>
         /// Draws the default Footer.
@@ -575,6 +575,33 @@ namespace Toolbox.Editor.Internal
             }
         }
 
+        public virtual void DrawStandardName(Rect rect, GUIContent label, bool useFoldout)
+        {
+            if (useFoldout)
+            {
+                DrawStandardFoldout(rect, label);
+            }
+            else
+            {
+                DrawStandardLabel(rect, label);
+            }
+        }
+
+        public virtual void DrawStandardLabel(Rect rect, GUIContent label)
+        {
+            EditorGUI.LabelField(rect, label, Style.namePropertyStyle);
+        }
+
+        public virtual void DrawStandardFoldout(Rect rect, GUIContent label)
+        {
+            var style = Style.foldoutLabelStyle;
+            var leftPadding = style.padding.left;
+            style.CalcMinMaxWidth(label, out var minWidth, out _);
+            rect.xMin += leftPadding;
+            rect.xMax -= rect.width - minWidth;
+            List.isExpanded = EditorGUI.Foldout(rect, List.isExpanded, label, true, style);
+        }
+
         /// <summary>
         /// Draws the default Header.
         /// </summary>
@@ -582,7 +609,7 @@ namespace Toolbox.Editor.Internal
         {
             var label = EditorGUI.BeginProperty(rect, TitleLabel, List);
             //display the property label using the preprocessed name
-            EditorGUI.LabelField(rect, label, Style.namePropertyStyle);
+            DrawStandardName(rect, label, IsCollapsible);
 
             var diff = rect.height - Style.sizePropertyStyle.fixedHeight;
             //adjust OY position to the middle of the element row
@@ -603,8 +630,10 @@ namespace Toolbox.Editor.Internal
                 {
                     property.intValue = sizeValue;
                 }
+
                 EditorGUI.EndProperty();
             }
+
             EditorGUI.EndProperty();
         }
 
@@ -685,7 +714,7 @@ namespace Toolbox.Editor.Internal
 
 
         /// <summary>
-        /// Index of the currently active element.
+        /// Index of the currently active (hovered) element.
         /// </summary>
         public int Index
         {
@@ -716,6 +745,9 @@ namespace Toolbox.Editor.Internal
             }
         }
 
+        /// <summary>
+        /// Indicates if list should allow dragging elements.
+        /// </summary>
         public bool Draggable
         {
             get; set;
@@ -726,11 +758,35 @@ namespace Toolbox.Editor.Internal
             get; protected set;
         }
 
-        public virtual bool FixedSize { get; set; } = true;
+        public bool IsCollapsible
+        {
+            get; set;
+        }
 
-        public virtual bool HasHeader { get; set; } = true;
+        public bool IsCollapsed
+        {
+            get => !List.isExpanded && IsCollapsible;
+        }
 
-        public virtual bool HasLabels { get; set; } = true;
+        public bool IsEmpty
+        {
+            get => Count == 0;
+        }
+
+        public bool IsPropertyValid
+        {
+            get => List != null && List.isArray;
+        }
+
+        /// <summary>
+        /// Indicates if list should have add/remove controls.
+        /// </summary>
+        public bool FixedSize { get; set; }
+
+        public bool HasHeader { get; set; } = true;
+
+        public bool HasLabels { get; set; } = true;
+
 #if UNITY_2020_1_OR_NEWER
         public virtual float HeaderHeight { get; set; } = 20.0f;
 #else
@@ -816,6 +872,7 @@ namespace Toolbox.Editor.Internal
             internal static readonly float handleHeight = 7.0f;
             internal static readonly float dragAreaWidth = 40.0f;
             internal static readonly float sizeAreaWidth = 19.0f;
+            internal static readonly float minEmptyHeight = 8.0f;
 
             internal static readonly GUIContent sizePropertyContent;
             internal static readonly GUIContent iconToolbarAddContent;
@@ -824,7 +881,9 @@ namespace Toolbox.Editor.Internal
             internal static readonly GUIContent emptyOrInvalidListContent;
 
             internal static readonly GUIStyle namePropertyStyle;
+            internal static readonly GUIStyle foldoutLabelStyle;
             internal static readonly GUIStyle sizePropertyStyle;
+            internal static readonly GUIStyle contentGroupStyle;
             internal static readonly GUIStyle footerButtonStyle;
             internal static readonly GUIStyle dragHandleButtonStyle;
             internal static readonly GUIStyle headerBackgroundStyle;
@@ -844,6 +903,10 @@ namespace Toolbox.Editor.Internal
                 {
                     alignment = TextAnchor.MiddleLeft
                 };
+                foldoutLabelStyle = new GUIStyle(EditorStyles.foldout)
+                {
+                    alignment = TextAnchor.MiddleLeft
+                };
                 sizePropertyStyle = new GUIStyle(EditorStyles.miniTextField)
                 {
                     alignment = TextAnchor.MiddleRight,
@@ -853,7 +916,9 @@ namespace Toolbox.Editor.Internal
                     fontSize = 10
 #endif
                 };
+                contentGroupStyle = new GUIStyle(EditorStyles.inspectorFullWidthMargins);
 
+                //built-in styles related to the ReorderableList controls
                 footerButtonStyle = new GUIStyle("RL FooterButton");
                 dragHandleButtonStyle = new GUIStyle("RL DragHandle");
                 headerBackgroundStyle = new GUIStyle("RL Header");
