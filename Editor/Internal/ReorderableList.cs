@@ -79,7 +79,7 @@ namespace Toolbox.Editor.Internal
             var elementContentRect = itemElementRect;
 
             //handle empty or invalid list 
-            if (List == null || List.isArray == false || arraySize == 0)
+            if (!IsPropertyValid || IsCollapsed || IsEmpty)
             {
                 //there was no content, so we will draw an empty element
                 itemElementRect.y = middleRect.y;
