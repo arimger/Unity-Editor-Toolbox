@@ -37,8 +37,12 @@ namespace Toolbox.Editor.Internal
             : base(list, elementLabel, draggable, hasHeader, fixedSize)
         { }
 
-        public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels) 
+        public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels)
             : base(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels)
+        { }
+
+        public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels, bool foldable)
+            : base(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels, foldable)
         { }
 
 
@@ -79,7 +83,7 @@ namespace Toolbox.Editor.Internal
             var elementContentRect = itemElementRect;
 
             //handle empty or invalid list 
-            if (!IsPropertyValid || IsCollapsed || IsEmpty)
+            if (!IsPropertyValid || !IsExpanded || IsEmpty)
             {
                 //there was no content, so we will draw an empty element
                 itemElementRect.y = middleRect.y;

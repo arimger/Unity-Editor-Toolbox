@@ -74,6 +74,10 @@ namespace Toolbox.Editor.Internal
         { }
 
         public ReorderableListBase(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels)
+            : this(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels, false)
+        { }
+
+        public ReorderableListBase(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels, bool foldable)
         {
             //validate parameters
             if (list == null || list.isArray == false)
@@ -88,10 +92,10 @@ namespace Toolbox.Editor.Internal
             HasHeader = hasHeader;
             FixedSize = fixedSize;
             HasLabels = hasLabels;
-            //set other properties
             ElementLabel = elementLabel;
+            Foldable = foldable;
 
-            //ser serialized data
+            //set serialized data
             List = list;
             Size = list.FindPropertyRelative("Array.size");
 
@@ -575,9 +579,9 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-        public virtual void DrawStandardName(Rect rect, GUIContent label, bool useFoldout)
+        public virtual void DrawStandardName(Rect rect, GUIContent label, bool foldable)
         {
-            if (useFoldout)
+            if (foldable)
             {
                 DrawStandardFoldout(rect, label);
             }
@@ -609,13 +613,11 @@ namespace Toolbox.Editor.Internal
         {
             var label = EditorGUI.BeginProperty(rect, TitleLabel, List);
             //display the property label using the preprocessed name
-            DrawStandardName(rect, label, IsCollapsible);
+            DrawStandardName(rect, label, Foldable);
 
             var diff = rect.height - Style.sizePropertyStyle.fixedHeight;
-            //adjust OY position to the middle of the element row
             rect.yMin += diff / 2;
             rect.yMax -= diff / 2;
-            //adjust OX position and width for the size property
             rect.xMin = rect.xMax - Style.sizeAreaWidth;
 
             using (new EditorGUI.DisabledScope(FixedSize))
@@ -624,7 +626,7 @@ namespace Toolbox.Editor.Internal
 
                 EditorGUI.BeginProperty(rect, Style.sizePropertyContent, property);
                 EditorGUI.BeginChangeCheck();
-                //cache a delayed size value using the delayed int field
+                //cache the size value using the delayed int field
                 var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, property.intValue, Style.sizePropertyStyle), 0);
                 if (EditorGUI.EndChangeCheck())
                 {
@@ -758,14 +760,17 @@ namespace Toolbox.Editor.Internal
             get; protected set;
         }
 
-        public bool IsCollapsible
+        /// <summary>
+        /// Indicates if list should be able to fold itself.
+        /// </summary>
+        public bool Foldable
         {
             get; set;
         }
 
-        public bool IsCollapsed
+        public bool IsExpanded
         {
-            get => !List.isExpanded && IsCollapsible;
+            get => List.isExpanded || !Foldable;
         }
 
         public bool IsEmpty
