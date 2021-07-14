@@ -39,6 +39,10 @@ namespace Toolbox.Editor.Internal
             : base(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels)
         { }
 
+        public ToolboxEditorList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels, bool foldable)
+            : base(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels, foldable)
+        { }
+
 
         private void ValidateElementsRects(int arraySize)
         {
@@ -119,7 +123,7 @@ namespace Toolbox.Editor.Internal
 
         private void DrawVacantList()
         {
-            using (var verticalGroup = new EditorGUILayout.VerticalScope(Style.contentGroupStyle))
+            using (var emptyListGroup = new EditorGUILayout.VerticalScope(Style.contentGroupStyle))
             {
                 var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.minEmptyHeight));
                 if (drawVacantCallback != null)
@@ -226,7 +230,7 @@ namespace Toolbox.Editor.Internal
             //make sure rects array is valid
             ValidateElementsRects(arraySize);
             //handle empty or invalid array 
-            if (!IsPropertyValid || IsCollapsed || IsEmpty)
+            if (!IsPropertyValid || !IsExpanded || IsEmpty)
             {
                 DrawVacantList();
                 return;
@@ -348,7 +352,8 @@ namespace Toolbox.Editor.Internal
         public override void DrawStandardElement(Rect rect, int index, bool selected, bool focused, bool draggable)
         {
             var element = List.GetArrayElementAtIndex(index);
-            ToolboxEditorGui.DrawToolboxProperty(element, GetElementContent(element, index));
+            var content = GetElementContent(element, index);
+            ToolboxEditorGui.DrawToolboxProperty(element, content);
         }
 
         #endregion

@@ -261,18 +261,18 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates <see cref="ReorderableList"/> using standard background.
         /// </summary>
-        public static ReorderableListBase CreateRoundList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true, bool hasLabels = true)
+        public static ReorderableListBase CreateRoundList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true, bool hasLabels = true, bool foldable = false)
         {
-            return new ToolboxEditorList(property, elementLabel, draggable, hasHeader, fixedSize, hasLabels);
+            return new ToolboxEditorList(property, elementLabel, draggable, hasHeader, fixedSize, hasLabels, foldable);
         }
 
         /// <summary>
         /// Creates <see cref="ReorderableList"/> using a non-standard (boxed style) background.
         /// </summary>
-        public static ReorderableListBase CreateBoxedList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true, bool hasLabels = true)
+        public static ReorderableListBase CreateBoxedList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true, bool hasLabels = true, bool foldable = false)
         {
             var backgroundStyle = new GUIStyle("box");
-            return new ToolboxEditorList(property, elementLabel, draggable, hasHeader, fixedSize, hasLabels)
+            return new ToolboxEditorList(property, elementLabel, draggable, hasHeader, fixedSize, hasLabels, foldable)
             {
                 drawHeaderBackgroundCallback = (Rect rect) =>
                 {
@@ -308,9 +308,9 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates <see cref="ReorderableList"/> using a non-standard (lined style) background.
         /// </summary>
-        public static ReorderableListBase CreateLinedList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true, bool hasLabels = true)
+        public static ReorderableListBase CreateLinedList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true, bool hasLabels = true, bool foldable = false)
         {
-            return new ToolboxEditorList(property, elementLabel, draggable, hasHeader, fixedSize, hasLabels)
+            return new ToolboxEditorList(property, elementLabel, draggable, hasHeader, fixedSize, hasLabels, foldable)
             {
                 drawHeaderBackgroundCallback = (Rect rect) =>
                 {
@@ -339,9 +339,9 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates <see cref="ReorderableList"/> without any additional background.
         /// </summary>
-        public static ReorderableListBase CreateClearList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true, bool hasLabels = true)
+        public static ReorderableListBase CreateClearList(SerializedProperty property, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true, bool hasLabels = true, bool foldable = false)
         {
-            return new ToolboxEditorList(property, elementLabel, draggable, hasHeader, fixedSize, hasLabels)
+            return new ToolboxEditorList(property, elementLabel, draggable, hasHeader, fixedSize, hasLabels, foldable)
             {
                 drawHeaderBackgroundCallback = (Rect rect) =>
                 { },
@@ -360,13 +360,13 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates <see cref="ReorderableList"/> using provided <see cref="ListStyle"/> type.
         /// </summary>
-        public static ReorderableListBase CreateList(SerializedProperty property, ListStyle style, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true, bool hasLabels = true)
+        public static ReorderableListBase CreateList(SerializedProperty property, ListStyle style, string elementLabel = null, bool fixedSize = false, bool draggable = true, bool hasHeader = true, bool hasLabels = true, bool foldable = false)
         {
             switch (style)
             {
-                case ListStyle.Boxed: return CreateBoxedList(property, elementLabel, fixedSize, draggable, hasHeader, hasLabels);
-                case ListStyle.Lined: return CreateLinedList(property, elementLabel, fixedSize, draggable, hasHeader, hasLabels);
-                case ListStyle.Round: return CreateRoundList(property, elementLabel, fixedSize, draggable, hasHeader, hasLabels);
+                case ListStyle.Boxed: return CreateBoxedList(property, elementLabel, fixedSize, draggable, hasHeader, hasLabels, foldable);
+                case ListStyle.Lined: return CreateLinedList(property, elementLabel, fixedSize, draggable, hasHeader, hasLabels, foldable);
+                case ListStyle.Round: return CreateRoundList(property, elementLabel, fixedSize, draggable, hasHeader, hasLabels, foldable);
                 default: return null;
             }
         }
