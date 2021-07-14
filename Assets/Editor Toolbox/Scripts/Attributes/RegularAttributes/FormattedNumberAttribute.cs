@@ -26,7 +26,7 @@ namespace UnityEngine
 
         /// <summary>
         /// Indicates number of visible decimals in the text field.
-        /// Integers will ignore this property.
+        /// For <see cref="int"/> this property will be always ignored.
         /// </summary>
         public int DecimalsToShow { get; set; } = 2;
     }

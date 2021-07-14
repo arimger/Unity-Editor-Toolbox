@@ -10,10 +10,8 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class NotNullAttribute : PropertyAttribute
     {
-        public NotNullAttribute()
-        {
-            Label = "Variable has to be assigned.";
-        }
+        public NotNullAttribute() : this("Variable has to be assigned.")
+        { }
 
         public NotNullAttribute(string label)
         {
