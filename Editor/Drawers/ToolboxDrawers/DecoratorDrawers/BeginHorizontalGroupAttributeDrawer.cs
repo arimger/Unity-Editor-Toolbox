@@ -24,14 +24,9 @@ namespace Toolbox.Editor.Drawers
             var controlId = storage.GetControlId();
             var oldScroll = storage.ReturnItem(controlId, Vector2.zero);
             var newScroll = fixedHeight > 0.0f
-                ? EditorGUILayout.BeginScrollView(oldScroll, GUILayout.Height(fixedHeight))
-                : EditorGUILayout.BeginScrollView(oldScroll);
+                ? EditorGUILayout.BeginScrollView(oldScroll, Style.scrollViewGroupStyle, GUILayout.Height(fixedHeight))
+                : EditorGUILayout.BeginScrollView(oldScroll, Style.scrollViewGroupStyle);
             storage.AppendItem(controlId, newScroll);
-        }
-
-        private void ApplyIndentLevel()
-        {
-            GUILayout.Space(Style.extraIndentLevel);
         }
 
 
@@ -50,18 +45,13 @@ namespace Toolbox.Editor.Drawers
 
             HandleScrollView(fixedHeight);
             ToolboxLayoutHelper.BeginHorizontal();
-            ApplyIndentLevel();
         }
 
 
         private static class Style
         {
-            /// <summary>
-            /// Additional indent applied to keep foldout-based labels within the group.
-            /// </summary>
-            internal static readonly float extraIndentLevel = 8.0f;
-
             internal static readonly GUIStyle groupBackgroundStyle;
+            internal static readonly GUIStyle scrollViewGroupStyle;
 
             static Style()
             {
@@ -72,6 +62,12 @@ namespace Toolbox.Editor.Drawers
 #endif
                 {
                     padding = new RectOffset(13, 12, 5, 5)
+                };
+
+                //NOTE: we need to add the right padding to keep foldout-based properties fully visible
+                scrollViewGroupStyle = new GUIStyle("scrollView")
+                {
+                    padding = new RectOffset(13, 8, 2, 2)
                 };
             }
         }
