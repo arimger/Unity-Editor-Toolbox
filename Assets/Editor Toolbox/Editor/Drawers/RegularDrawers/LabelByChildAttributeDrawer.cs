@@ -88,12 +88,12 @@ namespace Toolbox.Editor.Drawers
             //validate availability of the child property
             if (childProperty != null)
             {
-                //set new label if found (unknown values will be ignored)
+                //set new label if found (unknown types will be ignored)
                 label = GetLabelByValue(childProperty, label);
             }
             else
             {
-                ToolboxEditorLog.AttributeUsageWarning(attribute, property, propertyName + " does not exists.");
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property, string.Format("{0} does not exists.", propertyName));
             }
 
             EditorGUI.PropertyField(position, property, label, property.isExpanded);

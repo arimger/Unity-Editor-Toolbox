@@ -17,11 +17,6 @@ namespace UnityEngine
 
         public string Label { get; private set; }
 
-        /// <summary>
-        /// Name of the built-in icon that should be placed into the label.
-        /// </summary>
-        public string Asset { get; set; }
-
         public FontStyle FontStyle { get; private set; }
 
         public SkinStyle SkinStyle { get; private set; }
@@ -29,10 +24,14 @@ namespace UnityEngine
         public TextAnchor Alignment { get; set; } = TextAnchor.MiddleLeft;
 
         /// <summary>
+        /// Name of the built-in icon that should be placed into the label.
+        /// </summary>
+        public string Asset { get; set; }
+
+        /// <summary>
         /// Additional space to apply before the label field.
         /// </summary>
         public float SpaceBefore { get; set; } = 5.0f;
-
         /// <summary>
         /// Additional space to apply after the label field.
         /// </summary>
