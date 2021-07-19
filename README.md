@@ -466,7 +466,7 @@ public Canvas[] vars1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list4.png)
 ```csharp
-[ReorderableList(ListStyle.Lined, "Item")]
+[ReorderableList(ListStyle.Lined, "Item", Foldable = false)]
 public List<int> linedStyleList;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list1.png)
