@@ -1,3 +1,11 @@
+## 0.8.15 [19.07.2021]
+
+### Added:
+- FormattedNumberAttribute
+- SceneAsset picker for the SceneNameAttribute
+- Optional foldout for the ReorderableList and related attributes
+- GuiColorAttribute
+
 ## 0.8.13 [04.07.2021]
 
 ### Added:
