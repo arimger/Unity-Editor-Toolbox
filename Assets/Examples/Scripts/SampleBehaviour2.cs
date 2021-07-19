@@ -167,7 +167,7 @@ public class SampleBehaviour2 : MonoBehaviour
     [Label("15", skinStyle: SkinStyle.Box)]
 
     [BeginHorizontalGroup(label: "Horizontal Group")]
-    [ReorderableList, InLineEditor]
+    [ReorderableList(Foldable = true), InLineEditor]
     public GameObject[] gameObjects;
     [SpaceArea]
     [EndHorizontalGroup]

@@ -156,6 +156,7 @@ namespace Toolbox.Editor
                 decoratorAttributes.Sort((a1, a2) => a1.Order.CompareTo(a2.Order));
                 hasToolboxDecoratorDrawer = true;
             }
+
             //check if property has custom conditon drawer
             hasToolboxConditionDrawer = conditionAttribute != null;
         }
@@ -165,10 +166,10 @@ namespace Toolbox.Editor
             switch (attribute)
             {
                 case ToolboxListPropertyAttribute a:
-                    TryAssignPropertyAttribute(a);
+                    TryAssignListPropertyAttribute(a);
                     break;
                 case ToolboxSelfPropertyAttribute a:
-                    TryAssignPropertyAttribute(a);
+                    TryAssignSelfPropertyAttribute(a);
                     break;
                 case ToolboxDecoratorAttribute a:
                     TryAssignDecoratorAttribute(a);
@@ -176,7 +177,7 @@ namespace Toolbox.Editor
                 case ToolboxConditionAttribute a:
                     TryAssignConditionAttribute(a);
                     break;
-                case ToolboxCompositionAttribute a:
+                case ToolboxArchetypeAttribute a:
                     var composition = a.Process();
                     foreach (var newAttribute in composition)
                     {
@@ -186,10 +187,10 @@ namespace Toolbox.Editor
             }
         }
 
-        private bool TryAssignPropertyAttribute(ToolboxListPropertyAttribute attribute)
+        private bool TryAssignBasePropertyAttribute(ToolboxPropertyAttribute attribute)
         {
-            //we can only have one property attribute for an array property
-            if (propertyAttribute != null || !isArray)
+            //NOTE: we can only have one property attribute
+            if (propertyAttribute != null)
             {
                 return false;
             }
@@ -200,18 +201,14 @@ namespace Toolbox.Editor
             }
         }
 
-        private bool TryAssignPropertyAttribute(ToolboxSelfPropertyAttribute attribute)
+        private bool TryAssignListPropertyAttribute(ToolboxListPropertyAttribute attribute)
         {
-            //we can only have one property attribute for a non-array property
-            if (propertyAttribute != null || isArray)
-            {
-                return false;
-            }
-            else
-            {
-                propertyAttribute = attribute;
-                return true;
-            }
+            return isArray && TryAssignBasePropertyAttribute(attribute);
+        }
+
+        private bool TryAssignSelfPropertyAttribute(ToolboxSelfPropertyAttribute attribute)
+        {
+            return !isArray && TryAssignBasePropertyAttribute(attribute);
         }
 
         private bool TryAssignDecoratorAttribute(ToolboxDecoratorAttribute attribute)

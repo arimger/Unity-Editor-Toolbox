@@ -1,3 +1,16 @@
+## 0.9.0 [19.07.2021]
+
+### Added:
+- FormattedNumberAttribute
+- SceneAsset picker for the SceneNameAttribute
+- Optional foldout for the ReorderableList and related attributes
+- GuiColorAttribute
+
+### Changed:
+
+- Remove obsolete attributes
+- Rename ToolboxCompositionAttribute class to ToolboxArchetypeAttribute
+
 ## 0.8.13 [04.07.2021]
 
 ### Added:

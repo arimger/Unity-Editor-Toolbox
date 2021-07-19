@@ -12,12 +12,9 @@ namespace UnityEngine
 
         public HighlightAttribute(string hexColor)
         {
-            if (ColorUtility.TryParseHtmlString(hexColor, out var color))
-            {
-                Color = color;
-            }
+            Color = ColorUtility.TryParseHtmlString(hexColor, out var color) ? color : Color.magenta;
         }
 
-        public Color Color { get; private set; } = Color.white;
+        public Color Color { get; private set; }
     }
 }

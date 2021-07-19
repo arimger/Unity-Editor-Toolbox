@@ -15,17 +15,25 @@ namespace Toolbox.Editor.Drawers
         {
             var minValue = Attribute.MinValue;
             var maxValue = Attribute.MaxValue;
-
-            if (property.propertyType == SerializedPropertyType.Float)
+            if (property.hasMultipleDifferentValues)
             {
-                property.floatValue = Mathf.Clamp(property.floatValue, minValue, maxValue);
-            }
-            else
-            {
-                property.intValue = Mathf.Clamp(property.intValue, (int)minValue, (int)maxValue);
+                EditorGUI.PropertyField(position, property, label);
+                return;
             }
 
-            EditorGUI.PropertyField(position, property, label, property.isExpanded);
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.Float:
+                    property.floatValue = Mathf.Clamp(property.floatValue, minValue, maxValue);
+                    break;
+                case SerializedPropertyType.Integer:
+                    property.intValue = (int)Mathf.Clamp(property.intValue, minValue, maxValue);
+                    break;
+                default:
+                    break;
+            }
+
+            EditorGUI.PropertyField(position, property, label);
         }
 
 

@@ -1,8 +1,10 @@
-﻿namespace UnityEngine
+﻿using System;
+
+namespace UnityEngine
 {
     /// <summary>
     /// Base class for all attributes used within Component Editors.
     /// </summary>
-    public abstract class ToolboxAttribute : System.Attribute
+    public abstract class ToolboxAttribute : Attribute
     { }
 }

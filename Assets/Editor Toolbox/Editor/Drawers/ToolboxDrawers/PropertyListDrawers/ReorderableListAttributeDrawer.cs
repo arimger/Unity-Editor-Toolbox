@@ -17,7 +17,8 @@ namespace Toolbox.Editor.Drawers
                     a.FixedSize,
                     a.Draggable,
                     a.HasHeader,
-                    a.HasLabels);
+                    a.HasLabels,
+                    a.Foldable);
             });
         }
 

@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -13,9 +14,9 @@ namespace Toolbox.Editor.Drawers
                 return false;
             }
 
-            for (var i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings; i++)
+            for (var i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
             {
-                var scenePath = UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex(i);
+                var scenePath = SceneUtility.GetScenePathByBuildIndex(i);
                 var lastSlash = scenePath.LastIndexOf("/");
                 var name = scenePath.Substring(lastSlash + 1, scenePath.LastIndexOf(".") - lastSlash - 1);
 
@@ -26,6 +27,40 @@ namespace Toolbox.Editor.Drawers
             }
 
             return false;
+        }
+
+        private Rect DrawWarningMessage(Rect position)
+        {
+            position = new Rect(position.x,
+                                position.y,
+                                position.width, Style.boxHeight);
+            EditorGUI.HelpBox(position, "Scene does not exist. " +
+                                        "Check available Scenes in the Build options.", MessageType.Warning);
+            return position;
+        }
+
+        private void HandleTargetPicker(Rect position, SerializedProperty property)
+        {
+            var controlId = GUIUtility.GetControlID(FocusType.Keyboard);
+            if (GUI.Button(position, Style.pickerButtonContent, EditorStyles.miniButton))
+            {
+                EditorGUIUtility.ShowObjectPicker<SceneAsset>(null, false, null, controlId);
+            }
+
+            if (Event.current.commandName == "ObjectSelectorUpdated")
+            {
+                if (controlId == EditorGUIUtility.GetObjectPickerControlID())
+                {
+                    var target = EditorGUIUtility.GetObjectPickerObject();
+                    if (target)
+                    {
+                        property.serializedObject.Update();
+                        property.stringValue = target.name;
+                        property.serializedObject.ApplyModifiedProperties();
+                        GUI.changed = true;
+                    }
+                }
+            }
         }
 
 
@@ -40,18 +75,17 @@ namespace Toolbox.Editor.Drawers
         {
             if (!SceneExists(property.stringValue))
             {
-                //set rect for the warning message field
-                var helpBoxRect = new Rect(position.x,
-                                           position.y,
-                                           position.width, Style.boxHeight);
-                EditorGUI.HelpBox(helpBoxRect, "Scene does not exist. " +
-                                               "Check available Scenes in the Build options.", MessageType.Warning);
-
-                //adjust rect for standard property field
-                position.yMin += Style.boxHeight + Style.spacing * 2;
+                position = DrawWarningMessage(position);
+                position.yMin = position.yMax + Style.spacing;
+                position.yMax = position.yMin + Style.rowHeight;
             }
 
-            EditorGUI.PropertyField(position, property, label, property.isExpanded);
+            position.xMax -= Style.pickerWidth + Style.spacing;
+            EditorGUI.PropertyField(position, property, label);
+            position.xMax += Style.pickerWidth + Style.spacing;
+            position.xMin = position.xMax - Style.pickerWidth;
+
+            HandleTargetPicker(position, property);
         }
 
 
@@ -70,7 +104,15 @@ namespace Toolbox.Editor.Drawers
             internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.5f;
 #endif
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
-            internal static readonly float padding = 5.0f;
+            internal static readonly float pickerWidth = 30.0f;
+
+            internal static readonly GUIContent pickerButtonContent;
+
+            static Style()
+            {
+                pickerButtonContent = EditorGUIUtility.IconContent("SceneAsset Icon");
+                pickerButtonContent.tooltip = "Pick Scene";
+            }
         }
     }
 }

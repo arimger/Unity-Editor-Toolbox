@@ -39,6 +39,22 @@ namespace Toolbox.Editor.Drawers
         private static readonly PropertyDataStorage<Editor, InLineEditorAttribute> storage;
 
 
+        private Editor GetTargetsEditor(SerializedProperty property, InLineEditorAttribute attribute)
+        {
+            var editor = storage.ReturnItem(property, attribute);
+            if (editor.target != property.objectReferenceValue)
+            {
+                editor = storage.CreateItem(property, attribute);
+            }
+
+            return editor;
+        }
+
+        private bool GetInspectorToggle(SerializedProperty property)
+        {
+            return GUILayout.Toggle(property.isExpanded, Style.foldoutContent, Style.foldoutStyle, Style.foldoutOptions);
+        }
+
         private void DrawEditor(Editor editor, InLineEditorAttribute attribute)
         {
             using (new EditorGUILayout.VerticalScope(Style.backgroundStyle))
@@ -109,22 +125,13 @@ namespace Toolbox.Editor.Drawers
                     return;
                 }
 
-                property.isExpanded = GUILayout.Toggle(property.isExpanded, 
-                    Style.foldoutContent, 
-                    Style.foldoutStyle, 
-                    Style.foldoutOptions);
+                property.isExpanded = GetInspectorToggle(property);
             }
 
             //create additional Editor for the associated reference 
             if (property.isExpanded)
             {
-                var editor = storage.ReturnItem(property, attribute);
-                if (editor.target != property.objectReferenceValue)
-                {
-                    //validate target value change (e.g. list reorder)
-                    editor = storage.CreateItem(property, attribute);
-                }
-
+                var editor = GetTargetsEditor(property, attribute);
                 InspectorUtility.SetIsEditorExpanded(editor, true);
                 //make useage of the created (cached) Editor instance
                 using (new FixedFieldsScope())

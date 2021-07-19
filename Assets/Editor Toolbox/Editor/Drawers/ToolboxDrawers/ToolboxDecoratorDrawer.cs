@@ -27,7 +27,6 @@ namespace Toolbox.Editor.Drawers
             OnGuiClose(attribute as T);
         }
 
-
         public void OnGuiBegin(T attribute)
         {
             if (attribute == null)

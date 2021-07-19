@@ -17,12 +17,48 @@ namespace Toolbox.Editor.Drawers
             return Directory.Exists(targetPath);
         }
 
+        private Rect DrawWarningMessage(Rect position)
+        {
+            position = new Rect(position.x,
+                                position.y,
+                                position.width, Style.boxHeight);
+            EditorGUI.HelpBox(position, "Provided directory does not exist.", MessageType.Warning);
+            return position;
+        }
+
+        private void UseDirectoryPicker(SerializedProperty property, string relativePath)
+        {
+            var baseDataPath = Application.dataPath;
+            var baseOpenPath = Path.GetFileName(baseDataPath);
+            if (!string.IsNullOrEmpty(relativePath))
+            {
+                baseDataPath = Path.Combine(baseDataPath, relativePath);
+                baseOpenPath = Path.Combine(baseOpenPath, relativePath);
+            }
+
+            var selectedPath = EditorUtility.OpenFolderPanel("Pick directory", baseOpenPath, "");
+            if (!string.IsNullOrEmpty(selectedPath))
+            {
+                //Unity's API always returns slash
+                baseDataPath = baseDataPath.Replace('\\', '/');
+                selectedPath = selectedPath.Replace(baseDataPath, "");
+                selectedPath = selectedPath.Remove(0, 1);
+
+                property.serializedObject.Update();
+                property.stringValue = selectedPath;
+                property.serializedObject.ApplyModifiedProperties();
+            }
+
+            //NOTE: we have to exit GUI since the EditorUtility.OpenFolderPanel method will break the layouting system
+            GUIUtility.ExitGUI();
+        }
+
 
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             //validate property type and serialized path
-            return IsPathValid(property.stringValue, Attribute.RelativePath) 
-                ? base.GetPropertyHeightSafe(property, label) 
+            return IsPathValid(property.stringValue, Attribute.RelativePath)
+                ? base.GetPropertyHeightSafe(property, label)
                 : base.GetPropertyHeightSafe(property, label) + Style.boxHeight + Style.spacing * 2;
         }
 
@@ -31,47 +67,20 @@ namespace Toolbox.Editor.Drawers
             //validate currently serialized path value
             if (!IsPathValid(property.stringValue, Attribute.RelativePath))
             {
-                var helpBoxRect = new Rect(position.x,
-                                           position.y,
-                                           position.width, Style.boxHeight);
-                EditorGUI.HelpBox(helpBoxRect, "Provided directory does not exist.", MessageType.Warning);
-                position.y += Style.boxHeight + Style.spacing + Style.spacing;
+                position = DrawWarningMessage(position);
+                position.yMin = position.yMax + Style.spacing;
+                position.yMax = position.yMin + Style.rowHeight;
             }
 
-            position.height = Style.rowHeight;
-            position.width -= Style.directoryButtonWidth + Style.spacing;
-            //draw the default string property field
+            position.xMax -= Style.pickerWidth + Style.spacing;
             EditorGUI.PropertyField(position, property, label);
-            position.x = position.xMax + Style.spacing;
-            position.width = Style.directoryButtonWidth;
+            position.xMax += Style.pickerWidth + Style.spacing;
+            position.xMin = position.xMax - Style.pickerWidth;
 
             //create additional pick directory button
-            if (GUI.Button(position, Style.directoryButtonContent, EditorStyles.miniButton))
+            if (GUI.Button(position, Style.pickerContent, EditorStyles.miniButton))
             {
-                var relativePath = Attribute.RelativePath;
-                var baseDataPath = Application.dataPath;
-                var baseOpenPath = "Assets";
-                if (!string.IsNullOrEmpty(relativePath))
-                {
-                    baseDataPath = Path.Combine(baseDataPath, relativePath);
-                    baseOpenPath = Path.Combine(baseOpenPath, relativePath);
-                }
-
-                var selectedPath = EditorUtility.OpenFolderPanel("Pick directory", baseOpenPath, "");
-                if (!string.IsNullOrEmpty(selectedPath))
-                {
-                    //Unity's API always returns slash
-                    baseDataPath = baseDataPath.Replace('\\', '/');
-                    selectedPath = selectedPath.Replace(baseDataPath, "");
-                    selectedPath = selectedPath.Remove(0, 1);
-
-                    property.serializedObject.Update();
-                    property.stringValue = selectedPath;
-                    property.serializedObject.ApplyModifiedProperties();
-                }
-
-                //NOTE: we have to exit GUI since the EditorUtility.OpenFolderPanel method will break the layouting system
-                GUIUtility.ExitGUI();
+                UseDirectoryPicker(property, Attribute.RelativePath);
             }
         }
 
@@ -94,13 +103,14 @@ namespace Toolbox.Editor.Drawers
             internal static readonly float boxHeight = EditorGUIUtility.singleLineHeight * 2.5f;
 #endif
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
-            internal static readonly float directoryButtonWidth = 30.0f;
+            internal static readonly float pickerWidth = 30.0f;
 
-            internal static readonly GUIContent directoryButtonContent;
+            internal static readonly GUIContent pickerContent;
 
             static Style()
             {
-                directoryButtonContent = new GUIContent(EditorGUIUtility.FindTexture("Folder Icon"), "Pick directory");
+                pickerContent = EditorGUIUtility.IconContent("Folder Icon");
+                pickerContent.tooltip = "Pick directory";
             }
         }
     }

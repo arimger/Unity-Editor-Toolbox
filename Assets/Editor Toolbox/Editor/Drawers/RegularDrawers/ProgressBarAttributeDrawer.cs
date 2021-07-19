@@ -14,18 +14,21 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var attribute = Attribute;
-
             //determine the real value of the property
-            var value = property.propertyType == SerializedPropertyType.Integer ? property.intValue : property.floatValue;
+            var value = property.propertyType == SerializedPropertyType.Integer
+                ? property.intValue
+                : property.floatValue;
 
-            var color = attribute.GetBarColor();
+            var fillLabel = attribute.Name;
+            var fillColor = attribute.Color;
             var minValue = attribute.MinValue;
             var maxValue = attribute.MaxValue;
 
             //set the value text label (add name if needed)
             var valueText = property.hasMultipleDifferentValues ? "-" : value.ToString();
-            var labelText = !string.IsNullOrEmpty(attribute.Name)
-                ? attribute.Name + " " + valueText + "|" + maxValue : valueText + "|" + maxValue;
+            var labelText = !string.IsNullOrEmpty(fillLabel)
+                ? string.Format("{0} {1}|{2}", fillLabel, valueText, maxValue)
+                : string.Format("{0}|{1}", valueText, maxValue);
 
             //clamp current value between min and max values
             value = Mathf.Clamp(value, minValue, maxValue);
@@ -39,7 +42,7 @@ namespace Toolbox.Editor.Drawers
 
             //draw the background and fill colors
             EditorGUI.DrawRect(position, Style.backgroundColor);
-            EditorGUI.DrawRect(fillRect, color);
+            EditorGUI.DrawRect(fillRect, fillColor);
 
             //adjust rect for the shadow label
             var diff = Style.barHeight - Style.rowHeight;

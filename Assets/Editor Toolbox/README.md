@@ -243,6 +243,15 @@ public SampleClass1 var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/lefttoggle.png)
 
+#### FormattedNumberAttribute
+
+```csharp
+[FormattedNumber]
+public int bigNumber;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/formattednumber.png)
+
 ---
 
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
@@ -405,14 +414,14 @@ public GameObject[] largeArray = new GameObject[19];
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scrollableitems.png)
 
-#### ToolboxCompositionAttributes
+#### ToolboxArchetypeAttributes
 
 Using this attribute you are able to implement custom patterns of frequently grouped **ToolboxAttributes**.
 
 
 ```csharp
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
-public class TitleAttribute : ToolboxCompositionAttribute
+public class TitleAttribute : ToolboxArchetypeAttribute
 {
 	public TitleAttribute(string label)
 	{
@@ -457,7 +466,7 @@ public Canvas[] vars1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list4.png)
 ```csharp
-[ReorderableList(ListStyle.Lined, "Item")]
+[ReorderableList(ListStyle.Lined, "Item", Foldable = false)]
 public List<int> linedStyleList;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list1.png)
@@ -533,7 +542,7 @@ public void Usage()
 	dictionary.Add(3, new GameObject("TestObject"));
 	dictionary.ContainsKey(2);
 	//etc. like standard System.Collections.Generic.Dictionary<>
-	var nativeDictionary = dictionary.BuiltNativeDictionary();
+	var nativeDictionary = dictionary.BuildNativeDictionary();
 }
 #endif
 ```
