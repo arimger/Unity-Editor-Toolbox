@@ -43,7 +43,7 @@ namespace UnityEngine
         Normal,
         Box,
         Round,
-        [Obsolete("Use SkinStyle.Round instead")]
+        [Obsolete("Use SkinStyle.Round instead.")]
         Help
     }
 }
