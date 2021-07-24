@@ -66,13 +66,6 @@ public class SampleBehaviour1 : MonoBehaviour
     [AssetPreview]
     public Transform preview;
 
-#if UNITY_EDITOR
-    private void OnValidate()
-    {
-        var9 = var8;
-    }
-#endif
-
     [Label("10", skinStyle: SkinStyle.Box)]
 
     [Suffix("kg")]
@@ -98,10 +91,8 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("14", skinStyle: SkinStyle.Box)]
 
-    [EnumFlag]
-    public FlagExample enumFlag1 = FlagExample.Flag1 | FlagExample.Flag2;
-    [EnumFlag(EnumStyle.Button)]
-    public FlagExample enumFlag2 = FlagExample.Flag1 | FlagExample.Flag2 | FlagExample.Flag7;
+    [EnumToggles]
+    public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2;
 
     [System.Flags]
     public enum FlagExample
@@ -204,9 +195,16 @@ public class SampleBehaviour1 : MonoBehaviour
     public SerializedScene scene;
 
     [Label("27", skinStyle: SkinStyle.Box)]
-    
+
     [FormattedNumber]
     public int bigNumber;
     [FormattedNumber("c")]
     public float currency;
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        var9 = var8;
+    }
+#endif
 }
