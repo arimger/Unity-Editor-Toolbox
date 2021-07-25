@@ -121,7 +121,7 @@ public Component var2;
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/suffix.png)
 
 
-#### EnumFlagAttribute
+#### EnumTogglesAttribute
 
 ```csharp
 [System.Flags]
@@ -140,18 +140,11 @@ public enum FlagExample
 	Everything = ~0
 }
 
-[EnumFlag]
+[EnumToggles]
 public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExample.Flag6;
 ```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enumflag1.png)
-
-```csharp
-[EnumFlag(EnumStyle.Button)]
-public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExample.Flag6;
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enumflag2.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enumtoggles.png)
 
 #### NotNullAttribute
 

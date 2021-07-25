@@ -7,7 +7,6 @@
 - GuiColorAttribute
 
 ### Changed:
-
 - Remove obsolete attributes
 - Rename ToolboxCompositionAttribute class to ToolboxArchetypeAttribute
 
