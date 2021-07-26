@@ -59,19 +59,21 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.ObjectField(position, sceneProperty, GUIContent.none);
             EditorGUI.EndProperty();
 
-            if (HasSceneDetails(property))
+            if (!HasSceneDetails(property))
             {
-                var sceneData = SceneData.GetSceneData(sceneProperty);
-                var spacing = EditorGUIUtility.standardVerticalSpacing;
-                position.y += EditorGUIUtility.singleLineHeight + spacing;
-                if (sceneData.inBuild)
-                {
-                    DrawIncludedSceneDetails(position, sceneData);
-                }
-                else
-                {
-                    DrawRejectedSceneDetails(position, sceneData);
-                }
+                return;
+            }
+
+            var sceneData = SceneData.GetSceneData(sceneProperty);
+            var spacing = EditorGUIUtility.standardVerticalSpacing;
+            position.y += EditorGUIUtility.singleLineHeight + spacing;
+            if (sceneData.inBuild)
+            {
+                DrawIncludedSceneDetails(position, sceneData);
+            }
+            else
+            {
+                DrawRejectedSceneDetails(position, sceneData);
             }
         }
 
@@ -100,15 +102,16 @@ namespace Toolbox.Editor.Drawers
 
                 var sceneAsset = property.objectReferenceValue as SceneAsset;
                 var scenePath = AssetDatabase.GetAssetPath(sceneAsset);
-                var sceneGuid = AssetDatabase.GUIDFromAssetPath(scenePath);
+                var sceneGuid = AssetDatabase.AssetPathToGUID(scenePath);
                 for (var i = 0; i < EditorBuildSettings.scenes.Length; i++)
                 {
                     var sceneSettings = EditorBuildSettings.scenes[i];
-                    if (sceneSettings.guid.Equals(sceneGuid))
+                    var guid = sceneSettings.guid;
+                    if (guid.Equals(new GUID(sceneGuid)))
                     {
                         sceneData.index = i;
                         sceneData.enabled = sceneSettings.enabled;
-                        sceneData.guid = sceneSettings.guid;
+                        sceneData.guid = guid;
                         sceneData.inBuild = true;
                     }
                 }
