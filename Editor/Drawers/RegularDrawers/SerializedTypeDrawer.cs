@@ -120,23 +120,21 @@ namespace Toolbox.Editor.Drawers
 
             var referenceProperty = property.FindPropertyRelative("classReference");
             var referenceValue = referenceProperty.stringValue;
-            var referenceType = !string.IsNullOrEmpty(referenceValue)
-                ? Type.GetType(referenceValue)
-                : null;
+            var currentType = !string.IsNullOrEmpty(referenceValue) ? Type.GetType(referenceValue) : null;
 
             var filteredTypes = GetFilteredTypes(validAttribute);
 
-            var optionsCount = filteredTypes.Count + 1;
-            var options = new string[optionsCount];
+            var itemsCount = filteredTypes.Count + 1;
+            var options = new string[itemsCount];
             var index = 0;
 
             //create labels for all types
             options[0] = "<None>";
-            for (var i = 1; i < optionsCount; i++)
+            for (var i = 1; i < itemsCount; i++)
             {
                 var menuType = filteredTypes[i - 1];
                 var menuLabel = FormatGroupedTypeName(menuType, validAttribute.Grouping);
-                if (menuType == referenceType)
+                if (menuType == currentType)
                 {
                     index = i;
                 }
@@ -156,9 +154,16 @@ namespace Toolbox.Editor.Drawers
                 var buttonLabel = new GUIContent(options[index]);
                 ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
                 {
-                    referenceProperty.serializedObject.Update();
-                    referenceProperty.stringValue = GetClassReferencValue(i, filteredTypes);
-                    referenceProperty.serializedObject.ApplyModifiedProperties();
+                    try
+                    {
+                        referenceProperty.serializedObject.Update();
+                        referenceProperty.stringValue = GetClassReferencValue(i, filteredTypes);
+                        referenceProperty.serializedObject.ApplyModifiedProperties();
+                    }
+                    catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
+                    {
+                        ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
+                    }
                 });
             }
             else
