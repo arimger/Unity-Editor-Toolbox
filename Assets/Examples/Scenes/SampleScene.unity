@@ -642,7 +642,7 @@ MonoBehaviour:
   targetTag: Untagged
   progressBar: 25.4
   newLabel: 25.4
-  var2: {x: 28.4, y: 59.1}
+  var2: {x: 30.418846, y: 60.78535}
   var3: 1
   var4: 2
   var5: 3
@@ -660,8 +660,7 @@ MonoBehaviour:
     classReference: TMPro.TMP_SubMeshUI, Unity.TextMeshPro
   var11: Im read only
   var12: 0
-  enumFlag1: 39
-  enumFlag2: 198
+  enumFlag: 12
   var13: {fileID: 0}
   randomValue: -7.3907948
   directory: Editor Toolbox/Editors

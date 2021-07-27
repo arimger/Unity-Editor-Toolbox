@@ -1,4 +1,4 @@
-﻿//Custom reimplementation of an idea orginally provided here - https://github.com/roboryantron/UnityEditorJunkie/blob/master/Assets/SearchableEnum/Code/Editor/SearchablePopup.cs, 2019
+﻿//Custom reimplementation of an idea originally provided here - https://github.com/roboryantron/UnityEditorJunkie/blob/master/Assets/SearchableEnum/Code/Editor/SearchablePopup.cs, 2019
 
 using System;
 using System.Collections.Generic;
@@ -92,6 +92,7 @@ namespace Toolbox.Editor.Internal
                 {
                     SelectItem(searchArray.GetItemAt(optionIndex).index);
                 }
+
                 currentEvent.Use();
             }
 
@@ -110,29 +111,32 @@ namespace Toolbox.Editor.Internal
             }
 
             rect.xMin += Style.padding;
-#if !UNITY_2019_3_OR_NEWER
+            //NOTE: in Unity 2019.x "cancel" button is outside the search field
+#if !UNITY_2019_3_OR_NEWER || UNITY_2020_1_OR_NEWER
             rect.xMax -= Style.padding;
 #endif
             rect.yMin += Style.spacing;
             rect.yMax -= Style.spacing;
 
             //draw toolbar and try to search for valid text
-            searchArray.Search(searchField.OnGUI(rect, searchArray.Filter, Style.searchBoxStyle,
-                                                                           Style.showCancelButtonStyle,
-                                                                           Style.hideCancelButtonStyle));
+            var filter = searchArray.Filter;
+            var result = searchField.OnGUI(rect, filter, Style.searchBoxStyle,
+                Style.showCancelButtonStyle, Style.hideCancelButtonStyle);
+            searchArray.Search(result);
         }
 
         private void DrawContent(Rect rect)
         {
             var currentEvent = Event.current;
 
+            var itemsCount = searchArray.ItemsCount;
             //prepare base rect for the whole content window
-            var contentRect = new Rect(0, 0, rect.width - Style.scrollbarStyle.fixedWidth, searchArray.ItemsCount * Style.height);
+            var contentRect = new Rect(0, 0, rect.width - Style.scrollbarStyle.fixedWidth, itemsCount * Style.height);
             var elementRect = new Rect(0, 0, rect.width, Style.height);
 
             scroll = GUI.BeginScrollView(rect, scroll, contentRect);
             //iterate over all searched and available items
-            for (var i = 0; i < searchArray.ItemsCount; i++)
+            for (var i = 0; i < itemsCount; i++)
             {
                 if (currentEvent.type == EventType.Repaint && scrollIndex == i)
                 {
@@ -239,7 +243,7 @@ namespace Toolbox.Editor.Internal
             {
                 this.options = options;
                 items = new List<Item>();
-                Search("");
+                Search(string.Empty);
             }
 
 
@@ -251,12 +255,14 @@ namespace Toolbox.Editor.Internal
                 }
 
                 items.Clear();
+                var simplifiedFilter = filter.ToLower();
                 for (var i = 0; i < options.Length; i++)
                 {
-                    if (string.IsNullOrEmpty(filter) || options[i].ToLower().Contains(filter.ToLower()))
+                    var option = options[i];
+                    if (string.IsNullOrEmpty(filter) || option.ToLower().Contains(simplifiedFilter))
                     {
-                        var item = new Item(i, options[i]);
-                        if (string.Equals(options[i], filter, StringComparison.CurrentCultureIgnoreCase))
+                        var item = new Item(i, option);
+                        if (string.Equals(option, filter, StringComparison.CurrentCultureIgnoreCase))
                         {
                             items.Insert(0, item);
                         }
@@ -282,8 +288,7 @@ namespace Toolbox.Editor.Internal
             public string Filter { get; private set; }
         }
 
-
-        internal static class Style
+        private static class Style
         {
             internal static readonly float indent = 8.0f;
             internal static readonly float height = EditorGUIUtility.singleLineHeight;

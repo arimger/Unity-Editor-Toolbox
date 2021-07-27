@@ -7,6 +7,7 @@ namespace UnityEngine
     /// 
     /// <para>Supported types: any <see cref="Enum"/> with the <see cref="FlagsAttribute"/>.</para>
     /// </summary>
+    [Obsolete("Use EnumTogglesAttribute instead.")]
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class EnumFlagAttribute : PropertyAttribute
     {
@@ -31,6 +32,7 @@ namespace UnityEngine
         public float ButtonsWidth { get; set; } = 85.0f;
     }
 
+    [Obsolete("EnumStyle is no longer supported.")]
     public enum EnumStyle
     {
         Popup,
