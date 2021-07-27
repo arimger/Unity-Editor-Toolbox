@@ -518,6 +518,12 @@ public void Usage()
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializedscene.png)
 
+```csharp
+[SceneDetails]
+public SerializedScene scene;
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenedetails.png)
+
 #### SerializedDictionary<TK, TV>
 
 Allows to serialize and use Dictionaries. The presented class implements the IDictionary interface, so it can be easily used like the standard version.
