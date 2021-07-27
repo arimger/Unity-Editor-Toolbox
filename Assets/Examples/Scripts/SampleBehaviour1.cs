@@ -192,8 +192,9 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("26", skinStyle: SkinStyle.Box)]
 
+    public SerializedScene scene1;
     [SceneDetails]
-    public SerializedScene scene;
+    public SerializedScene scene2;
 
     [Label("27", skinStyle: SkinStyle.Box)]
 

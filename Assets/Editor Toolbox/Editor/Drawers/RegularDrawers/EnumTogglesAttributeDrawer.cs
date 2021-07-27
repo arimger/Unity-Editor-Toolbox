@@ -10,6 +10,9 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(EnumTogglesAttribute))]
     public class EnumTogglesAttributeDrawer : ToolboxNativePropertyDrawer
     {
+        /// <summary>
+        /// Enum-related metadatas mapped to all previously supported types.
+        /// </summary>
         private readonly Dictionary<Type, EnumData> cachedEnumDatas = new Dictionary<Type, EnumData>();
 
 
@@ -294,16 +297,17 @@ namespace Toolbox.Editor.Drawers
         {
             label = EditorGUI.BeginProperty(position, label, property);
             var prefixPosition = EditorGUI.PrefixLabel(position, label);
-            var input = GetInputData(Attribute, position, prefixPosition);
 
-            var enumData = GetEnumData(property, fieldInfo);
-            if (enumData.isFlags)
+            //try to retrieve all drawing data and enum cache needed by the drawer
+            var input = GetInputData(Attribute, position, prefixPosition);
+            var cache = GetEnumData(property, fieldInfo);
+            if (cache.isFlags)
             {
-                HandleFlagsEnum(input, enumData, property);
+                HandleFlagsEnum(input, cache, property);
             }
             else
             {
-                HandleBasicEnum(input, enumData, property);
+                HandleBasicEnum(input, cache, property);
             }
 
             EditorGUI.EndProperty();
@@ -351,11 +355,14 @@ namespace Toolbox.Editor.Drawers
             public int otherRowsCount;
         }
 
+        /// <summary>
+        /// Metadata about a single strip in the group.
+        /// </summary>
         private struct StripInfo
         {
             public Rect position;
-            public float spacing;
             public int division;
+            public float spacing;
         }
 
         private static class Style

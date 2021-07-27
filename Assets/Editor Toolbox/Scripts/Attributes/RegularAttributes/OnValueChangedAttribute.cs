@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// TODO.
+    /// Calls given callback each time associated property is changed.
     /// 
     /// <para>Supported types: all.</para>
     /// </summary>
