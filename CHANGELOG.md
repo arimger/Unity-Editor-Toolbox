@@ -1,3 +1,12 @@
+## 0.9.1 [27.07.2021]
+
+### Added:
+- EnumTogglesAttribute
+- SceneDetailsAttribute
+
+### Changed:
+- Deprecate EnumFlagAttribute
+
 ## 0.9.0 [19.07.2021]
 
 ### Added:
