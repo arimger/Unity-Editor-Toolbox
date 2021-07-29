@@ -1,3 +1,8 @@
+## 0.9.2 [29.07.2021]
+
+### Changed:
+- Fix layout groups within nested Editors
+
 ## 0.9.1 [27.07.2021]
 
 ### Added:
