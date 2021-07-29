@@ -601,8 +601,11 @@ namespace Toolbox.Editor.Internal
             var style = Style.foldoutLabelStyle;
             var leftPadding = style.padding.left;
             style.CalcMinMaxWidth(label, out var minWidth, out _);
+            var diff = rect.height - style.CalcHeight(label, minWidth);
             rect.xMin += leftPadding;
             rect.xMax -= rect.width - minWidth;
+            rect.yMin += diff / 2;
+            rect.yMax -= diff / 2;
             List.isExpanded = EditorGUI.Foldout(rect, List.isExpanded, label, true, style);
         }
 
