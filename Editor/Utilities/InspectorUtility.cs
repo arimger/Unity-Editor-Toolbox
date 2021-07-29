@@ -18,29 +18,36 @@ namespace Toolbox.Editor
         {
             //we can use 'OnBeginToolboxEditor' and 'OnCloseToolboxEditor' to cache 
             //processed Editors and determine the real context of the serialization
-            ToolboxEditor.OnBeginToolboxEditor += (editor) =>
-            {
-                CurrentTargetObjects = editor.targets;
-            };
-            ToolboxEditor.OnCloseToolboxEditor += (editor) =>
-            {
-                CurrentTargetObjects = null;
-            };
+            ToolboxEditor.OnBeginToolboxEditor += CacheTargets;
+            ToolboxEditor.OnCloseToolboxEditor += ClearTargets;
 
             //we can use each new Editor to check if 'OnEditorReload' should be called
-            ToolboxEditor.OnBeginToolboxEditor += (editor) =>
-            {
-                if (lastCachedEditor == null)
-                {
-                    OnEditorReload?.Invoke();
-                }
-
-                //this Editor will be destroyed every time when object is deselected
-                lastCachedEditor = editor;
-            };
+            ToolboxEditor.OnBeginToolboxEditor += CheckReloads;
         }
 
         private static Editor lastCachedEditor;
+
+
+        private static void CacheTargets(Editor editor)
+        {
+            CurrentTargetObjects = editor.targets;
+        }
+
+        private static void ClearTargets(Editor editor)
+        {
+            CurrentTargetObjects = null;
+        }
+
+        private static void CheckReloads(Editor editor)
+        {
+            if (lastCachedEditor == null)
+            {
+                OnEditorReload?.Invoke();
+            }
+
+            //this Editor will be destroyed every time when object is deselected
+            lastCachedEditor = editor;
+        }
 
 
         /// <summary>
@@ -70,23 +77,6 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Simulates OnValidate broadcast call on the target object.
-        /// </summary>
-        internal static void SimulateOnValidate(Object target)
-        {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
-
-            var methodInfo = target.GetType().GetMethod("OnValidate", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (methodInfo != null)
-            {
-                methodInfo.Invoke(target, null);
-            }
-        }
-
-        /// <summary>
         /// Returns the visibility of the <see cref="Editor"/>.
         /// </summary>
         internal static bool GetIsEditorExpanded(Editor editor)
@@ -110,6 +100,23 @@ namespace Toolbox.Editor
                 isVisible.SetValue(editor, true);
             }
 #endif
+        }
+
+        /// <summary>
+        /// Simulates OnValidate broadcast call on the target object.
+        /// </summary>
+        internal static void SimulateOnValidate(Object target)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            var methodInfo = target.GetType().GetMethod("OnValidate", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (methodInfo != null)
+            {
+                methodInfo.Invoke(target, null);
+            }
         }
 
 
