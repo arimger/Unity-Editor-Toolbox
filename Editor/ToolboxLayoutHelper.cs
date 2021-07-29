@@ -14,9 +14,9 @@ namespace Toolbox.Editor
     {
         static ToolboxLayoutHelper()
         {
-            //ToolboxEditor.OnCloseToolboxEditor is a quite useful event which can be used to 
-            //validate layout data. Actually it should be used to draw additional information
-            //into the target Editor but in this case we will check previously created scopes
+            //events exposed by the ToolboxEditor are used to maintain created layout data
+            //previously created scopes are validated and closed if it is needed
+            //additionally this class sends appropriate warning messages to the Console window
 
             ToolboxEditor.OnBeginToolboxEditor += OnBeginEditor;
             ToolboxEditor.OnBreakToolboxEditor += OnBreakEditor;
@@ -46,7 +46,6 @@ namespace Toolbox.Editor
 
         private static void OnBreakEditor(Editor editor)
         {
-            nestingLevel = 0;
             isExitedLayout = true;
         }
 
@@ -61,6 +60,7 @@ namespace Toolbox.Editor
 
         /// <summary>
         /// Validates currently cached layout scopes (vertical and horizontal).
+        /// Remaining groups are closed if current nesting levels is zero.
         /// </summary>
         /// <returns>true if scopes were clean.</returns>
         private static bool ValidateScopes()
@@ -84,10 +84,8 @@ namespace Toolbox.Editor
 
                 return false;
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
 
