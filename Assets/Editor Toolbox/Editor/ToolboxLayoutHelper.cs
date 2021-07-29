@@ -27,31 +27,35 @@ namespace Toolbox.Editor
         /// <summary>
         /// Determines whether we are currently within any Editor's layout scope.
         /// </summary>
-        private static bool inEditorLayout;
+        private static bool isEditorLayout;
         /// <summary>
         /// Determines whether layout was prematurely exited by the external API.
         /// </summary>
         private static bool isExitedLayout;
 
+        private static int nestingLevel;
         private static int vLayoutClips;
         private static int hLayoutClips;
 
 
         private static void OnBeginEditor(Editor editor)
         {
-            inEditorLayout = true;
+            nestingLevel++;
+            isEditorLayout = true;
         }
 
         private static void OnBreakEditor(Editor editor)
         {
+            nestingLevel = 0;
             isExitedLayout = true;
         }
 
         private static void OnCloseEditor(Editor editor)
         {
+            nestingLevel--;
             ValidateScopes();
 
-            inEditorLayout = false;
+            isEditorLayout = nestingLevel > 0;
             isExitedLayout = false;
         }
 
@@ -61,7 +65,7 @@ namespace Toolbox.Editor
         /// <returns>true if scopes were clean.</returns>
         private static bool ValidateScopes()
         {
-            if (vLayoutClips > 0 || hLayoutClips > 0)
+            if ((vLayoutClips > 0 || hLayoutClips > 0) && nestingLevel <= 0)
             {
                 if (!isExitedLayout)
                 {
@@ -94,7 +98,7 @@ namespace Toolbox.Editor
 
         internal static Rect BeginVertical(GUIStyle style, params GUILayoutOption[] options)
         {
-            if (!inEditorLayout)
+            if (!isEditorLayout)
             {
                 ToolboxEditorLog.LogWarning("Begin vertical layout group action can be executed only within the Toolbox Editor.");
                 return Rect.zero;
@@ -123,7 +127,7 @@ namespace Toolbox.Editor
 
         internal static Rect BeginHorizontal(GUIStyle style, params GUILayoutOption[] options)
         {
-            if (!inEditorLayout)
+            if (!isEditorLayout)
             {
                 ToolboxEditorLog.LogWarning("Begin horizontal layout group action can be executed only within the Toolbox Editor.");
                 return Rect.zero;

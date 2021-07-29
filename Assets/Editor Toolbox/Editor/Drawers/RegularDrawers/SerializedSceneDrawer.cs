@@ -44,7 +44,7 @@ namespace Toolbox.Editor.Drawers
 
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
-            var lineHeight = EditorGUIUtility.singleLineHeight;
+            var lineHeight = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
             return HasSceneDetails(property)
                 ? base.GetPropertyHeightSafe(property, label) + lineHeight * 2
                 : base.GetPropertyHeightSafe(property, label);
