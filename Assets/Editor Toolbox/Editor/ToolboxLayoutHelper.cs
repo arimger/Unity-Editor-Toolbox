@@ -21,6 +21,9 @@ namespace Toolbox.Editor
             ToolboxEditor.OnBeginToolboxEditor += OnBeginEditor;
             ToolboxEditor.OnBreakToolboxEditor += OnBreakEditor;
             ToolboxEditor.OnCloseToolboxEditor += OnCloseEditor;
+
+            //we have to reset the current state between Editors to keep values independent
+            InspectorUtility.OnEditorReload += ResetCache;
         }
 
 
@@ -55,6 +58,14 @@ namespace Toolbox.Editor
             ValidateScopes();
 
             isEditorLayout = nestingLevel > 0;
+            isExitedLayout = false;
+        }
+
+        private static void ResetCache()
+        {
+            nestingLevel = isEditorLayout ? 1 : 0;
+            vLayoutClips = 0;
+            hLayoutClips = 0;
             isExitedLayout = false;
         }
 
@@ -110,7 +121,7 @@ namespace Toolbox.Editor
         {
             if (vLayoutClips == 0)
             {
-                ToolboxEditorLog.LogWarning("There is no a vertical group to end. Call will be ignored.");
+                ToolboxEditorLog.LogWarning("There is no vertical group to end. Call will be ignored.");
                 return;
             }
 
@@ -145,7 +156,7 @@ namespace Toolbox.Editor
         {
             if (hLayoutClips == 0)
             {
-                ToolboxEditorLog.LogWarning("There is no a horizontal group to end. Call will be ignored.");
+                ToolboxEditorLog.LogWarning("There is no horizontal group to end. Call will be ignored.");
                 return;
             }
 
