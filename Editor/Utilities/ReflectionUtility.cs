@@ -1,13 +1,17 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 using UnityEditor;
-using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
     internal static class ReflectionUtility
     {
         private readonly static Assembly editorAssembly = typeof(UnityEditor.Editor).Assembly;
+
+        public const BindingFlags allBindings = BindingFlags.Instance |
+            BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
 
 
         /// <summary>
@@ -25,9 +29,7 @@ namespace Toolbox.Editor
 
         internal static MethodInfo GetObjectMethod(string methodName, params Object[] targetObjects)
         {
-            return GetObjectMethod(methodName,
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static,
-                targetObjects);
+            return GetObjectMethod(methodName, allBindings, targetObjects);
         }
 
         internal static MethodInfo GetObjectMethod(string methodName, BindingFlags bindingFlags, params Object[] targetObjects)
@@ -38,7 +40,8 @@ namespace Toolbox.Editor
             }
 
             var targetType = targetObjects[0].GetType();
-            var methodInfo = targetType.GetMethod(methodName, bindingFlags);
+            var methodInfo = targetType.GetMethod(methodName,
+                bindingFlags, null, CallingConventions.Any, new Type[0], null);
             return methodInfo;
         }
 
