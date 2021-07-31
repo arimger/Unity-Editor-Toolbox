@@ -1,4 +1,4 @@
-﻿namespace Toolbox.Editor.Drawers.Reflection
+﻿namespace Toolbox.Editor.Reflection
 {
     internal enum ValueSourceType
     {
