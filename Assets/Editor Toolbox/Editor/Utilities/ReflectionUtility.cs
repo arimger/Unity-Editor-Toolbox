@@ -25,8 +25,8 @@ namespace Toolbox.Editor
 
         internal static MethodInfo GetObjectMethod(string methodName, params Object[] targetObjects)
         {
-            return GetObjectMethod(methodName, 
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, 
+            return GetObjectMethod(methodName,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static,
                 targetObjects);
         }
 
