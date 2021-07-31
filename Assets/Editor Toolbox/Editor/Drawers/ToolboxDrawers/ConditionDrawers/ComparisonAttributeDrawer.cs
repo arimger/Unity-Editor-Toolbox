@@ -1,44 +1,51 @@
-﻿using UnityEditor;
+﻿using System;
+
+using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor.Drawers
 {
+    using Toolbox.Editor.Reflection;
+
     public abstract class ComparisonAttributeDrawer<T> : ToolboxConditionDrawer<T> where T : ComparisonAttribute
     {
         protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, T attribute)
         {
-            var propertyToCheck = property.GetSibiling(attribute.PropertyName);
-            if (propertyToCheck == null)
+            var declaringObject = property.GetDeclaringObject();
+            if (!ValueExtractionUtility.TryGetValue(attribute.PropertyName, declaringObject, out var value))
             {
                 ToolboxEditorLog.PropertyNotFoundWarning(property, attribute.PropertyName);
                 return PropertyCondition.Valid;
             }
 
             //TODO: validate 'propertyToCheck' type with 'attribute.ValueToMatch'
+            //TODO: test masks
+            //TODO: more types
 
             var result = true;
-            switch (propertyToCheck.propertyType)
+            switch (value)
             {
-                case SerializedPropertyType.Integer:
-                    result = ComparisionHelper.CheckInteger(propertyToCheck, attribute.ValueToMatch, attribute.TestMethod);
+                case Enum v:
+                    result = ComparisionHelper.CheckEnum(v, attribute.ValueToMatch, attribute.TestMethod);
                     break;
-                case SerializedPropertyType.Boolean:
-                    result = ComparisionHelper.CheckBoolean(propertyToCheck, attribute.ValueToMatch, attribute.TestMethod);
+                case int v:
+                    result = ComparisionHelper.CheckInteger(v, attribute.ValueToMatch, attribute.TestMethod);
                     break;
-                case SerializedPropertyType.Float:
-                    result = ComparisionHelper.CheckFloat(propertyToCheck, attribute.ValueToMatch, attribute.TestMethod);
+                case bool v:
+                    result = ComparisionHelper.CheckBoolean(v, attribute.ValueToMatch, attribute.TestMethod);
                     break;
-                case SerializedPropertyType.String:
-                    result = ComparisionHelper.CheckString(propertyToCheck, attribute.ValueToMatch, attribute.TestMethod);
+                case float v:
+                    result = ComparisionHelper.CheckFloat(v, attribute.ValueToMatch, attribute.TestMethod);
                     break;
-                case SerializedPropertyType.ObjectReference:
-                    result = ComparisionHelper.CheckObject(propertyToCheck, attribute.ValueToMatch, attribute.TestMethod);
+                case string v:
+                    result = ComparisionHelper.CheckString(v, attribute.ValueToMatch, attribute.TestMethod);
                     break;
-                case SerializedPropertyType.Enum:
-                    result = ComparisionHelper.CheckEnum(propertyToCheck, attribute.ValueToMatch, attribute.TestMethod);
+                case Object v:
+                    result = ComparisionHelper.CheckBoolean(v, attribute.ValueToMatch, attribute.TestMethod);
                     break;
                 default:
-                    ToolboxEditorLog.TypeNotSupportedWarning(property, propertyToCheck.type);
+                    ToolboxEditorLog.TypeNotSupportedWarning(property, value.GetType());
                     break;
             }
 
@@ -56,86 +63,86 @@ namespace Toolbox.Editor.Drawers
             }
 
 
-            internal static bool CheckInteger(SerializedProperty propertyToCheck, object valueToMatch, ComparisionTestMethod testMethod)
+            internal static bool CheckInteger(int value, object valueToMatch, ComparisionTestMethod testMethod)
             {
                 switch (testMethod)
                 {
                     case ComparisionTestMethod.Equal:
-                        return propertyToCheck.intValue == (int)valueToMatch;
+                        return value == (int)valueToMatch;
                     case ComparisionTestMethod.Greater:
-                        return propertyToCheck.intValue > (int)valueToMatch;
+                        return value > (int)valueToMatch;
                     case ComparisionTestMethod.Less:
-                        return propertyToCheck.intValue < (int)valueToMatch;
+                        return value < (int)valueToMatch;
                     case ComparisionTestMethod.GreaterEqual:
-                        return propertyToCheck.intValue >= (int)valueToMatch;
+                        return value >= (int)valueToMatch;
                     case ComparisionTestMethod.LessEqual:
-                        return propertyToCheck.intValue <= (int)valueToMatch;
+                        return value <= (int)valueToMatch;
                     case ComparisionTestMethod.Mask:
-                        return (propertyToCheck.intValue & (int)valueToMatch) == (int)valueToMatch;
+                        return (value & (int)valueToMatch) == (int)valueToMatch;
                     default:
                         return false;
                 }
             }
 
-            internal static bool CheckBoolean(SerializedProperty propertyToCheck, object valueToMatch, ComparisionTestMethod testMethod)
+            internal static bool CheckBoolean(bool value, object valueToMatch, ComparisionTestMethod testMethod)
             {
                 switch (testMethod)
                 {
                     case ComparisionTestMethod.Equal:
-                        return propertyToCheck.boolValue.Equals(valueToMatch);
+                        return value.Equals(valueToMatch);
                     default:
                         LogMethodNotSupported(testMethod, valueToMatch);
                         return false;
                 }
             }
 
-            internal static bool CheckFloat(SerializedProperty propertyToCheck, object valueToMatch, ComparisionTestMethod testMethod)
+            internal static bool CheckFloat(float value, object valueToMatch, ComparisionTestMethod testMethod)
             {
                 switch (testMethod)
                 {
                     case ComparisionTestMethod.Equal:
-                        return propertyToCheck.floatValue == (float)valueToMatch;
+                        return value == (float)valueToMatch;
                     case ComparisionTestMethod.Greater:
-                        return propertyToCheck.floatValue > (float)valueToMatch;
+                        return value > (float)valueToMatch;
                     case ComparisionTestMethod.Less:
-                        return propertyToCheck.floatValue < (float)valueToMatch;
+                        return value < (float)valueToMatch;
                     case ComparisionTestMethod.GreaterEqual:
-                        return propertyToCheck.floatValue >= (float)valueToMatch;
+                        return value >= (float)valueToMatch;
                     case ComparisionTestMethod.LessEqual:
-                        return propertyToCheck.floatValue <= (float)valueToMatch;
+                        return value <= (float)valueToMatch;
                     default:
                         LogMethodNotSupported(testMethod, valueToMatch);
                         return false;
                 }
             }
 
-            internal static bool CheckString(SerializedProperty propertyToCheck, object valueToMatch, ComparisionTestMethod testMethod)
+            internal static bool CheckString(string value, object valueToMatch, ComparisionTestMethod testMethod)
             {
                 switch (testMethod)
                 {
                     case ComparisionTestMethod.Equal:
-                        return propertyToCheck.stringValue.Equals(valueToMatch);
+                        return value.Equals(valueToMatch);
                     default:
                         LogMethodNotSupported(testMethod, valueToMatch);
                         return false;
                 }
             }
 
-            internal static bool CheckObject(SerializedProperty propertyToCheck, object valueToMatch, ComparisionTestMethod testMethod)
+            internal static bool CheckObject(Object value, object valueToMatch, ComparisionTestMethod testMethod)
             {
                 switch (testMethod)
                 {
                     case ComparisionTestMethod.Equal:
-                        return propertyToCheck.objectReferenceValue == (bool)valueToMatch;
+                        return value == (bool)valueToMatch;
                     default:
                         LogMethodNotSupported(testMethod, valueToMatch);
                         return false;
                 }
             }
 
-            internal static bool CheckEnum(SerializedProperty propertyToCheck, object valueToMatch, ComparisionTestMethod testMethod)
+            internal static bool CheckEnum(Enum value, object valueToMatch, ComparisionTestMethod testMethod)
             {
-                return CheckInteger(propertyToCheck, valueToMatch, testMethod);
+                return CheckInteger(Convert.ToInt32(value), valueToMatch, testMethod);
             }
         }
     }
