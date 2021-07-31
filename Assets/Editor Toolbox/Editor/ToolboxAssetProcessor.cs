@@ -1,8 +1,9 @@
 ﻿using UnityEditor;
+using AssetProcessor = UnityEditor.AssetModificationProcessor;
 
 namespace Toolbox.Editor
 {
-    public class ToolboxAssetProcessor : UnityEditor.AssetModificationProcessor
+    public class ToolboxAssetProcessor : AssetProcessor
     {
         private static AssetDeleteResult OnWillDeleteAsset(string assetPath, RemoveAssetOptions options)
         {
