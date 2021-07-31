@@ -10,11 +10,6 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(PresetAttribute))]
     public class PresetAttributeDrawer : ToolboxNativePropertyDrawer
     {
-        //TODO: move it to the ReflectionUtility
-        private const BindingFlags presetBinding = BindingFlags.Instance | BindingFlags.Static |
-                                                   BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly;
-
-
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             return base.GetPropertyHeightSafe(property, label);
@@ -24,7 +19,7 @@ namespace Toolbox.Editor.Drawers
         {
             var targetObject = property.GetDeclaringObject();
             var targetType = targetObject.GetType();
-            var presetField = targetType.GetField(Attribute.PresetFieldName, presetBinding);
+            var presetField = targetType.GetField(Attribute.PresetFieldName, ReflectionUtility.allBindings);
             if (presetField == null)
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,

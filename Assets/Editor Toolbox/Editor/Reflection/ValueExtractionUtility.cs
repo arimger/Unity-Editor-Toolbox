@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Toolbox.Editor.Drawers.Reflection
+namespace Toolbox.Editor.Reflection
 {
-    public static class ValueExtractor
+    public static class ValueExtractionUtility
     {
         private static readonly List<IValueExtractor> extractors = new List<IValueExtractor>()
         {
