@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Reflection;
 
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -23,8 +23,9 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var targetObject = property.GetDeclaringObject();
-            var presetValues = targetObject.GetType().GetField(Attribute.PresetFieldName, presetBinding);  
-            if (presetValues == null)
+            var targetType = targetObject.GetType();
+            var presetField = targetType.GetField(Attribute.PresetFieldName, presetBinding);
+            if (presetField == null)
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,
                     "Cannot find relative preset field (" + Attribute.PresetFieldName + ").");
@@ -32,14 +33,14 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            var presetObject = presetValues.GetValue(targetObject);
+            var presetObject = presetField.GetValue(targetObject);
             if (presetObject is IList list)
             {
                 var propertyType = property.GetProperType(fieldInfo, targetObject);
                 //check if types match between property and provided preset
-                if (propertyType == (presetValues.FieldType.IsGenericType 
-                                   ? presetValues.FieldType.GetGenericArguments()[0] 
-                                   : presetValues.FieldType.GetElementType()))
+                if (propertyType == (presetField.FieldType.IsGenericType
+                                   ? presetField.FieldType.GetGenericArguments()[0]
+                                   : presetField.FieldType.GetElementType()))
                 {
                     var objects = new object[list.Count];
                     var options = new string[list.Count];
@@ -68,7 +69,7 @@ namespace Toolbox.Editor.Drawers
                         //there is no cleaner way to do it, since we don't really know what kind of 
                         //serialized property we are updating
 
-                        property.serializedObject.Update(); 
+                        property.serializedObject.Update();
                         property.SetProperValue(fieldInfo, objects[index]);
                         property.serializedObject.ApplyModifiedProperties();
 
@@ -80,7 +81,7 @@ namespace Toolbox.Editor.Drawers
                 }
                 else
                 {
-                    ToolboxEditorLog.AttributeUsageWarning(attribute, property, 
+                    ToolboxEditorLog.AttributeUsageWarning(attribute, property,
                         "Type mismatch between serialized property and provided preset field.");
                     EditorGUI.PropertyField(position, property, label);
                     return;
@@ -88,7 +89,7 @@ namespace Toolbox.Editor.Drawers
             }
             else
             {
-                ToolboxEditorLog.AttributeUsageWarning(attribute, property, 
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
                     "Preset field (" + Attribute.PresetFieldName + ") has to be a one-dimensional collection (array or list).");
                 EditorGUI.PropertyField(position, property, label);
                 return;
