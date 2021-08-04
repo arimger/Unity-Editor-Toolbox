@@ -26,6 +26,7 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
         {
+            position = EditorGUI.IndentedRect(position);
             position.yMin = position.yMax - EditorGUIUtility.singleLineHeight;
             ToolboxEditorGui.BoldLabel(position, header);
             position.yMin = position.yMax - EditorGUIUtility.standardVerticalSpacing;
