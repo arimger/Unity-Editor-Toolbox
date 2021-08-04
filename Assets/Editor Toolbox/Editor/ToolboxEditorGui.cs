@@ -197,6 +197,16 @@ namespace Toolbox.Editor
         {
             GUI.DrawTexture(rect, texture, scaleMode, alphaBlend);
         }
+
+        public static void BoldLabel(Rect rect, string label)
+        {
+            BoldLabel(rect, new GUIContent(label));
+        }
+
+        public static void BoldLabel(Rect rect, GUIContent label)
+        {
+            EditorGUI.LabelField(rect, label, EditorStyles.boldLabel);
+        }
     }
 
     public static partial class ToolboxEditorGui

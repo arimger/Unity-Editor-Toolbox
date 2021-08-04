@@ -3,6 +3,13 @@ Shader "Unlit/TestShader"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        [Indent(3)]
+        _Float1 ("Float1", Float) = 0.0
+        [Help(Custom Help Box , 1)]
+        _Float2 ("Float2", Float) = 0.0
+        _Float3 ("Float3", Float) = 0.0
+        [Title(Custom Title, 4)]
+        _Float ("Float", Float) = 0.5
         [Toggle][Space]
         _ToggleProperty("Toggle", Int) = 0
         [ShowIfToggle(_ToggleProperty)]
