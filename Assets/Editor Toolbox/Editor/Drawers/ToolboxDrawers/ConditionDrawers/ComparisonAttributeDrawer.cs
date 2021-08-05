@@ -19,30 +19,51 @@ namespace Toolbox.Editor.Drawers
                 return PropertyCondition.Valid;
             }
 
-            //TODO: validate 'propertyToCheck' type with 'attribute.ValueToMatch'
-            //TODO: test masks
-            //TODO: more types
+            //var valueToMatch = attribute.ValueToMatch;
+            //TODO: what about UnityEngine.Object
+            //if (valueToMatch.GetType() != value.GetType())
+            //{
+            //    ToolboxEditorLog.AttributeUsageWarning(attribute, property, "Given valueToMatch type missmatched with targeted source.");
+            //    return PropertyCondition.Valid;
+            //}
 
+            //TODO: more types
+            // - long
+            // - ulong
+            // - uint
+            // - double
+            // https://docs.microsoft.com/pl-pl/dotnet/csharp/language-reference/builtin-types/built-in-types
+
+            var typeCode = Type.GetTypeCode(value.GetType());
             var result = true;
-            switch (value)
+            switch (typeCode)
             {
-                case Enum v:
-                    result = ComparisionHelper.CheckEnum(v, attribute.ValueToMatch, attribute.TestMethod);
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                    result = ComparisionHelper.CheckInteger(Convert.ToInt32(value), attribute.ValueToMatch, attribute.TestMethod);
                     break;
-                case int v:
-                    result = ComparisionHelper.CheckInteger(v, attribute.ValueToMatch, attribute.TestMethod);
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    result = ComparisionHelper.CheckFloat(Convert.ToSingle(value), attribute.ValueToMatch, attribute.TestMethod);
                     break;
-                case bool v:
-                    result = ComparisionHelper.CheckBoolean(v, attribute.ValueToMatch, attribute.TestMethod);
+                case TypeCode.String:
+                    result = ComparisionHelper.CheckString(Convert.ToString(value), attribute.ValueToMatch, attribute.TestMethod);
                     break;
-                case float v:
-                    result = ComparisionHelper.CheckFloat(v, attribute.ValueToMatch, attribute.TestMethod);
+                case TypeCode.Boolean:
+                    result = ComparisionHelper.CheckBoolean(Convert.ToBoolean(value), attribute.ValueToMatch, attribute.TestMethod);
                     break;
-                case string v:
-                    result = ComparisionHelper.CheckString(v, attribute.ValueToMatch, attribute.TestMethod);
-                    break;
-                case Object v:
-                    result = ComparisionHelper.CheckBoolean(v, attribute.ValueToMatch, attribute.TestMethod);
+                case TypeCode.Object:
+                    if (value is Object obj)
+                    {
+                        result = ComparisionHelper.CheckBoolean(obj, attribute.ValueToMatch, attribute.TestMethod);
+                    }
                     break;
                 default:
                     ToolboxEditorLog.TypeNotSupportedWarning(property, value.GetType());
@@ -65,20 +86,21 @@ namespace Toolbox.Editor.Drawers
 
             internal static bool CheckInteger(int value, object valueToMatch, ComparisionTestMethod testMethod)
             {
+                var realValueToMatch = Convert.ToInt32(valueToMatch);
                 switch (testMethod)
                 {
                     case ComparisionTestMethod.Equal:
-                        return value == (int)valueToMatch;
+                        return value == realValueToMatch;
                     case ComparisionTestMethod.Greater:
-                        return value > (int)valueToMatch;
+                        return value > realValueToMatch;
                     case ComparisionTestMethod.Less:
-                        return value < (int)valueToMatch;
+                        return value < realValueToMatch;
                     case ComparisionTestMethod.GreaterEqual:
-                        return value >= (int)valueToMatch;
+                        return value >= realValueToMatch;
                     case ComparisionTestMethod.LessEqual:
-                        return value <= (int)valueToMatch;
+                        return value <= realValueToMatch;
                     case ComparisionTestMethod.Mask:
-                        return (value & (int)valueToMatch) == (int)valueToMatch;
+                        return (value & realValueToMatch) == realValueToMatch;
                     default:
                         return false;
                 }
@@ -98,18 +120,19 @@ namespace Toolbox.Editor.Drawers
 
             internal static bool CheckFloat(float value, object valueToMatch, ComparisionTestMethod testMethod)
             {
+                var realValueToMatch = Convert.ToSingle(valueToMatch);
                 switch (testMethod)
                 {
                     case ComparisionTestMethod.Equal:
-                        return value == (float)valueToMatch;
+                        return value == realValueToMatch;
                     case ComparisionTestMethod.Greater:
-                        return value > (float)valueToMatch;
+                        return value > realValueToMatch;
                     case ComparisionTestMethod.Less:
-                        return value < (float)valueToMatch;
+                        return value < realValueToMatch;
                     case ComparisionTestMethod.GreaterEqual:
-                        return value >= (float)valueToMatch;
+                        return value >= realValueToMatch;
                     case ComparisionTestMethod.LessEqual:
-                        return value <= (float)valueToMatch;
+                        return value <= realValueToMatch;
                     default:
                         LogMethodNotSupported(testMethod, valueToMatch);
                         return false;
@@ -138,11 +161,6 @@ namespace Toolbox.Editor.Drawers
                         LogMethodNotSupported(testMethod, valueToMatch);
                         return false;
                 }
-            }
-
-            internal static bool CheckEnum(Enum value, object valueToMatch, ComparisionTestMethod testMethod)
-            {
-                return CheckInteger(Convert.ToInt32(value), valueToMatch, testMethod);
             }
         }
     }
