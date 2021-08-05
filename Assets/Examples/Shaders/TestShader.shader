@@ -1,8 +1,14 @@
 Shader "Unlit/TestShader"
 {
     Properties
-    {
+    { 
+        [IntRange]
+        _Int("Float0", Range(0, 2)) = 0.0
+        _Float0("Float0", Float) = 0.0
+        [CompactTexture]
         _MainTex ("Texture", 2D) = "white" {}
+        [Vector3]
+        _Vector("Vector2", Vector) = (0.0, 0.0, 0.0)
         [Indent(3)]
         _Float1 ("Float1", Float) = 0.0
         [Help(Custom Help Box , 1)]
