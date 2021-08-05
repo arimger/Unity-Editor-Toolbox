@@ -198,6 +198,38 @@ namespace Toolbox.Editor
             GUI.DrawTexture(rect, texture, scaleMode, alphaBlend);
         }
 
+        public static void DrawMinMaxSlider(Rect rect, string label, ref float xValue, ref float yValue, float minValue, float maxValue)
+        {
+            DrawMinMaxSlider(rect, new GUIContent(label), ref xValue, ref yValue, minValue, maxValue);
+        }
+
+        public static void DrawMinMaxSlider(Rect rect, GUIContent label, ref float xValue, ref float yValue, float minValue, float maxValue)
+        {
+            var padding = 8.0f;
+            var labelWidth = EditorGUIUtility.labelWidth;
+            var fieldWidth = EditorGUIUtility.fieldWidth;
+
+            var minFieldRect = new Rect(rect.xMin + labelWidth, rect.y, fieldWidth, rect.height);
+            var maxFieldRect = new Rect(rect.xMax - fieldWidth, rect.y, fieldWidth, rect.height);
+            var labelRect = new Rect(rect.x, rect.y, labelWidth, rect.height);
+            //set slider rect between min and max fields + additional padding
+            var sliderRect = new Rect(rect.x + labelWidth + fieldWidth + padding,
+                                      rect.y,
+                                      rect.width - labelWidth - fieldWidth * 2 - padding * 2,
+                                      rect.height);
+
+            //begin drawing using GUI methods
+            EditorGUI.LabelField(labelRect, label);
+            EditorGUI.BeginChangeCheck();
+            xValue = EditorGUI.FloatField(minFieldRect, xValue);
+            yValue = EditorGUI.FloatField(maxFieldRect, yValue);
+            EditorGUI.MinMaxSlider(sliderRect, ref xValue, ref yValue, minValue, maxValue);
+
+            //values validation (xValue can't be higher than yValue etc.)
+            xValue = Mathf.Clamp(xValue, minValue, Mathf.Min(maxValue, yValue));
+            yValue = Mathf.Clamp(yValue, Mathf.Max(minValue, xValue), maxValue);
+        }
+
         public static void BoldLabel(Rect rect, string label)
         {
             BoldLabel(rect, new GUIContent(label));
