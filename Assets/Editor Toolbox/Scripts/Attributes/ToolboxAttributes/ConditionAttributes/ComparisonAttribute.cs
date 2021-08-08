@@ -5,8 +5,8 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public abstract class ComparisonAttribute : ToolboxConditionAttribute
     {
-        /// <param name="propertyName">L-value or the mask if <see cref="TestMethod"/> is set to <see cref="ComparisionTestMethod.Mask"/></param>
-        /// <param name="valueToMatch">R-value or the flag if <see cref="TestMethod"/> is set to <see cref="ComparisionTestMethod.Mask"/></param>
+        /// <param name="propertyName">L-value or the mask if <see cref="Comparison"/> is set to <see cref="ComparisonMethod.Mask"/></param>
+        /// <param name="valueToMatch">R-value or the flag if <see cref="Comparison"/> is set to <see cref="ComparisonMethod.Mask"/></param>
         public ComparisonAttribute(string propertyName, object valueToMatch)
         {
             PropertyName = propertyName;
@@ -20,10 +20,26 @@ namespace UnityEngine
         /// <summary>
         /// Indicates what method will be used to compare value of the target property and <see cref="ValueToMatch"/>.
         /// </summary>
+        [Obsolete("Use Comparsion property instead.")]
         public ComparisionTestMethod TestMethod { get; set; } = ComparisionTestMethod.Equal;
+        /// <summary>
+        /// Indicates what method will be used to compare value of the target property and <see cref="ValueToMatch"/>.
+        /// </summary>
+        public ComparisonMethod Comparison { get; set; } = ComparisonMethod.Equal;
     }
 
+    [Obsolete]
     public enum ComparisionTestMethod
+    {
+        Equal,
+        Greater,
+        Less,
+        GreaterEqual,
+        LessEqual,
+        Mask
+    }
+
+    public enum ComparisonMethod
     {
         /// <summary>
         /// Checks if values are equal.

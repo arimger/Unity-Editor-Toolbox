@@ -19,11 +19,11 @@ namespace Toolbox.Editor.Drawers
         {
             var targetObject = property.GetDeclaringObject();
             var targetType = targetObject.GetType();
-            var presetField = targetType.GetField(Attribute.PresetFieldName, ReflectionUtility.allBindings);
+            var presetField = targetType.GetField(Attribute.PresetSourceName, ReflectionUtility.allBindings);
             if (presetField == null)
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    "Cannot find relative preset field (" + Attribute.PresetFieldName + ").");
+                    "Cannot find relative preset field (" + Attribute.PresetSourceName + ").");
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
@@ -85,7 +85,7 @@ namespace Toolbox.Editor.Drawers
             else
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    "Preset field (" + Attribute.PresetFieldName + ") has to be a one-dimensional collection (array or list).");
+                    "Preset field (" + Attribute.PresetSourceName + ") has to be a one-dimensional collection (array or list).");
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }

@@ -2,7 +2,7 @@
 
 namespace Toolbox.Editor.Reflection
 {
-    public static class ValueExtractionUtility
+    public static class ValueExtractionHelper
     {
         private static readonly List<IValueExtractor> extractors = new List<IValueExtractor>()
         {
