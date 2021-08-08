@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
-using System.Reflection;
 
 using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    using Toolbox.Editor.Reflection;
+
     [CustomPropertyDrawer(typeof(PresetAttribute))]
     public class PresetAttributeDrawer : ToolboxNativePropertyDrawer
     {
@@ -17,25 +18,24 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
+            var sourceName = Attribute.SourceName;
             var targetObject = property.GetDeclaringObject();
-            var targetType = targetObject.GetType();
-            var presetField = targetType.GetField(Attribute.PresetSourceName, ReflectionUtility.allBindings);
-            if (presetField == null)
+            if (!ValueExtractionHelper.TryGetValue(sourceName, targetObject, out var presetSource))
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    "Cannot find relative preset field (" + Attribute.PresetSourceName + ").");
+                    string.Format("Cannot find relative preset source ({0}).", sourceName));
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
 
-            var presetObject = presetField.GetValue(targetObject);
-            if (presetObject is IList list)
+            if (presetSource is IList list)
             {
+                var presetSourceType = presetSource.GetType();
                 var propertyType = property.GetProperType(fieldInfo, targetObject);
                 //check if types match between property and provided preset
-                if (propertyType == (presetField.FieldType.IsGenericType
-                                   ? presetField.FieldType.GetGenericArguments()[0]
-                                   : presetField.FieldType.GetElementType()))
+                if (propertyType == (presetSourceType.IsGenericType
+                                   ? presetSourceType.GetGenericArguments()[0]
+                                   : presetSourceType.GetElementType()))
                 {
                     var objects = new object[list.Count];
                     var options = new string[list.Count];
@@ -85,7 +85,7 @@ namespace Toolbox.Editor.Drawers
             else
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    "Preset field (" + Attribute.PresetSourceName + ") has to be a one-dimensional collection (array or list).");
+                    string.Format("Preset source ({0}) has to be a one-dimensional collection (array or list).", sourceName));
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
@@ -93,7 +93,7 @@ namespace Toolbox.Editor.Drawers
 
         public override bool IsPropertyValid(SerializedProperty property)
         {
-            //NOTE: reflection won't work properly on nested structs
+            //NOTE: reflection won't work properly on nested structs because of boxing
             return !property.GetDeclaringObject().GetType().IsValueType;
         }
 
