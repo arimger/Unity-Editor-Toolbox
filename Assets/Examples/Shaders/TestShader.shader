@@ -2,13 +2,14 @@ Shader "Unlit/TestShader"
 {
     Properties
     { 
-        [IntRange]
-        _Int("Float0", Range(0, 2)) = 0.0
-        _Float0("Float0", Float) = 0.0
         [CompactTexture]
         _MainTex ("Texture", 2D) = "white" {}
+        [Vector2]
+        _Vector1("Vector2", Vector) = (0.0, 0.0, 0.0)
         [Vector3]
-        _Vector("Vector2", Vector) = (0.0, 0.0, 0.0)
+        _Vector2("Vector3", Vector) = (0.0, 0.0, 0.0)
+        [MinMaxSlider(20.0, 165.0)]
+        _Vector3("MinMax Vector", Vector) = (50.0, 55.0, 0.0)
         [Indent(3)]
         _Float1 ("Float1", Float) = 0.0
         [Help(Custom Help Box , 1)]
