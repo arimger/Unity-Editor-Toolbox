@@ -1,21 +1,18 @@
-﻿using System;
-using System.Reflection;
-
-namespace Toolbox.Editor.Reflection
+﻿namespace Toolbox.Editor.Drawers
 {
-    public class MethodValueExtractor : IValueExtractor
+    public class PropertyValueExtractor : IValueExtractor
     {
         public bool TryGetValue(string source, object declaringObject, out object value)
         {
             var type = declaringObject.GetType();
-            var info = type.GetMethod(source, ReflectionUtility.allBindings, null, CallingConventions.Any, new Type[0], null);
+            var info = type.GetProperty(source, ReflectionUtility.allBindings);
             if (info == null)
             {
                 value = default;
                 return false;
             }
 
-            value = info.Invoke(declaringObject, null);
+            value = info.GetValue(declaringObject);
             return true;
         }
     }

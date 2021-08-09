@@ -72,25 +72,22 @@ namespace Toolbox.Editor.Drawers
                 editor.serializedObject.Update();
                 editor.OnInspectorGUI();
                 editor.serializedObject.ApplyModifiedProperties();
-
-                if (editor.HasPreviewGUI())
+                if (!editor.HasPreviewGUI() || !drawPreview)
                 {
-                    //draw the preview if possible and needed
-                    if (drawPreview)
-                    {
-                        editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, previewHeight), Style.previewStyle);
-                    }
+                    return;
+                }
 
-                    if (drawSettings)
+                //draw the preview if possible and needed
+                editor.OnPreviewGUI(EditorGUILayout.GetControlRect(false, previewHeight), Style.previewStyle);
+                if (drawSettings)
+                {
+                    //draw additional settings associated to the Editor
+                    //for example:
+                    // - audio management for the AudioClip
+                    // - material preview for the Material
+                    using (new EditorGUILayout.HorizontalScope(Style.settingsStyle))
                     {
-                        //draw additional settings associated to the Editor
-                        //for example:
-                        // - audio management for the AudioClip
-                        // - material preview for the Material
-                        using (new EditorGUILayout.HorizontalScope(Style.settingsStyle))
-                        {
-                            editor.OnPreviewSettings();
-                        }
+                        editor.OnPreviewSettings();
                     }
                 }
             }

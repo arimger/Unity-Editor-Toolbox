@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Object = UnityEngine.Object;
 
-namespace Toolbox.Comparison
+namespace Toolbox.Editor.Drawers
 {
     internal class ObjectComparer : ValueComparerBase
     {

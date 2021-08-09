@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Toolbox.Comparison
+namespace Toolbox.Editor.Drawers
 {
     public static class ValueComparisonHelper
     {

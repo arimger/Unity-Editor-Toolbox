@@ -1,31 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Toolbox.Comparison
+namespace Toolbox.Editor.Drawers
 {
-    internal class FloatComparer : ValueComparerBase
+    internal class IntegerComparer : ValueComparerBase
     {
         protected override HashSet<TypeCode> GetAcceptedTypeCodes()
         {
             return new HashSet<TypeCode>()
             {
-                TypeCode.Single,
-                TypeCode.Double,
-                TypeCode.Decimal
+                TypeCode.SByte,
+                TypeCode.Byte,
+                TypeCode.Int16,
+                TypeCode.UInt16,
+                TypeCode.Int32,
+                TypeCode.UInt32,
+                TypeCode.Int64,
+                TypeCode.UInt64
             };
         }
 
 
-        internal override bool IsValidMethod(ValueComparisonMethod method)
+        internal override bool Compare(object sourceValue, object targetValue, ValueComparisonMethod method)
         {
-            return method != ValueComparisonMethod.Mask;
-        }
-
-        internal override bool Compare(object sourceValue, object targetValue, ValueComparisonMethod testMethod)
-        {
-            var realSourceValue = Convert.ToSingle(sourceValue);
-            var realTargetValue = Convert.ToSingle(targetValue);
-            switch (testMethod)
+            var realSourceValue = Convert.ToInt32(sourceValue);
+            var realTargetValue = Convert.ToInt32(targetValue);
+            switch (method)
             {
                 case ValueComparisonMethod.Equal:
                     return realSourceValue == realTargetValue;
@@ -37,6 +37,8 @@ namespace Toolbox.Comparison
                     return realSourceValue >= realTargetValue;
                 case ValueComparisonMethod.LessEqual:
                     return realSourceValue <= realTargetValue;
+                case ValueComparisonMethod.Mask:
+                    return (realSourceValue & realTargetValue) == realTargetValue;
                 default:
                     return false;
             }

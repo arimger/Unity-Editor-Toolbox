@@ -1,11 +1,11 @@
-﻿namespace Toolbox.Editor.Reflection
+﻿namespace Toolbox.Editor.Drawers
 {
-    public class PropertyValueExtractor : IValueExtractor
+    public class FieldValueExtractor : IValueExtractor
     {
         public bool TryGetValue(string source, object declaringObject, out object value)
         {
             var type = declaringObject.GetType();
-            var info = type.GetProperty(source, ReflectionUtility.allBindings);
+            var info = type.GetField(source, ReflectionUtility.allBindings);
             if (info == null)
             {
                 value = default;
