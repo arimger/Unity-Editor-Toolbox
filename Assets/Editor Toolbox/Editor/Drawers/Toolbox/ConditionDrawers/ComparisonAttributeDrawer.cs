@@ -3,9 +3,6 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    using Toolbox.Comparison;
-    using Toolbox.Editor.Reflection;
-
     public abstract class ComparisonAttributeDrawer<T> : ToolboxConditionDrawer<T> where T : ComparisonAttribute
     {
         protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, T attribute)

@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Toolbox.Comparison
+namespace Toolbox.Editor.Drawers
 {
-    internal class BooleanComparer : ValueComparerBase
+    internal class StringComparer : ValueComparerBase
     {
         protected override HashSet<TypeCode> GetAcceptedTypeCodes()
         {
             return new HashSet<TypeCode>()
             {
-                TypeCode.Boolean
+                TypeCode.Char,
+                TypeCode.String
             };
         }
 

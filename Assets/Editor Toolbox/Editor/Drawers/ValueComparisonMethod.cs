@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Toolbox.Comparison
+namespace Toolbox.Editor.Drawers
 {
     public enum ValueComparisonMethod
     {

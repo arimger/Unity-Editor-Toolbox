@@ -6,8 +6,6 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    using Toolbox.Editor.Reflection;
-
     [CustomPropertyDrawer(typeof(PresetAttribute))]
     public class PresetAttributeDrawer : ToolboxNativePropertyDrawer
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Toolbox.Comparison
+namespace Toolbox.Editor.Drawers
 {
     internal abstract class ValueComparerBase
     {

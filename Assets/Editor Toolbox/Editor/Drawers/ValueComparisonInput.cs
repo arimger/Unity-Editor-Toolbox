@@ -1,4 +1,4 @@
-﻿namespace Toolbox.Comparison
+﻿namespace Toolbox.Editor.Drawers
 {
     public struct ValueComparisonInput
     {
