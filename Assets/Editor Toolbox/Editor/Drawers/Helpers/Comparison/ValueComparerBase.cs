@@ -34,6 +34,11 @@ namespace Toolbox.Editor.Drawers
             return true;
         }
 
+        internal virtual bool TryCompare(object sourceValue, out bool result)
+        {
+            return TryCompare(sourceValue, true, out result);
+        }
+
         internal virtual bool TryCompare(object sourceValue, object targetValue, out bool result)
         {
             return TryCompare(sourceValue, targetValue, ValueComparisonMethod.Equal, out result);

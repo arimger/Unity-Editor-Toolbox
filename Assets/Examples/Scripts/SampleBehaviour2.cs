@@ -123,14 +123,26 @@ public class SampleBehaviour2 : MonoBehaviour
     [Label("9", skinStyle: SkinStyle.Box)]
 
     public string stringValue = "sho";
-    [ShowIf(nameof(stringValue), "show")] //or HideIf
+    [ShowIf(nameof(stringValue), "show")]
     public int var33;
 
     [SpaceArea]
 
     public KeyCode enumValue = KeyCode.A;
-    [DisableIf(nameof(enumValue), KeyCode.A)] //or EnableIf
+    [DisableIf(nameof(enumValue), KeyCode.A)]
     public int var35;
+
+    [SpaceArea]
+
+    public GameObject objectValue;
+    [HideIf(nameof(objectValue), false)]
+    public int var36;
+
+    [SpaceArea]
+
+    public float floatValue = 1.0f;
+    [EnableIf(nameof(floatValue), 0.5f, Comparison = UnityComparisonMethod.Greater)]
+    public int var37;
 
     [Label("10", skinStyle: SkinStyle.Box)]
 
@@ -140,7 +152,7 @@ public class SampleBehaviour2 : MonoBehaviour
     [Label("11", skinStyle: SkinStyle.Box)]
 
     [DisableInPlayMode]
-    public int var36;
+    public int var38;
 
 #if UNITY_2020_1_OR_NEWER
     [Label("12", skinStyle: SkinStyle.Box)]

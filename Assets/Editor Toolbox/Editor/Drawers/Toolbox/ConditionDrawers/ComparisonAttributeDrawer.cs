@@ -7,21 +7,23 @@ namespace Toolbox.Editor.Drawers
     {
         protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, T attribute)
         {
-            var sourceName = attribute.PropertyName;
             var declaringObject = property.GetDeclaringObject();
+
+            var sourceName = attribute.SourceHandle;
             if (!ValueExtractionHelper.TryGetValue(sourceName, declaringObject, out var value))
             {
-                //TODO: new warning
-                ToolboxEditorLog.PropertyNotFoundWarning(property, attribute.PropertyName);
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
+                    string.Format("Source ({0}) not found.", sourceName));
                 return PropertyCondition.Valid;
             }
 
-            var method = (ValueComparisonMethod)attribute.Comparison;
-            var valueToMatch = attribute.ValueToMatch;
-            if (!ValueComparisonHelper.TryCompare(value, valueToMatch, method, out var result))
+            var comparison = (ValueComparisonMethod)attribute.Comparison;
+            var targetValue = attribute.ValueToMatch;
+            if (!ValueComparisonHelper.TryCompare(value, targetValue, comparison, out var result))
             {
-                //TODO: new warning
-                ToolboxEditorLog.LogWarning("Cannot compare!");
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
+                    string.Format("Invalid comparison input: source:{0}, target:{1}, method:{2}.",
+                    value?.GetType(), targetValue?.GetType(), comparison));
                 return PropertyCondition.Valid;
             }
 
