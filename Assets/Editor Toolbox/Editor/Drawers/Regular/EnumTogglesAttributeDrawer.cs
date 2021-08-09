@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(EnumTogglesAttribute))]
-    public class EnumTogglesAttributeDrawer : ToolboxNativePropertyDrawer
+    public class EnumTogglesAttributeDrawer : PropertyDrawerBase
     {
         /// <summary>
         /// Enum-related metadatas mapped to all previously supported types.

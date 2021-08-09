@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(LeftToggleAttribute))]
-    public class LeftToggleAttributeDrawer : ToolboxNativePropertyDrawer
+    public class LeftToggleAttributeDrawer : PropertyDrawerBase
     {
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {

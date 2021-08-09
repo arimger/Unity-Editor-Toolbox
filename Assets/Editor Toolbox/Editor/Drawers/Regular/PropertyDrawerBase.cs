@@ -6,7 +6,7 @@ namespace Toolbox.Editor.Drawers
     /// <summary>
     /// Base class for Toolbox drawers based on the native <see cref="PropertyDrawer"/> implementation. 
     /// </summary>
-    public abstract class ToolboxNativePropertyDrawer : PropertyDrawer
+    public abstract class PropertyDrawerBase : PropertyDrawer
     {
         /// <summary>
         /// Safe equivalent of the <see cref="GetPropertyHeight"/> method.
@@ -32,15 +32,9 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         public override sealed float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (IsPropertyValid(property))
-            {
-                return GetPropertyHeightSafe(property, label);
-
-            }
-            else
-            {
-                return base.GetPropertyHeight(property, label);
-            }
+            return IsPropertyValid(property)
+                ? GetPropertyHeightSafe(property, label)
+                : base.GetPropertyHeight(property, label);
         }
 
         /// <summary>
@@ -51,15 +45,14 @@ namespace Toolbox.Editor.Drawers
             if (IsPropertyValid(property))
             {
                 OnGUISafe(position, property, label);
+                return;
             }
-            else
-            {
-                var warningContent = new GUIContent(property.displayName + " has invalid property drawer");
-                //create additional warning log to the console window
-                ToolboxEditorLog.WrongAttributeUsageWarning(attribute, property);
-                //create additional warning label based on the property name
-                ToolboxEditorGui.DrawEmptyProperty(position, property, warningContent);
-            }
+
+            var warningContent = new GUIContent(property.displayName + " has invalid property drawer");
+            //create additional warning log to the console window
+            ToolboxEditorLog.WrongAttributeUsageWarning(attribute, property);
+            //create additional warning label based on the property name
+            ToolboxEditorGui.DrawEmptyProperty(position, property, warningContent);
         }
 
 

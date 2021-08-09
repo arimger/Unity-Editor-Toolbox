@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    public abstract class ObjectValidationDrawer : ToolboxNativePropertyDrawer
+    public abstract class ObjectValidationDrawer : PropertyDrawerBase
     {
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {

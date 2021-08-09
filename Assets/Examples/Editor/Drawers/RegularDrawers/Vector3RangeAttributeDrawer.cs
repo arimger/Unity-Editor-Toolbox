@@ -3,7 +3,7 @@ using UnityEditor;
 using Toolbox.Editor.Drawers;
 
 [CustomPropertyDrawer(typeof(Vector3RangeAttribute))]
-public class Vector3RangeAttributeDrawer : ToolboxNativePropertyDrawer
+public class Vector3RangeAttributeDrawer : PropertyDrawerBase
 {
     protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
     {

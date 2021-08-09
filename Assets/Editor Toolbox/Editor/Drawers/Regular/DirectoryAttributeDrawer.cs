@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(DirectoryAttribute))]
-    public class DirectoryAttributeDrawer : ToolboxNativePropertyDrawer
+    public class DirectoryAttributeDrawer : PropertyDrawerBase
     {
         private static bool IsPathValid(string propertyPath, string assetRelativePath)
         {

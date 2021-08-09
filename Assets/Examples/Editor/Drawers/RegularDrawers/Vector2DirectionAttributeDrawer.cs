@@ -3,7 +3,7 @@ using UnityEngine;
 using Toolbox.Editor.Drawers;
 
 [CustomPropertyDrawer(typeof(Vector2DirectionAttribute))]
-public class Vector2DirectionAttributeDrawer : ToolboxNativePropertyDrawer
+public class Vector2DirectionAttributeDrawer : PropertyDrawerBase
 {
     private static readonly string[] directionNames = new[]
     {

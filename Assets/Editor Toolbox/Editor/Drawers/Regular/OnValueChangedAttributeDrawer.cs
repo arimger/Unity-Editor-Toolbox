@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(OnValueChangedAttribute))]
-    public class OnValueChangedAttributeDrawer : ToolboxNativePropertyDrawer
+    public class OnValueChangedAttributeDrawer : PropertyDrawerBase
     {
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {

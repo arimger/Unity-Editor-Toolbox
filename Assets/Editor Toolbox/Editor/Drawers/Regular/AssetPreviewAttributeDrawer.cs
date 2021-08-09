@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(AssetPreviewAttribute))]
-    public class AssetPreviewAttributeDrawer : ToolboxNativePropertyDrawer
+    public class AssetPreviewAttributeDrawer : PropertyDrawerBase
     {
         /// <summary>
         /// Returns proper <see cref="Object"/> depending on the <see cref="referenceValue"/> type.
