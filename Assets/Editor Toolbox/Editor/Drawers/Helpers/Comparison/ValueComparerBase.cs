@@ -19,7 +19,7 @@ namespace Toolbox.Editor.Drawers
 
         internal virtual bool IsValidSource(object value)
         {
-            var valueType = value.GetType();
+            var valueType = value?.GetType();
             var valueCode = Type.GetTypeCode(valueType);
             return acceptedTypeCodes.Contains(valueCode);
         }
