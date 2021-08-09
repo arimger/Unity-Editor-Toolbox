@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]
-    public class MinMaxSliderAttributeDrawer : ToolboxNativePropertyDrawer
+    public class MinMaxSliderAttributeDrawer : PropertyDrawerBase
     {
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {

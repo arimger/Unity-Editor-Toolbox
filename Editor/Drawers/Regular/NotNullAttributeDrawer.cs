@@ -6,7 +6,7 @@ namespace Toolbox.Editor.Drawers
     using Toolbox.Editor.Internal;
 
     [CustomPropertyDrawer(typeof(NotNullAttribute))]
-    public class NotNullAttributeDrawer : ToolboxNativePropertyDrawer
+    public class NotNullAttributeDrawer : PropertyDrawerBase
     {
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {

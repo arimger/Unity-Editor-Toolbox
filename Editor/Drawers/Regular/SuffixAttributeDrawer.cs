@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SuffixAttribute))]
-    public class SuffixAttributeDrawer : ToolboxNativePropertyDrawer
+    public class SuffixAttributeDrawer : PropertyDrawerBase
     {
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {

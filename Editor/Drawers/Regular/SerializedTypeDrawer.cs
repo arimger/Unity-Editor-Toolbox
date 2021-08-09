@@ -8,7 +8,7 @@ namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(TypeConstraintAttribute), true)]
     [CustomPropertyDrawer(typeof(SerializedType))]
-    public sealed class SerializedTypeDrawer : ToolboxNativePropertyDrawer
+    public sealed class SerializedTypeDrawer : PropertyDrawerBase
     {
         /// <summary>
         /// Dictionary used to store all previously filtered types matched to the targt attribute.

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(LabelByChildAttribute))]
-    public class LabelByChildAttributeDrawer : ToolboxNativePropertyDrawer
+    public class LabelByChildAttributeDrawer : PropertyDrawerBase
     {
         private GUIContent GetLabelByValue(SerializedProperty property, GUIContent label)
         {

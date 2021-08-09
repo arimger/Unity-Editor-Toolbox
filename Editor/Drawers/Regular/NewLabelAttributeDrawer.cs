@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(NewLabelAttribute))]
-    public class NewLabelAttributeDrawer : ToolboxNativePropertyDrawer
+    public class NewLabelAttributeDrawer : PropertyDrawerBase
     {
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {

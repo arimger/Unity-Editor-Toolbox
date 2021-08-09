@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SceneNameAttribute))]
-    public class SceneNameAttributeDrawer : ToolboxNativePropertyDrawer
+    public class SceneNameAttributeDrawer : PropertyDrawerBase
     {
         private static bool SceneExists(string sceneName)
         {

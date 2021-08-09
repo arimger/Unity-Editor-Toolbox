@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(FormattedNumberAttribute))]
-    public class FormattedNumberAttributeDrawer : ToolboxNativePropertyDrawer
+    public class FormattedNumberAttributeDrawer : PropertyDrawerBase
     {
         private readonly NumberFormatInfo formatInfo = new NumberFormatInfo()
         {

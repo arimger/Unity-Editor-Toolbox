@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SearchableEnumAttribute))]
-    public class SearchableEnumAttributeDrawer : ToolboxNativePropertyDrawer
+    public class SearchableEnumAttributeDrawer : PropertyDrawerBase
     {
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {

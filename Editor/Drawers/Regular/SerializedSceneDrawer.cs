@@ -5,7 +5,7 @@ namespace Toolbox.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SceneDetailsAttribute))]
     [CustomPropertyDrawer(typeof(SerializedScene))]
-    public class SerializedSceneDrawer : ToolboxNativePropertyDrawer
+    public class SerializedSceneDrawer : PropertyDrawerBase
     {
         private bool HasSceneDetails(SerializedProperty property)
         {
