@@ -5,11 +5,11 @@ Shader "Unlit/TestShader"
         [CompactTexture]
         _MainTex ("Texture", 2D) = "white" {}
         [Vector2]
-        _Vector1("Vector2", Vector) = (0.0, 0.0, 0.0)
+        _Vector1 ("Vector2", Vector) = (0.0, 0.0, 0.0)
         [Vector3]
-        _Vector2("Vector3", Vector) = (0.0, 0.0, 0.0)
+        _Vector2 ("Vector3", Vector) = (0.0, 0.0, 0.0)
         [MinMaxSlider(20.0, 165.0)]
-        _Vector3("MinMax Vector", Vector) = (50.0, 55.0, 0.0)
+        _Vector3 ("MinMax Vector", Vector) = (50.0, 55.0, 0.0)
         [Indent(3)]
         _Float1 ("Float1", Float) = 0.0
         [Help(Custom Help Box , 1)]
@@ -18,11 +18,11 @@ Shader "Unlit/TestShader"
         [Title(Custom Title, 4)]
         _Float ("Float", Float) = 0.5
         [Toggle][Space]
-        _ToggleProperty("Toggle", Int) = 0
+        _ToggleProperty ("Toggle", Int) = 0
         [ShowIfToggle(_ToggleProperty)]
         _ShowIfExample ("Texture", 2D) = "White" {}
         [HideIfToggle(_ToggleProperty)]
-        _HideIfExample("Range", Range(0, 1)) = 0.75
+        _HideIfExample ("Range", Range(0, 1)) = 0.75
     }
     SubShader
     {
