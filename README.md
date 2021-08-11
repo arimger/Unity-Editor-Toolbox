@@ -36,7 +36,7 @@ Unity 2018.x or newer
 - [Attributes & Drawers](#drawers)
 	- [Regular Drawers](#regulardrawers)
 	- [Toolbox Drawers](#toolboxdrawers)
-- [Reorderable List](#reorderable-list)
+	- [Material Drawers](#materialdrawers)
 - [Serialized Types](#serialized-types)
 - [Editor Extensions](#editor-extensions)
 	- [Hierarchy](#hierarchy)
@@ -60,7 +60,7 @@ Each module is described in its respective section.
 
 ### Regular Drawers <a name="regulardrawers"></a>
 
-Drawers based on build-in classes **PropertyDrawer/DecoratorDrawer** and associated **PropertyAttribute**.
+Drawers based on built-in classes **PropertyDrawer/DecoratorDrawer** and associated **PropertyAttribute**.
 
 #### TagSelectorAttribute
 
@@ -396,6 +396,45 @@ public Material var1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inlined1.png)
 
+#### Reorderable List
+
+Custom implementation of standard ReorderableList (UnityEditorInternal). Usable as an attribute in serialized fields or a single object in custom Editors.
+
+```csharp
+var list = new ReorderableList(SerializedProperty property, string elementLabel, bool draggable, bool hasHeader, bool fixedSize);
+```
+```csharp
+[ReorderableList, InLineEditor]
+public Canvas[] vars1;
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list4.png)
+```csharp
+[ReorderableList(ListStyle.Lined, "Item", Foldable = false)]
+public List<int> linedStyleList;
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list1.png)
+```csharp
+[ReorderableList(ListStyle.Round)]
+public List<string> standardStyleList;
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list2.png)
+```csharp
+[ReorderableList(ListStyle.Boxed, fixedSize: true)]
+public GameObject[] boxedStyleList = new GameObject[4];
+```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list3.png)
+
+
+```csharp
+[ReorderableListExposed(OverrideNewElementMethodName = nameof(GetValue))]
+public int[] list;
+
+private int GetValue()
+{
+	return list.Length + Random.Range(0, 4);
+}
+```
+
 #### ScrollableItemsAttribute
 
 It's a perfect solution to inspect large arrays/lists and optimize displaying them within the Inspector window.
@@ -446,44 +485,33 @@ public int var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/title.png)
 
-## Reorderable List
+### Material Drawers <a name="materialdrawers"></a>
 
-Custom implementation of standard ReorderableList (UnityEditorInternal). Usable as an attribute in serialized fields or a single object in custom Editors.
+```
+[CompactTexture]
+_MainTex ("Texture", 2D) = "white" {}
+[Vector2]
+_Vector1 ("Vector2", Vector) = (0.0, 0.0, 0.0)
+[Vector3]
+_Vector2 ("Vector3", Vector) = (0.0, 0.0, 0.0)
+[MinMaxSlider(20.0, 165.0)]
+_Vector3 ("MinMax Vector", Vector) = (50.0, 55.0, 0.0)
+[Indent(3)]
+_Float1 ("Float1", Float) = 0.0
+[Help(Custom Help Box , 1)]
+_Float2 ("Float2", Float) = 0.0
+_Float3 ("Float3", Float) = 0.0
+[Title(Custom Title, 4)]
+_Float ("Float", Float) = 0.5
+[Toggle][Space]
+_ToggleProperty ("Toggle", Int) = 0
+[ShowIfToggle(_ToggleProperty)]
+_ShowIfExample ("Texture", 2D) = "White" {}
+[HideIfToggle(_ToggleProperty)]
+_HideIfExample ("Range", Range(0, 1)) = 0.75
+```
 
-```csharp
-var list = new ReorderableList(SerializedProperty property, string elementLabel, bool draggable, bool hasHeader, bool fixedSize);
-```
-```csharp
-[ReorderableList, InLineEditor]
-public Canvas[] vars1;
-```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list4.png)
-```csharp
-[ReorderableList(ListStyle.Lined, "Item", Foldable = false)]
-public List<int> linedStyleList;
-```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list1.png)
-```csharp
-[ReorderableList(ListStyle.Round)]
-public List<string> standardStyleList;
-```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list2.png)
-```csharp
-[ReorderableList(ListStyle.Boxed, fixedSize: true)]
-public GameObject[] boxedStyleList = new GameObject[4];
-```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/list3.png)
-
-
-```csharp
-[ReorderableListExposed(OverrideNewElementMethodName = nameof(GetValue))]
-public int[] list;
-
-private int GetValue()
-{
-	return list.Length + Random.Range(0, 4);
-}
-```
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/customshader.png)
 
 ## Serialized Types
 

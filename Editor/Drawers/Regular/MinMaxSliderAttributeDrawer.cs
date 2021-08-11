@@ -13,40 +13,18 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            var labelWidth = EditorGUIUtility.labelWidth;
-            var fieldWidth = EditorGUIUtility.fieldWidth;
-
             var minValue = Attribute.MinValue;
             var maxValue = Attribute.MaxValue;
             var xValue = property.vector2Value.x;
             var yValue = property.vector2Value.y;
 
-            var labelRect = new Rect(position.x, position.y, labelWidth, position.height);
-
-            var minFieldRect = new Rect(position.xMin + labelWidth, position.y, fieldWidth, position.height);
-            var maxFieldRect = new Rect(position.xMax - fieldWidth, position.y, fieldWidth, position.height);
-            //set slider rect between min and max fields + additional padding
-            var minMaxSliderRect = new Rect
-                (position.x + labelWidth + fieldWidth + Style.padding,
-                 position.y,
-                 position.width - labelWidth - fieldWidth * 2 - Style.padding * 2,
-                 position.height);
-
-            //begin drawing using GUI methods
             label = EditorGUI.BeginProperty(position, label, property);
-            EditorGUI.BeginChangeCheck();
-            EditorGUI.LabelField(labelRect, label);
-            xValue = EditorGUI.FloatField(minFieldRect, xValue);
-            yValue = EditorGUI.FloatField(maxFieldRect, yValue);
-            EditorGUI.MinMaxSlider(minMaxSliderRect, ref xValue, ref yValue, minValue, maxValue);
-
-            //values validation(xValue can't be higher than yValue etc.)
-            xValue = Mathf.Clamp(xValue, minValue, Mathf.Min(maxValue, yValue));
-            yValue = Mathf.Clamp(yValue, Mathf.Max(minValue, xValue), maxValue);
+            ToolboxEditorGui.DrawMinMaxSlider(position, label, ref xValue, ref yValue, minValue, maxValue);
             if (EditorGUI.EndChangeCheck())
             {
                 property.vector2Value = new Vector2(xValue, yValue);
             }
+
             EditorGUI.EndProperty();
         }
 
@@ -58,11 +36,5 @@ namespace Toolbox.Editor.Drawers
 
 
         private MinMaxSliderAttribute Attribute => attribute as MinMaxSliderAttribute;
-
-
-        private static class Style
-        {
-            internal static readonly float padding = 8.0f;
-        }
     }
 }
