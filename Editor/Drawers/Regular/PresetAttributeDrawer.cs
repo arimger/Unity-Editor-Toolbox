@@ -16,7 +16,7 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            var sourceName = Attribute.SourceName;
+            var sourceName = Attribute.SourceHandle;
             var declaringObject = property.GetDeclaringObject();
             //extract (if available) the real preset value
             if (!ValueExtractionHelper.TryGetValue(sourceName, declaringObject, out var sourceValue))
