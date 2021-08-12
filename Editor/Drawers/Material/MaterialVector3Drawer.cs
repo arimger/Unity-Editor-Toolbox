@@ -5,19 +5,8 @@ namespace Toolbox.Editor.Drawers
 {
     using Toolbox.Editor.Internal;
 
-    public class MinMaxSliderDrawer : BaseMaterialPropertyDrawer
+    public class MaterialVector3Drawer : BaseMaterialPropertyDrawer
     {
-        private readonly float minValue;
-        private readonly float maxValue;
-
-
-        public MinMaxSliderDrawer(float minValue, float maxValue)
-        {
-            this.minValue = minValue;
-            this.maxValue = maxValue;
-        }
-
-
         protected override float GetPropertyHeightSafe(MaterialProperty prop, string label, MaterialEditor editor)
         {
             return EditorGUIUtility.singleLineHeight;
@@ -30,15 +19,10 @@ namespace Toolbox.Editor.Drawers
                 EditorGUIUtility.labelWidth = 0;
 
                 var vectorValue = prop.vectorValue;
-                var xValue = vectorValue.x;
-                var yValue = vectorValue.y;
-
                 EditorGUI.BeginChangeCheck();
-                ToolboxEditorGui.DrawMinMaxSlider(position, label, ref xValue, ref yValue, minValue, maxValue);
+                vectorValue = EditorGUI.Vector3Field(position, label, vectorValue);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    vectorValue.x = xValue;
-                    vectorValue.y = yValue;
                     prop.vectorValue = vectorValue;
                 }
             }

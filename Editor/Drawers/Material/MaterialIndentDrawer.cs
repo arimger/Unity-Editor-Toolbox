@@ -3,15 +3,15 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class IndentDrawer : BaseMaterialPropertyDrawer
+    public class MaterialIndentDrawer : BaseMaterialPropertyDrawer
     {
         private readonly int indent;
 
 
-        public IndentDrawer() : this(1)
+        public MaterialIndentDrawer() : this(1)
         { }
 
-        public IndentDrawer(float indent)
+        public MaterialIndentDrawer(float indent)
         {
             this.indent = (int)indent;
         }

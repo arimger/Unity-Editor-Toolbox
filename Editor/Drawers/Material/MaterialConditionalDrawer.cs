@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    public abstract class ConditionalDrawer : BaseMaterialPropertyDrawer
+    public abstract class MaterialConditionalDrawer : BaseMaterialPropertyDrawer
     {
         protected readonly string togglePropertyName;
 
 
-        protected ConditionalDrawer(string togglePropertyName)
+        protected MaterialConditionalDrawer(string togglePropertyName)
         {
             this.togglePropertyName = togglePropertyName;
         }

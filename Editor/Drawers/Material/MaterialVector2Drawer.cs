@@ -5,7 +5,7 @@ namespace Toolbox.Editor.Drawers
 {
     using Toolbox.Editor.Internal;
 
-    public class Vector3Drawer : BaseMaterialPropertyDrawer
+    public class MaterialVector2Drawer : BaseMaterialPropertyDrawer
     {
         protected override float GetPropertyHeightSafe(MaterialProperty prop, string label, MaterialEditor editor)
         {
@@ -20,7 +20,7 @@ namespace Toolbox.Editor.Drawers
 
                 var vectorValue = prop.vectorValue;
                 EditorGUI.BeginChangeCheck();
-                vectorValue = EditorGUI.Vector3Field(position, label, vectorValue);
+                vectorValue = EditorGUI.Vector2Field(position, label, vectorValue);
                 if (EditorGUI.EndChangeCheck())
                 {
                     prop.vectorValue = vectorValue;

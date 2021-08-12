@@ -1,8 +1,8 @@
 ﻿namespace Toolbox.Editor.Drawers
 {
-    public class ShowIfToggleDrawer : ConditionalDrawer
+    public class MaterialShowIfToggleDrawer : MaterialConditionalDrawer
     {
-        public ShowIfToggleDrawer(string togglePropertyName) : base(togglePropertyName)
+        public MaterialShowIfToggleDrawer(string togglePropertyName) : base(togglePropertyName)
         { }
 
 

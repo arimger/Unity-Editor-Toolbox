@@ -3,18 +3,18 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class HelpDecorator : BaseMaterialPropertyDrawer
+    public class MaterialHelpDecorator : BaseMaterialPropertyDrawer
     {
         private readonly string message;
         private readonly MessageType type;
 
 
-        public HelpDecorator(string message) : this(message, 1)
+        public MaterialHelpDecorator(string message) : this(message, 1)
         {
             this.message = message;
         }
 
-        public HelpDecorator(string message, float type)
+        public MaterialHelpDecorator(string message, float type)
         {
             this.message = message;
             this.type = (MessageType)type;
