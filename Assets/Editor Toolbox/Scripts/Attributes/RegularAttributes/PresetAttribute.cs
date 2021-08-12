@@ -18,11 +18,11 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class PresetAttribute : PropertyAttribute
     {
-        public PresetAttribute(string sourceName)
+        public PresetAttribute(string sourceHandle)
         {
-            SourceName = sourceName;
+            SourceHandle = sourceHandle;
         }
 
-        public string SourceName { get; private set; }
+        public string SourceHandle { get; private set; }
     }
 }
