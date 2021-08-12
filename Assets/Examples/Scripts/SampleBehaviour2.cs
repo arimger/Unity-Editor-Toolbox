@@ -123,8 +123,13 @@ public class SampleBehaviour2 : MonoBehaviour
     [Label("9", skinStyle: SkinStyle.Box)]
 
     public string stringValue = "sho";
-    [ShowIf(nameof(stringValue), "show")]
+    [ShowIf(nameof(GetStringValue), "show")]
     public int var33;
+
+    public string GetStringValue()
+    {
+        return stringValue;
+    }
 
     [SpaceArea]
 
@@ -135,8 +140,13 @@ public class SampleBehaviour2 : MonoBehaviour
     [SpaceArea]
 
     public GameObject objectValue;
-    [HideIf(nameof(objectValue), false)]
+    [HideIf(nameof(ObjectValue), false)]
     public int var36;
+
+    private GameObject ObjectValue
+    {
+        get => objectValue;
+    }
 
     [SpaceArea]
 
