@@ -3,15 +3,15 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class CompactTextureDrawer : BaseMaterialPropertyDrawer
+    public class MaterialCompactTextureDrawer : BaseMaterialPropertyDrawer
     {
         private readonly string tooltip;
 
 
-        public CompactTextureDrawer() : this(string.Empty)
+        public MaterialCompactTextureDrawer() : this(string.Empty)
         { }
 
-        public CompactTextureDrawer(string tooltip)
+        public MaterialCompactTextureDrawer(string tooltip)
         {
             this.tooltip = tooltip;
         }

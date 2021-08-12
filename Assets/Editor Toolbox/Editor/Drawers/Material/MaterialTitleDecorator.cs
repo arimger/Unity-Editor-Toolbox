@@ -3,16 +3,16 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    public class TitleDecorator : BaseMaterialPropertyDrawer
+    public class MaterialTitleDecorator : BaseMaterialPropertyDrawer
     {
         private readonly GUIContent header;
         private readonly float spacing;
 
 
-        public TitleDecorator(string header) : this(header, 4.0f)
+        public MaterialTitleDecorator(string header) : this(header, 4.0f)
         { }
 
-        public TitleDecorator(string header, float spacing)
+        public MaterialTitleDecorator(string header, float spacing)
         {
             this.header = new GUIContent(header);
             this.spacing = spacing;
