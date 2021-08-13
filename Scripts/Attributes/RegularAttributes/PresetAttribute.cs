@@ -13,6 +13,7 @@ namespace UnityEngine
     /// private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
     /// </code>
     /// </example>
+    /// <para>Supported sources: fields, properties, and methods.</para>
     /// <para>Supported types: all.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
