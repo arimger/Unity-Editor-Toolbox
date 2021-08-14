@@ -11,6 +11,7 @@ namespace Toolbox.Editor.Drawers
         {
             return new HashSet<TypeCode>()
             {
+                TypeCode.Empty,
                 TypeCode.Object
             };
         }
@@ -18,7 +19,7 @@ namespace Toolbox.Editor.Drawers
 
         internal override bool IsValidSource(object value)
         {
-            return value is Object && base.IsValidSource(value);
+            return base.IsValidSource(value);
         }
 
         internal override bool IsValidTarget(object value)
@@ -33,10 +34,13 @@ namespace Toolbox.Editor.Drawers
 
         internal override bool Compare(object sourceValue, object targetValue, ValueComparisonMethod method)
         {
+            var realTargetValue = (bool)targetValue;
             switch (method)
             {
                 case ValueComparisonMethod.Equal:
-                    return (Object)sourceValue == (bool)targetValue;
+                    return sourceValue != null
+                        ? realTargetValue == (Object)sourceValue
+                        : realTargetValue == false;
                 default:
                     return false;
             }
