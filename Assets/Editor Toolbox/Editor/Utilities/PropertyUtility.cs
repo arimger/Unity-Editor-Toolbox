@@ -11,6 +11,14 @@ namespace Toolbox.Editor
     public static partial class PropertyUtility
     {
         /// <summary>
+        /// Indicates if the property has all changes applied and can be safely used for reflection-based features.
+        /// </summary>
+        internal static bool HasModifedProperties(this SerializedProperty property)
+        {
+            return property.serializedObject.hasModifiedProperties;
+        }
+
+        /// <summary>
         /// Creates and returns unique (hash based) key for this property.
         /// </summary>
         internal static string GetPropertyHashKey(this SerializedProperty property)
@@ -41,6 +49,8 @@ namespace Toolbox.Editor
         /// </summary>
         internal static object GetDeclaringObject(this SerializedProperty property, Object target)
         {
+            EnsureReflectionSafeness(property);
+
             var reference = target as object;
             var members = GetPropertyFieldTree(property);
             if (members.Length > 1)
@@ -60,7 +70,8 @@ namespace Toolbox.Editor
                     }
 
                     var fieldType = reference.GetType();
-                    var fieldInfo = fieldType.GetField(members[i], BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                    var fieldInfo = fieldType.GetField(members[i],
+                        BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
                     reference = fieldInfo.GetValue(reference);
                 }
             }
@@ -330,7 +341,7 @@ namespace Toolbox.Editor
 
         public static T GetAttribute<T>(SerializedProperty property) where T : Attribute
         {
-            return GetAttribute<T>(property, GetFieldInfoFromProperty(property, out var type));
+            return GetAttribute<T>(property, GetFieldInfoFromProperty(property, out _));
         }
 
         public static T GetAttribute<T>(SerializedProperty property, FieldInfo fieldInfo) where T : Attribute
@@ -340,7 +351,7 @@ namespace Toolbox.Editor
 
         public static T[] GetAttributes<T>(SerializedProperty property) where T : Attribute
         {
-            return GetAttributes<T>(property, GetFieldInfoFromProperty(property, out var type));
+            return GetAttributes<T>(property, GetFieldInfoFromProperty(property, out _));
         }
 
         public static T[] GetAttributes<T>(SerializedProperty property, FieldInfo fieldInfo) where T : Attribute
@@ -348,6 +359,15 @@ namespace Toolbox.Editor
             return (T[])fieldInfo.GetCustomAttributes(typeof(T), true);
         }
 
+
+
+        internal static void EnsureReflectionSafeness(SerializedProperty property)
+        {
+            if (property.serializedObject.hasModifiedProperties)
+            {
+                property.serializedObject.ApplyModifiedProperties();
+            }
+        }
 
         internal static bool IsLastSerializedProperty(SerializedProperty property)
         {
