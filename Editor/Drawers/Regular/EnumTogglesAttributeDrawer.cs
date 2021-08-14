@@ -18,9 +18,9 @@ namespace Toolbox.Editor.Drawers
 
         private Type GetEnumType(SerializedProperty property, FieldInfo fieldInfo)
         {
-            var obj = property.GetDeclaringObject();
-            var type = property.GetProperType(fieldInfo, obj);
-            return type;
+            var instance = property.GetDeclaringObject();
+            var enumType = property.GetProperType(fieldInfo, instance);
+            return enumType;
         }
 
         private bool IsFlagsEnum(Type type)
@@ -209,19 +209,17 @@ namespace Toolbox.Editor.Drawers
         private void DrawTogglesGroup(InputData input, EnumData enumData, ref int? mask, Func<Rect, int?, int, string, int?> toggleFunc)
         {
             var draft = GetDraftInfo(input, enumData);
-            var strip = new StripInfo()
-            {
-                position = input.firstRowPosition,
-                spacing = input.toggleSpacing,
-                division = draft.togglesInFirstRow
-            };
-
+            var strip = new StripInfo(input.firstRowPosition, input.toggleSpacing, draft.togglesInFirstRow);
             var index = 0;
+
+            //draw first strip in the "prefix" row
             DrawTogglesStrip(strip, enumData, ref mask, toggleFunc, ref index);
             strip.position = input.otherRowPosition;
             strip.division = draft.togglesInOtherRow;
+
             for (var i = 0; i < draft.otherRowsCount; i++)
             {
+                //draw each next strip based on the full width
                 DrawTogglesStrip(strip, enumData, ref mask, toggleFunc, ref index);
                 strip.position.y += input.toggleHeight + input.spacing;
             }
@@ -229,16 +227,15 @@ namespace Toolbox.Editor.Drawers
 
         private void DrawTogglesStrip(StripInfo strip, EnumData enumData, ref int? mask, Func<Rect, int?, int, string, int?> toggleFunc, ref int index)
         {
-            var position = strip.position;
-            var spacing = strip.spacing;
-            var division = strip.division;
-
             var enumLabels = enumData.labels;
             var enumValues = enumData.values;
 
+            //setup drawing fields for the whole strip
+            var division = strip.division;
             var maxRowToggles = Mathf.Min(enumLabels.Count, index + division);
             var togglesToDraw = maxRowToggles - index;
-            position.width = (position.width - spacing * (togglesToDraw - 1)) / togglesToDraw;
+            var position = strip.position;
+            position.width = (position.width - strip.spacing * (togglesToDraw - 1)) / togglesToDraw;
 
             for (; index < maxRowToggles; index++)
             {
@@ -246,7 +243,7 @@ namespace Toolbox.Editor.Drawers
                 var enumValue = enumValues[index];
                 var enumLabel = enumLabels[index];
                 mask = toggleFunc(position, mask, (int)enumValue, enumLabel);
-                position.x += position.width + spacing;
+                position.x += position.width + strip.spacing;
             }
         }
 
@@ -363,6 +360,13 @@ namespace Toolbox.Editor.Drawers
             public Rect position;
             public int division;
             public float spacing;
+
+            public StripInfo(Rect position, float spacing, int division)
+            {
+                this.position = position;
+                this.spacing = spacing;
+                this.division = division;
+            }
         }
 
         private static class Style
