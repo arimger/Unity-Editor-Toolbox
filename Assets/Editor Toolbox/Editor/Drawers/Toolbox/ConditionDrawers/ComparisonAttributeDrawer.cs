@@ -7,10 +7,8 @@ namespace Toolbox.Editor.Drawers
     {
         protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, T attribute)
         {
-            var declaringObject = property.GetDeclaringObject();
-
             var sourceName = attribute.SourceHandle;
-            if (!ValueExtractionHelper.TryGetValue(sourceName, declaringObject, out var value))
+            if (!ValueExtractionHelper.TryGetValue(sourceName, property, out var value, out var hasMixedValues))
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,
                     string.Format("Source ({0}) not found.", sourceName));
@@ -27,7 +25,7 @@ namespace Toolbox.Editor.Drawers
                 return PropertyCondition.Valid;
             }
 
-            return OnComparisonResult(result);
+            return OnComparisonResult(hasMixedValues ? false : result);
         }
 
         protected abstract PropertyCondition OnComparisonResult(bool result);
