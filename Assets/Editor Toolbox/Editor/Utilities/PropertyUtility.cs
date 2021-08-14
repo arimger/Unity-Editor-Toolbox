@@ -360,7 +360,6 @@ namespace Toolbox.Editor
         }
 
 
-
         internal static void EnsureReflectionSafeness(SerializedProperty property)
         {
             if (property.serializedObject.hasModifiedProperties)
