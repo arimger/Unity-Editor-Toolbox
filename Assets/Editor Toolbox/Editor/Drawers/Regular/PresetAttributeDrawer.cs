@@ -16,6 +16,7 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
+            //NOTE: this implementation does not support multiple different sources
             var sourceName = Attribute.SourceHandle;
             var declaringObject = property.GetDeclaringObject();
             //extract (if available) the real preset value
