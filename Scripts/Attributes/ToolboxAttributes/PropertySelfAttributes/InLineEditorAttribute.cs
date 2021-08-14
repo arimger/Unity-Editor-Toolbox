@@ -31,6 +31,11 @@ namespace UnityEngine
 
         public bool DrawSettings { get; private set; }
 
+        /// <summary>
+        /// Indicates if the inlined Editor should be disabled.
+        /// </summary>
+        public bool DisableEditor { get; set; }
+
         public float PreviewHeight { get; set; } = 90.0f;
     }
 }

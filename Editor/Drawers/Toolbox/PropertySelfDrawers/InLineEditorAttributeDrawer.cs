@@ -60,18 +60,27 @@ namespace Toolbox.Editor.Drawers
             using (new EditorGUILayout.VerticalScope(Style.backgroundStyle))
             {
                 //draw and prewarm the inlined Editor version
-                DrawEditor(editor, attribute.DrawPreview, attribute.DrawSettings, attribute.PreviewHeight);
+                DrawEditor(editor, attribute.DisableEditor, attribute.DrawPreview, attribute.DrawSettings, attribute.PreviewHeight);
             }
         }
 
-        private void DrawEditor(Editor editor, bool drawPreview, bool drawSettings, float previewHeight)
+        private void DrawEditor(Editor editor, bool disableEditor)
+        {
+            DrawEditor(editor, disableEditor, false, false, 0.0f);
+        }
+
+        private void DrawEditor(Editor editor, bool disableEditor, bool drawPreview, bool drawSettings, float previewHeight)
         {
             using (new EditorGUILayout.VerticalScope())
             {
                 //draw the whole inspector and apply changes 
-                editor.serializedObject.Update();
-                editor.OnInspectorGUI();
-                editor.serializedObject.ApplyModifiedProperties();
+                using (new EditorGUI.DisabledScope(disableEditor))
+                {
+                    editor.serializedObject.Update();
+                    editor.OnInspectorGUI();
+                    editor.serializedObject.ApplyModifiedProperties();
+                }
+
                 if (!editor.HasPreviewGUI() || !drawPreview)
                 {
                     return;
