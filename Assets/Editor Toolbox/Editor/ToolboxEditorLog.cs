@@ -83,6 +83,11 @@ namespace Toolbox.Editor
             Log(GetPropertyLocation(property));
         }
 
+        internal static void MemberNotFoundWarning(Type classType, string memberName)
+        {
+            LogWarning(string.Format("{0}: Member ({1}) not found.", classType.Name, memberName));
+        }
+
         internal static void PrefabExpectedWarning()
         {
             PrefabExpectedWarning(null);

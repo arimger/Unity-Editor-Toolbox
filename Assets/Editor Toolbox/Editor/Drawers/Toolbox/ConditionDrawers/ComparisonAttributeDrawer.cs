@@ -7,11 +7,11 @@ namespace Toolbox.Editor.Drawers
     {
         protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, T attribute)
         {
-            var sourceName = attribute.SourceHandle;
-            if (!ValueExtractionHelper.TryGetValue(sourceName, property, out var value, out var hasMixedValues))
+            var sourceHandle = attribute.SourceHandle;
+            if (!ValueExtractionHelper.TryGetValue(sourceHandle, property, out var value, out var hasMixedValues))
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    string.Format("Source ({0}) not found.", sourceName));
+                    string.Format("Source ({0}) not found.", sourceHandle));
                 return PropertyCondition.Valid;
             }
 
