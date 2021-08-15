@@ -34,21 +34,19 @@ namespace Toolbox.Editor.Drawers
             return false;
         }
 
-        public static bool TryGetValue(string source, SerializedProperty causer, out object value, out bool hasMixedValues)
+        public static bool TryGetValue(string source, object[] parentObjects, out object value, out bool hasMixedValues)
         {
-            return TryGetValue(source, causer, out value, out hasMixedValues, defaultComparer);
+            return TryGetValue(source, parentObjects, out value, out hasMixedValues, defaultComparer);
         }
 
-        public static bool TryGetValue(string source, SerializedProperty causer, out object value, out bool hasMixedValues, Func<object, object, bool> nextValuesComparer)
+        public static bool TryGetValue(string source, object[] parentObjects, out object value, out bool hasMixedValues, Func<object, object, bool> nextValuesComparer)
         {
             value = null;
             hasMixedValues = false;
             var valueFound = false;
-            var targetObjects = causer.serializedObject.targetObjects;
-            for (var i = 0; i < targetObjects.Length; i++)
+            for (var i = 0; i < parentObjects.Length; i++)
             {
-                var declaringObject = causer.GetDeclaringObject(targetObjects[i]);
-                if (TryGetValue(source, declaringObject, out var nextValue))
+                if (TryGetValue(source, parentObjects[i], out var nextValue))
                 {
                     if (valueFound && !nextValuesComparer(value, nextValue))
                     {
@@ -63,5 +61,23 @@ namespace Toolbox.Editor.Drawers
 
             return valueFound;
         }
+
+        public static bool TryGetValue(string source, SerializedProperty causer, out object value, out bool hasMixedValues)
+        {
+            return TryGetValue(source, causer, out value, out hasMixedValues, defaultComparer);
+        }
+
+        public static bool TryGetValue(string source, SerializedProperty causer, out object value, out bool hasMixedValues, Func<object, object, bool> nextValuesComparer)
+        {
+            var targetObjects = causer.serializedObject.targetObjects;
+            var parentObjects = new object[targetObjects.Length];
+            for (var i = 0; i < targetObjects.Length; i++)
+            {
+                parentObjects[i] = causer.GetDeclaringObject(targetObjects[i]);
+            }
+
+            return TryGetValue(source, parentObjects, out value, out hasMixedValues, nextValuesComparer);
+        }
+
     }
 }
