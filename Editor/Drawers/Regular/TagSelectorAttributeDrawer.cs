@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    using Toolbox.Editor.Internal;
+
     [CustomPropertyDrawer(typeof(TagSelectorAttribute))]
     public class TagSelectorPropertyDrawer : PropertyDrawerBase
     {
@@ -46,7 +48,11 @@ namespace Toolbox.Editor.Drawers
             }
 
             //draw the popup window
-            index = EditorGUI.Popup(position, index, tags.ToArray());
+            using (new ZeroIndentScope())
+            {
+                index = EditorGUI.Popup(position, index, tags.ToArray());
+            }
+
             //cache last picked value
             property.stringValue = index >= 1 ? tags[index] : "";
             //end all property controls

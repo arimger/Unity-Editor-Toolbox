@@ -21,6 +21,7 @@ namespace Toolbox.Editor.Drawers
             {
                 property.intValue = layer;
             }
+
             EditorGUI.EndProperty();
         }
 
