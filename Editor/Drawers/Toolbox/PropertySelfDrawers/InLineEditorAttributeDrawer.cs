@@ -64,11 +64,6 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-        private void DrawEditor(Editor editor, bool disableEditor)
-        {
-            DrawEditor(editor, disableEditor, false, false, 0.0f);
-        }
-
         private void DrawEditor(Editor editor, bool disableEditor, bool drawPreview, bool drawSettings, float previewHeight)
         {
             using (new EditorGUILayout.VerticalScope())
