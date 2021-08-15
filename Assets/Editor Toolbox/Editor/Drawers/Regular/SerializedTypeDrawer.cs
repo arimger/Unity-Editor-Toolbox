@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    using Toolbox.Editor.Internal;
+
     [CustomPropertyDrawer(typeof(TypeConstraintAttribute), true)]
     [CustomPropertyDrawer(typeof(SerializedType))]
     public sealed class SerializedTypeDrawer : PropertyDrawerBase
@@ -147,29 +149,31 @@ namespace Toolbox.Editor.Drawers
             label = property.name != "data" ? label : GUIContent.none;
             //draw the proper label field
             position = EditorGUI.PrefixLabel(position, label);
-
-            //try to draw associated popup
-            if (validAttribute.AddTextSearchField)
+            using (new ZeroIndentScope())
             {
-                var buttonLabel = new GUIContent(options[index]);
-                ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
+                //try to draw associated popup
+                if (validAttribute.AddTextSearchField)
                 {
-                    try
+                    var buttonLabel = new GUIContent(options[index]);
+                    ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
                     {
-                        referenceProperty.serializedObject.Update();
-                        referenceProperty.stringValue = GetClassReferencValue(i, filteredTypes);
-                        referenceProperty.serializedObject.ApplyModifiedProperties();
-                    }
-                    catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
-                    {
-                        ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
-                    }
-                });
-            }
-            else
-            {
-                index = EditorGUI.Popup(position, index, options);
-                referenceProperty.stringValue = GetClassReferencValue(index, filteredTypes);
+                        try
+                        {
+                            referenceProperty.serializedObject.Update();
+                            referenceProperty.stringValue = GetClassReferencValue(i, filteredTypes);
+                            referenceProperty.serializedObject.ApplyModifiedProperties();
+                        }
+                        catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
+                        {
+                            ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
+                        }
+                    });
+                }
+                else
+                {
+                    index = EditorGUI.Popup(position, index, options);
+                    referenceProperty.stringValue = GetClassReferencValue(index, filteredTypes);
+                }
             }
 
             EditorGUI.EndProperty();

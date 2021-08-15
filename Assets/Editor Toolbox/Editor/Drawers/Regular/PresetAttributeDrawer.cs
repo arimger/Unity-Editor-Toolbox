@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    using Toolbox.Editor.Internal;
+
     [CustomPropertyDrawer(typeof(PresetAttribute))]
     public class PresetAttributeDrawer : PropertyDrawerBase
     {
@@ -68,7 +70,11 @@ namespace Toolbox.Editor.Drawers
 
             EditorGUI.BeginChangeCheck();
             //get selected preset value
-            index = EditorGUI.Popup(position, index, options);
+            using (new ZeroIndentScope())
+            {
+                index = EditorGUI.Popup(position, index, options);
+            }
+
             index = Mathf.Clamp(index, 0, itemsCount - 1);
             if (EditorGUI.EndChangeCheck())
             {
