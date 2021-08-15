@@ -7,9 +7,18 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(DynamicHelpAttribute attribute)
         {
-            //TODO:
-            //if (ValueExtractionHelper.TryGetValue(attribute.SourceHandle,))
-            EditorGUILayout.HelpBox(attribute.SourceHandle, (MessageType)attribute.Type);
+            var sourceHandle = attribute.SourceHandle;
+            //TODO: support nested objects
+            var targetObjects = InspectorUtility.CurrentTargetObjects;
+            if (ValueExtractionHelper.TryGetValue(sourceHandle, targetObjects, out var value, out var hasMixedValues))
+            {
+                var messageText = hasMixedValues ? "-" : value?.ToString();
+                var messageType = (MessageType)attribute.Type;
+                EditorGUILayout.HelpBox(messageText, messageType);
+                return;
+            }
+
+            ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("Message source ({0}) not found.", sourceHandle));
         }
     }
 }
