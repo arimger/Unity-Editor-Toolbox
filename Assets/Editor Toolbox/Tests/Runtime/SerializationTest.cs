@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using System;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Tests
 {
