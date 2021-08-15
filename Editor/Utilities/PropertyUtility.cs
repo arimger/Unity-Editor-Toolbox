@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 using UnityEditor;
 using Object = UnityEngine.Object;
+
+[assembly: InternalsVisibleTo("Toolbox.Editor.Tests")]
 
 namespace Toolbox.Editor
 {
@@ -85,7 +88,8 @@ namespace Toolbox.Editor
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
         internal static object GetProperValue(this SerializedProperty property, FieldInfo fieldInfo)
         {
-            return GetProperValue(property, fieldInfo, property.serializedObject.targetObject);
+            var declaringObject = property.GetDeclaringObject();
+            return GetProperValue(property, fieldInfo, declaringObject);
         }
 
         /// <summary>
