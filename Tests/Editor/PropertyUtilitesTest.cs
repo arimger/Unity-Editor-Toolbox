@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,34 +6,16 @@ namespace Toolbox.Editor.Tests
 {
     public class PropertyUtilitesTest
     {
-        private class TestObject : ScriptableObject
-        {
-            public int var1;
-            public TestNestedObject1 var2;
-
-            [Serializable]
-            public class TestNestedObject1
-            {
-                public string var1;
-                public TestNestedObject2 var2;
-            }
-
-            [Serializable]
-            public class TestNestedObject2
-            {
-                public bool var1;
-            }
-        }
-
-
         private SerializedObject scriptableObject;
 
 
         [OneTimeSetUp]
         public void SetUp()
         {
-            var target = ScriptableObject.CreateInstance<TestObject>();
+            var target = ScriptableObject.CreateInstance<TestObject2>();
             scriptableObject = new SerializedObject(target);
+            var array = scriptableObject.FindProperty("var2.var3");
+            array.InsertArrayElementAtIndex(0);
         }
 
         [OneTimeTearDown]
@@ -57,10 +38,42 @@ namespace Toolbox.Editor.Tests
         public void TestGetValuePass(string propertyPath, object value)
         {
             var property = scriptableObject.FindProperty(propertyPath);
-            var fieldInfo = property.GetFieldInfo(out var type, scriptableObject.targetObject);
+            var fieldInfo = property.GetFieldInfo(out _, scriptableObject.targetObject);
             property.SetProperValue(fieldInfo, value);
             var newValue = property.GetProperValue(fieldInfo);
             Assert.AreEqual(value, newValue);
+        }
+
+        [TestCase("var2.var2.var1", false)]
+        [TestCase("var2.var3", false)]
+        [TestCase("var2.var3.Array.data[0]", true)]
+        public void TestIsArrayElementPass(string propertyPath, bool expected)
+        {
+            var property = scriptableObject.FindProperty(propertyPath);
+            var actual = PropertyUtility.IsSerializableArrayElement(property);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestCase("var1", "var1")]
+        [TestCase("var2.var1", "var2.var1")]
+        [TestCase("var2.var2.var1", "var2.var2.var1")]
+        [TestCase("var2.var3", "var2.var3")]
+        [TestCase("var2.var3.Array.data[0]", "var2.var3.[0]")]
+        public void TestGetPathTreePass(string propertyPath, string path)
+        {
+            var property = scriptableObject.FindProperty(propertyPath);
+            var pathTree = PropertyUtility.GetPropertyFieldTree(property);
+            var actual = string.Join(".", pathTree);
+            Assert.AreEqual(path, actual);
+        }
+
+        [TestCase("m_Script", true)]
+        [TestCase("var2.var1", false)]
+        public void TestIsMonoScriptPass(string propertyPath, bool expected)
+        {
+            var property = scriptableObject.FindProperty(propertyPath);
+            var actual = PropertyUtility.IsDefaultScriptProperty(property);
+            Assert.AreEqual(expected, actual);
         }
     }
 }
