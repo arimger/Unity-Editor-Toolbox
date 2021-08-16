@@ -1,12 +1,18 @@
 using NUnit.Framework;
 using System;
-using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Tests
 {
     public class SerializationTest
     {
+        public class TestObject
+        {
+#if UNITY_2020_1_OR_NEWER
+            public SerializedDictionary<int, string> var1;
+#endif
+        }
+
         [TestCase("UnityEngine.MonoBehaviour, UnityEngine.CoreModule", typeof(MonoBehaviour))]
         [TestCase("UnityEngine.ScriptableObject, UnityEngine.CoreModule", typeof(ScriptableObject))]
         [TestCase("UnityEngine.GameObject, UnityEngine.CoreModule", typeof(GameObject))]
@@ -23,30 +29,18 @@ namespace Toolbox.Tests
         [Test]
         public void TestDictSerializationPass()
         {
-            var so = ScriptableObject.CreateInstance<TestScriptableObject>();
-            var serializedObject = new SerializedObject(so);
-            var dict = serializedObject.FindProperty("dict");
-            var list = dict.FindPropertyRelative("pairs");
-            SerializedProperty pair;
-            list.InsertArrayElementAtIndex(0);
-            pair = list.GetArrayElementAtIndex(0);
-            pair.FindPropertyRelative("key").intValue = 0;
-            pair.FindPropertyRelative("value").stringValue = "A";
-            list.InsertArrayElementAtIndex(1);
-            pair = list.GetArrayElementAtIndex(1);
-            pair.FindPropertyRelative("key").intValue = 1;
-            pair.FindPropertyRelative("value").stringValue = "B";
-            list.InsertArrayElementAtIndex(2);
-            pair = list.GetArrayElementAtIndex(2);
-            pair.FindPropertyRelative("key").intValue = 1;
-            pair.FindPropertyRelative("value").stringValue = "C";
-            serializedObject.ApplyModifiedProperties();
+            var instance = new TestObject();
+            var reference = new SerializedDictionary<int, string>();
+            instance.var1 = reference;
+            reference.Add(1, "A");
+            reference.Add(2, "B");
+            reference.Add(3, "C");
 
-            Assert.AreEqual(so.dict.Count, 2);
-            Assert.IsTrue(so.dict.ContainsKey(0));
-            Assert.IsTrue(so.dict.ContainsKey(1));
-            Assert.IsFalse(so.dict.ContainsKey(2));
-            Assert.AreEqual(so.dict[1], "B");
+            Assert.AreEqual(reference.Count, 3);
+            Assert.AreEqual(reference.ContainsKey(1), true);
+            Assert.AreEqual(reference.ContainsKey(2), true);
+            Assert.AreEqual(reference.ContainsKey(3), true);
+            Assert.AreEqual(reference[2], "B");
         }
 #endif
     }
