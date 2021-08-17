@@ -20,6 +20,7 @@ namespace Toolbox.Editor.Tests
         public class TestNestedObject2
         {
             public bool var1;
+            public int var2;
         }
     }
 }

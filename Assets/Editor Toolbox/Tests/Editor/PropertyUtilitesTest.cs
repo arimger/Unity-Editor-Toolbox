@@ -18,10 +18,6 @@ namespace Toolbox.Editor.Tests
             array.InsertArrayElementAtIndex(0);
         }
 
-        [OneTimeTearDown]
-        public void TearDown()
-        { }
-
         [TestCase("var1", null)]
         [TestCase("var2.var1", "var2")]
         [TestCase("var2.var2.var1", "var2")]
