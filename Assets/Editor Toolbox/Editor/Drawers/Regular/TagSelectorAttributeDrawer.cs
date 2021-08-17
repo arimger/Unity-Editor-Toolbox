@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using UnityEditor;
 using UnityEditorInternal;
@@ -6,8 +7,6 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    using Toolbox.Editor.Internal;
-
     [CustomPropertyDrawer(typeof(TagSelectorAttribute))]
     public class TagSelectorPropertyDrawer : PropertyDrawerBase
     {
@@ -18,11 +17,6 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            //begin the true property
-            label = EditorGUI.BeginProperty(position, label, property);
-            //draw the prefix label
-            position = EditorGUI.PrefixLabel(position, label);
-
             var tags = new List<string>
             {
                 "<None>"
@@ -31,7 +25,7 @@ namespace Toolbox.Editor.Drawers
             var value = property.stringValue;
             var index = -1;
 
-            if (value == "")
+            if (string.IsNullOrEmpty(value))
             {
                 index = 0;
             }
@@ -47,15 +41,15 @@ namespace Toolbox.Editor.Drawers
                 }
             }
 
-            //draw the popup window
-            using (new ZeroIndentScope())
+            var labels = Array.ConvertAll(tags.ToArray(), i => new GUIContent(i));
+            label = EditorGUI.BeginProperty(position, label, property);
+            EditorGUI.BeginChangeCheck();
+            index = EditorGUI.Popup(position, label, index, labels);
+            if (EditorGUI.EndChangeCheck())
             {
-                index = EditorGUI.Popup(position, index, tags.ToArray());
+                property.stringValue = index >= 1 ? tags[index] : string.Empty;
             }
 
-            //cache last picked value
-            property.stringValue = index >= 1 ? tags[index] : "";
-            //end all property controls
             EditorGUI.EndProperty();
         }
 

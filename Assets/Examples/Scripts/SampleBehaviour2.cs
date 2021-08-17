@@ -65,7 +65,7 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [Label("3", skinStyle: SkinStyle.Box)]
 
-    [InLineEditor]
+    [InLineEditor(DisableEditor = false)]
     public Transform var21;
 
     [InLineEditor(drawSettings: true)]
@@ -195,4 +195,11 @@ public class SampleBehaviour2 : MonoBehaviour
     [EndHorizontalGroup]
     [ReorderableList]
     public float[] floats;
+
+    [Label("16", skinStyle: SkinStyle.Box)]
+
+    [DynamicHelp(nameof(MessageSource))]
+    public int var39;
+
+    public string MessageSource => "Dynamic Message Source";
 }

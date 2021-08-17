@@ -6,8 +6,6 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    using Toolbox.Editor.Internal;
-
     [CustomPropertyDrawer(typeof(PresetAttribute))]
     public class PresetAttributeDrawer : PropertyDrawerBase
     {
@@ -65,16 +63,9 @@ namespace Toolbox.Editor.Drawers
 
             //begin the true property
             label = EditorGUI.BeginProperty(position, label, property);
-            //draw the prefix label
-            position = EditorGUI.PrefixLabel(position, label);
-
             EditorGUI.BeginChangeCheck();
             //get selected preset value
-            using (new ZeroIndentScope())
-            {
-                index = EditorGUI.Popup(position, index, options);
-            }
-
+            index = EditorGUI.Popup(position, label, index, EditorGUIUtility.TrTempContent(options));
             index = Mathf.Clamp(index, 0, itemsCount - 1);
             if (EditorGUI.EndChangeCheck())
             {

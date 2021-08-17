@@ -149,30 +149,35 @@ namespace Toolbox.Editor.Drawers
             label = property.name != "data" ? label : GUIContent.none;
             //draw the proper label field
             position = EditorGUI.PrefixLabel(position, label);
-            using (new ZeroIndentScope())
+
+            //try to draw associated popup
+            if (validAttribute.AddTextSearchField)
             {
-                //try to draw associated popup
-                if (validAttribute.AddTextSearchField)
+                var buttonLabel = new GUIContent(options[index]);
+                ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
                 {
-                    var buttonLabel = new GUIContent(options[index]);
-                    ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
+                    try
                     {
-                        try
-                        {
-                            referenceProperty.serializedObject.Update();
-                            referenceProperty.stringValue = GetClassReferencValue(i, filteredTypes);
-                            referenceProperty.serializedObject.ApplyModifiedProperties();
-                        }
-                        catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
-                        {
-                            ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
-                        }
-                    });
-                }
-                else
+                        referenceProperty.serializedObject.Update();
+                        referenceProperty.stringValue = GetClassReferencValue(i, filteredTypes);
+                        referenceProperty.serializedObject.ApplyModifiedProperties();
+                    }
+                    catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
+                    {
+                        ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
+                    }
+                });
+            }
+            else
+            {
+                using (new ZeroIndentScope())
                 {
+                    EditorGUI.BeginChangeCheck();
                     index = EditorGUI.Popup(position, index, options);
-                    referenceProperty.stringValue = GetClassReferencValue(index, filteredTypes);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        referenceProperty.stringValue = GetClassReferencValue(index, filteredTypes);
+                    }
                 }
             }
 
