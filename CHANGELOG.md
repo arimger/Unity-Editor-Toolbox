@@ -1,3 +1,15 @@
+## 0.10.1 [17.08.2021]
+
+### Added:
+- Reflection-based drawers: possiblity to pass data from non-serialized fields, properties and methods
+- DynamicHelpAttribute
+- Unit tests
+- Possibility to disable content in inlined Editors
+
+### Changed:
+- Fix parent extraction from the SerializedProperty
+- Fix popup indentations
+
 ## 0.9.4 [29.07.2021]
 
 ### Added:
