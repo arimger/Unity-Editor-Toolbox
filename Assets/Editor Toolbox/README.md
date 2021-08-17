@@ -318,6 +318,10 @@ public int var1;
 ```csharp
 [Help("Help information", UnityMessageType.Warning, Order = -1)]
 public int var1;
+[DynamicHelp(nameof(Message), UnityMessageType.Error)]
+public int var2;
+
+public string Message => "Dynamic Message";
 ```
 ```csharp
 [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 150.0f)]
@@ -336,22 +340,31 @@ public int var1;
 #### ToolboxConditionAttributes 
 
 Enable/disable or show/hide properties using custom conditions. You can use them together with any other type of drawer.
-Every ToolboxConditionDrawer supports boolean, int, string and enum types and works even with array/list properties.
+Every ToolboxConditionDrawer supports boolean, int, string, UnityEngine.Object and enum types and works even with array/list properties.
+You are able to pass values from fields, properties, and methods.
 
 ```csharp
-public string stringValue = "sho";
-[ShowIf(nameof(stringValue), "show")] //or HideIfAttribute
+public string StringValue => "Sho";
+[ShowIf(nameof(StringValue), "show")]
 public int var1;
+
+public GameObject objectValue;
+[HideIf(nameof(objectValue), false)]
+public int var2;
 ```
 
 ```csharp
 public KeyCode enumValue = KeyCode.A;
-[EnableIf(nameof(enumValue), KeyCode.A)] //or DisableIfAttribute
+[EnableIf(nameof(enumValue), KeyCode.A)]
 public int var1;
 
-public float floatValue;
-[EnableIf(nameof(floatValue), 2.0f, TestMethod = ComparisionTestMethod.GreaterEqual)]
+[DisableIf(nameof(GetFloatValue), 2.0f, Comparison = UnityComparisonMethod.GreaterEqual)]
 public int var2;
+
+public float GetFloatValue()
+{
+	return 1.6f;
+}
 ```
 
 ```csharp
@@ -381,7 +394,7 @@ This attribute gives a great possibility to extend all reference-related (UnityE
 Using it you are able to 'inline' Editors for: components, ScriptableObjects, Materials, Renderers, MeshFilters, Textures, AudioClips, etc.
 
 ```csharp
-[InLineEditor]
+[InLineEditor(DisableEditor = false)]
 public Transform var1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inlined3.png)

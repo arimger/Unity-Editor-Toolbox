@@ -10,6 +10,12 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(EnumTogglesAttribute))]
     public class EnumTogglesAttributeDrawer : PropertyDrawerBase
     {
+        private static List<EnumTogglesDrawer> toggleDrawers = new List<EnumTogglesDrawer>()
+        {
+            new BasicEnumTogglesDrawer(),
+            new FlagsEnumTogglesDrawer()
+        };
+
         /// <summary>
         /// Enum-related metadatas mapped to all previously supported types.
         /// </summary>
@@ -206,26 +212,26 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-        private void DrawTogglesGroup(InputData input, EnumData enumData, ref int? mask, Func<Rect, int?, int, string, int?> toggleFunc)
+        private void DrawTogglesGroup(InputData input, EnumData enumData, ref int? mask, Func<Rect, int?, int, string, int?> toggleDrawer)
         {
             var draft = GetDraftInfo(input, enumData);
             var strip = new StripInfo(input.firstRowPosition, input.toggleSpacing, draft.togglesInFirstRow);
             var index = 0;
 
             //draw first strip in the "prefix" row
-            DrawTogglesStrip(strip, enumData, ref mask, toggleFunc, ref index);
+            DrawTogglesStrip(strip, enumData, ref mask, toggleDrawer, ref index);
             strip.position = input.otherRowPosition;
             strip.division = draft.togglesInOtherRow;
 
             for (var i = 0; i < draft.otherRowsCount; i++)
             {
                 //draw each next strip based on the full width
-                DrawTogglesStrip(strip, enumData, ref mask, toggleFunc, ref index);
+                DrawTogglesStrip(strip, enumData, ref mask, toggleDrawer, ref index);
                 strip.position.y += input.toggleHeight + input.spacing;
             }
         }
 
-        private void DrawTogglesStrip(StripInfo strip, EnumData enumData, ref int? mask, Func<Rect, int?, int, string, int?> toggleFunc, ref int index)
+        private void DrawTogglesStrip(StripInfo strip, EnumData enumData, ref int? mask, Func<Rect, int?, int, string, int?> toggleDrawer, ref int index)
         {
             var enumLabels = enumData.labels;
             var enumValues = enumData.values;
@@ -242,7 +248,7 @@ namespace Toolbox.Editor.Drawers
                 //NOTE: dedicated convert method from Enum value to int would be really helpful
                 var enumValue = enumValues[index];
                 var enumLabel = enumLabels[index];
-                mask = toggleFunc(position, mask, (int)enumValue, enumLabel);
+                mask = toggleDrawer(position, mask, (int)enumValue, enumLabel);
                 position.x += position.width + strip.spacing;
             }
         }
@@ -368,6 +374,16 @@ namespace Toolbox.Editor.Drawers
                 this.division = division;
             }
         }
+
+        //TODO:
+        private abstract class EnumTogglesDrawer
+        { }
+
+        private sealed class BasicEnumTogglesDrawer : EnumTogglesDrawer
+        { }
+
+        private sealed class FlagsEnumTogglesDrawer : EnumTogglesDrawer
+        { }
 
         private static class Style
         {
