@@ -201,5 +201,5 @@ public class SampleBehaviour2 : MonoBehaviour
     [DynamicHelp(nameof(MessageSource))]
     public int var39;
 
-    public string MessageSource => "Dynamic Message Source";
+    public string MessageSource => string.Format("Dynamic Message Source. {0} = {1}", nameof(var39), var39);
 }
