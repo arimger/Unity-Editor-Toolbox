@@ -7,11 +7,16 @@ namespace Toolbox.Editor.Drawers
     {
         public bool TryGetValue(string source, object declaringObject, out object value)
         {
+            value = default;
+            if (string.IsNullOrEmpty(source))
+            {
+                return false;
+            }
+
             var type = declaringObject.GetType();
             var info = type.GetMethod(source, ReflectionUtility.allBindings, null, CallingConventions.Any, new Type[0], null);
             if (info == null)
             {
-                value = default;
                 return false;
             }
 

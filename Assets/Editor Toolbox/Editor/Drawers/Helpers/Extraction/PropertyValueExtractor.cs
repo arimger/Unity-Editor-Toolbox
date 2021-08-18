@@ -4,11 +4,16 @@
     {
         public bool TryGetValue(string source, object declaringObject, out object value)
         {
+            value = default;
+            if (string.IsNullOrEmpty(source))
+            {
+                return false;
+            }
+
             var type = declaringObject.GetType();
             var info = type.GetProperty(source, ReflectionUtility.allBindings);
             if (info == null)
             {
-                value = default;
                 return false;
             }
 
