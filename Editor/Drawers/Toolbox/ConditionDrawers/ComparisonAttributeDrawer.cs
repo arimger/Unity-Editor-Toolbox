@@ -10,8 +10,7 @@ namespace Toolbox.Editor.Drawers
             var sourceHandle = attribute.SourceHandle;
             if (!ValueExtractionHelper.TryGetValue(sourceHandle, property, out var value, out var hasMixedValues))
             {
-                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    string.Format("Source ({0}) not found.", sourceHandle));
+                ToolboxEditorLog.MemberNotFoundWarning(attribute, property, sourceHandle);
                 return PropertyCondition.Valid;
             }
 

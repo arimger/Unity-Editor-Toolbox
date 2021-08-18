@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Text;
 
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
@@ -12,9 +14,18 @@ namespace Toolbox.Editor
         private const string format = "[{0}] {1}";
 
 
-        private static string GetPropertyLocation(SerializedProperty property)
+        private static string GetPropertySceneLocation(SerializedProperty property)
         {
-            return property.name + " property in " + property.serializedObject.targetObject;
+            return string.Format("{0} property in {1}", property.name, property.serializedObject.targetObject);
+        }
+
+        private static string GetMemberNotFoundMessage(Type classType, string memberName)
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append(classType != null ? string.Format("{0}: ", classType) : string.Empty);
+            memberName = string.IsNullOrEmpty(memberName) ? "<Empty>" : memberName;
+            stringBuilder.Append(string.Format("Member ({0}) not found.", memberName));
+            return stringBuilder.ToString();
         }
 
 
@@ -35,7 +46,7 @@ namespace Toolbox.Editor
 
         internal static void AttributeUsageWarning(Type attributeType, SerializedProperty property, string message)
         {
-            LogWarning(attributeType.Name + ": " + GetPropertyLocation(property) + ": " + message);
+            LogWarning(attributeType.Name + ": " + GetPropertySceneLocation(property) + ": " + message);
         }
 
         internal static void WrongAttributeUsageWarning(Attribute attribute, SerializedProperty property)
@@ -65,7 +76,7 @@ namespace Toolbox.Editor
 
         internal static void PropertyNotFoundWarning(SerializedProperty property, string propertyName)
         {
-            LogWarning(GetPropertyLocation(property) + ": Property " + propertyName + " not found.");
+            LogWarning(GetPropertySceneLocation(property) + ": Property " + propertyName + " not found.");
         }
 
         internal static void TypeNotSupportedWarning(SerializedProperty property, Type type)
@@ -75,17 +86,32 @@ namespace Toolbox.Editor
 
         internal static void TypeNotSupportedWarning(SerializedProperty property, string type)
         {
-            LogWarning(GetPropertyLocation(property) + ": " + type + " value type is not supported in comparison.");
+            LogWarning(GetPropertySceneLocation(property) + ": " + type + " value type is not supported in comparison.");
         }
 
         internal static void PropertyLocation(SerializedProperty property)
         {
-            Log(GetPropertyLocation(property));
+            LogInfo(GetPropertySceneLocation(property));
+        }
+
+        internal static void MemberNotFoundWarning(Attribute attribute, Type classType, string memberName)
+        {
+            AttributeUsageWarning(attribute, GetMemberNotFoundMessage(classType, memberName));
+        }
+
+        internal static void MemberNotFoundWarning(Attribute attribute, SerializedProperty property, string memberName)
+        {
+            AttributeUsageWarning(attribute, property, GetMemberNotFoundMessage(null, memberName));
+        }
+
+        internal static void MemberNotFoundWarning(Attribute attribute, SerializedProperty property, Type classType, string memberName)
+        {
+            AttributeUsageWarning(attribute, property, GetMemberNotFoundMessage(classType, memberName));
         }
 
         internal static void MemberNotFoundWarning(Type classType, string memberName)
         {
-            LogWarning(string.Format("{0}: Member ({1}) not found.", classType.Name, memberName));
+            LogWarning(GetMemberNotFoundMessage(classType, memberName));
         }
 
         internal static void PrefabExpectedWarning()
@@ -114,7 +140,7 @@ namespace Toolbox.Editor
             LogMessage(message, LogType.Error);
         }
 
-        internal static void Log(string message)
+        internal static void LogInfo(string message)
         {
             LogMessage(message, LogType.Log);
         }

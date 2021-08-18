@@ -17,13 +17,12 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             //NOTE: this implementation does not support multiple different sources
-            var sourceName = Attribute.SourceHandle;
+            var sourceHandle = Attribute.SourceHandle;
             var declaringObject = property.GetDeclaringObject();
             //extract (if available) the real preset value
-            if (!ValueExtractionHelper.TryGetValue(sourceName, declaringObject, out var sourceValue))
+            if (!ValueExtractionHelper.TryGetValue(sourceHandle, declaringObject, out var sourceValue))
             {
-                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    string.Format("Cannot find relative Preset ({0}).", sourceName));
+                ToolboxEditorLog.MemberNotFoundWarning(attribute, property, sourceHandle);
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
@@ -31,7 +30,7 @@ namespace Toolbox.Editor.Drawers
             if (!(sourceValue is IList presetList))
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    string.Format("Preset ({0}) has to be a one-dimensional collection (array or list).", sourceName));
+                    string.Format("Preset ({0}) has to be a one-dimensional collection (array or list).", sourceHandle));
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
@@ -88,6 +87,7 @@ namespace Toolbox.Editor.Drawers
         {
             var declaringObject = property.GetDeclaringObject();
             //NOTE: reflection won't work properly on nested structs because of boxing
+            //TODO: handle this case
             return !declaringObject.GetType().IsValueType;
         }
 

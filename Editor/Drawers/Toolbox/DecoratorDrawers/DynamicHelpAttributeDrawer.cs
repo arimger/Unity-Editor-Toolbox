@@ -18,7 +18,8 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("Message source ({0}) not found.", sourceHandle));
+            var targetType = targetObjects[0].GetType();
+            ToolboxEditorLog.MemberNotFoundWarning(attribute, targetType, sourceHandle);
         }
     }
 }
