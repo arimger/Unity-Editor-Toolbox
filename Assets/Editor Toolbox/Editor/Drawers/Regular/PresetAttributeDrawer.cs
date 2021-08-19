@@ -36,7 +36,7 @@ namespace Toolbox.Editor.Drawers
             }
 
             var sourceType = sourceValue.GetType();
-            var targetType = property.GetProperType(fieldInfo, declaringObject);
+            var targetType = property.GetProperType(fieldInfo);
             //check if types match between property and provided preset
             if (targetType != (sourceType.IsGenericType
                              ? sourceType.GetGenericArguments()[0]

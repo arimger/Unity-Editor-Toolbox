@@ -31,6 +31,7 @@ namespace Toolbox.Editor.Tests
         [TestCase("var1", 3)]
         [TestCase("var2.var1", "TestValue")]
         [TestCase("var2.var2.var1", true)]
+        [TestCase("var2.var3.Array.data[0]", 1)]
         public void TestGetValuePass(string propertyPath, object value)
         {
             var property = scriptableObject.FindProperty(propertyPath);

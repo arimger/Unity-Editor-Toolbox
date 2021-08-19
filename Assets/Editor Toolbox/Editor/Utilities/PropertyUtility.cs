@@ -50,36 +50,63 @@ namespace Toolbox.Editor
         /// <summary>
         /// Returns <see cref="object"/> which truly declares this property.
         /// </summary>
+        internal static object GetDeclaringObject(this SerializedProperty property, bool ignoreArrays)
+        {
+            return GetDeclaringObject(property, property.serializedObject.targetObject, ignoreArrays);
+        }
+
+        /// <summary>
+        /// Returns <see cref="object"/> which truly declares this property.
+        /// </summary>
         internal static object GetDeclaringObject(this SerializedProperty property, Object target)
+        {
+            return GetDeclaringObject(property, target, true);
+        }
+
+        /// <summary>
+        /// Returns <see cref="object"/> which truly declares this property.
+        /// </summary>
+        internal static object GetDeclaringObject(this SerializedProperty property, Object target, bool ignoreArrays)
         {
             EnsureReflectionSafeness(property);
 
             var reference = target as object;
+            var validReference = reference;
             var members = GetPropertyFieldTree(property);
             if (members.Length > 1)
             {
                 for (var i = 0; i < members.Length - 1; i++)
                 {
-                    var fieldName = members[i];
-                    if (IsSerializableArrayElement(fieldName, out var index))
+                    var treeField = members[i];
+                    reference = GetTreePathReference(treeField, reference);
+                    if (ignoreArrays && IsSerializableArrayType(reference))
                     {
-                        if (reference is IList list)
-                        {
-                            reference = list[index];
-                            continue;
-                        }
-
-                        ToolboxEditorLog.LogError("Cannot parse array element properly.");
+                        continue;
                     }
 
-                    var fieldType = reference.GetType();
-                    var fieldInfo = fieldType.GetField(members[i],
-                        BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                    reference = fieldInfo.GetValue(reference);
+                    validReference = reference;
                 }
             }
 
-            return reference;
+            return validReference;
+        }
+
+        internal static object GetTreePathReference(string treeField, object treeParent)
+        {
+            if (IsSerializableArrayElement(treeField, out var index))
+            {
+                if (treeParent is IList list)
+                {
+                    return list[index];
+                }
+
+                ToolboxEditorLog.LogError("Cannot parse array element properly.");
+            }
+
+            var fieldType = treeParent.GetType();
+            var fieldInfo = fieldType.GetField(treeField,
+                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            return fieldInfo.GetValue(treeParent);
         }
 
         /// <summary>
@@ -181,25 +208,18 @@ namespace Toolbox.Editor
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
         internal static Type GetProperType(this SerializedProperty property, FieldInfo fieldInfo)
         {
-            return GetProperType(property, fieldInfo, property.serializedObject.targetObject);
-        }
-
-        /// <summary>
-        /// Returns proper <see cref="Type"/> for this property, even if the property is an array element.
-        /// </summary>
-        /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
-        internal static Type GetProperType(this SerializedProperty property, FieldInfo fieldInfo, object declaringObject)
-        {
             if (fieldInfo == null)
             {
                 throw new ArgumentNullException(nameof(fieldInfo));
             }
 
+            var fieldType = fieldInfo.FieldType;
             //handle situation when property is an array element
             if (IsSerializableArrayElement(property, fieldInfo))
             {
-                var list = fieldInfo.GetValue(declaringObject) as IList;
-                return list[0].GetType();
+                return fieldType.IsGenericType
+                    ? fieldType.GetGenericArguments()[0]
+                    : fieldType.GetElementType();
             }
             //return fieldInfo type based on property's target object
             else
@@ -413,6 +433,11 @@ namespace Toolbox.Editor
             }
 
             return property.hasVisibleChildren;
+        }
+
+        internal static bool IsSerializableArrayType(object target)
+        {
+            return IsSerializableArrayType(target.GetType());
         }
 
         internal static bool IsSerializableArrayType(Type type)
