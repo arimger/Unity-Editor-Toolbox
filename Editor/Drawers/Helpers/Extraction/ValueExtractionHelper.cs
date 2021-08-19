@@ -78,6 +78,5 @@ namespace Toolbox.Editor.Drawers
 
             return TryGetValue(source, parentObjects, out value, out hasMixedValues, nextValuesComparer);
         }
-
     }
 }
