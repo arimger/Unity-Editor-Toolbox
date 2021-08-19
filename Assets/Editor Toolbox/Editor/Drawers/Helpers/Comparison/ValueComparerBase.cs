@@ -17,6 +17,11 @@ namespace Toolbox.Editor.Drawers
         protected abstract HashSet<TypeCode> GetAcceptedTypeCodes();
 
 
+        internal virtual bool IsValidInput(object sourceValue, object targetValue, ValueComparisonMethod method)
+        {
+            return IsValidSource(sourceValue) && IsValidTarget(targetValue) && IsValidMethod(method);
+        }
+
         internal virtual bool IsValidSource(object value)
         {
             var valueType = value?.GetType();
@@ -46,9 +51,7 @@ namespace Toolbox.Editor.Drawers
 
         internal virtual bool TryCompare(object sourceValue, object targetValue, ValueComparisonMethod method, out bool result)
         {
-            if (!IsValidSource(sourceValue) ||
-                !IsValidTarget(targetValue) ||
-                !IsValidMethod(method))
+            if (!IsValidInput(sourceValue, targetValue, method))
             {
                 result = false;
                 return false;
