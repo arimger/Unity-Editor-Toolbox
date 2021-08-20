@@ -1,0 +1,23 @@
+{
+    "name": "Toolbox.Editor.Tests",
+    "references": [
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:0acc523941302664db1f4e527237feb3",
+        "GUID:696a0953692949b40bec8730e64e1fdd",
+        "GUID:1b845e2499b39be4aab3e6ac2c8aa02a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "UNITY_2019_1_OR_NEWER"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

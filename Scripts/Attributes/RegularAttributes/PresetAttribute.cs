@@ -13,16 +13,17 @@ namespace UnityEngine
     /// private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
     /// </code>
     /// </example>
+    /// <para>Supported sources: fields, properties, and methods.</para>
     /// <para>Supported types: all.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class PresetAttribute : PropertyAttribute
     {
-        public PresetAttribute(string presetFieldName)
+        public PresetAttribute(string sourceHandle)
         {
-            PresetFieldName = presetFieldName;
+            SourceHandle = sourceHandle;
         }
 
-        public string PresetFieldName { get; private set; }
+        public string SourceHandle { get; private set; }
     }
 }

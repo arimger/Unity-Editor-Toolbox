@@ -79,11 +79,10 @@ namespace Toolbox.Editor
                 }
 
                 serializedObject.ApplyModifiedProperties();
+                return;
             }
-            else
-            {
-                DrawDefaultInspector();
-            }
+
+            DrawDefaultInspector();
         }
 
 

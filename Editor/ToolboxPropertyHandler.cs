@@ -116,6 +116,12 @@ namespace Toolbox.Editor
 
         private void ProcessBuiltInData()
         {
+            //arrays cannot have custom built-in property drawers
+            if (isArray)
+            {
+                return;
+            }
+
             //check if this property has built-in property drawer
             if (!(hasBuiltInPropertyDrawer = ToolboxDrawerModule.HasNativeTypeDrawer(type)))
             {

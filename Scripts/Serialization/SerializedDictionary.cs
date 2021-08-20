@@ -181,6 +181,16 @@ namespace UnityEngine
         }
 
 
+        /// <summary>
+        /// Indicates if there is a key collision in serialized pairs.
+        /// Duplicated keys (pairs) won't be added to the final dictionary.
+        /// This property is crucial for Editor-related functions.
+        /// </summary>
+        internal bool Error
+        {
+            get => error;
+        }
+
         public int Count => dictionary.Count;
 
         public bool IsReadOnly => false;
@@ -188,16 +198,6 @@ namespace UnityEngine
         public ICollection<TK> Keys => dictionary.Keys;
 
         public ICollection<TV> Values => dictionary.Values;
-
-        /// <summary>
-        /// Indicates if there is a key collision in serialized pairs.
-        /// Duplicated keys (pairs) won't be added to the final dicitonary.
-        /// This property is crucial for Editor-related functions.
-        /// </summary>
-        public bool Error
-        {
-            get => error;
-        }
 
         public TV this[TK key]
         {

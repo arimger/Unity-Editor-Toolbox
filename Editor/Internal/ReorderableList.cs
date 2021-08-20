@@ -101,9 +101,9 @@ namespace Toolbox.Editor.Internal
                 elementContentRect.xMin += Style.padding;
                 elementContentRect.xMax -= Style.padding;
 
-                if (drawVacantCallback != null)
+                if (drawEmptyCallback != null)
                 {
-                    drawVacantCallback(elementContentRect);
+                    drawEmptyCallback(elementContentRect);
                 }
                 else
                 {
@@ -195,6 +195,7 @@ namespace Toolbox.Editor.Internal
                     {
                         DrawStandardElement(elementContentRect, nonDragTargetIndices[i], false, false, Draggable);
                     }
+
                     EditorGUIUtility.labelWidth += Style.dragAreaWidth;
                 }
 
@@ -241,6 +242,7 @@ namespace Toolbox.Editor.Internal
                 {
                     DrawStandardElement(elementContentRect, Index, true, true, Draggable);
                 }
+
                 EditorGUIUtility.labelWidth += Style.dragAreaWidth;
             }
             else
@@ -297,6 +299,7 @@ namespace Toolbox.Editor.Internal
                     {
                         DrawStandardElement(elementContentRect, i, isActive, hasFocus, Draggable);
                     }
+
                     EditorGUIUtility.labelWidth += Style.dragAreaWidth;
                 }
             }

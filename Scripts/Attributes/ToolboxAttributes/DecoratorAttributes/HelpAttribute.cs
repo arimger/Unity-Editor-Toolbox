@@ -18,12 +18,4 @@ namespace UnityEngine
 
         public UnityMessageType Type { get; private set; }
     }
-
-    public enum UnityMessageType
-    {
-        None,
-        Info,
-        Warning,
-        Error
-    }
 }

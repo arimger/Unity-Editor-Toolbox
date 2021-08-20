@@ -190,7 +190,7 @@ namespace Toolbox.Editor
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
 
-                        ToolboxEditorLog.Log("Created a settings file at - " + relativePath);
+                        ToolboxEditorLog.LogInfo("Created a settings file at - " + relativePath);
 
                         ReintializeProvider();
                     }
