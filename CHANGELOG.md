@@ -1,3 +1,9 @@
+## 0.10.2 [20.08.2021]
+
+### Changed:
+- Fix marking asset objects as dirty
+- Fix built-in array drawers
+
 ## 0.10.1 [17.08.2021]
 
 ### Added:
