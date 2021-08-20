@@ -2,14 +2,25 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 using UnityEditor;
 using Object = UnityEngine.Object;
+
+[assembly: InternalsVisibleTo("Toolbox.Editor.Tests")]
 
 namespace Toolbox.Editor
 {
     public static partial class PropertyUtility
     {
+        /// <summary>
+        /// Indicates if the property has all changes applied and can be safely used for reflection-based features.
+        /// </summary>
+        internal static bool HasModifedProperties(this SerializedProperty property)
+        {
+            return property.serializedObject.hasModifiedProperties;
+        }
+
         /// <summary>
         /// Creates and returns unique (hash based) key for this property.
         /// </summary>
@@ -39,26 +50,63 @@ namespace Toolbox.Editor
         /// <summary>
         /// Returns <see cref="object"/> which truly declares this property.
         /// </summary>
+        internal static object GetDeclaringObject(this SerializedProperty property, bool ignoreArrays)
+        {
+            return GetDeclaringObject(property, property.serializedObject.targetObject, ignoreArrays);
+        }
+
+        /// <summary>
+        /// Returns <see cref="object"/> which truly declares this property.
+        /// </summary>
         internal static object GetDeclaringObject(this SerializedProperty property, Object target)
         {
-            const BindingFlags bindings = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+            return GetDeclaringObject(property, target, true);
+        }
 
+        /// <summary>
+        /// Returns <see cref="object"/> which truly declares this property.
+        /// </summary>
+        internal static object GetDeclaringObject(this SerializedProperty property, Object target, bool ignoreArrays)
+        {
+            EnsureReflectionSafeness(property);
+
+            var reference = target as object;
+            var validReference = reference;
             var members = GetPropertyFieldTree(property);
-            var instance = target as object;
-
             if (members.Length > 1)
             {
-                var fieldInfo = target.GetType().GetField(members[0], bindings);
-                instance = fieldInfo.GetValue(target);
-
-                for (var i = 1; i < members.Length - 1; i++)
+                for (var i = 0; i < members.Length - 1; i++)
                 {
-                    fieldInfo = instance.GetType().GetField(members[i], bindings);
-                    instance = fieldInfo.GetValue(instance);
+                    var treeField = members[i];
+                    reference = GetTreePathReference(treeField, reference);
+                    if (ignoreArrays && IsSerializableArrayType(reference))
+                    {
+                        continue;
+                    }
+
+                    validReference = reference;
                 }
             }
 
-            return instance;
+            return validReference;
+        }
+
+        internal static object GetTreePathReference(string treeField, object treeParent)
+        {
+            if (IsSerializableArrayElement(treeField, out var index))
+            {
+                if (treeParent is IList list)
+                {
+                    return list[index];
+                }
+
+                ToolboxEditorLog.LogError("Cannot parse array element properly.");
+            }
+
+            var fieldType = treeParent.GetType();
+            var fieldInfo = fieldType.GetField(treeField,
+                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            return fieldInfo.GetValue(treeParent);
         }
 
         /// <summary>
@@ -67,7 +115,8 @@ namespace Toolbox.Editor
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
         internal static object GetProperValue(this SerializedProperty property, FieldInfo fieldInfo)
         {
-            return GetProperValue(property, fieldInfo, property.serializedObject.targetObject);
+            var declaringObject = property.GetDeclaringObject();
+            return GetProperValue(property, fieldInfo, declaringObject);
         }
 
         /// <summary>
@@ -87,7 +136,6 @@ namespace Toolbox.Editor
             {
                 var index = GetPropertyElementIndex(property);
                 var list = fieldInfo.GetValue(declaringObject) as IList;
-
                 return list[index];
             }
             //return fieldInfo value based on property's target object
@@ -123,36 +171,30 @@ namespace Toolbox.Editor
                 throw new ArgumentNullException(nameof(fieldInfo));
             }
 
-            var targets = property.serializedObject.targetObjects;
-            var element = IsSerializableArrayElement(property, fieldInfo);
+            var targetObjects = property.serializedObject.targetObjects;
+            var isArrayElement = IsSerializableArrayElement(property, fieldInfo);
 
-            for (var i = 0; i < targets.Length; i++)
+            for (var i = 0; i < targetObjects.Length; i++)
             {
-                var targetObject = targets[i];
+                var targetObject = targetObjects[i];
                 var targetParent = property.GetDeclaringObject(targetObject);
 
-                //record undo action, it will mark serialized component as dirty
-                Undo.RecordObject(targetObject, "Set " + fieldInfo.Name);
-
+                Undo.RecordObject(targetObject, string.Format("Set {0}", fieldInfo.Name));
                 //handle situation when property is an array element
-                if (element)
+                if (isArrayElement)
                 {
                     var index = GetPropertyElementIndex(property);
                     var list = fieldInfo.GetValue(targetParent) as IList;
                     list[index] = value;
                     fieldInfo.SetValue(targetParent, list);
                 }
-                //return fieldInfo value based on property's target object
                 else
                 {
                     fieldInfo.SetValue(targetParent, value);
                 }
 
-                if (callOnValidate)
-                {
-                    //simulate OnValidate call since we changed fieldInfo's value
-                    InspectorUtility.SimulateOnValidate(targetObject);
-                }
+                EnsureOnValidateBroadcast(targetObject, callOnValidate);
+                EnsureTargetSerialization(targetObject);
             }
         }
 
@@ -162,27 +204,20 @@ namespace Toolbox.Editor
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
         internal static Type GetProperType(this SerializedProperty property, FieldInfo fieldInfo)
         {
-            return GetProperType(property, fieldInfo, property.serializedObject.targetObject);
-        }
-
-        /// <summary>
-        /// Returns proper <see cref="Type"/> for this property, even if the property is an array element.
-        /// </summary>
-        /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
-        internal static Type GetProperType(this SerializedProperty property, FieldInfo fieldInfo, object declaringObject)
-        {
             if (fieldInfo == null)
             {
                 throw new ArgumentNullException(nameof(fieldInfo));
             }
 
+            var fieldType = fieldInfo.FieldType;
             //handle situation when property is an array element
             if (IsSerializableArrayElement(property, fieldInfo))
             {
-                var list = fieldInfo.GetValue(declaringObject) as IList;
-                return list[0].GetType();
+                return fieldType.IsGenericType
+                    ? fieldType.GetGenericArguments()[0]
+                    : fieldType.GetElementType();
             }
-            //return fieldInfo value based on property's target object
+            //return fieldInfo type based on property's target object
             else
             {
                 return fieldInfo.FieldType;
@@ -217,6 +252,11 @@ namespace Toolbox.Editor
             return GetFieldInfoFromProperty(property, out propertyType);
         }
 
+        internal static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType, Object target)
+        {
+            return GetFieldInfoFromProperty(target.GetType(), property.propertyPath, out propertyType);
+        }
+
         public static FieldInfo GetFieldInfoFromProperty(SerializedProperty property, out Type type)
         {
             var classType = GetScriptTypeFromProperty(property);
@@ -233,19 +273,18 @@ namespace Toolbox.Editor
         {
             FieldInfo field = null;
             type = host;
-            var parts = fieldPath.Split('.');
 
-            for (var i = 0; i < parts.Length; i++)
+            var members = GetPropertyFieldTree(fieldPath, false);
+            for (var i = 0; i < members.Length; i++)
             {
-                var member = parts[i];
-                if (i < parts.Length - 1 && member == "Array" && parts[i + 1].StartsWith("data["))
+                var member = members[i];
+                if (IsSerializableArrayElement(member, out _))
                 {
                     if (IsSerializableArrayType(type))
                     {
                         type = type.IsGenericType ? type.GetGenericArguments()[0] : type.GetElementType();
                     }
 
-                    i++;
                     continue;
                 }
 
@@ -277,7 +316,7 @@ namespace Toolbox.Editor
 
     public static partial class PropertyUtility
     {
-        public static SerializedProperty GetSibiling(this SerializedProperty property, string propertyPath)
+        public static SerializedProperty GetSibling(this SerializedProperty property, string propertyPath)
         {
             var propertyParent = property.GetParent();
             return propertyParent == null
@@ -292,27 +331,18 @@ namespace Toolbox.Editor
                 return null;
             }
 
-            var path = property.propertyPath.Replace(".Array.data[", "[");
-            var elements = path.Split('.');
-
             SerializedProperty parent = null;
-
-            for (var i = 0; i < elements.Length - 1; i++)
+            var members = GetPropertyFieldTree(property);
+            if (members.Length > 1)
             {
-                var element = elements[i];
-                var index = -1;
-                if (element.Contains("["))
+                parent = property.serializedObject.FindProperty(members[0]);
+                for (var i = 1; i < members.Length - 1; i++)
                 {
-                    index = Convert.ToInt32(element
-                        .Substring(element.IndexOf("[", StringComparison.Ordinal))
-                        .Replace("[", "").Replace("]", ""));
-                    element = element
-                        .Substring(0, element.IndexOf("[", StringComparison.Ordinal));
+                    var fieldName = members[i];
+                    parent = IsSerializableArrayElement(fieldName, out var index)
+                        ? parent.GetArrayElementAtIndex(index)
+                        : parent.FindPropertyRelative(fieldName);
                 }
-
-                parent = i == 0 ? property.serializedObject.FindProperty(element) : parent.FindPropertyRelative(element);
-
-                if (index >= 0) parent = parent.GetArrayElementAtIndex(index);
             }
 
             return parent;
@@ -320,19 +350,7 @@ namespace Toolbox.Editor
 
         public static SerializedProperty GetArray(this SerializedProperty element)
         {
-            var elements = element.propertyPath.Replace("Array.data[", "[").Split('.');
-            if (!elements[elements.Length - 1].Contains("["))
-            {
-                return null;
-            }
-
-            for (int i = elements.Length - 1; i >= 0; i--)
-            {
-                if (elements[i].Contains("[")) continue;
-                return element.GetSibiling(elements[i]);
-            }
-
-            return null;
+            return element.GetParent();
         }
 
         public static SerializedProperty GetSize(this SerializedProperty array)
@@ -343,7 +361,7 @@ namespace Toolbox.Editor
 
         public static T GetAttribute<T>(SerializedProperty property) where T : Attribute
         {
-            return GetAttribute<T>(property, GetFieldInfoFromProperty(property, out var type));
+            return GetAttribute<T>(property, GetFieldInfoFromProperty(property, out _));
         }
 
         public static T GetAttribute<T>(SerializedProperty property, FieldInfo fieldInfo) where T : Attribute
@@ -353,7 +371,7 @@ namespace Toolbox.Editor
 
         public static T[] GetAttributes<T>(SerializedProperty property) where T : Attribute
         {
-            return GetAttributes<T>(property, GetFieldInfoFromProperty(property, out var type));
+            return GetAttributes<T>(property, GetFieldInfoFromProperty(property, out _));
         }
 
         public static T[] GetAttributes<T>(SerializedProperty property, FieldInfo fieldInfo) where T : Attribute
@@ -361,6 +379,30 @@ namespace Toolbox.Editor
             return (T[])fieldInfo.GetCustomAttributes(typeof(T), true);
         }
 
+
+        internal static void EnsureReflectionSafeness(SerializedProperty property)
+        {
+            if (property.serializedObject.hasModifiedProperties)
+            {
+                property.serializedObject.ApplyModifiedProperties();
+            }
+        }
+
+        internal static void EnsureTargetSerialization(Object targetObject)
+        {
+            if (AssetDatabase.Contains(targetObject))
+            {
+                EditorUtility.SetDirty(targetObject);
+            }
+        }
+
+        internal static void EnsureOnValidateBroadcast(Object targetObject, bool callNeeded)
+        {
+            if (callNeeded)
+            {
+                InspectorUtility.SimulateOnValidate(targetObject);
+            }
+        }
 
         internal static bool IsLastSerializedProperty(SerializedProperty property)
         {
@@ -405,6 +447,11 @@ namespace Toolbox.Editor
             return property.hasVisibleChildren;
         }
 
+        internal static bool IsSerializableArrayType(object target)
+        {
+            return IsSerializableArrayType(target.GetType());
+        }
+
         internal static bool IsSerializableArrayType(Type type)
         {
             return typeof(IList).IsAssignableFrom(type);
@@ -428,6 +475,18 @@ namespace Toolbox.Editor
         internal static bool IsSerializableArrayElement(SerializedProperty property, FieldInfo fieldInfo)
         {
             return !property.isArray && IsSerializableArrayType(fieldInfo.FieldType);
+        }
+
+        internal static bool IsSerializableArrayElement(string indexField, out int index)
+        {
+            if (indexField.StartsWith("["))
+            {
+                index = int.Parse(indexField.Substring(1, indexField.Length - 2));
+                return true;
+            }
+
+            index = -1;
+            return false;
         }
 
         internal static bool IsDefaultScriptProperty(SerializedProperty property)
@@ -470,8 +529,20 @@ namespace Toolbox.Editor
 
         internal static string[] GetPropertyFieldTree(SerializedProperty property)
         {
+            return GetPropertyFieldTree(property, false);
+        }
+
+        internal static string[] GetPropertyFieldTree(SerializedProperty property, bool ignoreArrayElements)
+        {
+            return GetPropertyFieldTree(property.propertyPath, ignoreArrayElements);
+        }
+
+        internal static string[] GetPropertyFieldTree(string propertyPath, bool ignoreArrayElements)
+        {
             //unfortunately, we have to remove hard coded array properties since it's useless data
-            return property.propertyPath.Replace("Array.data[", "[").Split('.').Where(field => field[0] != '[').ToArray();
+            return ignoreArrayElements
+                ? propertyPath.Replace("Array.data[", "[").Split('.').Where(field => field[0] != '[').ToArray()
+                : propertyPath.Replace("Array.data[", "[").Split('.');
         }
     }
 }

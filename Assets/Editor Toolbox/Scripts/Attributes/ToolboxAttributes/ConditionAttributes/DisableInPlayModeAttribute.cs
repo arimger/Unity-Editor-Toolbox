@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Marks serialized field as read-only.
+    /// Marks serialized field as read-only but only in the PlayMode.
     /// 
     /// <para>Supported types: all.</para>
     /// </summary>

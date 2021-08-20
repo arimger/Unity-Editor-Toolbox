@@ -465,6 +465,10 @@ MonoBehaviour:
   var33: 0
   enumValue: 97
   var35: 0
+  objectValue: {fileID: 0}
+  var36: 0
+  floatValue: 1
+  var37: 0
   largeArray:
   - {fileID: 0}
   - {fileID: 0}
@@ -485,7 +489,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  var36: 1
+  var38: 0
   dictionary:
     pairs: []
     error: 0

@@ -65,7 +65,7 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [Label("3", skinStyle: SkinStyle.Box)]
 
-    [InLineEditor]
+    [InLineEditor(DisableEditor = false)]
     public Transform var21;
 
     [InLineEditor(drawSettings: true)]
@@ -123,14 +123,36 @@ public class SampleBehaviour2 : MonoBehaviour
     [Label("9", skinStyle: SkinStyle.Box)]
 
     public string stringValue = "sho";
-    [ShowIf(nameof(stringValue), "show")] //or HideIf
+    [ShowIf(nameof(GetStringValue), "show")]
     public int var33;
+
+    public string GetStringValue()
+    {
+        return stringValue;
+    }
 
     [SpaceArea]
 
     public KeyCode enumValue = KeyCode.A;
-    [DisableIf(nameof(enumValue), KeyCode.A)] //or EnableIf
+    [DisableIf(nameof(enumValue), KeyCode.A)]
     public int var35;
+
+    [SpaceArea]
+
+    public GameObject objectValue;
+    [HideIf(nameof(ObjectValue), false)]
+    public int var36;
+
+    private GameObject ObjectValue
+    {
+        get => objectValue;
+    }
+
+    [SpaceArea]
+
+    public float floatValue = 1.0f;
+    [EnableIf(nameof(floatValue), 0.5f, Comparison = UnityComparisonMethod.Greater)]
+    public int var37;
 
     [Label("10", skinStyle: SkinStyle.Box)]
 
@@ -140,7 +162,7 @@ public class SampleBehaviour2 : MonoBehaviour
     [Label("11", skinStyle: SkinStyle.Box)]
 
     [DisableInPlayMode]
-    public int var36;
+    public int var38;
 
 #if UNITY_2020_1_OR_NEWER
     [Label("12", skinStyle: SkinStyle.Box)]
@@ -173,4 +195,11 @@ public class SampleBehaviour2 : MonoBehaviour
     [EndHorizontalGroup]
     [ReorderableList]
     public float[] floats;
+
+    [Label("16", skinStyle: SkinStyle.Box)]
+
+    [DynamicHelp(nameof(MessageSource))]
+    public int var39;
+
+    public string MessageSource => string.Format("Dynamic Message Source. {0} = {1}", nameof(var39), var39);
 }

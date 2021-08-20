@@ -381,7 +381,7 @@ namespace Toolbox.Editor
 
         private void ValidateDrawers()
         {
-            ToolboxEditorLog.Log("Function not implemented.");
+            ToolboxEditorLog.LogInfo("Function not implemented.");
         }
 
 

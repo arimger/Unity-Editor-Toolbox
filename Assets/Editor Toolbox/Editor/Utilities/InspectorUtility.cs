@@ -112,7 +112,9 @@ namespace Toolbox.Editor
                 throw new ArgumentNullException(nameof(target));
             }
 
-            var methodInfo = target.GetType().GetMethod("OnValidate", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var methodInfo = target.GetType().GetMethod("OnValidate", 
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                null, CallingConventions.Any, new Type[0], null);
             if (methodInfo != null)
             {
                 methodInfo.Invoke(target, null);

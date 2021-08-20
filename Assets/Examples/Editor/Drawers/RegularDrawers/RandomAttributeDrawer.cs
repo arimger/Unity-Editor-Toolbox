@@ -3,7 +3,7 @@ using UnityEngine;
 using Toolbox.Editor.Drawers;
 
 [CustomPropertyDrawer(typeof(RandomAttribute))]
-public class RandomAttributeDrawer : ToolboxNativePropertyDrawer
+public class RandomAttributeDrawer : PropertyDrawerBase
 {
     protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
     {

@@ -52,6 +52,7 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.BeginHorizontalGroupAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.BeginIndentAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.DynamicHelpAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.EditorButtonAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.EndGroupAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.EndHorizontalAttributeDrawer, Toolbox-Editor

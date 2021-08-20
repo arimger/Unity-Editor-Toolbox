@@ -3,7 +3,7 @@ using UnityEngine;
 using Toolbox.Editor.Drawers;
 
 [CustomPropertyDrawer(typeof(HexColorAttribute))]
-public class HexColorAttributeDrawer : ToolboxNativePropertyDrawer
+public class HexColorAttributeDrawer : PropertyDrawerBase
 {
     protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
     {
