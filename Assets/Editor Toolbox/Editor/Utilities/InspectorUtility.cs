@@ -138,7 +138,7 @@ namespace Toolbox.Editor
 
     internal static partial class InspectorUtility
     {
-        private static List<Component> copiedComponents = new List<Component>();
+        private static readonly List<Component> copiedComponents = new List<Component>();
 
 
         [MenuItem("CONTEXT/Component/Copy Components", false, priority = 200)]

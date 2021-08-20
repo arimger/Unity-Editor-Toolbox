@@ -6,8 +6,6 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Internal
 {
-    using Toolbox.Editor.Drawers;
-
     /// <summary>
     /// Version of the <see cref="ReorderableList"/> dedicated for <see cref="ToolboxDrawer"/>s.
     /// Can be used only together with the internal layouting system.
@@ -75,59 +73,63 @@ namespace Toolbox.Editor.Internal
                 var elementRowRect = elementRowGroup.rect;
                 var isSelected = isActive || isTarget;
                 elementsRects[index] = elementRowRect;
-                //draw element background (handle selection and targeting)
-                if (drawElementBackgroundCallback != null)
-                {
-                    drawElementBackgroundCallback(elementRowRect, index, isSelected, hasFocus);
-                }
-                else
-                {
-                    DrawStandardElementBackground(elementRowRect, index, isSelected, hasFocus, Draggable);
-                }
 
-                //prepare handle-related properties
-                var handleRect = GetHandleRect(elementRowRect);
-                var drawHandle = !IsDragging;
-                //draw handles only for static array or currently dragged element
-                if (isSelected && IsDragging)
-                {
-                    drawHandle = true;
-                    handleRect = GetHandleRect(draggedY);
-                }
-
-                if (drawHandle)
-                {
-                    if (drawElementHandleCallback != null)
-                    {
-                        drawElementHandleCallback(handleRect, index, isActive, hasFocus);
-                    }
-                    else
-                    {
-                        DrawStandardElementHandle(handleRect, index, isActive, hasFocus, Draggable);
-                    }
-                }
-
+                DrawElementBackground(elementRowRect, index, isSelected, hasFocus);
+                DrawElementDragHandle(elementRowRect, index, isSelected, hasFocus);
                 //draw the real property in separate vertical group
                 using (var elementGroup = new EditorGUILayout.VerticalScope(Style.contentGroupStyle))
                 {
                     var elementRect = elementGroup.rect;
                     //adjust label width to the known dragging area
                     EditorGUIUtility.labelWidth -= Style.dragAreaWidth;
-                    if (drawElementCallback != null)
-                    {
-                        drawElementCallback(elementRect, index, isActive, hasFocus);
-                    }
-                    else
-                    {
-                        DrawStandardElement(elementRect, index, isActive, hasFocus, Draggable);
-                    }
-
+                    DrawElement(index);
                     EditorGUIUtility.labelWidth += Style.dragAreaWidth;
                 }
 
-                //create additional space between element and right margin
+                //create additional space between item and right margin
                 DrawEmptySpace(Style.spacing);
             }
+        }
+
+        private void DrawElementBackground(Rect rect, int index, bool isSelected, bool hasFocus)
+        {
+            if (drawElementBackgroundCallback != null)
+            {
+                drawElementBackgroundCallback(rect, index, isSelected, hasFocus);
+            }
+            else
+            {
+                DrawStandardElementBackground(rect, index, isSelected, hasFocus, Draggable);
+            }
+        }
+
+        private void DrawElementDragHandle(Rect rect, int index, bool isSelected, bool hasFocus)
+        {
+            DrawHandleArea();
+            //draw handles only for static array or currently dragged element
+            if (IsDragging && !isSelected)
+            {
+                return;
+            }
+
+            var handleRect = IsDragging
+                ? GetHandleRect(draggedY)
+                : GetHandleRect(rect);
+            if (drawElementHandleCallback != null)
+            {
+                drawElementHandleCallback(handleRect, index, isSelected, hasFocus);
+            }
+            else
+            {
+                DrawStandardElementHandle(handleRect, index, isSelected, hasFocus, Draggable);
+            }
+        }
+
+        private void DrawElement(int index)
+        {
+            var element = List.GetArrayElementAtIndex(index);
+            var content = GetElementContent(element, index);
+            ToolboxEditorGui.DrawToolboxProperty(element, content);
         }
 
         /// <summary>
@@ -138,6 +140,11 @@ namespace Toolbox.Editor.Internal
             GuiLayoutUtility.CreateSpace(space);
         }
 
+        private void DrawHandleArea()
+        {
+            DrawEmptySpace(Style.dragAreaWidth);
+        }
+
         /// <summary>
         /// Creates empty space for the dragging area and returns adjusted <see cref="Rect"/>.
         /// </summary>
@@ -145,7 +152,6 @@ namespace Toolbox.Editor.Internal
         {
             var handleRect = new Rect(rowRect);
             handleRect.xMax = handleRect.xMin + Style.dragAreaWidth;
-            DrawEmptySpace(Style.dragAreaWidth);
             return handleRect;
         }
 
@@ -171,26 +177,15 @@ namespace Toolbox.Editor.Internal
         /// <summary>
         /// Creates small, colored rect to visualize the dragging target (gap between elements).
         /// </summary>
-        private Rect DrawTargetGap(int targetIndex, int draggingIndex, Color color, float width, float margin)
+        private void DrawTargetGap(int targetIndex, int draggingIndex)
         {
-            //TODO: refactor + custom texture/method for the gap
-            var targetsRect = elementsRects[targetIndex];
-            var rect = new Rect(targetsRect);
-            //handle differently situation above and under target
-            if (targetIndex < draggingIndex)
-            {
-                rect.yMax = rect.yMin;
-                rect.yMin = rect.yMax - width;
-            }
-            else
-            {
-                rect.yMin = rect.yMax;
-                rect.yMax = rect.yMin + width;
-            }
-
-            rect.xMin += margin;
-            EditorGUI.DrawRect(rect, color);
-            return rect;
+            var rect = elementsRects[targetIndex];
+            rect.yMax = targetIndex < draggingIndex
+                      ? rect.yMin
+                      : rect.yMax + Style.spacing;
+            rect.yMin = rect.yMax - Style.spacing;
+            rect.xMin += Style.dragAreaWidth;
+            EditorGUI.DrawRect(rect, Style.selectionColor);
         }
 
 
@@ -229,7 +224,9 @@ namespace Toolbox.Editor.Internal
                 return;
             }
 
-            DrawEmptySpace(Style.padding);
+            var upperPadding = Style.padding - ElementSpacing;
+            var lowerPadding = Style.padding;
+            DrawEmptySpace(upperPadding);
             //if there are elements, we need to draw them - we will do
             //this differently depending on if we are dragging or not
             for (var i = 0; i < arraySize; i++)
@@ -240,25 +237,15 @@ namespace Toolbox.Editor.Internal
                 var isTarget = (i == lastCoveredIndex && !isActive);
                 var isEnding = (i == arraySize - 1);
 
-                //draw current array element
+                DrawEmptySpace(ElementSpacing);
                 DrawElementRow(i, isActive, isTarget, hasFocus);
-
-                //draw dragging element gap
                 if (isTarget)
                 {
-                    DrawTargetGap(i, Index, GapColor, GapWidth, Style.dragAreaWidth);
+                    DrawTargetGap(i, Index);
                 }
-
-                if (isEnding)
-                {
-                    continue;
-                }
-
-                //create spacing for elements
-                DrawEmptySpace(ElementSpacing);
             }
 
-            DrawEmptySpace(Style.padding);
+            DrawEmptySpace(lowerPadding);
         }
 
         protected override bool DoListHeader()
@@ -339,18 +326,6 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        #region Methods: Default interaction/draw calls
-
-        /// <inheritdoc/>
-        public override void DrawStandardElement(Rect rect, int index, bool selected, bool focused, bool draggable)
-        {
-            var element = List.GetArrayElementAtIndex(index);
-            var content = GetElementContent(element, index);
-            ToolboxEditorGui.DrawToolboxProperty(element, content);
-        }
-
-        #endregion
-
         /// <inheritdoc/>
         public override void DoList()
         {
@@ -380,9 +355,5 @@ namespace Toolbox.Editor.Internal
         {
             get => footerRect;
         }
-
-        public Color GapColor { get; set; } = new Color(0.3f, 0.47f, 0.75f);
-
-        public float GapWidth { get; set; } = 2.0f;
     }
 }

@@ -193,8 +193,8 @@ namespace Toolbox.Editor
                     fieldInfo.SetValue(targetParent, value);
                 }
 
-                EnsureOnValidateBroadcast(targetObject, callOnValidate);
-                EnsureTargetSerialization(targetObject);
+                ForceOnValidateBroadcast(targetObject, callOnValidate);
+                ForceTargetSerialization(targetObject);
             }
         }
 
@@ -388,7 +388,7 @@ namespace Toolbox.Editor
             }
         }
 
-        internal static void EnsureTargetSerialization(Object targetObject)
+        internal static void ForceTargetSerialization(Object targetObject)
         {
             if (AssetDatabase.Contains(targetObject))
             {
@@ -396,9 +396,9 @@ namespace Toolbox.Editor
             }
         }
 
-        internal static void EnsureOnValidateBroadcast(Object targetObject, bool callNeeded)
+        internal static void ForceOnValidateBroadcast(Object targetObject, bool isForced)
         {
-            if (callNeeded)
+            if (isForced)
             {
                 InspectorUtility.SimulateOnValidate(targetObject);
             }
