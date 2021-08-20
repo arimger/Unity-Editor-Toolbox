@@ -59,6 +59,15 @@ namespace Toolbox.Editor.Internal
             }
         }
 
+        private void DrawEmptyList()
+        {
+            using (var emptyListGroup = new EditorGUILayout.VerticalScope(Style.contentGroupStyle))
+            {
+                var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.minEmptyHeight));
+                drawEmptyCallback?.Invoke(rect);
+            }
+        }
+
         private void DrawElementRow(int index, bool isActive, bool isTarget, bool hasFocus)
         {
             using (var elementRowGroup = new EditorGUILayout.HorizontalScope())
@@ -86,7 +95,6 @@ namespace Toolbox.Editor.Internal
                     handleRect = GetHandleRect(draggedY);
                 }
 
-                //draw dragging handle
                 if (drawHandle)
                 {
                     if (drawElementHandleCallback != null)
@@ -113,27 +121,12 @@ namespace Toolbox.Editor.Internal
                     {
                         DrawStandardElement(elementRect, index, isActive, hasFocus, Draggable);
                     }
+
                     EditorGUIUtility.labelWidth += Style.dragAreaWidth;
                 }
 
                 //create additional space between element and right margin
                 DrawEmptySpace(Style.spacing);
-            }
-        }
-
-        private void DrawVacantList()
-        {
-            using (var emptyListGroup = new EditorGUILayout.VerticalScope(Style.contentGroupStyle))
-            {
-                var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.minEmptyHeight));
-                if (drawVacantCallback != null)
-                {
-                    drawVacantCallback(rect);
-                }
-                else
-                {
-                    //TODO: how about additional label?
-                }
             }
         }
 
@@ -232,7 +225,7 @@ namespace Toolbox.Editor.Internal
             //handle empty or invalid array 
             if (!IsPropertyValid || !IsExpanded || IsEmpty)
             {
-                DrawVacantList();
+                DrawEmptyList();
                 return;
             }
 
