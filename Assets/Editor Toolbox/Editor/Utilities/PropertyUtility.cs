@@ -179,8 +179,7 @@ namespace Toolbox.Editor
                 var targetObject = targetObjects[i];
                 var targetParent = property.GetDeclaringObject(targetObject);
 
-                //record undo action, it will mark serialized component as dirty
-                Undo.RecordObject(targetObject, "Set " + fieldInfo.Name);
+                Undo.RecordObject(targetObject, string.Format("Set {0}", fieldInfo.Name));
                 //handle situation when property is an array element
                 if (isArrayElement)
                 {
@@ -194,11 +193,8 @@ namespace Toolbox.Editor
                     fieldInfo.SetValue(targetParent, value);
                 }
 
-                if (callOnValidate)
-                {
-                    //simulate OnValidate call since we changed fieldInfo's value
-                    InspectorUtility.SimulateOnValidate(targetObject);
-                }
+                EnsureOnValidateBroadcast(targetObject, callOnValidate);
+                EnsureTargetSerialization(targetObject);
             }
         }
 
@@ -389,6 +385,22 @@ namespace Toolbox.Editor
             if (property.serializedObject.hasModifiedProperties)
             {
                 property.serializedObject.ApplyModifiedProperties();
+            }
+        }
+
+        internal static void EnsureTargetSerialization(Object targetObject)
+        {
+            if (AssetDatabase.Contains(targetObject))
+            {
+                EditorUtility.SetDirty(targetObject);
+            }
+        }
+
+        internal static void EnsureOnValidateBroadcast(Object targetObject, bool callNeeded)
+        {
+            if (callNeeded)
+            {
+                InspectorUtility.SimulateOnValidate(targetObject);
             }
         }
 
