@@ -882,6 +882,8 @@ namespace Toolbox.Editor.Internal
             internal static readonly float sizeAreaWidth = 19.0f;
             internal static readonly float minEmptyHeight = 8.0f;
 
+            internal static readonly Color selectionColor = new Color(0.3f, 0.47f, 0.75f);
+
             internal static readonly GUIContent sizePropertyContent;
             internal static readonly GUIContent iconToolbarAddContent;
             internal static readonly GUIContent iconToolbarDropContent;
