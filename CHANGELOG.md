@@ -7,7 +7,7 @@
 ## 0.10.1 [17.08.2021]
 
 ### Added:
-- Reflection-based drawers: possiblity to pass data from non-serialized fields, properties and methods
+- Reflection-based drawers: possibility to pass data from non-serialized fields, properties, and methods
 - DynamicHelpAttribute
 - Unit tests
 - Possibility to disable content in inlined Editors
