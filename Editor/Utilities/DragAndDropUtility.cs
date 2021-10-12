@@ -90,6 +90,7 @@ namespace Toolbox.Editor
                         {
                             GUI.changed = true;
                             DragAndDrop.AcceptDrag();
+                            GUIUtility.ExitGUI();
                         }
                     }
 
