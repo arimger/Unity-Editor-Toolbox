@@ -301,6 +301,7 @@ namespace Toolbox.Editor.Internal
                 }
             }
 
+            HandleHeaderEvents(headerRect);
             //apply the padding to get the internal rect
             headerRect.xMin += Style.padding;
             headerRect.xMax -= Style.padding;
@@ -396,6 +397,9 @@ namespace Toolbox.Editor.Internal
             //check if mouse position is inside current row rect 
             return GetCoveredElementIndex(Event.current.mousePosition.y) == Index;
         }
+
+        protected virtual void HandleHeaderEvents(Rect rect)
+        { }
 
         protected abstract int GetCoveredElementIndex(float localY);
 

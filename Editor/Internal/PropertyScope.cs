@@ -12,19 +12,44 @@ namespace Toolbox.Editor.Internal
     {
         private readonly SerializedProperty property;
 
+
         public PropertyScope(SerializedProperty property, GUIContent label)
         {
             this.property = property;
             var rowHeight = EditorGUIUtility.singleLineHeight;
             var labelRect = EditorGUILayout.GetControlRect(true, rowHeight);
             label = EditorGUI.BeginProperty(labelRect, label, property);
-            property.isExpanded = EditorGUI.Foldout(labelRect, property.isExpanded, label, true);
+            HandleEvents(labelRect);
+            TryDrawLabel(labelRect, label);
         }
+
+
+        private void HandleEvents(Rect rect)
+        {
+            if (property.isArray)
+            {
+                DragAndDropUtility.DoDragAndDropForProperty(rect, property);
+            }
+        }
+
+        private void TryDrawLabel(Rect rect, GUIContent label)
+        {
+            if (property.hasChildren)
+            {
+                property.isExpanded = EditorGUI.Foldout(rect, property.isExpanded, label, true);
+            }
+            else
+            {
+                EditorGUI.LabelField(rect, label);
+            }
+        }
+
 
         public void Dispose()
         {
             EditorGUI.EndProperty();
         }
+
 
         public bool IsVisible => property.isExpanded;
     }

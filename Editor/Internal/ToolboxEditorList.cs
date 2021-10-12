@@ -87,7 +87,7 @@ namespace Toolbox.Editor.Internal
                 }
 
                 //create additional space between item and right margin
-                DrawEmptySpace(Style.spacing);
+                CreateSpace(Style.spacing);
             }
         }
 
@@ -133,16 +133,19 @@ namespace Toolbox.Editor.Internal
         }
 
         /// <summary>
-        /// Creates empty space in a layout-based structure.
+        /// Preserves additional space for the dragging handle.
         /// </summary>
-        private void DrawEmptySpace(float space)
-        {
-            GuiLayoutUtility.CreateSpace(space);
-        }
-
         private void DrawHandleArea()
         {
-            DrawEmptySpace(Style.dragAreaWidth);
+            CreateSpace(Style.dragAreaWidth);
+        }
+
+        /// <summary>
+        /// Creates empty space in a layout-based structure.
+        /// </summary>
+        private void CreateSpace(float pixels)
+        {
+            GuiLayoutUtility.CreateSpace(pixels);
         }
 
         /// <summary>
@@ -226,7 +229,7 @@ namespace Toolbox.Editor.Internal
 
             var upperPadding = Style.padding - ElementSpacing;
             var lowerPadding = Style.padding;
-            DrawEmptySpace(upperPadding);
+            CreateSpace(upperPadding);
             //if there are elements, we need to draw them - we will do
             //this differently depending on if we are dragging or not
             for (var i = 0; i < arraySize; i++)
@@ -235,9 +238,8 @@ namespace Toolbox.Editor.Internal
                 var isActive = (i == Index);
                 var hasFocus = (i == Index && HasKeyboardFocus());
                 var isTarget = (i == lastCoveredIndex && !isActive);
-                var isEnding = (i == arraySize - 1);
 
-                DrawEmptySpace(ElementSpacing);
+                CreateSpace(ElementSpacing);
                 DrawElementRow(i, isActive, isTarget, hasFocus);
                 if (isTarget)
                 {
@@ -245,7 +247,7 @@ namespace Toolbox.Editor.Internal
                 }
             }
 
-            DrawEmptySpace(lowerPadding);
+            CreateSpace(lowerPadding);
         }
 
         protected override bool DoListHeader()
@@ -323,6 +325,12 @@ namespace Toolbox.Editor.Internal
         protected override int GetCoveredElementIndex(Vector2 mousePosition)
         {
             return middleRect.Contains(mousePosition) ? GetCoveredElementIndex(mousePosition.y) : -1;
+        }
+
+        protected override void HandleHeaderEvents(Rect rect)
+        {
+            base.HandleHeaderEvents(rect);
+            DragAndDropUtility.DoDragAndDropForProperty(rect, List);
         }
 
 
