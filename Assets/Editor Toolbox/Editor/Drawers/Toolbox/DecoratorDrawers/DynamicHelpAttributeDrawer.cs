@@ -8,7 +8,6 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGuiBeginSafe(DynamicHelpAttribute attribute)
         {
             var sourceHandle = attribute.SourceHandle;
-            //TODO: support nested objects
             var targetObjects = InspectorUtility.CurrentTargetObjects;
             if (ValueExtractionHelper.TryGetValue(sourceHandle, targetObjects, out var value, out var hasMixedValues))
             {
