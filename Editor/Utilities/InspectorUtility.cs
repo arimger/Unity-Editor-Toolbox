@@ -16,37 +16,47 @@ namespace Toolbox.Editor
     {
         static InspectorUtility()
         {
-            //we can use 'OnBeginToolboxEditor' and 'OnCloseToolboxEditor' to cache 
-            //processed Editors and determine the real context of the serialization
-            ToolboxEditor.OnBeginToolboxEditor += CacheTargets;
-            ToolboxEditor.OnCloseToolboxEditor += ClearTargets;
-
             //we can use each new Editor to check if 'OnEditorReload' should be called
             ToolboxEditor.OnBeginToolboxEditor += CheckReloads;
+
+            //we can use 'OnBeginToolboxEditor' and 'OnCloseToolboxEditor' to cache 
+            //processed Editors and determine the real context of the serialization
+            ToolboxEditor.OnBeginToolboxEditor += OnBeginEditor;
+            ToolboxEditor.OnBreakToolboxEditor += OnBreakEditor;
+            ToolboxEditor.OnCloseToolboxEditor += OnCloseEditor;
         }
+
 
         private static Editor lastCachedEditor;
+        private static readonly Stack<Editor> cachedEditors = new Stack<Editor>();
 
 
-        private static void CacheTargets(Editor editor)
+        private static void OnBeginEditor(Editor editor)
         {
-            CurrentTargetObjects = editor.targets;
+            lastCachedEditor = editor;
+            cachedEditors.Push(editor);
         }
 
-        private static void ClearTargets(Editor editor)
+        private static void OnBreakEditor(Editor editor)
         {
-            CurrentTargetObjects = null;
+            cachedEditors.Clear();
+        }
+
+        private static void OnCloseEditor(Editor editor)
+        {
+            if (InToolboxEditor)
+            {
+                cachedEditors.Pop();
+            }
         }
 
         private static void CheckReloads(Editor editor)
         {
+            //NOTE: it means that last Editor was null or disposed, anyway we probably want to reload drawers-related cache
             if (lastCachedEditor == null)
             {
                 OnEditorReload?.Invoke();
             }
-
-            //this Editor will be destroyed every time when object is deselected
-            lastCachedEditor = editor;
         }
 
 
@@ -112,7 +122,7 @@ namespace Toolbox.Editor
                 throw new ArgumentNullException(nameof(target));
             }
 
-            var methodInfo = target.GetType().GetMethod("OnValidate", 
+            var methodInfo = target.GetType().GetMethod("OnValidate",
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
                 null, CallingConventions.Any, new Type[0], null);
             if (methodInfo != null)
@@ -131,9 +141,15 @@ namespace Toolbox.Editor
         /// <summary>
         /// Last cached targetObjects from the currently processed <see cref="ToolboxEditor"/>.
         /// </summary>
-        internal static Object[] CurrentTargetObjects { get; private set; }
+        internal static Object[] CurrentTargetObjects
+        {
+            get => cachedEditors.Count > 0 ? cachedEditors.Peek().targets : new Object[0];
+        }
 
-        internal static bool InToolboxEditor => lastCachedEditor;
+        internal static bool InToolboxEditor
+        {
+            get => cachedEditors.Count > 0;
+        }
     }
 
     internal static partial class InspectorUtility
