@@ -19,6 +19,7 @@ namespace Toolbox.Editor.Drawers
             var yValue = property.vector2Value.y;
 
             label = EditorGUI.BeginProperty(position, label, property);
+            EditorGUI.BeginChangeCheck();
             ToolboxEditorGui.DrawMinMaxSlider(position, label, ref xValue, ref yValue, minValue, maxValue);
             if (EditorGUI.EndChangeCheck())
             {
