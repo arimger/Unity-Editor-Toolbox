@@ -459,6 +459,21 @@ public GameObject[] largeArray = new GameObject[19];
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scrollableitems.png)
 
+#### Other ToolboxProperty attributes
+
+```csharp
+[IgnoreParent]
+public Quaternion q;
+```
+
+```csharp
+[DynamicMinMaxSlider(nameof(minValue), nameof(MaxValue))]
+public Vector2 vec2;
+
+public float minValue;
+public float MaxValue => 15.0f;
+```
+
 #### ToolboxArchetypeAttributes
 
 Using this attribute you are able to implement custom patterns of frequently grouped **ToolboxAttributes**.
