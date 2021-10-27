@@ -1,3 +1,12 @@
+## 0.10.4 [27.10.2021]
+
+### Added:
+- DynamicMinMaxSliderAttribute
+
+### Changed:
+- Fix dragging and dropping elements into arrays/list
+- Fix behaviour of EditorButtons in nested Editors
+
 ## 0.10.2 [20.08.2021]
 
 ### Changed:
