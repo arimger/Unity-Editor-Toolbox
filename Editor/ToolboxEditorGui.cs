@@ -588,5 +588,23 @@ namespace Toolbox.Editor
 #endif
             EditorGUI.LabelField(position, label);
         }
+
+        /// <summary>
+        /// Layout-based equivalent of the <see cref="EditorGUI.BeginProperty(Rect, GUIContent, SerializedProperty)"/> method.
+        /// </summary>
+        public static void BeginProperty(SerializedProperty property, ref GUIContent label, out Rect position)
+        {
+            var rowHeight = EditorGUIUtility.singleLineHeight;
+            position = EditorGUILayout.GetControlRect(true, rowHeight);
+            label = EditorGUI.BeginProperty(position, label, property);
+        }
+
+        /// <summary>
+        /// Layout-based equivalent of the <see cref="EditorGUI.EndProperty"/> method.
+        /// </summary>
+        public static void CloseProperty()
+        {
+            EditorGUI.EndProperty();
+        }
     }
 }
