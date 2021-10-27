@@ -330,7 +330,7 @@ namespace Toolbox.Editor.Internal
         protected override void HandleHeaderEvents(Rect rect)
         {
             base.HandleHeaderEvents(rect);
-            DragAndDropUtility.DoDragAndDropForProperty(rect, List);
+            DraggingUtility.DoDragAndDropForProperty(rect, List);
         }
 
 
