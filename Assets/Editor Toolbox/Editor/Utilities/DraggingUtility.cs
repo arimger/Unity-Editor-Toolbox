@@ -6,9 +6,9 @@ using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
-    public static class DragAndDropUtility
+    public static class DraggingUtility
     {
-        static DragAndDropUtility()
+        static DraggingUtility()
         {
             validateAssignmentMethod = typeof(EditorGUI)
                 .GetMethod("ValidateObjectFieldAssignment",

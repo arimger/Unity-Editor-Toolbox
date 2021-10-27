@@ -1,4 +1,5 @@
 ﻿using System;
+
 using UnityEditor;
 using UnityEngine;
 
@@ -16,9 +17,7 @@ namespace Toolbox.Editor.Internal
         public PropertyScope(SerializedProperty property, GUIContent label)
         {
             this.property = property;
-            var rowHeight = EditorGUIUtility.singleLineHeight;
-            var labelRect = EditorGUILayout.GetControlRect(true, rowHeight);
-            label = EditorGUI.BeginProperty(labelRect, label, property);
+            ToolboxEditorGui.BeginProperty(property, ref label, out var labelRect);
             HandleEvents(labelRect);
             TryDrawLabel(labelRect, label);
         }
@@ -28,7 +27,7 @@ namespace Toolbox.Editor.Internal
         {
             if (property.isArray)
             {
-                DragAndDropUtility.DoDragAndDropForProperty(rect, property);
+                DraggingUtility.DoDragAndDropForProperty(rect, property);
             }
         }
 
@@ -47,7 +46,7 @@ namespace Toolbox.Editor.Internal
 
         public void Dispose()
         {
-            EditorGUI.EndProperty();
+            ToolboxEditorGui.CloseProperty();
         }
 
 
