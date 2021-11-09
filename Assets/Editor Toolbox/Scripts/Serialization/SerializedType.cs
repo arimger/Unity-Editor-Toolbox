@@ -16,6 +16,12 @@ namespace UnityEngine
         }
 
 
+        [SerializeField]
+        private string classReference;
+
+        private Type type;
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializedType"/> class.
         /// </summary>
@@ -46,6 +52,11 @@ namespace UnityEngine
         }
 
 
+        public override string ToString()
+        {
+            return Type != null ? Type.FullName : $"(None)";
+        }
+
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
             if (!string.IsNullOrEmpty(classReference))
@@ -68,11 +79,6 @@ namespace UnityEngine
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         { }
 
-
-        [SerializeField]
-        private string classReference;
-
-        private Type type;
 
         /// <summary>
         /// Gets or sets type of class reference.
@@ -101,7 +107,5 @@ namespace UnityEngine
         public static implicit operator Type(SerializedType typeReference) => typeReference.Type;
 
         public static implicit operator SerializedType(Type type) => new SerializedType(type);
-
-        public override string ToString() => Type != null ? Type.FullName : $"(None)";
     }
 }
