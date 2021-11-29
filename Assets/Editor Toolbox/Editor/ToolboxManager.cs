@@ -185,8 +185,10 @@ namespace Toolbox.Editor
                             return;
                         }
 
-                        var relativePath = locationPath.Replace(Application.dataPath, string.Empty) + Path.DirectorySeparatorChar +
-                                           settingsType + ".asset";
+                        var relativePath =
+                            locationPath.Replace(Directory.GetCurrentDirectory(), string.Empty).Remove(0, 1) +
+                            Path.DirectorySeparatorChar +
+                            settingsType + ".asset";
 
                         AssetDatabase.CreateAsset(settingsInstance, relativePath);
                         AssetDatabase.SaveAssets();
