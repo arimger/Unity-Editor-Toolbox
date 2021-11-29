@@ -1,5 +1,8 @@
-﻿using UnityEditor;
+﻿using System;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
@@ -182,7 +185,7 @@ namespace Toolbox.Editor
                             return;
                         }
 
-                        var relativePath = locationPath.Replace(Application.dataPath, string.Empty) + "/" +
+                        var relativePath = locationPath.Replace(Application.dataPath, string.Empty) + Path.DirectorySeparatorChar +
                                            settingsType + ".asset";
 
                         AssetDatabase.CreateAsset(settingsInstance, relativePath);
