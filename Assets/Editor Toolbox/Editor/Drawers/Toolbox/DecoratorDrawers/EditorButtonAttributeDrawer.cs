@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Reflection;
-
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -9,23 +8,6 @@ namespace Toolbox.Editor.Drawers
 {
     public class EditorButtonAttributeDrawer : ToolboxDecoratorDrawer<EditorButtonAttribute>
     {
-        private bool IsClickable(ButtonActivityType activityType)
-        {
-            switch (activityType)
-            {
-                case ButtonActivityType.Everything:
-                    return true;
-                case ButtonActivityType.Nothing:
-                    return false;
-                case ButtonActivityType.OnEditMode:
-                    return !Application.isPlaying;
-                case ButtonActivityType.OnPlayMode:
-                    return Application.isPlaying;
-            }
-
-            return true;
-        }
-
         private bool IsCoroutine(MethodInfo method)
         {
             return method.ReturnType == typeof(IEnumerator);
@@ -37,7 +19,8 @@ namespace Toolbox.Editor.Drawers
             //validate method name (check if method exists)
             if (methodInfo == null)
             {
-                ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method not found.", attribute.MethodName));
+                ToolboxEditorLog.AttributeUsageWarning(attribute,
+                    string.Format("{0} method not found.", attribute.MethodName));
                 return;
             }
 
@@ -45,7 +28,8 @@ namespace Toolbox.Editor.Drawers
             var parameters = methodInfo.GetParameters();
             if (parameters.Length > 0)
             {
-                ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method has to be parameterless.", attribute.MethodName));
+                ToolboxEditorLog.AttributeUsageWarning(attribute,
+                    string.Format("{0} method has to be parameterless.", attribute.MethodName));
                 return;
             }
 
@@ -78,12 +62,11 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            var disable = !IsClickable(attribute.ActivityType);
-            using (new EditorGUI.DisabledScope(disable))
+            using (new EditorGUI.DisabledScope(IsInteractive(attribute, targetObjects)))
             {
                 var label = string.IsNullOrEmpty(attribute.ExtraLabel)
-                            ? attribute.MethodName
-                            : attribute.ExtraLabel;
+                    ? attribute.MethodName
+                    : attribute.ExtraLabel;
                 var tooltip = attribute.Tooltip;
                 var content = new GUIContent(label, tooltip);
 
@@ -92,6 +75,25 @@ namespace Toolbox.Editor.Drawers
                     CallMethods(attribute, targetObjects);
                 }
             }
+        }
+
+        bool IsInteractive(EditorButtonAttribute attribute, params Object[] targetObjects)
+        {
+            bool interactive = true;
+            if (!string.IsNullOrEmpty(attribute.InteractionMethodName))
+            {
+                var interactionMethod =
+                    ReflectionUtility.GetObjectMethod(attribute.InteractionMethodName, targetObjects);
+                if (interactionMethod != null)
+                {
+                    for (int i = 0; i < targetObjects.Length; i++)
+                    {
+                        interactive &= (bool)interactionMethod.Invoke(targetObjects[i], null);
+                    }
+                }
+            }
+
+            return !interactive;
         }
 
 

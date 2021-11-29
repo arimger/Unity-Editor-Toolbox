@@ -10,11 +10,12 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class EditorButtonAttribute : ToolboxDecoratorAttribute
     {
-        public EditorButtonAttribute(string methodName, string extraLabel = null, ButtonActivityType activityType = ButtonActivityType.Everything)
+        public EditorButtonAttribute(string methodName, string extraLabel = null,
+            string interactionMethodName = null)
         {
             MethodName = methodName;
             ExtraLabel = extraLabel;
-            ActivityType = activityType;
+            InteractionMethodName = interactionMethodName;
         }
 
         public string MethodName { get; private set; }
@@ -23,15 +24,6 @@ namespace UnityEngine
 
         public string Tooltip { get; set; }
 
-        public ButtonActivityType ActivityType { get; private set; }
-    }
-
-    [Flags]
-    public enum ButtonActivityType
-    {
-        Nothing = 0,
-        OnPlayMode = 1,
-        OnEditMode = 2,
-        Everything = ~0
+        public string InteractionMethodName { get; private set; }
     }
 }
