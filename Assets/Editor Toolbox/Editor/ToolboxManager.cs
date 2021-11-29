@@ -182,9 +182,8 @@ namespace Toolbox.Editor
                             return;
                         }
 
-                        var relativePath = locationPath
-                                               .Substring(locationPath
-                                                   .IndexOf("Assets/")) + "/" + settingsType + ".asset";
+                        var relativePath = locationPath.Replace(Application.dataPath, string.Empty) + "/" +
+                                           settingsType + ".asset";
 
                         AssetDatabase.CreateAsset(settingsInstance, relativePath);
                         AssetDatabase.SaveAssets();
@@ -208,13 +207,11 @@ namespace Toolbox.Editor
             {
                 globalSettingsEditor = Editor.CreateEditor(Settings);
             };
-            provider.deactivateHandler = () =>
-            {
-                Object.DestroyImmediate(globalSettingsEditor);
-            };
+            provider.deactivateHandler = () => { Object.DestroyImmediate(globalSettingsEditor); };
             provider.titleBarGuiHandler = () =>
             {
-                if (GUILayout.Button(new GUIContent("Refresh", "Try to find a settings file in the main (Assets) directory")))
+                if (GUILayout.Button(new GUIContent("Refresh",
+                    "Try to find a settings file in the main (Assets) directory")))
                 {
                     ReintializeProvider();
                 }
