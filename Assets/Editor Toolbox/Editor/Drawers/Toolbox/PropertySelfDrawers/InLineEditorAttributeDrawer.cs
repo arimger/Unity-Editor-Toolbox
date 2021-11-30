@@ -52,7 +52,10 @@ namespace Toolbox.Editor.Drawers
 
         private bool GetInspectorToggle(SerializedProperty property)
         {
-            return GUILayout.Toggle(property.isExpanded, Style.foldoutContent, Style.foldoutStyle, Style.foldoutOptions);
+            using (new DisabledScope(true))
+            {
+                return GUILayout.Toggle(property.isExpanded, Style.foldoutContent, Style.foldoutStyle, Style.foldoutOptions);
+            }
         }
 
         private void DrawEditor(Editor editor, InLineEditorAttribute attribute)

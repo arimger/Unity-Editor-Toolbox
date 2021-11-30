@@ -79,6 +79,7 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.ShowWarningIfAttributeDrawer, Toolbox-Editor
   selfPropertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.DynamicMinMaxSliderAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.DynamicRangeAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.IgnoreParentAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
   - classReference: Toolbox.Editor.Drawers.RegexValueAttributeDrawer, Toolbox-Editor

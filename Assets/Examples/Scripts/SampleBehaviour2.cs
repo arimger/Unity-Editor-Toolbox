@@ -202,4 +202,13 @@ public class SampleBehaviour2 : MonoBehaviour
     public int var39;
 
     public string MessageSource => string.Format("Dynamic Message Source. {0} = {1}", nameof(var39), var39);
+
+    [Label("17", skinStyle: SkinStyle.Box)]
+
+    public float a1 = -1;
+    public float b1 = 5.5f;
+    [DynamicRange(nameof(a1), nameof(b1))]
+    public float var40;
+    [DynamicMinMaxSlider(nameof(a1), nameof(b1))]
+    public Vector2 var41;
 }
