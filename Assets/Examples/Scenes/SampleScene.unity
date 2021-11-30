@@ -508,6 +508,11 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  var39: 0
+  a1: -1
+  b1: 5.5
+  var40: 1.33
+  var41: {x: 0, y: 1.9792935}
 --- !u!4 &661896459
 Transform:
   m_ObjectHideFlags: 2
@@ -707,6 +712,8 @@ MonoBehaviour:
     buildIndex: 0
   bigNumber: 12345678
   currency: 20.41
+  dateTime:
+    ticks: 631466100000000000
 --- !u!4 &959025299
 Transform:
   m_ObjectHideFlags: 2

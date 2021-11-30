@@ -203,6 +203,10 @@ public class SampleBehaviour1 : MonoBehaviour
     [FormattedNumber("c")]
     public float currency;
 
+    [Label("28", skinStyle: SkinStyle.Box)]
+
+    public SerializedDateTime dateTime;
+
 #if UNITY_EDITOR
     private void OnValidate()
     {
