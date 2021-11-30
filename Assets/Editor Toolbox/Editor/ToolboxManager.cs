@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor
@@ -35,8 +36,6 @@ namespace Toolbox.Editor
                 ToolboxEditorProject.RepaintProjectOverlay();
                 return;
             }
-
-            var validateData = !IsInitialized;
 
             //enable/disable the core GUI function
             ToolboxEditorProject.IsOverlayAllowed = settings.UseToolboxProject;
@@ -160,7 +159,7 @@ namespace Toolbox.Editor
 
                 //rebuild the settings provider right after initialization
                 provider.OnDeactivate();
-                provider.OnActivate("", null);
+                provider.OnActivate(string.Empty, null);
             }
 
             provider.guiHandler = (searchContext) =>
@@ -168,7 +167,7 @@ namespace Toolbox.Editor
                 if (globalSettingsEditor == null || globalSettingsEditor.serializedObject.targetObject == null)
                 {
                     EditorGUILayout.Space();
-                    EditorGUILayout.LabelField("Cannot find " + settingsType + " file located in this Project");
+                    EditorGUILayout.LabelField(string.Format("Cannot find {0} file located in this Project", settingsType));
                     EditorGUILayout.Space();
 
                     if (GUILayout.Button("Create a new settings file"))
@@ -182,9 +181,8 @@ namespace Toolbox.Editor
                             return;
                         }
 
-                        var relativePath = locationPath
-                                               .Substring(locationPath
-                                                   .IndexOf("Assets/")) + "/" + settingsType + ".asset";
+                        var assetName = string.Format("{0}.asset", settingsType);
+                        var relativePath = Path.Combine(FileUtil.GetProjectRelativePath(locationPath), assetName);
 
                         AssetDatabase.CreateAsset(settingsInstance, relativePath);
                         AssetDatabase.SaveAssets();
