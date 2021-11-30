@@ -1,3 +1,14 @@
+## 0.10.6 [30.11.2021]
+
+### Added:
+- DynamicRangeSliderAttribute
+- SerializedDateTime
+
+### Changed:
+- Fix disposing inlined Editors in ScriptableObjects-based Inspectors
+- Fix disabling "Edit" button when inlined Editor is disabled
+- Fix relative path when ToolboxEditorSettings is created manually
+
 ## 0.10.4 [27.10.2021]
 
 ### Added:
