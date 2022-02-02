@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -8,6 +9,7 @@ namespace UnityEngine
     /// <para>Supported types: any <see cref="System.Collections.IList"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public class ReorderableListAttribute : ToolboxListPropertyAttribute
     {
         public ReorderableListAttribute(ListStyle style = ListStyle.Round, string elementLabel = null, bool fixedSize = false, bool draggable = true)

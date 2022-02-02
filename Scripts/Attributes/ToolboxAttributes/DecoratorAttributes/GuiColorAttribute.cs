@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -6,6 +7,7 @@ namespace UnityEngine
     /// Changes GUI color of all related controls (other decorators and the property field).
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    [Conditional("UNITY_EDITOR")]
     public class GuiColorAttribute : ToolboxDecoratorAttribute
     {
         public GuiColorAttribute(float r, float g, float b)

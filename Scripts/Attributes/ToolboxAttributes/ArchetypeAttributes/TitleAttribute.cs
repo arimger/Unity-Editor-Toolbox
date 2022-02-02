@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -9,6 +10,7 @@ namespace UnityEngine
     /// Standardized header, it's composition of the <see cref="LabelAttribute"/> and the <see cref="LineAttribute"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    [Conditional("UNITY_EDITOR")]
     public class TitleAttribute : ToolboxArchetypeAttribute
     {
         public TitleAttribute(string label)

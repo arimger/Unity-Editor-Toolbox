@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -8,6 +9,7 @@ namespace UnityEngine
     /// <para>Supported types: <see cref="string"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public class RegexValueAttribute : ToolboxSelfPropertyAttribute
     {
         public RegexValueAttribute(string pattern) : this(pattern, null)

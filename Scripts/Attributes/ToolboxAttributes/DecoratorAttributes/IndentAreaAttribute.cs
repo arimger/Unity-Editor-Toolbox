@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -6,6 +7,7 @@ namespace UnityEngine
     /// Changes indent level of the property.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public class IndentAreaAttribute : ToolboxDecoratorAttribute
     {
         public IndentAreaAttribute()

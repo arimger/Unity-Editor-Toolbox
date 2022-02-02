@@ -1,5 +1,8 @@
-﻿namespace UnityEngine
+﻿using System.Diagnostics;
+
+namespace UnityEngine
 {
+    [Conditional("UNITY_EDITOR")]
     public abstract class DynamicMinMaxBaseAttribute : ToolboxSelfPropertyAttribute
     {
         protected DynamicMinMaxBaseAttribute(string minValueSource, string maxValueSource)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -6,6 +7,7 @@ namespace UnityEngine
     /// Begins vertical group of properties. Has to be closed by the <see cref="EndGroupAttribute"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    [Conditional("UNITY_EDITOR")]
     public class BeginGroupAttribute : ToolboxDecoratorAttribute
     {
         public BeginGroupAttribute(string label = null)

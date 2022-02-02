@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -9,6 +10,7 @@ namespace UnityEngine
     /// </summary>
     [Obsolete("Use EnumTogglesAttribute instead.")]
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public class EnumFlagAttribute : PropertyAttribute
     {
         public EnumFlagAttribute(EnumStyle style = EnumStyle.Popup)

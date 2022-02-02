@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -20,6 +21,7 @@ namespace UnityEngine
     /// <para>Supported types: any type with children.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public class LabelByChildAttribute : PropertyAttribute
     {
         public LabelByChildAttribute(string childName)
