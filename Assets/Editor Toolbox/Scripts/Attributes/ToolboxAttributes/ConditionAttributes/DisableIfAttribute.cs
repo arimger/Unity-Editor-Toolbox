@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -10,6 +11,7 @@ namespace UnityEngine
     /// <para>Supported types: all.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public class DisableIfAttribute : ComparisonAttribute
     {
         public DisableIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -9,6 +10,7 @@ namespace UnityEngine
     /// <para>Supported types: any <see cref="System.Collections.IList"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public class ScrollableItemsAttribute : ToolboxListPropertyAttribute
     {
         public ScrollableItemsAttribute(int defaultMinIndex = 0, int defaultMaxIndex = 20)

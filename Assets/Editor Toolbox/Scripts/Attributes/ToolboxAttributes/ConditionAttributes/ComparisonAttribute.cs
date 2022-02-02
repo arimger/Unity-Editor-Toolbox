@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public abstract class ComparisonAttribute : ToolboxConditionAttribute
     {
         /// <param name="sourceHandle">L-value or the mask if <see cref="Comparison"/> is set to <see cref="UnityComparisonMethod.Mask"/></param>

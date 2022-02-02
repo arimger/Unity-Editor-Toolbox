@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 
 using Toolbox;
@@ -12,6 +13,7 @@ namespace UnityEngine
     /// <para>Supported types: <see cref="SerializedType"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public abstract class TypeConstraintAttribute : PropertyAttribute
     {
         protected TypeConstraintAttribute(Type assemblyType)
@@ -117,6 +119,7 @@ namespace UnityEngine
 
     ///<inheritdoc/>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class ClassExtendsAttribute : TypeConstraintAttribute
     {
         /// <summary>
@@ -148,6 +151,7 @@ namespace UnityEngine
 
     ///<inheritdoc/>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class ClassImplementsAttribute : TypeConstraintAttribute
     {
         /// <summary>

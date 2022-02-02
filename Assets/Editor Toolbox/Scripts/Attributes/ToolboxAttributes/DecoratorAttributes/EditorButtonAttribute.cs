@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -8,6 +9,7 @@ namespace UnityEngine
     /// Requirements: method has to be parameterless. 
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    [Conditional("UNITY_EDITOR")]
     public class EditorButtonAttribute : ToolboxDecoratorAttribute
     {
         public EditorButtonAttribute(string methodName, string extraLabel = null, ButtonActivityType activityType = ButtonActivityType.Everything)

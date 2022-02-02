@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -8,6 +9,7 @@ namespace UnityEngine
     /// Has to be closed by the <see cref="EndHorizontalGroupAttribute"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public class BeginHorizontalGroupAttribute : BeginHorizontalAttribute
     {
         public BeginHorizontalGroupAttribute(float labelToWidthRatio = 0.0f, float fieldToWidthRatio = 0.0f, string label = null) : base(labelToWidthRatio, fieldToWidthRatio)
