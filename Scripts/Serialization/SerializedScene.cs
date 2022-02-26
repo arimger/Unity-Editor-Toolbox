@@ -10,11 +10,13 @@ namespace UnityEngine
     public class SerializedScene : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
-        private static Dictionary<SceneAsset, int> cachedBuildIndexes = new Dictionary<SceneAsset, int>();
+        private readonly static Dictionary<SceneAsset, int> cachedBuildIndexes = new Dictionary<SceneAsset, int>();
 
         [SerializeField]
         private SceneAsset sceneReference;
 #endif
+        [SerializeField, HideInInspector]
+        private string sceneName;
         [SerializeField, HideInInspector]
         private int buildIndex;
 
@@ -26,6 +28,7 @@ namespace UnityEngine
         {
 #if UNITY_EDITOR
             TryGetBuildIndex(sceneReference, out buildIndex);
+            TryGetSceneName(sceneReference, out sceneName);
 #endif
         }
 
@@ -70,6 +73,18 @@ namespace UnityEngine
             return true;
         }
 
+        private static bool TryGetSceneName(SceneAsset sceneAsset, out string name)
+        {
+            if (sceneAsset == null)
+            {
+                name = null;
+                return false;
+            }
+
+            name = sceneAsset.name;
+            return true;
+        }
+
 
         public SceneAsset SceneReference
         {
@@ -77,6 +92,13 @@ namespace UnityEngine
             set => sceneReference = value;
         }
 #endif
+
+        public string SceneName
+        {
+            get => sceneName;
+            set => sceneName = value;
+        }
+
         public int BuildIndex
         {
             get => buildIndex;
