@@ -706,9 +706,11 @@ MonoBehaviour:
       var2: 
   scene1:
     sceneReference: {fileID: 102900000, guid: f11034f4657f51a47aac14f26410c500, type: 3}
+    sceneName: SampleScene
     buildIndex: 0
   scene2:
     sceneReference: {fileID: 102900000, guid: f11034f4657f51a47aac14f26410c500, type: 3}
+    sceneName: SampleScene
     buildIndex: 0
   bigNumber: 12345678
   currency: 20.41
