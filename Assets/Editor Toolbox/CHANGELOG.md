@@ -1,3 +1,14 @@
+## 0.10.8 [26.02.2022]
+
+### Added:
+- [Conditional("UNITY_EDITOR")] attribute to all drawer attributes
+- Possibility to ignore certain properties directly in the ToolboxEditor OnGUI callback
+
+### Changed:
+- Resizing "Size" field in the ReorderableLists depending on the content
+- Serializing Scene name in the SerializedScene class
+- Optimization of types caching (mostly related to the SerializedType class)
+
 ## 0.10.6 [30.11.2021]
 
 ### Added:
