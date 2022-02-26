@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -6,6 +7,7 @@ namespace UnityEngine
     /// Creates thin, horizontal line.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    [Conditional("UNITY_EDITOR")]
     public class LineAttribute : ToolboxDecoratorAttribute
     {
         public LineAttribute(float thickness = 0.75f, float padding = 6.0f)

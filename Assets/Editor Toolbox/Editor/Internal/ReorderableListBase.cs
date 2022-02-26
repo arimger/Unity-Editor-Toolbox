@@ -52,6 +52,7 @@ namespace Toolbox.Editor.Internal
 
 
         protected const string defaultLabelFormat = "{0} {1}";
+        protected const string defaultElementName = "Element";
 
         /// <summary>
         /// Hotcontrol index, unique for this instance.
@@ -408,7 +409,7 @@ namespace Toolbox.Editor.Internal
 
         public string GetElementDefaultName(int index)
         {
-            return string.Format(defaultLabelFormat, "Element", index);
+            return string.Format(defaultLabelFormat, defaultElementName, index);
         }
 
         public string GetElementDefinedName(int index)
@@ -621,20 +622,22 @@ namespace Toolbox.Editor.Internal
             var label = EditorGUI.BeginProperty(rect, TitleLabel, List);
             //display the property label using the preprocessed name
             DrawStandardName(rect, label, Foldable);
-
-            var diff = rect.height - Style.sizePropertyStyle.fixedHeight;
-            rect.yMin += diff / 2;
-            rect.yMax -= diff / 2;
-            rect.xMin = rect.xMax - Style.sizeAreaWidth;
-
             using (new EditorGUI.DisabledScope(FixedSize))
             {
                 var property = Size;
+                var sizeValue = property.intValue;
+
+                var potentialSizeContent = new GUIContent(sizeValue.ToString());
+                var width = Style.sizePropertyStyle.CalcSize(potentialSizeContent).x;
+                var diff = rect.height - Style.sizePropertyStyle.fixedHeight;
+                rect.yMin += diff / 2;
+                rect.yMax -= diff / 2;
+                rect.xMin = rect.xMax - Mathf.Max(Style.sizeAreaWidth, width);
 
                 EditorGUI.BeginProperty(rect, Style.sizePropertyContent, property);
                 EditorGUI.BeginChangeCheck();
                 //cache the size value using the delayed int field
-                var sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, property.intValue, Style.sizePropertyStyle), 0);
+                sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, sizeValue, Style.sizePropertyStyle), 0);
                 if (EditorGUI.EndChangeCheck())
                 {
                     property.intValue = sizeValue;

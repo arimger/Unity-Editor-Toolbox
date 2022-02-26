@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -8,6 +9,7 @@ namespace UnityEngine
     /// <para>Supported types: any <see cref="Object"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public class AssetPreviewAttribute : PropertyAttribute
     {
         public AssetPreviewAttribute(float width = 64, float height = 64, bool useLabel = true)

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public class HighlightAttribute : ToolboxDecoratorAttribute
     {
         public HighlightAttribute(float r, float g, float b)

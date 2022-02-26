@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -6,6 +7,7 @@ namespace UnityEngine
     /// Extended version of the built-in <see cref="HeaderAttribute"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    [Conditional("UNITY_EDITOR")]
     public class LabelAttribute : ToolboxDecoratorAttribute
     {
         public LabelAttribute(string label, FontStyle fontStyle = FontStyle.Bold, SkinStyle skinStyle = SkinStyle.Normal)

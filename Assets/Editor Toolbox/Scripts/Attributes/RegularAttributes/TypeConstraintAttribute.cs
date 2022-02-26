@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 
-using Toolbox;
+using UnityEditor;
 
 namespace UnityEngine
 {
@@ -12,6 +14,7 @@ namespace UnityEngine
     /// <para>Supported types: <see cref="SerializedType"/>.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public abstract class TypeConstraintAttribute : PropertyAttribute
     {
         protected TypeConstraintAttribute(Type assemblyType)
@@ -23,32 +26,31 @@ namespace UnityEngine
         /// <summary>
         /// Get all proper types from executing assembly.
         /// </summary>
-        public List<Type> GetFilteredTypes()
+        public virtual List<Type> GetFilteredTypes()
         {
-            var types = new List<Type>();
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies)
+            var types = TypeCache.GetTypesDerivedFrom(AssemblyType).ToList();
+            for (var i = types.Count - 1; i >= 0; i--)
             {
-                types.AddRange(GetFilteredTypes(assembly));
+                var type = types[i];
+                if (IsConstraintSatisfied(type))
+                {
+                    continue;
+                }
+
+                types.RemoveAt(i);
             }
 
-            types.Sort((a, b) => a.FullName.CompareTo(b.FullName));
             return types;
         }
 
         /// <summary>
         /// Get all filtered type from provided assembly.
         /// </summary>
-        public List<Type> GetFilteredTypes(Assembly assembly)
+        public virtual List<Type> GetFilteredTypes(Assembly assembly)
         {
             var types = new List<Type>();
             foreach (var type in assembly.GetTypes())
             {
-                if (!type.IsVisible || !type.IsClass)
-                {
-                    continue;
-                }
-
                 if (!IsConstraintSatisfied(type))
                 {
                     continue;
@@ -70,6 +72,12 @@ namespace UnityEngine
         /// </returns>
         public virtual bool IsConstraintSatisfied(Type type)
         {
+            //NOTE: it's possible to strip out ConstructedGenericTypes, but they are considered valid for now
+            if (!type.IsVisible || !type.IsClass)
+            {
+                return false;
+            }
+
             return (AllowAbstract || !type.IsAbstract) && (AllowObsolete || !IsDefined(type, typeof(ObsoleteAttribute)));
         }
 
@@ -117,6 +125,7 @@ namespace UnityEngine
 
     ///<inheritdoc/>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class ClassExtendsAttribute : TypeConstraintAttribute
     {
         /// <summary>
@@ -131,23 +140,11 @@ namespace UnityEngine
         /// <param name="baseType">Type of class that selectable classes must derive from.</param>
         public ClassExtendsAttribute(Type baseType) : base(baseType)
         { }
-
-
-        public override bool IsConstraintSatisfied(Type type)
-        {
-            if (type == AssemblyType || !base.IsConstraintSatisfied(type))
-            {
-                return false;
-            }
-
-            return AssemblyType.IsGenericType
-                ? AssemblyType.IsAssignableFromGeneric(type)
-                : AssemblyType.IsAssignableFrom(type);
-        }
     }
 
     ///<inheritdoc/>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class ClassImplementsAttribute : TypeConstraintAttribute
     {
         /// <summary>
@@ -162,23 +159,6 @@ namespace UnityEngine
         /// <param name="interfaceType">Type of interface that selectable classes must implement.</param>
         public ClassImplementsAttribute(Type interfaceType) : base(interfaceType)
         { }
-
-
-        public override bool IsConstraintSatisfied(Type type)
-        {
-            if (base.IsConstraintSatisfied(type))
-            {
-                foreach (var interfaceType in type.GetInterfaces())
-                {
-                    if (interfaceType == AssemblyType)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using UnityEditor;
 
@@ -14,6 +15,9 @@ namespace Toolbox.Editor
     [CanEditMultipleObjects]
     public class ToolboxEditor : Editor
     {
+        private readonly HashSet<string> propertiesToIgnore = new HashSet<string>();
+
+
         /// <summary>
         /// Inspector GUI re-draw call.
         /// </summary>
@@ -37,13 +41,18 @@ namespace Toolbox.Editor
             }
         }
 
-
         /// <summary>
         /// Handles property display process using custom <see cref="Drawers.ToolboxDrawer"/>.
         /// </summary>
         /// <param name="property">Property to display.</param>
         public virtual void DrawCustomProperty(SerializedProperty property)
         {
+            var propertyPath = property.propertyPath;
+            if (propertiesToIgnore.Contains(propertyPath))
+            {
+                return;
+            }
+
             ToolboxEditorGui.DrawToolboxProperty(property);
         }
 
@@ -83,6 +92,22 @@ namespace Toolbox.Editor
             }
 
             DrawDefaultInspector();
+        }
+
+        /// <summary>
+        /// Forces provided <see cref="SerializedProperty"/> to be ignored in the drawing process.
+        /// </summary>
+        public void IgnoreProperty(SerializedProperty property)
+        {
+            IgnoreProperty(property.propertyPath);
+        }
+
+        /// <summary>
+        /// Forces associated <see cref="SerializedProperty"/> to be ignored in the drawing process.
+        /// </summary>
+        public void IgnoreProperty(string propertyPath)
+        {
+            propertiesToIgnore.Add(propertyPath);
         }
 
 

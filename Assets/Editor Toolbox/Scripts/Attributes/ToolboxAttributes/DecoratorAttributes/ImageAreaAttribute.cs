@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -7,6 +8,7 @@ namespace UnityEngine
     /// Target texture is downloaded using a standard HTTP web request.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    [Conditional("UNITY_EDITOR")]
     public class ImageAreaAttribute : ToolboxDecoratorAttribute
     {
         public ImageAreaAttribute(string url) : this(url, 100.0f)
