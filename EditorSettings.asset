@@ -48,44 +48,45 @@ MonoBehaviour:
     iconName: 
   useToolboxDrawers: 1
   decoratorDrawerHandlers:
-  - classReference: Toolbox.Editor.Drawers.BeginGroupAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.BeginHorizontalGroupAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.BeginIndentAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.DynamicHelpAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.EditorButtonAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.EndGroupAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.EndHorizontalAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.EndHorizontalGroupAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.EndIndentAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.GuiColorAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.HelpAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.HighlightAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.ImageAreaAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.IndentAreaAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.LabelAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.LineAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.BeginGroupAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.BeginHorizontalGroupAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.BeginIndentAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.DynamicHelpAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.EditorButtonAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.EndGroupAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.EndHorizontalAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.EndHorizontalGroupAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.EndIndentAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.GuiColorAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.HelpAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.HighlightAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.ImageAreaAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.IndentAreaAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.LabelAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.LineAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox.Editor
   conditionDrawerHandlers:
-  - classReference: Toolbox.Editor.Drawers.DisableAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.DisableIfAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.DisableInPlayModeAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.EnableIfAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.HideAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.HideDisabledIfAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.HideIfAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.ShowDisabledIfAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.ShowIfAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.ShowWarningIfAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.DisableAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.DisableIfAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.DisableInPlayModeAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.EnableIfAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.HideAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.HideDisabledIfAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.HideIfAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.ShowDisabledIfAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.ShowIfAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.ShowWarningIfAttributeDrawer, Toolbox.Editor
   selfPropertyDrawerHandlers:
-  - classReference: Toolbox.Editor.Drawers.DynamicMinMaxSliderAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.DynamicRangeAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.IgnoreParentAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.RegexValueAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.DynamicMinMaxSliderAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.DynamicRangeAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.IgnoreParentAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.RegexValueAttributeDrawer, Toolbox.Editor
   listPropertyDrawerHandlers:
-  - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox-Editor
+  - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox.Editor
   - classReference: Toolbox.Editor.Drawers.ReorderableListExposedAttributeDrawer,
-      Toolbox-Editor
-  - classReference: Toolbox.Editor.Drawers.ScrollableItemsAttributeDrawer, Toolbox-Editor
-  targetTypeDrawerHandlers: []
+      Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.ScrollableItemsAttributeDrawer, Toolbox.Editor
+  targetTypeDrawerHandlers:
+  - classReference: Toolbox.Editor.Drawers.SerializedDictionaryDrawer, Toolbox.Editor
