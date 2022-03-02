@@ -610,6 +610,10 @@ Allows to serialize DateTime.
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/dictionary2.png)
 
+#### SerializedDirectory
+
+Allows to serialize folders in form of assets and retrieve direct paths in runtime.
+
 ## Editor Extensions
 
 ### Hierarchy <a name="hierarchy"></a>
@@ -694,11 +698,3 @@ public static class MyEditorUtility
 Copy and paste all components from/to particular GameObject.
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/utils.png)
-
-## Editor Extras
-
-I decieded to move additional editors and tools to Gist.
-
-### Prefab/GameObject Painter
-
-Check it out [HERE](https://gist.github.com/arimger/00842a217ea8ab03d4e1b81f11592cf3).
