@@ -58,8 +58,5 @@ namespace Toolbox.Editor.Drawers
         {
             return property.propertyType == SerializedPropertyType.String;
         }
-
-
-        private TagSelectorAttribute Attribute => attribute as TagSelectorAttribute;
     }
 }

@@ -28,6 +28,7 @@ namespace UnityEngine
         /// </summary>
         public virtual List<Type> GetFilteredTypes()
         {
+#if UNITY_EDITOR
             var types = TypeCache.GetTypesDerivedFrom(AssemblyType).ToList();
             for (var i = types.Count - 1; i >= 0; i--)
             {
@@ -41,6 +42,9 @@ namespace UnityEngine
             }
 
             return types;
+#else
+            return new List<Type>();
+#endif
         }
 
         /// <summary>
