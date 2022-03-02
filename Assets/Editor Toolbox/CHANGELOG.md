@@ -1,3 +1,11 @@
+## 0.10.9 [02.03.2022]
+
+### Added:
+- SerializedDirectory
+
+### Changed:
+- Fix usage of Editor-only API in runtime scripts (TypeConstraintAttribute)
+
 ## 0.10.8 [26.02.2022]
 
 ### Added:
