@@ -434,7 +434,7 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawToolboxProperty(SerializedProperty property)
         {
-            ToolboxDrawerModule.GetPropertyHandler(property)?.OnGuiLayout();
+            ToolboxDrawerModule.GetPropertyHandler(property)?.OnGuiLayout(property);
         }
 
         /// <summary>
@@ -443,7 +443,7 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawToolboxProperty(SerializedProperty property, GUIContent label)
         {
-            ToolboxDrawerModule.GetPropertyHandler(property)?.OnGuiLayout(label);
+            ToolboxDrawerModule.GetPropertyHandler(property)?.OnGuiLayout(property, label);
         }
 
         /// <summary>
