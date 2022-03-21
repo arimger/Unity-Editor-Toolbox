@@ -6,6 +6,9 @@ using UnityEditor;
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// Custom serializable class used to serialize the <see cref="SceneAsset"/> class.
+    /// </summary>
     [Serializable]
     public class SerializedScene : ISerializationCallbackReceiver
     {
@@ -18,6 +21,8 @@ namespace UnityEngine
         [SerializeField, HideInInspector]
         private string sceneName;
         [SerializeField, HideInInspector]
+        private string scenePath;
+        [SerializeField, HideInInspector]
         private int buildIndex;
 
 
@@ -29,6 +34,7 @@ namespace UnityEngine
 #if UNITY_EDITOR
             TryGetBuildIndex(sceneReference, out buildIndex);
             TryGetSceneName(sceneReference, out sceneName);
+            TryGetScenePath(sceneReference, out scenePath);
 #endif
         }
 
@@ -85,6 +91,18 @@ namespace UnityEngine
             return true;
         }
 
+        public static bool TryGetScenePath(SceneAsset sceneAsset, out string path)
+        {
+            if (sceneAsset == null)
+            {
+                path = null;
+                return false;
+            }
+
+            path = AssetDatabase.GetAssetPath(sceneAsset);
+            return true;
+        }
+
 
         public SceneAsset SceneReference
         {
@@ -97,6 +115,12 @@ namespace UnityEngine
         {
             get => sceneName;
             set => sceneName = value;
+        }
+
+        public string ScenePath
+        {
+            get => scenePath;
+            set => scenePath = value;
         }
 
         public int BuildIndex
