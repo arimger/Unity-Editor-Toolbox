@@ -82,6 +82,7 @@ MonoBehaviour:
   - classReference: Toolbox.Editor.Drawers.DynamicRangeAttributeDrawer, Toolbox.Editor
   - classReference: Toolbox.Editor.Drawers.IgnoreParentAttributeDrawer, Toolbox.Editor
   - classReference: Toolbox.Editor.Drawers.InLineEditorAttributeDrawer, Toolbox.Editor
+  - classReference: Toolbox.Editor.Drawers.ReferencePickerAttributeDrawer, Toolbox.Editor
   - classReference: Toolbox.Editor.Drawers.RegexValueAttributeDrawer, Toolbox.Editor
   listPropertyDrawerHandlers:
   - classReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox.Editor

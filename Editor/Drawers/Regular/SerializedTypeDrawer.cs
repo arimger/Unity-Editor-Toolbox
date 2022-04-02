@@ -57,7 +57,7 @@ namespace Toolbox.Editor.Drawers
         /// <summary>
         /// Returns valid <see cref="string"/> equivalent of the referenced <see cref="Type"/>.
         /// </summary>
-        private static string GetClassReferencValue(int selectedType, List<Type> types)
+        private static string GetClassReferenceValue(int selectedType, List<Type> types)
         {
             return selectedType > 0 ? SerializedType.GetClassReference(types[selectedType - 1]) : string.Empty;
         }
@@ -159,7 +159,7 @@ namespace Toolbox.Editor.Drawers
                     try
                     {
                         referenceProperty.serializedObject.Update();
-                        referenceProperty.stringValue = GetClassReferencValue(i, filteredTypes);
+                        referenceProperty.stringValue = GetClassReferenceValue(i, filteredTypes);
                         referenceProperty.serializedObject.ApplyModifiedProperties();
                     }
                     catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
@@ -176,7 +176,7 @@ namespace Toolbox.Editor.Drawers
                     index = EditorGUI.Popup(position, index, options);
                     if (EditorGUI.EndChangeCheck())
                     {
-                        referenceProperty.stringValue = GetClassReferencValue(index, filteredTypes);
+                        referenceProperty.stringValue = GetClassReferenceValue(index, filteredTypes);
                     }
                 }
             }
