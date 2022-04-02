@@ -15,7 +15,7 @@ namespace Toolbox.Editor.Drawers
         /// <summary>
         /// Dictionary used to store all previously filtered types matched to the targt attribute.
         /// </summary>
-        private readonly static Dictionary<int, List<Type>> cachedfilteredTypes = new Dictionary<int, List<Type>>();
+        private static readonly Dictionary<int, List<Type>> cachedfilteredTypes = new Dictionary<int, List<Type>>();
 
 
         /// <summary>
@@ -41,6 +41,7 @@ namespace Toolbox.Editor.Drawers
                     {
                         name = name.Substring(0, lastPeriodIndex) + "/" + name.Substring(lastPeriodIndex + 1);
                     }
+
                     return name;
 
                 case ClassGrouping.ByAddComponentMenu:
