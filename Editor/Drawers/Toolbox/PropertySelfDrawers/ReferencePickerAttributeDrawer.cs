@@ -11,7 +11,7 @@ namespace Toolbox.Editor.Drawers
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
-        private readonly static Dictionary<int, List<Type>> cachedfilteredTypes = new Dictionary<int, List<Type>>();
+        private static readonly Dictionary<int, List<Type>> cachedfilteredTypes = new Dictionary<int, List<Type>>();
 
         //TODO: additional utility class, something like "EditorTypesUtility"
         private static bool TryGetTypeFromManagedReferenceFullTypeName(string managedReferenceFullTypename, out Type managedReferenceInstanceType)
