@@ -12,23 +12,7 @@ namespace Toolbox.Editor.Drawers
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
         private static readonly Dictionary<int, List<Type>> cachedfilteredTypes = new Dictionary<int, List<Type>>();
-
-        //TODO: additional utility class, something like "EditorTypesUtility"
-        private static bool TryGetTypeFromManagedReferenceFullTypeName(string managedReferenceFullTypename, out Type managedReferenceInstanceType)
-        {
-            managedReferenceInstanceType = null;
-
-            var parts = managedReferenceFullTypename.Split(' ');
-            if (parts.Length == 2)
-            {
-                var assemblyPart = parts[0];
-                var nsClassnamePart = parts[1];
-                //TODO: cache it
-                managedReferenceInstanceType = Type.GetType($"{nsClassnamePart}, {assemblyPart}");
-            }
-
-            return managedReferenceInstanceType != null;
-        }
+        private static readonly TypeField typeField = new TypeField();
 
         private static List<Type> GetFilteredTypes(Type type)
         {
@@ -43,6 +27,55 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
+        private void DrawTypeProperty(SerializedProperty property)
+        {
+            property.GetFieldInfo(out Type propertyType);
+
+            //TODO: handle null
+            if (!TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType))
+            {
+
+            }
+
+            var filteredTypes = GetFilteredTypes(propertyType);
+            var itemsCount = filteredTypes.Count;
+            var options = new string[itemsCount];
+            var index = 0;
+
+            //create labels for all types
+            for (var i = 0; i < itemsCount; i++)
+            {
+                var menuType = filteredTypes[i];
+                var menuLabel = menuType.Name;
+                if (menuType == currentType)
+                {
+                    index = i;
+                }
+
+                options[i] = menuLabel;
+            }
+
+            var buttonLabel = new GUIContent(options[index]);
+            //TODO: move it to ToolboxEditorGui
+            var position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
+            ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
+            {
+                try
+                {
+                    //TODO: handle multiple objects
+                    property.serializedObject.Update();
+                    var type = i >= 0 ? filteredTypes[i] : null;
+                    var obj = type != null ? Activator.CreateInstance(type) : null;
+                    property.managedReferenceValue = obj;
+                    property.serializedObject.ApplyModifiedProperties();
+                }
+                catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
+                {
+                    ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
+                }
+            });
+        }
+
 
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReferencePickerAttribute attribute)
         {
@@ -54,48 +87,7 @@ namespace Toolbox.Editor.Drawers
                 }
 
                 EditorGUI.indentLevel++;
-                //TODO: handle null
-                TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
-                var fieldInfo = property.GetFieldInfo(out Type mainType);
-                var filteredTypes = GetFilteredTypes(mainType);
-
-                var itemsCount = filteredTypes.Count;
-                var options = new string[itemsCount];
-                var index = 0;
-
-                //create labels for all types
-                for (var i = 0; i < itemsCount; i++)
-                {
-                    var menuType = filteredTypes[i];
-                    var menuLabel = menuType.FullName;
-                    if (menuType == currentType)
-                    {
-                        index = i;
-                    }
-
-                    options[i] = menuLabel;
-                }
-
-                var buttonLabel = new GUIContent(options[index]);
-                //TODO: move it to ToolboxEditorGui
-                var position = EditorGUILayout.GetControlRect(false, 16.0f);
-                ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
-                {
-                    try
-                    {
-                        //TODO: handle multiple objects
-                        property.serializedObject.Update();
-                        var type = i >= 0 ? filteredTypes[i] : null;
-                        var obj = type != null ? Activator.CreateInstance(type) : null;
-                        property.managedReferenceValue = obj;
-                        property.serializedObject.ApplyModifiedProperties();
-                    }
-                    catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
-                    {
-                        ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
-                    }
-                });
-
+                DrawTypeProperty(property);
                 ToolboxEditorGui.DrawPropertyChildren(property);
                 EditorGUI.indentLevel--;
             }
