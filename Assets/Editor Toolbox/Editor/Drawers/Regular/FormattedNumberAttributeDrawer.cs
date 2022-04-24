@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    using Toolbox.Editor.Internal;
+
     [CustomPropertyDrawer(typeof(FormattedNumberAttribute))]
     public class FormattedNumberAttributeDrawer : PropertyDrawerBase
     {
@@ -27,7 +29,7 @@ namespace Toolbox.Editor.Drawers
             return EditorGUIUtility.editingTextField && GUI.GetNameOfFocusedControl() == propertyKey;
         }
 
-        private Single GetSingle(SerializedProperty property)
+        private float GetSingle(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.Integer
                 ? property.intValue
@@ -62,7 +64,10 @@ namespace Toolbox.Editor.Drawers
 
             try
             {
-                EditorGUI.TextField(position, single.ToString(format, formatInfo));
+                using (new ZeroIndentScope())
+                {
+                    EditorGUI.TextField(position, single.ToString(format, formatInfo));
+                }
             }
             catch (FormatException)
             {
