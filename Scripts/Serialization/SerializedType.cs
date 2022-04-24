@@ -43,7 +43,7 @@ namespace UnityEngine
         /// Initializes a new instance of the <see cref="SerializedType"/> class.
         /// </summary>
         /// <param name="type">Class type.</param>
-        /// <exception cref="System.ArgumentException">
+        /// <exception cref="ArgumentException">
         /// If <paramref name="type"/> is not a class type.
         /// </exception>
         public SerializedType(Type type)
@@ -62,7 +62,6 @@ namespace UnityEngine
             if (!string.IsNullOrEmpty(classReference))
             {
                 type = Type.GetType(classReference);
-
                 if (type == null)
                 {
 #if UNITY_EDITOR
