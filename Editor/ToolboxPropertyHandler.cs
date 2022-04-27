@@ -96,7 +96,7 @@ namespace Toolbox.Editor
             //after this we have to retrieve (if possible) all Toolbox-related data - ToolboxAttributes
 
             //set basic content for the handled property
-            label = new GUIContent(property.displayName);
+            label = null;
 
             //get FieldInfo associated to this property, it is needed to cache custom attributes
             if ((fieldInfo = property.GetFieldInfo(out type)) == null)
