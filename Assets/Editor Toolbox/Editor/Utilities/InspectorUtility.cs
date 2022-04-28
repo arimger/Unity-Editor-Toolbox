@@ -159,8 +159,8 @@ namespace Toolbox.Editor
         private static readonly List<Component> copiedComponents = new List<Component>();
 
 
-        [MenuItem("CONTEXT/Component/Copy Components", false, priority = 200)]
-        private static void Copy()
+        [MenuItem("CONTEXT/Component/Copy Components", false, priority = 700)]
+        internal static void Copy()
         {
             copiedComponents.Clear();
             var selectedGameObjects = Selection.gameObjects;
@@ -187,13 +187,13 @@ namespace Toolbox.Editor
         }
 
         [MenuItem("CONTEXT/Component/Copy Components", true)]
-        private static bool ValidateCopy()
+        internal static bool ValidateCopy()
         {
             return Selection.gameObjects.Length > 0;
         }
 
-        [MenuItem("CONTEXT/Component/Paste Components", false, priority = 201)]
-        private static void Paste()
+        [MenuItem("CONTEXT/Component/Paste Components", false, priority = 701)]
+        internal static void Paste()
         {
             var selectedGameobjects = Selection.gameObjects;
 
@@ -214,13 +214,13 @@ namespace Toolbox.Editor
         }
 
         [MenuItem("CONTEXT/Component/Paste Components", true)]
-        private static bool ValidatePaste()
+        internal static bool ValidatePaste()
         {
             return Selection.gameObjects.Length > 0 && copiedComponents.Count > 0;
         }
 
-        [MenuItem("CONTEXT/Component/Hide Component", false, priority = 300)]
-        private static void Hide(MenuCommand menuCommand)
+        [MenuItem("CONTEXT/Component/Hide Component", false, priority = 702)]
+        internal static void Hide(MenuCommand menuCommand)
         {
             var component = menuCommand.context as Component;
             var components = component.gameObject.GetComponents<Component>();
@@ -254,7 +254,7 @@ namespace Toolbox.Editor
         }
 
         [Obsolete]
-        private static void HideAll(MenuCommand menuCommand)
+        internal static void HideAll(MenuCommand menuCommand)
         {
             var gameObject = (menuCommand.context as Component).gameObject;
             var components = (menuCommand.context as Component).GetComponents<Component>();
@@ -270,7 +270,7 @@ namespace Toolbox.Editor
         }
 
         [Obsolete]
-        private static void ShowAll(MenuCommand menuCommand)
+        internal static void ShowAll(MenuCommand menuCommand)
         {
             var gameObject = (menuCommand.context as Component).gameObject;
             var components = (menuCommand.context as Component).GetComponents<Component>();
