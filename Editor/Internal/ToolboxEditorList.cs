@@ -335,13 +335,13 @@ namespace Toolbox.Editor.Internal
 
 
         /// <inheritdoc/>
-        public override void DoList()
+        public override void DoList(GUIContent label)
         {
             //pack eveything in one, vertical scope
             //it will keep sections always in order
             using (new EditorGUILayout.VerticalScope())
             {
-                base.DoList();
+                base.DoList(label);
             }
         }
 

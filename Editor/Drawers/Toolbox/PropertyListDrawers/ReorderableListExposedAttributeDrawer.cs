@@ -83,7 +83,7 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReorderableListExposedAttribute attribute)
         {
-            storage.ReturnItem(property, attribute).DoList();
+            storage.ReturnItem(property, attribute).DoList(label);
         }
     }
 }
