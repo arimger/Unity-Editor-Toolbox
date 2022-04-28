@@ -95,9 +95,7 @@ namespace Toolbox.Editor
             //first of all we have to retrieve the native data like FieldInfo, custom native drawer, etc.
             //after this we have to retrieve (if possible) all Toolbox-related data - ToolboxAttributes
 
-            //set basic content for the handled property
-            label = null;
-
+            label = new GUIContent(property.displayName);
             //get FieldInfo associated to this property, it is needed to cache custom attributes
             if ((fieldInfo = property.GetFieldInfo(out type)) == null)
             {
@@ -117,24 +115,24 @@ namespace Toolbox.Editor
         private void ProcessBuiltInData()
         {
             //arrays cannot have custom built-in property drawers
-            if (isArray)
+            //if (isArray)
+            //{
+            //    return;
+            //}
+
+            var propertyAttributes = fieldInfo.GetCustomAttributes<PropertyAttribute>();
+            foreach (var attribute in propertyAttributes)
+            {
+                HandleSpecialAttribute(attribute);
+            }
+
+            if (hasBuiltInPropertyDrawer)
             {
                 return;
             }
 
             //check if this property has built-in property drawer
-            if (!(hasBuiltInPropertyDrawer = ToolboxDrawerModule.HasNativeTypeDrawer(type)))
-            {
-                var propertyAttributes = fieldInfo.GetCustomAttributes<PropertyAttribute>();
-                foreach (var attribute in propertyAttributes)
-                {
-                    var attributeType = attribute.GetType();
-                    if (hasBuiltInPropertyDrawer = ToolboxDrawerModule.HasNativeTypeDrawer(attributeType))
-                    {
-                        break;
-                    }
-                }
-            }
+            hasBuiltInPropertyDrawer = ToolboxDrawerModule.HasNativeTypeDrawer(type);
         }
 
         /// <summary>
@@ -165,6 +163,29 @@ namespace Toolbox.Editor
 
             //check if property has custom conditon drawer
             hasToolboxConditionDrawer = conditionAttribute != null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void HandleSpecialAttribute(PropertyAttribute attribute)
+        {
+            switch (attribute)
+            {
+                case TooltipAttribute a:
+                    label.tooltip = a.tooltip;
+                    break;
+                case NewLabelAttribute a:
+                    var name = property.displayName;
+                    label.text = string.IsNullOrEmpty(a.OldLabel)
+                        ? a.NewLabel
+                        : name.Replace(a.OldLabel, a.NewLabel);
+                    break;
+                default:
+                    var attributeType = attribute.GetType();
+                    hasBuiltInPropertyDrawer = ToolboxDrawerModule.HasNativeTypeDrawer(attributeType);
+                    break;
+            }
         }
 
         private void HandleNewAttribute(ToolboxAttribute attribute)
@@ -311,19 +332,6 @@ namespace Toolbox.Editor
             return ToolboxDrawerModule.GetConditionDrawer(conditionAttribute)?.OnGuiValidate(property, conditionAttribute) ?? PropertyCondition.Valid;
         }
 
-        /// <summary>
-        /// Begins vertical group to "pack" all property-related controls into one body.
-        /// </summary>
-        private void BeginVerticalLayoutBody()
-        {
-            EditorGUILayout.BeginVertical();
-        }
-
-        private void CloseVerticalLayoutBody()
-        {
-            EditorGUILayout.EndVertical();
-        }
-
 
         /// <summary>
         /// Draw property using built-in layout system and cached <see cref="ToolboxAttributeDrawer"/>s.
@@ -369,9 +377,10 @@ namespace Toolbox.Editor
             {
                 using (new EditorGUI.DisabledScope(disable))
                 {
-                    BeginVerticalLayoutBody();
-                    DrawProperty(property, label);
-                    CloseVerticalLayoutBody();
+                    using (new EditorGUILayout.VerticalScope())
+                    {
+                        DrawProperty(property, label);
+                    }
                 }
             }
 
