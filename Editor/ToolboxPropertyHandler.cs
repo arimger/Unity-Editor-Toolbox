@@ -114,25 +114,13 @@ namespace Toolbox.Editor
 
         private void ProcessBuiltInData()
         {
-            //arrays cannot have custom built-in property drawers
-            //if (isArray)
-            //{
-            //    return;
-            //}
-
-            var propertyAttributes = fieldInfo.GetCustomAttributes<PropertyAttribute>();
-            foreach (var attribute in propertyAttributes)
+            var attributes = fieldInfo.GetCustomAttributes<PropertyAttribute>();
+            foreach (var attribute in attributes)
             {
-                HandleSpecialAttribute(attribute);
+                HandleNewAttribute(attribute);
             }
 
-            if (hasBuiltInPropertyDrawer)
-            {
-                return;
-            }
-
-            //check if this property has built-in property drawer
-            hasBuiltInPropertyDrawer = ToolboxDrawerModule.HasNativeTypeDrawer(type);
+            CheckIfPropertyHasPropertyDrawer(type);
         }
 
         /// <summary>
@@ -165,27 +153,35 @@ namespace Toolbox.Editor
             hasToolboxConditionDrawer = conditionAttribute != null;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void HandleSpecialAttribute(PropertyAttribute attribute)
+        private void CheckIfPropertyHasPropertyDrawer(Type type)
         {
-            switch (attribute)
+            //NOTE: array cannot have built-in property drawers
+            if (hasBuiltInPropertyDrawer || isArray)
             {
-                case TooltipAttribute a:
-                    label.tooltip = a.tooltip;
-                    break;
-                case NewLabelAttribute a:
-                    var name = property.displayName;
-                    label.text = string.IsNullOrEmpty(a.OldLabel)
-                        ? a.NewLabel
-                        : name.Replace(a.OldLabel, a.NewLabel);
-                    break;
-                default:
-                    var attributeType = attribute.GetType();
-                    hasBuiltInPropertyDrawer = ToolboxDrawerModule.HasNativeTypeDrawer(attributeType);
-                    break;
+                return;
             }
+
+            hasBuiltInPropertyDrawer = ToolboxDrawerModule.HasNativeTypeDrawer(type);
+        }
+
+        private void HandleNewAttribute(PropertyAttribute attribute)
+        {
+            if (!isChild)
+            {
+                //NOTE: setting tooltip and labels is valid only for parent or single properties
+                switch (attribute)
+                {
+                    case TooltipAttribute a:
+                        label.tooltip = a.tooltip;
+                        return;
+                    case NewLabelAttribute a:
+                        label.text = a.NewLabel;
+                        return;
+                }
+            }
+
+            var attributeType = attribute.GetType();
+            CheckIfPropertyHasPropertyDrawer(attributeType);
         }
 
         private void HandleNewAttribute(ToolboxAttribute attribute)
