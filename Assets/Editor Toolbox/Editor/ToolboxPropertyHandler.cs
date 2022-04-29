@@ -155,7 +155,7 @@ namespace Toolbox.Editor
 
         private void CheckIfPropertyHasPropertyDrawer(Type type)
         {
-            //NOTE: array cannot have built-in property drawers
+            //NOTE: arrays cannot have built-in property drawers
             if (hasBuiltInPropertyDrawer || isArray)
             {
                 return;
@@ -169,6 +169,7 @@ namespace Toolbox.Editor
             if (!isChild)
             {
                 //NOTE: setting tooltip and labels is valid only for parent or single properties
+                //it's a bit ugly but, it's the only semi-acceptable way to support built-in TooltipAttribute
                 switch (attribute)
                 {
                     case TooltipAttribute a:
