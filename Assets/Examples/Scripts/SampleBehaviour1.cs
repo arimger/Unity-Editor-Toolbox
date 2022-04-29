@@ -4,17 +4,6 @@
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 1")]
 public class SampleBehaviour1 : MonoBehaviour
 {
-    void DupaDebug()
-    {
-        Debug.Log(1111);
-    }
-
-    [ContextMenuItem("asdad", nameof(DupaDebug))]
-    [NewLabel("float1"), Tooltip("!@!##@!#")]
-    public int[] dupaaa;
-
-    [NewLabel("float"), InLineEditor, Tooltip("!!!")]
-    public Transform dupa;
     [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
           "Check the SampleBehaviour1.cs script for more details.", Order = -1)]
 
