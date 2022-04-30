@@ -48,6 +48,7 @@ MonoBehaviour:
     iconName: 
   useToolboxDrawers: 1
   decoratorDrawerHandlers:
+  - classReference: SampleDrawer, Assembly-CSharp-Editor
   - classReference: Toolbox.Editor.Drawers.BeginGroupAttributeDrawer, Toolbox.Editor
   - classReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox.Editor
   - classReference: Toolbox.Editor.Drawers.BeginHorizontalGroupAttributeDrawer, Toolbox.Editor
