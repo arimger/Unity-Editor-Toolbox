@@ -43,7 +43,6 @@ Unity 2018.x or newer
 	- [Project](#project)
 	- [Toolbar](#toolbar)
 	- [Utilities](#utilities)
-- [Editor Extras](#editor-extras)
 
 ## Settings
 
