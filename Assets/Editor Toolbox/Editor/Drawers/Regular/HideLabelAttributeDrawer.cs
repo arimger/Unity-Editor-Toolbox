@@ -1,9 +1,11 @@
-﻿using UnityEditor;
+﻿using System;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    [CustomPropertyDrawer(typeof(HideLabelAttribute))]
+    [Obsolete("For now, HideLabelAttribute is handled internally by the ToolboxPropertyHandler.")]
     public class HideLabelAttributeDrawer : PropertyDrawerBase
     {
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)

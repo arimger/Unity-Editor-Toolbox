@@ -409,8 +409,8 @@ GameObject:
   - component: {fileID: 661896458}
   m_Layer: 0
   m_Name: Sample GameObject2
-  m_TagString: GameController
-  m_Icon: {fileID: 2800000, guid: 3d0e0a2631bdc5b4a966fbc73129806f, type: 3}
+  m_TagString: Untagged
+  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -600,7 +600,7 @@ GameObject:
   m_Layer: 0
   m_Name: SerializeReferenceTest
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -682,8 +682,8 @@ GameObject:
   - component: {fileID: 959025298}
   m_Layer: 0
   m_Name: Sample GameObject1
-  m_TagString: GameController
-  m_Icon: {fileID: 2800000, guid: 3d0e0a2631bdc5b4a966fbc73129806f, type: 3}
+  m_TagString: Untagged
+  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -991,7 +991,7 @@ GameObject:
   m_Layer: 0
   m_Name: SerializedTypes[Sample]
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1082,7 +1082,7 @@ GameObject:
   m_Layer: 0
   m_Name: DecoratorDrawers[Sample]
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1098,6 +1098,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 288fcefaca2ef1e41a33e74640d04833, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  var0: 0
+  var1: 0
   y: 0
   var14: 0
   var15: 0
@@ -1121,7 +1123,7 @@ MonoBehaviour:
   var5: 0
   var28: {fileID: 0}
   var39: 18
-  var1: 0
+  var55: 0
 --- !u!4 &1438743619
 Transform:
   m_ObjectHideFlags: 2
@@ -1179,7 +1181,7 @@ GameObject:
   m_Layer: 0
   m_Name: ConditionDrawers[Sample]
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1217,6 +1219,7 @@ MonoBehaviour:
   var37: 0
   enumValue: 97
   var35: 0
+  var39: 0
   var38: 0
 --- !u!1 &1821514178
 GameObject:
@@ -1231,7 +1234,7 @@ GameObject:
   m_Layer: 0
   m_Name: TooltipTest
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1

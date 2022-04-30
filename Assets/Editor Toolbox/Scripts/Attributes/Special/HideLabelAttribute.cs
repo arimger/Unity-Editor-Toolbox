@@ -10,6 +10,9 @@ namespace UnityEngine
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     [Conditional("UNITY_EDITOR")]
-    public class HideLabelAttribute : PropertyAttribute
-    { }
+    public class HideLabelAttribute : NewLabelAttribute
+    {
+        public HideLabelAttribute() : base(string.Empty)
+        { }
+    }
 }
