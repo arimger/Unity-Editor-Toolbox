@@ -12,27 +12,30 @@ namespace Toolbox.Editor
     {
         private static readonly Dictionary<int, List<Type>> cachedTypes = new Dictionary<int, List<Type>>();
         private static readonly Dictionary<string, Type> managedReferenceTypes = new Dictionary<string, Type>();
+        private static readonly TypeConstraint defaultConstraint = new TypeConstraint(null);
 
 
-        public static bool IsConstraintSatisfied(Type type, bool allowAbstract, bool allowObsolete)
+        public static List<Type> GetTypes(Type parentType)
         {
-            //NOTE: it's possible to strip out ConstructedGenericTypes, but they are considered valid for now
-            if (!type.IsVisible || !type.IsClass)
-            {
-                return false;
-            }
-
-            return (allowAbstract || !type.IsAbstract) && (allowObsolete || !Attribute.IsDefined(type, typeof(ObsoleteAttribute)));
+            defaultConstraint.ApplyTarget(parentType);
+            return GetTypes(defaultConstraint);
         }
 
-        public static List<Type> GetTypes(Type parentType, bool allowAbstract, bool allowObsolete)
+        public static List<Type> GetTypes(TypeConstraint constraint)
         {
+            var key = constraint.GetHashCode();
+            if (cachedTypes.TryGetValue(key, out var types))
+            {
+                return types;
+            }
+
+            var parentType = constraint.TargetType;
             var collection = TypeCache.GetTypesDerivedFrom(parentType);
-            var types = collection.ToList();
+            types = collection.ToList();
             for (var i = types.Count - 1; i >= 0; i--)
             {
                 var type = types[i];
-                if (IsConstraintSatisfied(type, allowAbstract, allowObsolete))
+                if (constraint.IsSatisfied(type))
                 {
                     continue;
                 }
@@ -40,13 +43,13 @@ namespace Toolbox.Editor
                 types.RemoveAt(i);
             }
 
-            return types;
+            return cachedTypes[key] = types;
         }
 
-        public static TypeCachedInfo GetCachedInfo(Type parentType, bool allowAbstract, bool allowObsolete)
+        public static TypeCachedInfo GetCachedInfo(Type parentType)
         {
-            var types = GetTypes(parentType, allowAbstract, allowObsolete);
-            return new TypeCachedInfo(types);
+            var types = GetTypes(parentType);
+            return new TypeCachedInfo(parentType, types);
         }
 
         public static bool TryGetTypeFromManagedReferenceFullTypeName(string managedReferenceFullTypeName, out Type managedReferenceInstanceType)

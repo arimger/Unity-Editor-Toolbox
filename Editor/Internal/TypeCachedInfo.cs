@@ -9,7 +9,7 @@ namespace Toolbox.Editor.Internal
         private readonly List<Type> types;
 
 
-        public TypeCachedInfo(List<Type> types)
+        public TypeCachedInfo(Type parentType, List<Type> types, int overridedHash = -1)
         {
             this.types = types;
             var count = types.Count;
