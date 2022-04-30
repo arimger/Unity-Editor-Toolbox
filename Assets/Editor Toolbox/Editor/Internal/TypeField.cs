@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using UnityEngine;
 
@@ -7,33 +6,50 @@ namespace Toolbox.Editor.Internal
 {
     public class TypeField
     {
-        private bool allowAbstract;
-        private bool allowObsolete;
-        private bool addSearchField;
+        private readonly bool addEmptyValue;
+        private readonly bool addSearchField;
+        private readonly TypeConstraint typeConstraint;
 
 
-        public void OnGui(Rect position, Type parentType)
+        public TypeField(bool addEmptyValue = true, bool addSearchField = true, bool allowAbstract = false, bool allowObsolete = false)
+            : this(addEmptyValue, addSearchField, new TypeConstraintStandard(null, allowAbstract, allowObsolete))
+        { }
+
+        public TypeField(bool addEmptyValue = true, bool addSearchField = true, TypeConstraint typeConstraint = null)
         {
-            //TODO:
-            //ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
-            //{
-            //    try
-            //    {
-            //        //TODO: handle multiple objects
-            //        property.serializedObject.Update();
-            //        var type = i >= 0 ? filteredTypes[i] : null;
-            //        var obj = type != null ? Activator.CreateInstance(type) : null;
-            //        property.managedReferenceValue = obj;
-            //        property.serializedObject.ApplyModifiedProperties();
-            //    }
-            //    catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
-            //    {
-            //        ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
-            //    }
-            //});
+            this.addEmptyValue = addEmptyValue;
+            this.addSearchField = addSearchField;
+            this.typeConstraint = typeConstraint ?? new TypeConstraintStandard(null, false, false);
         }
 
 
-        public IReadOnlyList<Type> CachedTypes { get; private set; }
+        public void OnGui(Rect position, Type parentType, Type activeType, Action<Type> onSelect)
+        {
+            typeConstraint.ApplyTarget(parentType);
+            var types = TypeUtilities.GetTypes(typeConstraint);
+
+            //TODO: cache options
+            //TODO: add empty option
+            var itemsCount = types.Count;
+            var options = new string[itemsCount];
+            var index = 0;
+            for (var i = 0; i < itemsCount; i++)
+            {
+                var menuType = types[i];
+                var menuName = menuType.Name;
+                if (menuType == activeType)
+                {
+                    index = i;
+                }
+
+                options[i] = menuName;
+            }
+
+            var buttonLabel = new GUIContent(options[index]);
+            ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
+            {
+                onSelect?.Invoke(i >= 0 ? types[i] : null);
+            });
+        }
     }
 }
