@@ -23,68 +23,6 @@ namespace UnityEngine
         }
 
 
-        /// <summary>
-        /// Get all proper types from executing assembly.
-        /// </summary>
-        public virtual List<Type> GetFilteredTypes()
-        {
-#if UNITY_EDITOR
-            var types = TypeCache.GetTypesDerivedFrom(AssemblyType).ToList();
-            for (var i = types.Count - 1; i >= 0; i--)
-            {
-                var type = types[i];
-                if (IsConstraintSatisfied(type))
-                {
-                    continue;
-                }
-
-                types.RemoveAt(i);
-            }
-
-            return types;
-#else
-            return new List<Type>();
-#endif
-        }
-
-        /// <summary>
-        /// Get all filtered type from provided assembly.
-        /// </summary>
-        public virtual List<Type> GetFilteredTypes(Assembly assembly)
-        {
-            var types = new List<Type>();
-            foreach (var type in assembly.GetTypes())
-            {
-                if (!IsConstraintSatisfied(type))
-                {
-                    continue;
-                }
-
-                types.Add(type);
-            }
-
-            return types;
-        }
-
-        /// <summary>
-        /// Determines whether the specified <see cref="Type"/> satisfies filter constraint.
-        /// </summary>
-        /// <param name="type">Type to test.</param>
-        /// <returns>
-        /// A <see cref="bool"/> value indicating if the type specified by <paramref name="type"/>
-        /// satisfies this constraint and should thus be selectable.
-        /// </returns>
-        public virtual bool IsConstraintSatisfied(Type type)
-        {
-            //NOTE: it's possible to strip out ConstructedGenericTypes, but they are considered valid for now
-            if (!type.IsVisible || !type.IsClass)
-            {
-                return false;
-            }
-
-            return (AllowAbstract || !type.IsAbstract) && (AllowObsolete || !IsDefined(type, typeof(ObsoleteAttribute)));
-        }
-
         ///<inheritdoc/>
         public override int GetHashCode()
         {
