@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 [Serializable]
 public class SampleReference2 : SampleReferenceBase

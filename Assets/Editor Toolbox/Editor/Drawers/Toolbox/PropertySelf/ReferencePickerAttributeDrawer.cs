@@ -9,34 +9,49 @@ namespace Toolbox.Editor.Drawers
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
-        private static readonly TypeField typeField = new TypeField(true, true, false, false);
+        private readonly TypeField typeField = new TypeField(true, true, new TypeConstraintReference(null));
 
 
-        private void DrawTypeProperty(SerializedProperty property)
+        private void CreateTypeProperty(SerializedProperty property)
         {
             property.GetFieldInfo(out Type propertyType);
-            //TODO: handle null
-            if (!TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType))
-            {
-
-            }
-
+            TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
             var position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
+            position = EditorGUI.IndentedRect(position);
             typeField.OnGui(position, propertyType, currentType, (type) =>
             {
                 try
                 {
-                    //TODO: handle multiple objects
-                    property.serializedObject.Update();
-                    var obj = type != null ? Activator.CreateInstance(type) : null;
-                    property.managedReferenceValue = obj;
-                    property.serializedObject.ApplyModifiedProperties();
+                    if (!property.serializedObject.isEditingMultipleObjects)
+                    {
+                        UpdateTypeProperty(property, type);
+                    }
+                    else
+                    {
+                        var targets = property.serializedObject.targetObjects;
+                        foreach (var target in targets)
+                        {
+                            using (var so = new SerializedObject(target))
+                            {
+                                SerializedProperty sp = so.FindProperty(property.propertyPath);
+                                UpdateTypeProperty(sp, type);
+                            }
+                        }
+                    }
                 }
                 catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
                 {
                     ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
                 }
             });
+        }
+
+        private void UpdateTypeProperty(SerializedProperty property, Type referenceType)
+        {
+            var obj = referenceType != null ? Activator.CreateInstance(referenceType) : null;
+            property.serializedObject.Update();
+            property.managedReferenceValue = obj;
+            property.serializedObject.ApplyModifiedProperties();
         }
 
 
@@ -50,16 +65,16 @@ namespace Toolbox.Editor.Drawers
                 }
 
                 EditorGUI.indentLevel++;
-                DrawTypeProperty(property);
+                CreateTypeProperty(property);
                 ToolboxEditorGui.DrawPropertyChildren(property);
                 EditorGUI.indentLevel--;
             }
         }
 
+
         public override bool IsPropertyValid(SerializedProperty property)
         {
-            //TODO: validate property (check for the SerializeReferenceAttribute)
-            return true;
+            return property.propertyType == SerializedPropertyType.ManagedReference;
         }
     }
 }

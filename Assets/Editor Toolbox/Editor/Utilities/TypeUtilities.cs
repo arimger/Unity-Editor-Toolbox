@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor
 {
@@ -10,15 +11,14 @@ namespace Toolbox.Editor
 
     public static class TypeUtilities
     {
-        private static readonly Dictionary<int, List<Type>> cachedTypes = new Dictionary<int, List<Type>>();
-        private static readonly Dictionary<string, Type> managedReferenceTypes = new Dictionary<string, Type>();
-        private static readonly TypeConstraint defaultConstraint = new TypeConstraint(null);
+        public static readonly Dictionary<int, List<Type>> cachedTypes = new Dictionary<int, List<Type>>();
+        public static readonly Dictionary<int, TypesGroupInfo> cachedInfo = new Dictionary<int, TypesGroupInfo>();
+        public static readonly Dictionary<string, Type> managedReferenceTypes = new Dictionary<string, Type>();
 
 
         public static List<Type> GetTypes(Type parentType)
         {
-            defaultConstraint.ApplyTarget(parentType);
-            return GetTypes(defaultConstraint);
+            return GetTypes(new TypeConstraint(parentType));
         }
 
         public static List<Type> GetTypes(TypeConstraint constraint)
@@ -46,10 +46,30 @@ namespace Toolbox.Editor
             return cachedTypes[key] = types;
         }
 
-        public static TypeCachedInfo GetCachedInfo(Type parentType)
+        public static TypesGroupInfo GetGroupedInfo(Type parentType)
         {
-            var types = GetTypes(parentType);
-            return new TypeCachedInfo(parentType, types);
+            return GetGroupedInfo(new TypeConstraint(parentType), true, ClassGrouping.None);
+        }
+
+        public static TypesGroupInfo GetGroupedInfo(TypeConstraint constraint, bool addEmptyValue, ClassGrouping grouping)
+        {
+            var types = GetTypes(constraint);
+            return new TypesGroupInfo(constraint, types, addEmptyValue, grouping);
+        }
+
+        public static TypesGroupInfo GetGroupedInfo(TypesGroupSettings settings)
+        {
+            var key = settings.GetHashCode();
+            if (cachedInfo.TryGetValue(key, out var info))
+            {
+                return info;
+            }
+            else
+            {
+                var types = GetTypes(settings.Constraint);
+                return cachedInfo[key] = new TypesGroupInfo(settings.Constraint, types, 
+                    settings.AddEmptyValue, settings.Grouping);
+            }
         }
 
         public static bool TryGetTypeFromManagedReferenceFullTypeName(string managedReferenceFullTypeName, out Type managedReferenceInstanceType)

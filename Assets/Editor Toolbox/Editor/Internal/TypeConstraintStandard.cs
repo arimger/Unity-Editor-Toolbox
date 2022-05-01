@@ -25,12 +25,12 @@ namespace Toolbox.Editor.Internal
             return (allowAbstract || !type.IsAbstract) && (allowObsolete || !Attribute.IsDefined(type, typeof(ObsoleteAttribute)));
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object other)
         {
-            return obj is TypeConstraintStandard standard &&
-                   base.Equals(obj) &&
-                   allowAbstract == standard.allowAbstract &&
-                   allowObsolete == standard.allowObsolete;
+            return other is TypeConstraintStandard constraint &&
+                   base.Equals(other) &&
+                   allowAbstract == constraint.allowAbstract &&
+                   allowObsolete == constraint.allowObsolete;
         }
 
         public override int GetHashCode()

@@ -132,7 +132,7 @@ namespace Toolbox.Editor.Drawers
             var index = 0;
 
             //create labels for all types
-            options[0] = "<None>";
+            options[0] = "<none>";
             for (var i = 1; i < itemsCount; i++)
             {
                 var menuType = filteredTypes[i - 1];
