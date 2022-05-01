@@ -13,9 +13,9 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        public override bool Equals(object obj)
+        public override bool Equals(object other)
         {
-            return obj is TypesGroupSettings settings &&
+            return other is TypesGroupSettings settings &&
                    Grouping == settings.Grouping &&
                    EqualityComparer<TypeConstraint>.Default.Equals(Constraint, settings.Constraint) &&
                    AddEmptyValue == settings.AddEmptyValue;
