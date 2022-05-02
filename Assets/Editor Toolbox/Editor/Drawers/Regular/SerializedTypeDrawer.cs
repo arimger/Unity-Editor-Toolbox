@@ -12,7 +12,7 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(SerializedType))]
     public sealed class SerializedTypeDrawer : PropertyDrawerBase
     {
-        private static readonly TypeField typeField = new TypeField(true, true, new TypeConstraintStandard(null, true, true));
+        private static readonly TypeField typeField = new TypeField(true, true, new TypeConstraintStandard());
 
 
         private bool IsDefaultField(TypeConstraintAttribute attribute)
@@ -41,7 +41,7 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         private TypeConstraintAttribute GetDefaultConstraint()
         {
-            return new ClassExtendsAttribute()
+            return new ClassExtendsAttribute(typeof(object))
             {
                 AddTextSearchField = true
             };
@@ -57,9 +57,11 @@ namespace Toolbox.Editor.Drawers
         {
             var validAttribute = GetVerifiedAttribute(attribute);
 
-            typeField.Grouping = validAttribute.Grouping;
             //TODO: update constraints
-
+            typeField.TypeGrouping = validAttribute.TypeGrouping;
+            typeField.TypeConstraint = new TypeConstraintStandard(validAttribute.AssemblyType,
+                validAttribute.TypeSettings, validAttribute.AllowAbstract, validAttribute.AllowObsolete);
+  
             var referenceProperty = property.FindPropertyRelative("classReference");
             var referenceValue = referenceProperty.stringValue;
             var activeType = !string.IsNullOrEmpty(referenceValue) ? Type.GetType(referenceValue) : null;

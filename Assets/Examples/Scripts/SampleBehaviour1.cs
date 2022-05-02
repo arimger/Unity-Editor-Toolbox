@@ -73,7 +73,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("11", skinStyle: SkinStyle.Box)]
 
-    [ClassExtends(typeof(Object), Grouping = ClassGrouping.ByNamespace)]
+    [ClassExtends(typeof(Object), TypeGrouping = TypeGrouping.ByNamespace)]
     [Tooltip("This variable is able to serialize Type.")]
     public SerializedType type1;
     [ClassImplements(typeof(UnityEngine.UI.IMaskable), AddTextSearchField = true)]

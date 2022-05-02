@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-
-using UnityEditor;
 
 namespace UnityEngine
 {
@@ -15,25 +10,11 @@ namespace UnityEngine
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     [Conditional("UNITY_EDITOR")]
-    public abstract class TypeConstraintAttribute : PropertyAttribute
+    public class TypeConstraintAttribute : PropertyAttribute
     {
-        protected TypeConstraintAttribute(Type assemblyType)
+        public TypeConstraintAttribute(Type assemblyType)
         {
             AssemblyType = assemblyType;
-        }
-
-
-        ///<inheritdoc/>
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var result = 0;
-                result = (result * 397) ^ AssemblyType.GetHashCode();
-                result = (result * 397) ^ AllowAbstract.GetHashCode();
-                result = (result * 397) ^ AllowObsolete.GetHashCode();
-                return result;
-            }
         }
 
 
@@ -62,7 +43,18 @@ namespace UnityEngine
         /// Gets or sets grouping of selectable classes.
         /// Defaults to <see cref="ClassGrouping.None"/> unless explicitly specified.
         /// </summary>
+        [Obsolete("Use TypeGrouping instead.")]
         public ClassGrouping Grouping { get; set; } = ClassGrouping.None;
+
+        /// <summary>
+        /// Gets or sets grouping of selectable classes.
+        /// Defaults to <see cref="TypeGrouping.None"/> unless explicitly specified.
+        /// </summary>
+        public TypeGrouping TypeGrouping { get; set; } = TypeGrouping.None;
+        /// <summary>
+        /// Indicates what kind of types are accepted.
+        /// </summary>
+        public TypeSettings TypeSettings { get; set; } = TypeSettings.Class | TypeSettings.Interface;
     }
 
     ///<inheritdoc/>
@@ -73,6 +65,7 @@ namespace UnityEngine
         /// <summary>
         /// Initializes a new instance of the <see cref="ClassExtendsAttribute"/> class.
         /// </summary>
+        [Obsolete]
         public ClassExtendsAttribute() : base(typeof(object))
         { }
 
@@ -81,7 +74,9 @@ namespace UnityEngine
         /// </summary>
         /// <param name="baseType">Type of class that selectable classes must derive from.</param>
         public ClassExtendsAttribute(Type baseType) : base(baseType)
-        { }
+        {
+            TypeSettings = TypeSettings.Class;
+        }
     }
 
     ///<inheritdoc/>
@@ -92,6 +87,7 @@ namespace UnityEngine
         /// <summary>
         /// Initializes a new instance of the <see cref="ClassImplementsAttribute"/> class.
         /// </summary>
+        [Obsolete]
         public ClassImplementsAttribute() : base(null)
         { }
 
@@ -100,31 +96,8 @@ namespace UnityEngine
         /// </summary>
         /// <param name="interfaceType">Type of interface that selectable classes must implement.</param>
         public ClassImplementsAttribute(Type interfaceType) : base(interfaceType)
-        { }
-    }
-
-    /// <summary>
-    /// Indicates how selectable classes should be collated in drop-down menu.
-    /// </summary>
-    public enum ClassGrouping
-    {
-        /// <summary>
-        /// No grouping, just show type names in a list; for instance, "Some.Nested.Namespace.SpecialClass".
-        /// </summary>
-        None,
-        /// <summary>
-        /// Group classes by namespace and show foldout menus for nested namespaces; for
-        /// instance, "Some > Nested > Namespace > SpecialClass".
-        /// </summary>
-        ByNamespace,
-        /// <summary>
-        /// Group classes by namespace; for instance, "Some.Nested.Namespace > SpecialClass".
-        /// </summary>
-        ByNamespaceFlat,
-        /// <summary>
-        /// Group classes in the same way as Unity does for its component menu. This
-        /// grouping method must only be used for <see cref="MonoBehaviour"/> types.
-        /// </summary>
-        ByAddComponentMenu,
+        {
+            TypeSettings = TypeSettings.Class;
+        }
     }
 }

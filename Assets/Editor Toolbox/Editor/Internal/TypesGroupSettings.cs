@@ -3,12 +3,13 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Internal
 {
+    //TODO: refactor
     public class TypesGroupSettings
     {
-        public TypesGroupSettings(ClassGrouping grouping, TypeConstraint constraint, bool addEmptyValue)
+        public TypesGroupSettings(TypeGrouping grouping, TypeConstraint constraint, bool addEmptyValue)
         {
-            Grouping = grouping;
             Constraint = constraint;
+            Grouping = grouping;
             AddEmptyValue = addEmptyValue;
         }
 
@@ -31,8 +32,8 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        public ClassGrouping Grouping { get; set; }
         public TypeConstraint Constraint { get; set; }
+        public TypeGrouping Grouping { get; set; }
         public bool AddEmptyValue { get; set; }
     }
 }

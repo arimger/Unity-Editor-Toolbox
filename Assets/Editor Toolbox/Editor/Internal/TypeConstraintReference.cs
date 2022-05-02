@@ -13,7 +13,7 @@ namespace Toolbox.Editor.Internal
 
         public override bool IsSatisfied(Type type)
         {
-            return base.IsSatisfied(type) && 
+            return base.IsSatisfied(type) &&
                 !type.IsInterface &&
                 !type.IsAbstract &&
                 !type.IsPointer &&
