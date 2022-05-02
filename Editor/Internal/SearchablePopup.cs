@@ -19,7 +19,7 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public static void Show(Rect activatorRect, int current, string[] options, Action<int> onSelect)
         {
-            PopupWindow.Show(activatorRect, new SearchablePopup(current, options, onSelect));
+            PopupWindow.Show(activatorRect, new SearchablePopup(activatorRect, current, options, onSelect));
         }
 
 
@@ -32,16 +32,18 @@ namespace Toolbox.Editor.Internal
         private int scrollIndex = -1;
 
         private Vector2 scroll;
-
+        private Rect activatorRect;
         private Rect toolbarRect;
         private Rect contentRect;
-
+        
 
         /// <summary>
         /// Constructor should be called only internally by the <see cref="Show(Rect, int, string[], Action{int})"/> method.
         /// </summary>
-        private SearchablePopup(int startIndex, string[] options, Action<int> onSelect)
+        private SearchablePopup(Rect activatorRect, int startIndex, string[] options, Action<int> onSelect)
         {
+            this.activatorRect = activatorRect;
+
             searchArray = new SearchArray(options);
             searchField = new SearchField();
 
@@ -185,6 +187,13 @@ namespace Toolbox.Editor.Internal
             return content;
         }
 
+
+        public override Vector2 GetWindowSize()
+        {
+            var size = base.GetWindowSize();
+            size.x = activatorRect.width;
+            return size;
+        }
 
         /// <summary>
         /// Called each time new <see cref="SearchablePopup"/> is created.

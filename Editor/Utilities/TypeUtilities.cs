@@ -9,6 +9,7 @@ namespace Toolbox.Editor
 {
     using Toolbox.Editor.Internal;
 
+    //TODO: refactor
     public static class TypeUtilities
     {
         public static readonly Dictionary<int, List<Type>> cachedTypes = new Dictionary<int, List<Type>>();
@@ -48,10 +49,10 @@ namespace Toolbox.Editor
 
         public static TypesGroupInfo GetGroupedInfo(Type parentType)
         {
-            return GetGroupedInfo(new TypeConstraint(parentType), true, ClassGrouping.None);
+            return GetGroupedInfo(new TypeConstraint(parentType), true, TypeGrouping.None);
         }
 
-        public static TypesGroupInfo GetGroupedInfo(TypeConstraint constraint, bool addEmptyValue, ClassGrouping grouping)
+        public static TypesGroupInfo GetGroupedInfo(TypeConstraint constraint, bool addEmptyValue, TypeGrouping grouping)
         {
             var types = GetTypes(constraint);
             return new TypesGroupInfo(constraint, types, addEmptyValue, grouping);

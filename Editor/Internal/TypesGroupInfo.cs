@@ -10,12 +10,12 @@ namespace Toolbox.Editor.Internal
     {
         private readonly string[] options;
         private readonly List<Type> types;
-        private readonly ClassGrouping grouping;
+        private readonly TypeGrouping grouping;
         private readonly TypeConstraint constraint;
         private readonly bool addEmptyValue;
 
 
-        public TypesGroupInfo(TypeConstraint constraint, List<Type> types, bool addEmptyValue = true, ClassGrouping grouping = ClassGrouping.None)
+        public TypesGroupInfo(TypeConstraint constraint, List<Type> types, bool addEmptyValue = true, TypeGrouping grouping = TypeGrouping.None)
         {
             this.constraint = constraint;
             this.types = types;
@@ -46,19 +46,19 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        private static string FormatGroupedTypeName(Type type, ClassGrouping grouping)
+        private static string FormatGroupedTypeName(Type type, TypeGrouping grouping)
         {
             var name = type.FullName;
             switch (grouping)
             {
                 default:
-                case ClassGrouping.None:
+                case TypeGrouping.None:
                     return name;
 
-                case ClassGrouping.ByNamespace:
+                case TypeGrouping.ByNamespace:
                     return name.Replace('.', '/');
 
-                case ClassGrouping.ByNamespaceFlat:
+                case TypeGrouping.ByNamespaceFlat:
                     var lastPeriodIndex = name.LastIndexOf('.');
                     if (lastPeriodIndex != -1)
                     {
@@ -67,7 +67,7 @@ namespace Toolbox.Editor.Internal
 
                     return name;
 
-                case ClassGrouping.ByAddComponentMenu:
+                case TypeGrouping.ByAddComponentMenu:
                     var addComponentMenuAttributes = type.GetCustomAttributes(typeof(AddComponentMenu), false);
                     if (addComponentMenuAttributes.Length == 1)
                     {
