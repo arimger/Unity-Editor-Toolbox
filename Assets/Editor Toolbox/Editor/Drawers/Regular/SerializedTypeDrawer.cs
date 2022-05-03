@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +11,9 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(SerializedType))]
     public sealed class SerializedTypeDrawer : PropertyDrawerBase
     {
-        private static readonly TypeField typeField = new TypeField(true, true, new TypeConstraintStandard());
+        private static readonly TypeConstraintStandard sharedConstraint = new TypeConstraintStandard();
+        private static readonly TypeAppearance sharedAppearance = new TypeAppearance(sharedConstraint, TypeGrouping.None, true);
+        private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
 
 
         private bool IsDefaultField(TypeConstraintAttribute attribute)
@@ -47,6 +48,19 @@ namespace Toolbox.Editor.Drawers
             };
         }
 
+        private void UpdateConstraint(TypeConstraintAttribute attribute)
+        {
+            sharedConstraint.ApplyTarget(attribute.AssemblyType);
+            sharedConstraint.AllowAbstract = attribute.AllowAbstract;
+            sharedConstraint.AllowObsolete = attribute.AllowObsolete;
+            sharedConstraint.Settings = attribute.TypeSettings;
+        }
+
+        private void UpdateAppearance(TypeConstraintAttribute attribute)
+        {
+            sharedAppearance.Grouping = attribute.TypeGrouping;
+        }
+
 
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
@@ -55,26 +69,24 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            var validAttribute = GetVerifiedAttribute(attribute);
-
-            //TODO: update constraints
-            typeField.TypeGrouping = validAttribute.TypeGrouping;
-            typeField.TypeConstraint = new TypeConstraintStandard(validAttribute.AssemblyType,
-                validAttribute.TypeSettings, validAttribute.AllowAbstract, validAttribute.AllowObsolete);
-  
-            var referenceProperty = property.FindPropertyRelative("classReference");
-            var referenceValue = referenceProperty.stringValue;
-            var activeType = !string.IsNullOrEmpty(referenceValue) ? Type.GetType(referenceValue) : null;
+            var referenceProperty = property.FindPropertyRelative("typeReference");
 
             label = EditorGUI.BeginProperty(position, label, property);
             label = property.name != "data" ? label : GUIContent.none;
             position = EditorGUI.PrefixLabel(position, label);
-            typeField.OnGui(position, validAttribute.AssemblyType, activeType, (type) =>
+
+            var validAttribute = GetVerifiedAttribute(attribute);
+            var addSearchField = validAttribute.AddTextSearchField;
+            UpdateConstraint(validAttribute);
+            UpdateAppearance(validAttribute);
+            typeField.OnSelect = (type) =>
             {
                 referenceProperty.serializedObject.Update();
-                referenceProperty.stringValue = SerializedType.GetClassReference(type);
+                referenceProperty.stringValue = SerializedType.GetReferenceValue(type);
                 referenceProperty.serializedObject.ApplyModifiedProperties();
-            });
+            };
+            var activeType = SerializedType.GetReferenceType(referenceProperty.stringValue);
+            typeField.OnGui(position, addSearchField, activeType);
 
             EditorGUI.EndProperty();
         }

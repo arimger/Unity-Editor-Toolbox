@@ -9,27 +9,26 @@ namespace Toolbox.Editor.Internal
     //TODO: refactor
     public class TypeField
     {
-        private readonly bool addEmptyValue;
-        private readonly bool addSearchField;
-        private readonly TypesGroupSettings groupingSettings;
+        private TypeConstraint constraint;
+        private TypeAppearance appearance;
 
 
-        public TypeField(bool addEmptyValue = true, bool addSearchField = true, bool allowAbstract = false, bool allowObsolete = false)
-            : this(addEmptyValue, addSearchField, new TypeConstraintStandard(null, TypeSettings.Class, allowAbstract, allowObsolete))
+        public TypeField() : this(null, null)
         { }
 
-        public TypeField(bool addEmptyValue = true, bool addSearchField = true, TypeConstraint typeConstraint = null)
+        public TypeField(TypeConstraint constraint) : this(constraint, null)
+        { }
+
+        public TypeField(TypeConstraint constraint, TypeAppearance appearance)
         {
-            this.addEmptyValue = addEmptyValue;
-            this.addSearchField = addSearchField;
-            TypeConstraint = typeConstraint ?? new TypeConstraintStandard(null, TypeSettings.Class, false, false);
-            groupingSettings = new TypesGroupSettings(TypeGrouping, typeConstraint, addEmptyValue);
+            this.constraint = constraint ?? new TypeConstraintStandard(null, TypeSettings.Class, false, false);
+            this.appearance = appearance ?? new TypeAppearance(this.constraint, TypeGrouping.None , true);
         }
 
 
-        private Type RetriveSelectedType(IReadOnlyList<Type> types, int selectedIndex)
+        private Type RetriveSelectedType(IReadOnlyList<Type> types, int selectedIndex, bool includeEmptyValue)
         {
-            if (addEmptyValue)
+            if (includeEmptyValue)
             {
                 selectedIndex -= 1;
             }
@@ -38,25 +37,21 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        //TODO: assign constraint here
-        public void OnGui(Rect position, Type parentType, Type activeType, Action<Type> onSelect)
+        public void OnGui(Rect position, bool addSearchField, Type activeType)
         {
-            TypeConstraint.ApplyTarget(parentType);
-            groupingSettings.Constraint = TypeConstraint;
-            groupingSettings.Grouping = TypeGrouping;
-
-            var info = TypeUtilities.GetGroupedInfo(groupingSettings);
-            var types = info.Types;
-            var options = info.Options;
+            var info = TypeUtilities.GetGroupedInfo(Appearance);
+            var values = info.Types;
+            var labels = info.Labels;
             var index = info.IndexOf(activeType);
 
-            var buttonLabel = new GUIContent(options[index]);
+            var addEmptyValue = Appearance.AddEmptyValue;
             if (addSearchField)
             {
-                ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, options, (i) =>
+                var buttonLabel = new GUIContent(labels[index]);
+                ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, labels, (i) =>
                 {
-                    var type = RetriveSelectedType(types, i);
-                    onSelect?.Invoke(type);
+                    var type = RetriveSelectedType(values, i, addEmptyValue);
+                    OnSelect?.Invoke(type);
                 });
             }
             else
@@ -64,18 +59,42 @@ namespace Toolbox.Editor.Internal
                 using (new ZeroIndentScope())
                 {
                     EditorGUI.BeginChangeCheck();
-                    index = EditorGUI.Popup(position, index, options);
+                    index = EditorGUI.Popup(position, index, labels);
                     if (EditorGUI.EndChangeCheck())
                     {
-                        var type = RetriveSelectedType(types, index);
-                        onSelect?.Invoke(type);
+                        var type = RetriveSelectedType(values, index, addEmptyValue);
+                        OnSelect?.Invoke(type);
                     }
                 }
             }
         }
 
+        public void OnGui(Rect position, bool addSearchField, Type activeType, Type parentType)
+        {
+            Constraint.ApplyTarget(parentType);
+            OnGui(position, addSearchField, activeType);
+        }
 
-        public TypeConstraint TypeConstraint { get; set; }
-        public TypeGrouping TypeGrouping { get; set; } = TypeGrouping.None;
+
+        public TypeConstraint Constraint
+        {
+            get => constraint;
+            set
+            {
+                if (value == null)
+                {
+                    throw new NullReferenceException($"Cannot assign null constraint to the {nameof(TypeField)}.");
+                }
+
+                Appearance.Constraint = constraint = value;
+            }
+        }
+
+        public TypeAppearance Appearance
+        {
+            get => appearance;
+        }
+
+        public Action<Type> OnSelect { get; set; }
     }
 }

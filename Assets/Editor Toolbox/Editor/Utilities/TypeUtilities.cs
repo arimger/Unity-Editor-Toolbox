@@ -31,6 +31,11 @@ namespace Toolbox.Editor
             }
 
             var parentType = constraint.TargetType;
+            if (parentType == null)
+            {
+                return new List<Type>();
+            }
+
             var collection = TypeCache.GetTypesDerivedFrom(parentType);
             types = collection.ToList();
             for (var i = types.Count - 1; i >= 0; i--)
@@ -58,7 +63,7 @@ namespace Toolbox.Editor
             return new TypesGroupInfo(constraint, types, addEmptyValue, grouping);
         }
 
-        public static TypesGroupInfo GetGroupedInfo(TypesGroupSettings settings)
+        public static TypesGroupInfo GetGroupedInfo(TypeAppearance settings)
         {
             var key = settings.GetHashCode();
             if (cachedInfo.TryGetValue(key, out var info))

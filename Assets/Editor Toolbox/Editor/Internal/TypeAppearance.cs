@@ -4,9 +4,12 @@ using UnityEngine;
 namespace Toolbox.Editor.Internal
 {
     //TODO: refactor
-    public class TypesGroupSettings
+    public class TypeAppearance
     {
-        public TypesGroupSettings(TypeGrouping grouping, TypeConstraint constraint, bool addEmptyValue)
+        public TypeAppearance(TypeConstraint constraint) : this(constraint, TypeGrouping.None, true)
+        { }
+
+        public TypeAppearance(TypeConstraint constraint, TypeGrouping grouping, bool addEmptyValue)
         {
             Constraint = constraint;
             Grouping = grouping;
@@ -16,7 +19,7 @@ namespace Toolbox.Editor.Internal
 
         public override bool Equals(object other)
         {
-            return other is TypesGroupSettings settings &&
+            return other is TypeAppearance settings &&
                    Grouping == settings.Grouping &&
                    EqualityComparer<TypeConstraint>.Default.Equals(Constraint, settings.Constraint) &&
                    AddEmptyValue == settings.AddEmptyValue;

@@ -2,7 +2,7 @@
 
 public class SampleReferenceTest : MonoBehaviour
 {
-    [TypeConstraint(typeof(Interface1))]
+    [TypeConstraint(typeof(Interface1), AddTextSearchField = true)]
     public SerializedType type1;
     [TypeConstraint(typeof(Interface1), TypeSettings = TypeSettings.Interface)]
     public SerializedType type2;
