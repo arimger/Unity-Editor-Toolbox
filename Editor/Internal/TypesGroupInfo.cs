@@ -36,7 +36,7 @@ namespace Toolbox.Editor.Internal
                 options = new string[count];
             }
 
-            
+
             for (var i = 0; i < count - shift; i++)
             {
                 var type = types[i];
@@ -93,7 +93,7 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        public string[] Options => options;
+        public string[] Labels => options;
         public IReadOnlyList<Type> Types => types;
     }
 }

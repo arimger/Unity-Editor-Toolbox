@@ -9,7 +9,7 @@ namespace Toolbox.Editor.Drawers
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
-        private readonly TypeField typeField = new TypeField(true, true, new TypeConstraintReference(null));
+        private readonly TypeField typeField = new TypeField(new TypeConstraintReference(null));
 
 
         private void CreateTypeProperty(SerializedProperty property)
@@ -18,7 +18,7 @@ namespace Toolbox.Editor.Drawers
             TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
             var position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
             position = EditorGUI.IndentedRect(position);
-            typeField.OnGui(position, propertyType, currentType, (type) =>
+            typeField.OnSelect = (type) =>
             {
                 try
                 {
@@ -43,7 +43,8 @@ namespace Toolbox.Editor.Drawers
                 {
                     ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
                 }
-            });
+            };
+            typeField.OnGui(position, true, currentType, propertyType);
         }
 
         private void UpdateTypeProperty(SerializedProperty property, Type referenceType)

@@ -2,22 +2,16 @@
 
 namespace UnityEngine
 {
+    using UnityEngine.Serialization;
+
     /// <summary>
     /// Reference to a class <see cref="System.Type"/> with support for Unity serialization.
     /// </summary>
     [Serializable]
     public sealed class SerializedType : ISerializationCallbackReceiver
     {
-        public static string GetClassReference(Type type)
-        {
-            return type != null
-                ? type.FullName + ", " + type.Assembly.GetName().Name
-                : string.Empty;
-        }
-
-
-        [SerializeField]
-        private string classReference;
+        [SerializeField, FormerlySerializedAs("classReference")]
+        private string typeReference;
 
         private Type type;
 
@@ -31,11 +25,11 @@ namespace UnityEngine
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializedType"/> class.
         /// </summary>
-        /// <param name="assemblyQualifiedClassName">Assembly qualified class name.</param>
-        public SerializedType(string assemblyQualifiedClassName)
+        /// <param name="assemblyQualifiedTypeName">Assembly qualified class name.</param>
+        public SerializedType(string assemblyQualifiedTypeName)
         {
-            Type = !string.IsNullOrEmpty(assemblyQualifiedClassName)
-                ? Type.GetType(assemblyQualifiedClassName)
+            Type = !string.IsNullOrEmpty(assemblyQualifiedTypeName)
+                ? Type.GetType(assemblyQualifiedTypeName)
                 : null;
         }
 
@@ -52,6 +46,20 @@ namespace UnityEngine
         }
 
 
+        public static string GetReferenceValue(Type type)
+        {
+            return type != null
+                ? type.FullName + ", " + type.Assembly.GetName().Name
+                : string.Empty;
+        }
+
+        public static Type GetReferenceType(string referenceValue)
+        {
+            return !string.IsNullOrEmpty(referenceValue)
+                ? Type.GetType(referenceValue)
+                : null;
+        }
+
         public override string ToString()
         {
             return Type != null ? Type.FullName : $"(None)";
@@ -59,13 +67,13 @@ namespace UnityEngine
 
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
-            if (!string.IsNullOrEmpty(classReference))
+            if (!string.IsNullOrEmpty(typeReference))
             {
-                type = Type.GetType(classReference);
+                type = Type.GetType(typeReference);
                 if (type == null)
                 {
 #if UNITY_EDITOR
-                    Debug.LogWarning($"'{classReference}' was referenced but class type was not found.");
+                    Debug.LogWarning($"'{typeReference}' was referenced but class type was not found.");
 #endif
                 }
             }
@@ -96,12 +104,12 @@ namespace UnityEngine
                 }
 
                 type = value;
-                classReference = GetClassReference(value);
+                typeReference = GetReferenceValue(value);
             }
         }
 
 
-        public static implicit operator string(SerializedType typeReference) => typeReference.classReference;
+        public static implicit operator string(SerializedType typeReference) => typeReference.typeReference;
 
         public static implicit operator Type(SerializedType typeReference) => typeReference.Type;
 
