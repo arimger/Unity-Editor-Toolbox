@@ -619,7 +619,7 @@ MonoBehaviour:
   type1:
     typeReference: Interface4`1, Assembly-CSharp
   type2:
-    typeReference: Interface2, Assembly-CSharp
+    typeReference: Interface3, Assembly-CSharp
   type3:
     typeReference: ClassWithInterface, Assembly-CSharp
   reference:
@@ -629,8 +629,8 @@ MonoBehaviour:
     00000000:
       type: {class: SampleReference1, ns: , asm: Assembly-CSharp}
       data:
-        var1: 0
-        var2: 0
+        var1: 0.68
+        var2: 1
 --- !u!4 &752799893
 Transform:
   m_ObjectHideFlags: 0

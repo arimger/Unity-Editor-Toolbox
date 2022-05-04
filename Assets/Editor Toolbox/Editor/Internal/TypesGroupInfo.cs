@@ -9,24 +9,25 @@ namespace Toolbox.Editor.Internal
     public class TypesGroupInfo
     {
         private readonly string[] options;
-        private readonly List<Type> types;
+        private readonly TypesCachedCollection types;
         private readonly TypeGrouping grouping;
         private readonly TypeConstraint constraint;
         private readonly bool addEmptyValue;
 
 
-        public TypesGroupInfo(TypeConstraint constraint, List<Type> types, bool addEmptyValue = true, TypeGrouping grouping = TypeGrouping.None)
+        public TypesGroupInfo(TypeConstraint constraint, TypesCachedCollection types, bool addEmptyValue = true, TypeGrouping grouping = TypeGrouping.None)
         {
             this.constraint = constraint;
             this.types = types;
             this.addEmptyValue = addEmptyValue;
             this.grouping = grouping;
 
-            var count = types.Count;
+            var values = types.Values;
+            var count = values.Count;
             var shift = 0;
             if (addEmptyValue)
             {
-                shift = 1;
+                shift += 1;
                 count += 1;
                 options = new string[count];
                 options[0] = "<none>";
@@ -36,10 +37,9 @@ namespace Toolbox.Editor.Internal
                 options = new string[count];
             }
 
-
             for (var i = 0; i < count - shift; i++)
             {
-                var type = types[i];
+                var type = values[i];
                 var name = FormatGroupedTypeName(type, grouping);
                 options[i + shift] = name;
             }
@@ -94,6 +94,6 @@ namespace Toolbox.Editor.Internal
 
 
         public string[] Labels => options;
-        public IReadOnlyList<Type> Types => types;
+        public IReadOnlyList<Type> Values => types.Values;
     }
 }

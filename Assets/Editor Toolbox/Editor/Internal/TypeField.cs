@@ -9,6 +9,8 @@ namespace Toolbox.Editor.Internal
     //TODO: refactor
     public class TypeField
     {
+        // Constraint -> ConstraintContext
+        // Appearance -> AppearanceContext
         private TypeConstraint constraint;
         private TypeAppearance appearance;
 
@@ -40,7 +42,7 @@ namespace Toolbox.Editor.Internal
         public void OnGui(Rect position, bool addSearchField, Type activeType)
         {
             var info = TypeUtilities.GetGroupedInfo(Appearance);
-            var values = info.Types;
+            var values = info.Values;
             var labels = info.Labels;
             var index = info.IndexOf(activeType);
 
@@ -93,6 +95,16 @@ namespace Toolbox.Editor.Internal
         public TypeAppearance Appearance
         {
             get => appearance;
+            set
+            {
+                if (value == null)
+                {
+                    throw new NullReferenceException($"Cannot assign null appearance to the {nameof(TypeField)}.");
+                }
+
+                appearance = value;
+                Constraint = appearance.Constraint;
+            }
         }
 
         public Action<Type> OnSelect { get; set; }

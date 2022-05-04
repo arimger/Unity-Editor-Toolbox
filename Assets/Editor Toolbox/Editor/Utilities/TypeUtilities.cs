@@ -12,75 +12,79 @@ namespace Toolbox.Editor
     //TODO: refactor
     public static class TypeUtilities
     {
-        public static readonly Dictionary<int, List<Type>> cachedTypes = new Dictionary<int, List<Type>>();
-        public static readonly Dictionary<int, TypesGroupInfo> cachedInfo = new Dictionary<int, TypesGroupInfo>();
-        public static readonly Dictionary<string, Type> managedReferenceTypes = new Dictionary<string, Type>();
+        private static readonly Dictionary<int, TypesCachedCollection> cachedCollections = new Dictionary<int, TypesCachedCollection>();
+        private static readonly Dictionary<int, TypesEditorCollection> editorCollections = new Dictionary<int, TypesEditorCollection>();
+
+        private static readonly Dictionary<int, TypesGroupInfo> cachedInfo = new Dictionary<int, TypesGroupInfo>();
+        private static readonly Dictionary<string, Type> referenceTypesByNames = new Dictionary<string, Type>();
 
 
-        public static List<Type> GetTypes(Type parentType)
+        public static TypesCachedCollection GetCollection(Type parentType)
         {
-            return GetTypes(new TypeConstraint(parentType));
+            return GetCollection(new TypeConstraint(parentType));
         }
 
-        public static List<Type> GetTypes(TypeConstraint constraint)
+        public static TypesCachedCollection GetCollection(TypeConstraint constraint)
         {
             var key = constraint.GetHashCode();
-            if (cachedTypes.TryGetValue(key, out var types))
+            if (cachedCollections.TryGetValue(key, out var cachedCollection))
             {
-                return types;
+                return cachedCollection;
             }
 
             var parentType = constraint.TargetType;
             if (parentType == null)
             {
-                return new List<Type>();
+                return new TypesCachedCollection();
             }
 
-            var collection = TypeCache.GetTypesDerivedFrom(parentType);
-            types = collection.ToList();
-            for (var i = types.Count - 1; i >= 0; i--)
+            var typesCache = TypeCache.GetTypesDerivedFrom(parentType);
+            var typesList = typesCache.ToList();
+            for (var i = typesList.Count - 1; i >= 0; i--)
             {
-                var type = types[i];
+                var type = typesList[i];
                 if (constraint.IsSatisfied(type))
                 {
                     continue;
                 }
 
-                types.RemoveAt(i);
+                typesList.RemoveAt(i);
             }
 
-            return cachedTypes[key] = types;
+            return cachedCollections[key] = new TypesCachedCollection(typesList);
         }
 
+        [Obsolete]
         public static TypesGroupInfo GetGroupedInfo(Type parentType)
         {
             return GetGroupedInfo(new TypeConstraint(parentType), true, TypeGrouping.None);
         }
 
+        [Obsolete]
         public static TypesGroupInfo GetGroupedInfo(TypeConstraint constraint, bool addEmptyValue, TypeGrouping grouping)
         {
-            var types = GetTypes(constraint);
+            var types = GetCollection(constraint);
             return new TypesGroupInfo(constraint, types, addEmptyValue, grouping);
         }
 
-        public static TypesGroupInfo GetGroupedInfo(TypeAppearance settings)
+        public static TypesGroupInfo GetGroupedInfo(TypeAppearance appearance)
         {
-            var key = settings.GetHashCode();
+            var key = appearance.GetHashCode();
             if (cachedInfo.TryGetValue(key, out var info))
             {
                 return info;
             }
             else
             {
-                var types = GetTypes(settings.Constraint);
-                return cachedInfo[key] = new TypesGroupInfo(settings.Constraint, types, 
-                    settings.AddEmptyValue, settings.Grouping);
+                var types = GetCollection(appearance.Constraint);
+                return cachedInfo[key] = new TypesGroupInfo(appearance.Constraint, types, 
+                    appearance.AddEmptyValue, appearance.Grouping);
             }
         }
 
         public static bool TryGetTypeFromManagedReferenceFullTypeName(string managedReferenceFullTypeName, out Type managedReferenceInstanceType)
         {
-            if (managedReferenceTypes.TryGetValue(managedReferenceFullTypeName, out managedReferenceInstanceType))
+            if (referenceTypesByNames.TryGetValue(managedReferenceFullTypeName, out managedReferenceInstanceType))
             {
                 return true;
             }
@@ -90,7 +94,7 @@ namespace Toolbox.Editor
                 ? Type.GetType($"{parts[1]}, {parts[0]}") : null;
             if (managedReferenceInstanceType != null)
             {
-                managedReferenceTypes[managedReferenceFullTypeName] = managedReferenceInstanceType;
+                referenceTypesByNames[managedReferenceFullTypeName] = managedReferenceInstanceType;
                 return true;
             }
 
