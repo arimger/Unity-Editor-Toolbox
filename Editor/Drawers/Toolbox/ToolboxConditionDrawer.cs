@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -11,14 +11,14 @@ namespace Toolbox.Editor.Drawers
         }
 
 
-        public override sealed PropertyCondition OnGuiValidate(SerializedProperty property)
-        { 
+        public sealed override PropertyCondition OnGuiValidate(SerializedProperty property)
+        {
             return OnGuiValidate(property, PropertyUtility.GetAttribute<T>(property));
         }
 
-        public override sealed PropertyCondition OnGuiValidate(SerializedProperty property, ToolboxAttribute attribute)
-        {           
-            return OnGuiValidate(property, attribute as T);         
+        public sealed override PropertyCondition OnGuiValidate(SerializedProperty property, ToolboxAttribute attribute)
+        {
+            return OnGuiValidate(property, attribute as T);
         }
 
         public PropertyCondition OnGuiValidate(SerializedProperty property, T attribute)
