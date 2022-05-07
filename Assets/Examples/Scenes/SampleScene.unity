@@ -617,20 +617,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type1:
-    typeReference: Interface4`1, Assembly-CSharp
+    typeReference: SampleReferenceTest+Interface2, Assembly-CSharp
   type2:
-    typeReference: Interface3, Assembly-CSharp
+    typeReference: SampleReferenceTest+Interface3, Assembly-CSharp
   type3:
-    typeReference: ClassWithInterface, Assembly-CSharp
+    typeReference: SampleReferenceTest+ClassWithInterface, Assembly-CSharp
   reference:
     id: 0
+  reference2:
+    id: 1
   references:
     version: 1
     00000000:
       type: {class: SampleReference1, ns: , asm: Assembly-CSharp}
       data:
-        var1: 0.68
-        var2: 1
+        var1: 0
+        var2: 0
+    00000001:
+      type: {class: SampleReference2, ns: , asm: Assembly-CSharp}
+      data:
+        var1: 0
+        var2: 0
 --- !u!4 &752799893
 Transform:
   m_ObjectHideFlags: 0

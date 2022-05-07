@@ -23,6 +23,11 @@ namespace Toolbox.Editor.Internal
             return values.IndexOf(type);
         }
 
+        public virtual bool Contains(Type type)
+        {
+            return values.Contains(type);
+        }
+
         public IEnumerator<Type> GetEnumerator()
         {
             return values.GetEnumerator();
