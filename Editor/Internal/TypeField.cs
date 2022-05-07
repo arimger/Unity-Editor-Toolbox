@@ -6,25 +6,25 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Internal
 {
-    //TODO: refactor
+    /// <summary>
+    /// Out-of-the-box field that can be used as a <see cref="Type"/> picker.
+    /// </summary>
     public class TypeField
     {
-        // Constraint -> ConstraintContext
-        // Appearance -> AppearanceContext
-        private TypeConstraint constraint;
-        private TypeAppearance appearance;
+        private TypeConstraintContext constraintContext;
+        private TypeAppearanceContext appearanceContext;
 
 
         public TypeField() : this(null, null)
         { }
 
-        public TypeField(TypeConstraint constraint) : this(constraint, null)
+        public TypeField(TypeConstraintContext constraintContext) : this(constraintContext, null)
         { }
 
-        public TypeField(TypeConstraint constraint, TypeAppearance appearance)
+        public TypeField(TypeConstraintContext constraintContext, TypeAppearanceContext appearanceContext)
         {
-            this.constraint = constraint ?? new TypeConstraintStandard(null, TypeSettings.Class, false, false);
-            this.appearance = appearance ?? new TypeAppearance(this.constraint, TypeGrouping.None , true);
+            this.constraintContext = constraintContext ?? new TypeConstraintStandard(null, TypeSettings.Class, false, false);
+            this.appearanceContext = appearanceContext ?? new TypeAppearanceContext(this.constraintContext, TypeGrouping.None, true);
         }
 
 
@@ -41,12 +41,12 @@ namespace Toolbox.Editor.Internal
 
         public void OnGui(Rect position, bool addSearchField, Type activeType)
         {
-            var info = TypeUtilities.GetGroupedInfo(Appearance);
-            var values = info.Values;
-            var labels = info.Labels;
-            var index = info.IndexOf(activeType);
+            var collection = TypeUtilities.GetCollection(AppearanceContext);
+            var values = collection.Values;
+            var labels = collection.Labels;
+            var index = collection.IndexOf(activeType);
 
-            var addEmptyValue = Appearance.AddEmptyValue;
+            var addEmptyValue = AppearanceContext.AddEmptyValue;
             if (addSearchField)
             {
                 var buttonLabel = new GUIContent(labels[index]);
@@ -73,37 +73,28 @@ namespace Toolbox.Editor.Internal
 
         public void OnGui(Rect position, bool addSearchField, Type activeType, Type parentType)
         {
-            Constraint.ApplyTarget(parentType);
+            ConstraintContext.ApplyTarget(parentType);
             OnGui(position, addSearchField, activeType);
         }
 
 
-        public TypeConstraint Constraint
+        public TypeConstraintContext ConstraintContext
         {
-            get => constraint;
+            get => constraintContext;
             set
             {
-                if (value == null)
-                {
-                    throw new NullReferenceException($"Cannot assign null constraint to the {nameof(TypeField)}.");
-                }
-
-                Appearance.Constraint = constraint = value;
+                constraintContext = value ?? throw new NullReferenceException($"Cannot assign null constraint to the {nameof(TypeField)}.");
+                AppearanceContext.Constraint = constraintContext;
             }
         }
 
-        public TypeAppearance Appearance
+        public TypeAppearanceContext AppearanceContext
         {
-            get => appearance;
+            get => appearanceContext;
             set
             {
-                if (value == null)
-                {
-                    throw new NullReferenceException($"Cannot assign null appearance to the {nameof(TypeField)}.");
-                }
-
-                appearance = value;
-                Constraint = appearance.Constraint;
+                appearanceContext = value ?? throw new NullReferenceException($"Cannot assign null appearance to the {nameof(TypeField)}.");
+                ConstraintContext = appearanceContext.Constraint;
             }
         }
 

@@ -9,7 +9,7 @@ namespace Toolbox.Editor.Internal
         private readonly List<Type> values;
 
 
-        public TypesCachedCollection() : this(new List<Type>()) 
+        public TypesCachedCollection() : this(new List<Type>())
         { }
 
         public TypesCachedCollection(List<Type> values)
@@ -18,7 +18,7 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        public int IndexOf(Type type)
+        public virtual int IndexOf(Type type)
         {
             return values.IndexOf(type);
         }
@@ -35,5 +35,7 @@ namespace Toolbox.Editor.Internal
 
 
         public IReadOnlyList<Type> Values => values;
+
+        public static implicit operator List<Type>(TypesCachedCollection collection) => collection.values;
     }
 }

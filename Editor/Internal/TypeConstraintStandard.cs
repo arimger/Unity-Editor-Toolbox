@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Internal
 {
-    public class TypeConstraintStandard : TypeConstraint
+    public class TypeConstraintStandard : TypeConstraintContext
     {
         public TypeConstraintStandard() : base(null)
         { }

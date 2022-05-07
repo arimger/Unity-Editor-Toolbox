@@ -5,7 +5,7 @@ using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor.Internal
 {
-    public class TypeConstraintReference : TypeConstraint
+    public class TypeConstraintReference : TypeConstraintContext
     {
         public TypeConstraintReference(Type targetType) : base(targetType)
         { }
