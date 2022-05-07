@@ -44,6 +44,7 @@ namespace Toolbox.Editor
 
             var typesCache = TypeCache.GetTypesDerivedFrom(parentType);
             var typesList = typesCache.ToList();
+            typesList.Add(parentType);
             for (var i = typesList.Count - 1; i >= 0; i--)
             {
                 var type = typesList[i];
