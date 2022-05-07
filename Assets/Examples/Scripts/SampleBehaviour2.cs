@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [ExecuteAlways]
-[AddComponentMenu("Editor Toolbox/Cheat Sheet 2")]
+[AddComponentMenu("Editor Toolbox/Cheat Sheet 2 (Toolbox Property)")]
 public class SampleBehaviour2 : MonoBehaviour
 {
     private void TestMethod()

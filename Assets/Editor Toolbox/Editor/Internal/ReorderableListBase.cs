@@ -497,6 +497,15 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public virtual void DoList()
         {
+            DoList(null);
+        }
+
+        /// <summary>
+        /// Draws whole list at once.
+        /// </summary>
+        public virtual void DoList(GUIContent label)
+        {
+            TitleLabel = label;
             //NOTE: indentation will break some controls
             //make sure there is no indent while drawing
             using (new ZeroIndentScope())

@@ -19,7 +19,7 @@ namespace Toolbox.Editor.Drawers
         {
             var tags = new List<string>
             {
-                "<None>"
+                "<none>"
             };
             tags.AddRange(InternalEditorUtility.tags);
             var value = property.stringValue;

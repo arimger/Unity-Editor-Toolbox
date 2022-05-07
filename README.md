@@ -43,7 +43,6 @@ Unity 2018.x or newer
 	- [Project](#project)
 	- [Toolbar](#toolbar)
 	- [Utilities](#utilities)
-- [Editor Extras](#editor-extras)
 
 ## Settings
 
@@ -602,13 +601,13 @@ public void Usage()
 #endif
 ```
 
-#### SerializedDateTime
-
-Allows to serialize DateTime.
-
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/dictionary1.png)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/dictionary2.png)
+
+#### SerializedDateTime
+
+Allows to serialize DateTime.
 
 #### SerializedDirectory
 

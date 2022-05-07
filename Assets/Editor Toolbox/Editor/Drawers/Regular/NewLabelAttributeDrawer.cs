@@ -1,9 +1,11 @@
-﻿using UnityEditor;
+﻿using System;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    [CustomPropertyDrawer(typeof(NewLabelAttribute))]
+    [Obsolete("For now, NewLabelAttribute is handled internally by the ToolboxPropertyHandler.")]
     public class NewLabelAttributeDrawer : PropertyDrawerBase
     {
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)

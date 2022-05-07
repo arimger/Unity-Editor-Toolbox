@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [ExecuteAlways]
-[AddComponentMenu("Editor Toolbox/Cheat Sheet 1")]
+[AddComponentMenu("Editor Toolbox/Cheat Sheet 1 (Regular)")]
 public class SampleBehaviour1 : MonoBehaviour
 {
     [Help("This sample component provides additional inspector extensions (drawers and associated attributes) implemented in the Editor Toolbox plugin. " +
@@ -73,7 +73,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("11", skinStyle: SkinStyle.Box)]
 
-    [ClassExtends(typeof(Object), Grouping = ClassGrouping.ByNamespace)]
+    [ClassExtends(typeof(Object), TypeGrouping = TypeGrouping.ByNamespace)]
     [Tooltip("This variable is able to serialize Type.")]
     public SerializedType type1;
     [ClassImplements(typeof(UnityEngine.UI.IMaskable), AddTextSearchField = true)]
