@@ -56,7 +56,7 @@ namespace Toolbox.Editor.Drawers
 
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
-            var target = property.objectReferenceValue;
+            var target = GetValidTarget(property.objectReferenceValue);
             var previewTexture = AssetPreview.GetAssetPreview(target);
             if (previewTexture == null)
             {
