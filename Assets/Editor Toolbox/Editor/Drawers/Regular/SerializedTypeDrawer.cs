@@ -12,7 +12,7 @@ namespace Toolbox.Editor.Drawers
     public sealed class SerializedTypeDrawer : PropertyDrawerBase
     {
         private static readonly TypeConstraintStandard sharedConstraint = new TypeConstraintStandard();
-        private static readonly TypeAppearance sharedAppearance = new TypeAppearance(sharedConstraint, TypeGrouping.None, true);
+        private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
         private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
 
 
@@ -58,7 +58,7 @@ namespace Toolbox.Editor.Drawers
 
         private void UpdateAppearance(TypeConstraintAttribute attribute)
         {
-            sharedAppearance.Grouping = attribute.TypeGrouping;
+            sharedAppearance.TypeGrouping = attribute.TypeGrouping;
         }
 
 

@@ -3,33 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 
 using UnityEditor;
-using UnityEngine;
 
 namespace Toolbox.Editor
 {
     using Toolbox.Editor.Internal;
 
-    //TODO: refactor
     public static class TypeUtilities
     {
-        private static readonly Dictionary<int, TypesCachedCollection> cachedCollections = new Dictionary<int, TypesCachedCollection>();
-        private static readonly Dictionary<int, TypesEditorCollection> editorCollections = new Dictionary<int, TypesEditorCollection>();
-
-        private static readonly Dictionary<int, TypesGroupInfo> cachedInfo = new Dictionary<int, TypesGroupInfo>();
-        private static readonly Dictionary<string, Type> referenceTypesByNames = new Dictionary<string, Type>();
+        internal static readonly Dictionary<int, TypesCachedCollection> cachedCollections = new Dictionary<int, TypesCachedCollection>();
+        internal static readonly Dictionary<int, TypesEditorCollection> editorCollections = new Dictionary<int, TypesEditorCollection>();
+        internal static readonly Dictionary<string, Type> referenceTypesByNames = new Dictionary<string, Type>();
 
 
         public static TypesCachedCollection GetCollection(Type parentType)
         {
-            return GetCollection(new TypeConstraint(parentType));
+            return GetCollection(new TypeConstraintContext(parentType));
         }
 
-        public static TypesCachedCollection GetCollection(TypeConstraint constraint)
+        public static TypesCachedCollection GetCollection(TypeConstraintContext constraint)
         {
             var key = constraint.GetHashCode();
-            if (cachedCollections.TryGetValue(key, out var cachedCollection))
+            if (cachedCollections.TryGetValue(key, out var collection))
             {
-                return cachedCollection;
+                return collection;
             }
 
             var parentType = constraint.TargetType;
@@ -54,32 +50,17 @@ namespace Toolbox.Editor
             return cachedCollections[key] = new TypesCachedCollection(typesList);
         }
 
-        [Obsolete]
-        public static TypesGroupInfo GetGroupedInfo(Type parentType)
-        {
-            return GetGroupedInfo(new TypeConstraint(parentType), true, TypeGrouping.None);
-        }
-
-        [Obsolete]
-        public static TypesGroupInfo GetGroupedInfo(TypeConstraint constraint, bool addEmptyValue, TypeGrouping grouping)
-        {
-            var types = GetCollection(constraint);
-            return new TypesGroupInfo(constraint, types, addEmptyValue, grouping);
-        }
-
-        public static TypesGroupInfo GetGroupedInfo(TypeAppearance appearance)
+        public static TypesEditorCollection GetCollection(TypeAppearanceContext appearance)
         {
             var key = appearance.GetHashCode();
-            if (cachedInfo.TryGetValue(key, out var info))
+            if (editorCollections.TryGetValue(key, out var collection))
             {
-                return info;
+                return collection;
             }
-            else
-            {
-                var types = GetCollection(appearance.Constraint);
-                return cachedInfo[key] = new TypesGroupInfo(appearance.Constraint, types, 
-                    appearance.AddEmptyValue, appearance.Grouping);
-            }
+
+            var types = GetCollection(appearance.Constraint);
+            return editorCollections[key] = new TypesEditorCollection(types,
+                appearance.AddEmptyValue, appearance.TypeGrouping);
         }
 
         public static bool TryGetTypeFromManagedReferenceFullTypeName(string managedReferenceFullTypeName, out Type managedReferenceInstanceType)

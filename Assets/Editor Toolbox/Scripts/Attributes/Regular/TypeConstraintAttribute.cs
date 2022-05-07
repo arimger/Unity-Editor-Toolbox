@@ -100,4 +100,65 @@ namespace UnityEngine
             TypeSettings = TypeSettings.Class;
         }
     }
+
+    /// <summary>
+    /// Indicates what kind of <see cref="Type"/>s are accepted by the filtering system.
+    /// </summary>
+    [Flags]
+    public enum TypeSettings
+    {
+        Class = 1,
+        Interface = 2
+    }
+
+    /// <summary>
+    /// Indicates how selectable classes should be collated in drop-down menu.
+    /// </summary>
+    public enum TypeGrouping
+    {
+        /// <summary>
+        /// No grouping, just show type names in a list; for instance, "Some.Nested.Namespace.SpecialClass".
+        /// </summary>
+        None,
+        /// <summary>
+        /// Group classes by namespace and show foldout menus for nested namespaces; for
+        /// instance, "Some > Nested > Namespace > SpecialClass".
+        /// </summary>
+        ByNamespace,
+        /// <summary>
+        /// Group classes by namespace; for instance, "Some.Nested.Namespace > SpecialClass".
+        /// </summary>
+        ByNamespaceFlat,
+        /// <summary>
+        /// Group classes in the same way as Unity does for its component menu. This
+        /// grouping method must only be used for <see cref="MonoBehaviour"/> types.
+        /// </summary>
+        ByAddComponentMenu,
+    }
+
+    /// <summary>
+    /// Indicates how selectable classes should be collated in drop-down menu.
+    /// </summary>
+    [Obsolete("Use TypeGrouping instead.")]
+    public enum ClassGrouping
+    {
+        /// <summary>
+        /// No grouping, just show type names in a list; for instance, "Some.Nested.Namespace.SpecialClass".
+        /// </summary>
+        None,
+        /// <summary>
+        /// Group classes by namespace and show foldout menus for nested namespaces; for
+        /// instance, "Some > Nested > Namespace > SpecialClass".
+        /// </summary>
+        ByNamespace,
+        /// <summary>
+        /// Group classes by namespace; for instance, "Some.Nested.Namespace > SpecialClass".
+        /// </summary>
+        ByNamespaceFlat,
+        /// <summary>
+        /// Group classes in the same way as Unity does for its component menu. This
+        /// grouping method must only be used for <see cref="MonoBehaviour"/> types.
+        /// </summary>
+        ByAddComponentMenu,
+    }
 }
