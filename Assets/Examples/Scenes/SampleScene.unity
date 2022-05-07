@@ -408,7 +408,7 @@ GameObject:
   - component: {fileID: 661896459}
   - component: {fileID: 661896458}
   m_Layer: 0
-  m_Name: Sample GameObject2
+  m_Name: ToolboxPropertyDrawers[Sample]
   m_TagString: Untagged
   m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
   m_NavMeshLayer: 0
@@ -433,42 +433,18 @@ MonoBehaviour:
   - {fileID: 661896457}
   - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
-  y: 220
-  var14: 317
-  var15: 8
-  var16: -45
-  var17: 15
-  var18: -24
-  go: {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
-  var19: 18
-  var20: 34
-  x: 0
+  ints: 01000000080000000c00000010000000
   var21: {fileID: 977748988}
   var22: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
-  var23: {fileID: 2800000, guid: 944a8e7523b24474383ee2dc61c3bbf1, type: 3}
+  var23: {fileID: 2800000, guid: 45980f2b5045fab4a95e80d4cd1d91a8, type: 3}
   var24: {fileID: 8300000, guid: e83fc6426e5f2e0448cc3e51102509aa, type: 3}
   var25: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  var26: {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
-  vars1: 01000000020000000300000004000000
   var27:
     i: 2
     strings:
     - MainCamera
     - Untagged
     - Respawn
-  var28: {fileID: 661896457}
-  var29: 1
-  var30: 2
-  var31: 3
-  var1: 0
-  stringValue: sho
-  var33: 0
-  enumValue: 97
-  var35: 0
-  objectValue: {fileID: 0}
-  var36: 0
-  floatValue: 1
-  var37: 0
   largeArray:
   - {fileID: 0}
   - {fileID: 0}
@@ -489,26 +465,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  var38: 0
-  dictionary:
-    pairs: []
-    error: 0
-  ints: 01000000080000000c00000010000000
   q: {x: 0, y: 0, z: 0, w: 0}
-  gameObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
-  - {fileID: 0}
-  floats:
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  var39: 0
   a1: -1
   b1: 5.5
   var40: 1.33
@@ -555,7 +512,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &685318310
 GameObject:
@@ -585,7 +542,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 20
+  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &752799891
 GameObject:
@@ -598,7 +555,7 @@ GameObject:
   - component: {fileID: 752799893}
   - component: {fileID: 752799892}
   m_Layer: 0
-  m_Name: SerializeReferenceTest
+  m_Name: SerializeReference[Sample]
   m_TagString: Untagged
   m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
   m_NavMeshLayer: 0
@@ -616,31 +573,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0323e91bfeae1c488545bee770d3fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type1:
-    typeReference: SampleReferenceTest+Interface2, Assembly-CSharp
-  type2:
-    typeReference: SampleReferenceTest+Interface3, Assembly-CSharp
-  type3:
-    typeReference: SampleReferenceTest+ClassWithInterface, Assembly-CSharp
-  reference:
+  var1:
     id: 0
-  reference2:
-    id: 1
+  var2:
+    go: {fileID: 0}
   references:
     version: 1
     00000000:
-      type: {class: SampleReference1, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        var2: 0
-    00000001:
-      type: {class: SampleReference2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        var2: 0
+      type: {class: , ns: , asm: }
 --- !u!4 &752799893
 Transform:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -680,7 +623,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &959025297
 GameObject:
@@ -693,7 +636,7 @@ GameObject:
   - component: {fileID: 959025299}
   - component: {fileID: 959025298}
   m_Layer: 0
-  m_Name: Sample GameObject1
+  m_Name: RegularPropertyDrawers[Sample]
   m_TagString: Untagged
   m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
   m_NavMeshLayer: 0
@@ -711,7 +654,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c96bc1945c12e5246b1faac636a63516, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  var1: 82
   targetTag: Untagged
   progressBar: 25.4
   newLabel: 25.4
@@ -827,7 +769,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &977748989
 BoxCollider:
@@ -1000,6 +942,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1220714191}
+  - component: {fileID: 1220714192}
   m_Layer: 0
   m_Name: SerializedTypes[Sample]
   m_TagString: Untagged
@@ -1009,7 +952,7 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &1220714191
 Transform:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -1021,6 +964,43 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1220714192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220714190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d496befd3f810f54d82e3f23eca099ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type1:
+    typeReference: UnityEngine.MonoBehaviour, UnityEngine.CoreModule
+  type2:
+    typeReference: UnityEngine.UI.RawImage, UnityEngine.UI
+  type3:
+    typeReference: 
+  scene1:
+    sceneReference: {fileID: 102900000, guid: f11034f4657f51a47aac14f26410c500, type: 3}
+    sceneName: SampleScene
+    scenePath: Assets/Examples/Scenes/SampleScene.unity
+    buildIndex: 0
+  scene2:
+    sceneReference: {fileID: 102900000, guid: f11034f4657f51a47aac14f26410c500, type: 3}
+    sceneName: SampleScene
+    scenePath: Assets/Examples/Scenes/SampleScene.unity
+    buildIndex: 0
+  dictionary:
+    pairs:
+    - key: 0
+      value: {fileID: 977748987}
+    - key: 1
+      value: {fileID: 2037155952}
+    error: 0
+  date:
+    ticks: 637820719200000000
 --- !u!1 &1221429486
 GameObject:
   m_ObjectHideFlags: 0
@@ -1049,7 +1029,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1414023086
 GameObject:
@@ -1079,7 +1059,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 19
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1438743617
 GameObject:
@@ -1150,6 +1130,52 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1583836797
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1583836799}
+  - component: {fileID: 1583836798}
+  m_Layer: 0
+  m_Name: Special&Others[Sample]
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1583836798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583836797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c48a231d0fb97494d948757fb057b3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  var1: 25.4
+  var2: {fileID: 977748988}
+  var3: 0
+--- !u!4 &1583836799
+Transform:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583836797}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1661307763
 GameObject:
   m_ObjectHideFlags: 0
@@ -1178,7 +1204,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1670253091
 GameObject:
@@ -1231,8 +1257,9 @@ MonoBehaviour:
   var37: 0
   enumValue: 97
   var35: 0
+  var41: 00000000000000000000000000000000
   var39: 0
-  var38: 0
+  var40: 2
 --- !u!1 &1972418676
 GameObject:
   m_ObjectHideFlags: 0
@@ -1261,7 +1288,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2033477348
 GameObject:
@@ -1321,7 +1348,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2113405571
 GameObject:

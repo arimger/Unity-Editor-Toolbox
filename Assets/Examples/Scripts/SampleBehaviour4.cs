@@ -7,7 +7,9 @@ public class SampleBehaviour4 : MonoBehaviour
 {
     [Label("Help", skinStyle: SkinStyle.Box)]
 
-    [Help("Very useful information", UnityMessageType.Warning)]
+    [Help("Very useful warning", UnityMessageType.Warning)]
+    [Help("This error example", UnityMessageType.Error)]
+    [Help("Simple information", UnityMessageType.Info)]
     public int var0;
 
     [Label("Button", skinStyle: SkinStyle.Box)]

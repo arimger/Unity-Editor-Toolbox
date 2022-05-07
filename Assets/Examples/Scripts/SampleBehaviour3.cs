@@ -44,10 +44,15 @@ public class SampleBehaviour3 : MonoBehaviour
     [Label("Disable", skinStyle: SkinStyle.Box)]
 
     [Disable]
-    public int var39;
+    public int[] var41= new int[4];
 
     [Label("Disable In Playmode", skinStyle: SkinStyle.Box)]
 
     [DisableInPlayMode]
-    public int var38;
+    public int var39;
+
+    [Label("Show Warning If", skinStyle: SkinStyle.Box)]
+
+    [ShowWarningIf(nameof(var40), 3, "Value has to be greater than 3", Comparison = UnityComparisonMethod.LessEqual, DisableField = false)]
+    public int var40;
 }
