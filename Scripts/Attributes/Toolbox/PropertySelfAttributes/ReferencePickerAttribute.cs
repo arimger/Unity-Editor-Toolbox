@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_2019_3_OR_NEWER
+using System;
 using System.Diagnostics;
 
 namespace UnityEngine
@@ -13,3 +14,4 @@ namespace UnityEngine
     public class ReferencePickerAttribute : ToolboxSelfPropertyAttribute
     { }
 }
+#endif
