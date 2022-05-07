@@ -39,7 +39,12 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        public void OnGui(Rect position, bool addSearchField, Type activeType)
+        public void OnGui(Rect position, bool addSearchField, Action<Type> onSelect)
+        {
+            OnGui(position, addSearchField, onSelect, null);
+        }
+
+        public void OnGui(Rect position, bool addSearchField, Action<Type> onSelect, Type activeType)
         {
             var collection = TypeUtilities.GetCollection(AppearanceContext);
             var values = collection.Values;
@@ -53,7 +58,7 @@ namespace Toolbox.Editor.Internal
                 ToolboxEditorGui.DrawSearchablePopup(position, buttonLabel, index, labels, (i) =>
                 {
                     var type = RetriveSelectedType(values, i, addEmptyValue);
-                    OnSelect?.Invoke(type);
+                    onSelect?.Invoke(type);
                 });
             }
             else
@@ -65,16 +70,16 @@ namespace Toolbox.Editor.Internal
                     if (EditorGUI.EndChangeCheck())
                     {
                         var type = RetriveSelectedType(values, index, addEmptyValue);
-                        OnSelect?.Invoke(type);
+                        onSelect?.Invoke(type);
                     }
                 }
             }
         }
 
-        public void OnGui(Rect position, bool addSearchField, Type activeType, Type parentType)
+        public void OnGui(Rect position, bool addSearchField, Action<Type> onSelect, Type activeType, Type parentType)
         {
             ConstraintContext.ApplyTarget(parentType);
-            OnGui(position, addSearchField, activeType);
+            OnGui(position, addSearchField, onSelect, activeType);
         }
 
 
@@ -97,7 +102,5 @@ namespace Toolbox.Editor.Internal
                 ConstraintContext = appearanceContext.Constraint;
             }
         }
-
-        public Action<Type> OnSelect { get; set; }
     }
 }

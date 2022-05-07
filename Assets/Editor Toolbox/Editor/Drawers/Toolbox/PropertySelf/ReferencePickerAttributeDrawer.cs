@@ -18,7 +18,7 @@ namespace Toolbox.Editor.Drawers
             TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
             var position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
             position = EditorGUI.IndentedRect(position);
-            typeField.OnSelect = (type) =>
+            typeField.OnGui(position, true, (type) =>
             {
                 try
                 {
@@ -43,8 +43,7 @@ namespace Toolbox.Editor.Drawers
                 {
                     ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
                 }
-            };
-            typeField.OnGui(position, true, currentType, propertyType);
+            }, currentType, propertyType);
         }
 
         private void UpdateTypeProperty(SerializedProperty property, Type referenceType)

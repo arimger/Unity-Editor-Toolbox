@@ -11,7 +11,7 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(SerializedType))]
     public sealed class SerializedTypeDrawer : PropertyDrawerBase
     {
-        private static readonly TypeConstraintStandard sharedConstraint = new TypeConstraintStandard();
+        private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintStandard();
         private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
         private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
 
@@ -51,9 +51,12 @@ namespace Toolbox.Editor.Drawers
         private void UpdateConstraint(TypeConstraintAttribute attribute)
         {
             sharedConstraint.ApplyTarget(attribute.AssemblyType);
-            sharedConstraint.AllowAbstract = attribute.AllowAbstract;
-            sharedConstraint.AllowObsolete = attribute.AllowObsolete;
-            sharedConstraint.Settings = attribute.TypeSettings;
+            if (sharedConstraint is TypeConstraintStandard constraint)
+            {
+                constraint.AllowAbstract = attribute.AllowAbstract;
+                constraint.AllowObsolete = attribute.AllowObsolete;
+                constraint.Settings = attribute.TypeSettings;
+            }
         }
 
         private void UpdateAppearance(TypeConstraintAttribute attribute)
@@ -69,8 +72,6 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
-            var referenceProperty = property.FindPropertyRelative("typeReference");
-
             label = EditorGUI.BeginProperty(position, label, property);
             label = property.name != "data" ? label : GUIContent.none;
             position = EditorGUI.PrefixLabel(position, label);
@@ -79,14 +80,22 @@ namespace Toolbox.Editor.Drawers
             var addSearchField = validAttribute.AddTextSearchField;
             UpdateConstraint(validAttribute);
             UpdateAppearance(validAttribute);
-            typeField.OnSelect = (type) =>
-            {
-                referenceProperty.serializedObject.Update();
-                referenceProperty.stringValue = SerializedType.GetReferenceValue(type);
-                referenceProperty.serializedObject.ApplyModifiedProperties();
-            };
+
+            var referenceProperty = property.FindPropertyRelative("typeReference");
             var activeType = SerializedType.GetReferenceType(referenceProperty.stringValue);
-            typeField.OnGui(position, addSearchField, activeType);
+            typeField.OnGui(position, addSearchField, (type) =>
+            {
+                try
+                {
+                    referenceProperty.serializedObject.Update();
+                    referenceProperty.stringValue = SerializedType.GetReferenceValue(type);
+                    referenceProperty.serializedObject.ApplyModifiedProperties();
+                }
+                catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
+                {
+                    ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
+                }
+            }, activeType);
 
             EditorGUI.EndProperty();
         }
