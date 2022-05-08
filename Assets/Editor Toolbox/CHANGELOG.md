@@ -1,3 +1,21 @@
+## 0.11.1 [08.05.2022]
+
+### Added:
+- ReferencePicker for properties with the [SerializeReference] attribute
+- TypeField - dedicated and independent type picker
+- SerializedDirectory
+- .editorconfig for the sample project
+
+### Changed:
+- New sample classes & general improvements to the SampleScene
+- Renamed 'Scripts' directory to 'Runtime'
+- Path serialization in the SerializedScene class
+- NewLabel & HideLabel attributes now can be combined with any other attributes
+- Performance improvements related to types caching
+- Fix drawing FormattedNumber within vertical groups
+- Fix drawing tooltips [TooltipAttribute]
+- Fix drawing AssetPreview
+
 ## 0.10.9 [02.03.2022]
 
 ### Added:
