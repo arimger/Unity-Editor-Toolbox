@@ -41,7 +41,7 @@ Unity 2018.x or newer
 		- [Toolbox Property (Self/List) Attributes](#toolboxproperty)
 		- [Toolbox Special Attributes](#toolboxspecial)
 		- [Toolbox Archetype Attributes](#toolboxarchetype)
-		- [SerializeReference (ReferencePicker)](#toolboxserializereference)
+		- [SerializeReference (ReferencePicker)](#toolboxreference)
 		- [Toolbox Custom Editors](#toolboxeditors)
 	- [Material Drawers](#materialdrawers)
 - [Serialized Types](#serialized-types)
@@ -525,9 +525,9 @@ public int var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/title.png)
 
-#### SerializeReference (ReferencePicker) <a name="toolboxserializereference></a>
+#### SerializeReference (ReferencePicker) <a name="toolboxreference"></a>
 
-You can draw properties marked with the [SerializeReference] attribute with an additional type picker that allows you to manipulate what managed type will be serialized.
+You can draw properties marked with the **[SerializeReference]** attribute with an additional type picker that allows you to manipulate what managed type will be serialized.
 
 ```csharp
 [SerializeReference, ReferencePicker]
