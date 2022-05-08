@@ -433,6 +433,10 @@ MonoBehaviour:
   - {fileID: 661896457}
   - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
+  strings:
+  - a
+  - b
+  - c
   ints: 01000000080000000c00000010000000
   var21: {fileID: 977748988}
   var22: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
@@ -576,11 +580,18 @@ MonoBehaviour:
   var1:
     id: 0
   var2:
-    go: {fileID: 0}
+    id: 1
   references:
     version: 1
     00000000:
-      type: {class: , ns: , asm: }
+      type: {class: SampleBehaviour6/Struct, ns: , asm: Assembly-CSharp}
+      data:
+        var1: 1
+        var2: 1
+    00000001:
+      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
+      data:
+        var1: 0
 --- !u!4 &752799893
 Transform:
   m_ObjectHideFlags: 2
@@ -656,38 +667,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetTag: Untagged
   progressBar: 25.4
-  newLabel: 25.4
   var2: {x: 30.418846, y: 60.78535}
-  var3: 1
-  var4: 2
-  var5: 3
-  toggle1: 0
-  var6: 0
-  toggle2: 1
-  var7: 21.44
   var8: {fileID: 977748987}
-  var9: {fileID: 977748987}
   preview: {fileID: 5059060190599569102, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
   var10: 2.16
-  type1:
-    typeReference: 
-  type2:
-    typeReference: TMPro.TMP_SubMeshUI, Unity.TextMeshPro
-  var11: Im read only
   var12: 0
   enumFlag: 12
-  var13: {fileID: 0}
-  randomValue: -7.3907948
   directory: Editor Toolbox/Editors
   sceneName: SampleScen
   presetTarget: 4
   enumSearch: 8
-  clampedValue: 4.699999809265137
   password: password
+  var13: {fileID: 0}
+  clampedValue: 4.699999809265137
   sceneReference: {fileID: 0}
   childReference: {fileID: 0}
   prefabReference: {fileID: 0}
-  hexColor: 4D7AC0FF
   sampleField:
     var1: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
     var2: 0
@@ -710,20 +705,8 @@ MonoBehaviour:
     var3:
       var1: 0
       var2: 
-  scene1:
-    sceneReference: {fileID: 102900000, guid: f11034f4657f51a47aac14f26410c500, type: 3}
-    sceneName: SampleScene
-    scenePath: Assets/Examples/Scenes/SampleScene.unity
-    buildIndex: 0
-  scene2:
-    sceneReference: {fileID: 102900000, guid: f11034f4657f51a47aac14f26410c500, type: 3}
-    sceneName: SampleScene
-    scenePath: Assets/Examples/Scenes/SampleScene.unity
-    buildIndex: 0
   bigNumber: 12345678
   currency: 20.41
-  dateTime:
-    ticks: 631466100000000000
 --- !u!4 &959025299
 Transform:
   m_ObjectHideFlags: 2
@@ -1116,6 +1099,8 @@ MonoBehaviour:
   var28: {fileID: 0}
   var39: 18
   var55: 0
+  var56: 0
+  var57: 0
 --- !u!4 &1438743619
 Transform:
   m_ObjectHideFlags: 2

@@ -1,4 +1,5 @@
 ﻿using System;
+
 using UnityEngine;
 
 [ExecuteAlways]
@@ -7,36 +8,36 @@ public class SampleBehaviour6 : MonoBehaviour
 {
     [SerializeReference, ReferencePicker]
     public Interface1 var1;
-    public ClassWithInterface var2;
+    [SerializeReference, ReferencePicker]
+    public ClassWithInterfaceBase var2;
 
     public interface Interface1 { }
-    public interface Interface2 : Interface1 { }
-    public interface Interface3 : Interface1 { }
-    public interface Interface4 : Interface2 { }
-    public interface Interface4<T> : Interface3 { }
 
     [Serializable]
     public struct Struct : Interface1
     {
-        public int a;
+        public bool var1;
+        public bool var2;
     }
 
+    public abstract class ClassWithInterfaceBase : Interface1 { }
+
     [Serializable]
-    public class ClassWithInterface : Interface1 
+    public class ClassWithInterface1 : ClassWithInterfaceBase
     {
         public GameObject go;
     }
 
     [Serializable]
-    public class ClassWithInterface1 : Interface1 
+    public class ClassWithInterface2 : ClassWithInterfaceBase
     {
         [LeftToggle]
-        public bool a;
+        public bool var1;
     }
 
     [Serializable]
-    public class ClassWithInterface2 : Interface1 
+    public class ClassWithInterface3 : ClassWithInterfaceBase
     {
-        public int i;
+        public int var1;
     }
 }

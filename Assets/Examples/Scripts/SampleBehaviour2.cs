@@ -6,11 +6,15 @@ public class SampleBehaviour2 : MonoBehaviour
 {
     [Label("Toolbox Property Attributes", skinStyle: SkinStyle.Box, Alignment = TextAnchor.MiddleCenter, Asset = "UnityEditor.InspectorWindow")]
 
-    [Label("ReorderableList", skinStyle: SkinStyle.Box)]
+    [Label("Reorderable List", skinStyle: SkinStyle.Box)]
 
-    [ReorderableList(ListStyle.Round, elementLabel: "GameObject"), Tooltip("Sample List")]
+    [Tooltip("Sample List")]
+    [ReorderableList(ListStyle.Round, elementLabel: "GameObject", Foldable = true)]
     [InLineEditor]
     public GameObject[] list;
+
+    [ReorderableList(ListStyle.Lined, "String", true, false)]
+    public string[] strings;
 
     [ReorderableListExposed(OverrideNewElementMethodName = nameof(GetValue))]
     public int[] ints;
@@ -20,7 +24,7 @@ public class SampleBehaviour2 : MonoBehaviour
         return ints.Length * Random.Range(1, 5);
     }
 
-    [Label("InLineEditor", skinStyle: SkinStyle.Box)]
+    [Label("InLine Editor", skinStyle: SkinStyle.Box)]
 
     [InLineEditor(DisableEditor = false)]
     public Transform var21;
@@ -45,12 +49,13 @@ public class SampleBehaviour2 : MonoBehaviour
     [System.Serializable]
     public class SampleNestedClass
     {
+        [Tooltip("Set to 1")]
         public int i = 0;
         [DisableIf(nameof(i), 1), ReorderableList, TagSelector]
         public string[] strings;
     }
 
-    [Label("ScrollableItems", skinStyle: SkinStyle.Box)]
+    [Label("Scrollable Items", skinStyle: SkinStyle.Box)]
 
     [ScrollableItems(defaultMinIndex: 0, defaultMaxIndex: 5)]
     public GameObject[] largeArray = new GameObject[19];
@@ -60,7 +65,7 @@ public class SampleBehaviour2 : MonoBehaviour
     [IgnoreParent]
     public Quaternion q;
 
-    [Label("Dynamic Range & MinMaxSlider", skinStyle: SkinStyle.Box)]
+    [Label("Dynamic Range & MinMax Slider", skinStyle: SkinStyle.Box)]
 
     public float a1 = -1;
     public float b1 = 5.5f;

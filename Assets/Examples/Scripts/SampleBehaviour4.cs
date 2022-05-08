@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+
 using UnityEngine;
 
 [ExecuteAlways]
@@ -82,7 +83,7 @@ public class SampleBehaviour4 : MonoBehaviour
     public float[] floats;
 
     [Label("Indentation", skinStyle: SkinStyle.Box)]
-   
+
     public int var2;
     [BeginIndent]
     public int var3;
@@ -107,4 +108,14 @@ public class SampleBehaviour4 : MonoBehaviour
 
     [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 180.0f)]
     public int var55;
+
+    [Label("GUI Color", skinStyle: SkinStyle.Box)]
+
+    [GuiColor(1, 0, 0)]
+    public int var56;
+
+    [Label("Title", skinStyle: SkinStyle.Box)]
+
+    [Title("Standard Title")]
+    public int var57;
 }

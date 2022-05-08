@@ -4,27 +4,25 @@
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 1 (Regular)")]
 public class SampleBehaviour1 : MonoBehaviour
 {
-    [Label("TagSelector", skinStyle: SkinStyle.Box)]
+    [Label("Tag Selector", skinStyle: SkinStyle.Box)]
 
     [TagSelector]
     public string targetTag;
 
-    [Label("ProgressBar", skinStyle: SkinStyle.Box)]
+    [Label("Progress Bar", skinStyle: SkinStyle.Box)]
 
     [ProgressBar(minValue: -10.0f, maxValue: 50.0f, HexColor = "#234DEA")]
     public float progressBar = 25.4f;
 
-    [Label("MinMaxSlider", skinStyle: SkinStyle.Box)]
+    [Label("MinMax Slider", skinStyle: SkinStyle.Box)]
 
     [MinMaxSlider(10.0f, 100.0f)]
     public Vector2 var2;
 
-    [Label("AssetPreview", skinStyle: SkinStyle.Box)]
+    [Label("Asset Preview", skinStyle: SkinStyle.Box)]
 
     [AssetPreview]
     public GameObject var8;
-    [AssetPreview(useLabel: false), Help("Who needs label?")]
-    public GameObject var9;
     [AssetPreview]
     public Transform preview;
 
@@ -33,12 +31,12 @@ public class SampleBehaviour1 : MonoBehaviour
     [Suffix("kg")]
     public float var10;
 
-    [Label("LeftToggle", skinStyle: SkinStyle.Box)]
+    [Label("Left Toggle", skinStyle: SkinStyle.Box)]
 
     [LeftToggle]
     public bool var12;
 
-    [Label("EnumToggles", skinStyle: SkinStyle.Box)]
+    [Label("Enum Toggles", skinStyle: SkinStyle.Box)]
 
     [EnumToggles]
     public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2;
@@ -64,7 +62,7 @@ public class SampleBehaviour1 : MonoBehaviour
     [Directory]
     public string directory;
 
-    [Label("SceneName", skinStyle: SkinStyle.Box)]
+    [Label("Scene Name", skinStyle: SkinStyle.Box)]
 
     [SceneName]
     public string sceneName;
@@ -76,7 +74,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
 
-    [Label("SearchableEnum", skinStyle: SkinStyle.Box)]
+    [Label("Searchable Enum", skinStyle: SkinStyle.Box)]
 
     [SearchableEnum]
     public KeyCode enumSearch;
@@ -88,6 +86,9 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("Validation", skinStyle: SkinStyle.Box)]
 
+    [Help("NotNullAttribute, ClampAttribute, SceneObjectOnlyAttribute, ChildObjectOnlyAttribute, PrefabObjectOnlyAttribute " +
+        "are part of group that will be re-implemented in future as ToolboxValidationAttributes. " +
+        "Unfortunately, for now, you can't use them together with any other PropertyDrawer.", UnityMessageType.Warning)]
     [NotNull]
     public Transform var13;
 
@@ -101,7 +102,7 @@ public class SampleBehaviour1 : MonoBehaviour
     [PrefabObjectOnly]
     public GameObject prefabReference;
 
-    [Label("LabelByChild", skinStyle: SkinStyle.Box)]
+    [Label("Label By Child", skinStyle: SkinStyle.Box)]
 
     [LabelByChild("var3.var2")]
     public SampleClass1 sampleField;
@@ -123,15 +124,10 @@ public class SampleBehaviour1 : MonoBehaviour
         public string var2;
     }
 
-    [Label("FormattedNumber", skinStyle: SkinStyle.Box)]
+    [Label("Formatted Number", skinStyle: SkinStyle.Box)]
 
     [FormattedNumber]
     public int bigNumber;
     [FormattedNumber("c")]
     public float currency;
-
-    private void OnValidate()
-    {
-        var9 = var8;
-    }
 }
