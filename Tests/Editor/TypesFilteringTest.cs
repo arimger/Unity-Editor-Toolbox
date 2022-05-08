@@ -115,7 +115,7 @@ namespace Toolbox.Editor.Tests
         [Test]
         public void TestStandardConstraintPass6()
         {
-            var constraint = new TypeConstraintStandard(typeof(ClassBase), TypeSettings.Class | TypeSettings.Interface, true, false);
+            var constraint = new TypeConstraintStandard(typeof(ClassBase), TypeSettings.Class | TypeSettings.Interface, false, false);
             var collection = TypeUtilities.GetCollection(constraint);
             Assert.IsFalse(collection.Contains(typeof(ClassBase)));
             Assert.IsTrue(collection.Contains(typeof(ClassWithInterface1)));

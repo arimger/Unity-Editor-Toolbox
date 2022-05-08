@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using UnityEditor;
 
@@ -42,20 +43,7 @@ namespace Toolbox.Editor
                 return new TypesCachedCollection();
             }
 
-            var typesCache = TypeCache.GetTypesDerivedFrom(parentType);
-            var typesList = typesCache.ToList();
-            typesList.Add(parentType);
-            for (var i = typesList.Count - 1; i >= 0; i--)
-            {
-                var type = typesList[i];
-                if (constraint.IsSatisfied(type))
-                {
-                    continue;
-                }
-
-                typesList.RemoveAt(i);
-            }
-
+            var typesList = FindTypes(constraint);
             return cachedCollections[key] = new TypesCachedCollection(typesList);
         }
 
@@ -89,6 +77,52 @@ namespace Toolbox.Editor
             }
 
             return false;
+        }
+
+        public static List<Type> FindTypes(TypeConstraintContext constraint)
+        {
+#if UNITY_2019_2_OR_NEWER
+            var parentType = constraint.TargetType;
+            var typesCache = TypeCache.GetTypesDerivedFrom(parentType);
+            var typesList = typesCache.ToList();
+            typesList.Add(parentType);
+            for (var i = typesList.Count - 1; i >= 0; i--)
+            {
+                var type = typesList[i];
+                if (constraint.IsSatisfied(type))
+                {
+                    continue;
+                }
+
+                typesList.RemoveAt(i);
+            }
+#else
+            var typesList = new List<Type>();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies)
+            {
+                typesList.AddRange(FindTypes(constraint, assembly));
+            }
+
+            typesList.Sort((a, b) => a.FullName.CompareTo(b.FullName));
+#endif
+            return typesList;
+        }
+
+        public static List<Type> FindTypes(TypeConstraintContext constraint, Assembly assembly)
+        {
+            var types = new List<Type>();
+            foreach (var type in assembly.GetTypes())
+            {
+                if (!constraint.IsSatisfied(type))
+                {
+                    continue;
+                }
+
+                types.Add(type);
+            }
+
+            return types;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Toolbox.Editor.Internal
             return base.IsSatisfied(type) &&
                 //NOTE: consider moving allowAbstract && allowObsolete properties to the TypeSettings enum
                 (!type.IsClass || Settings.HasFlag(TypeSettings.Class)) &&
-                (!type.IsAbstract || Settings.HasFlag(TypeSettings.Interface) || AllowAbstract) &&
+                (!type.IsAbstract || (Settings.HasFlag(TypeSettings.Interface) && type.IsInterface) || AllowAbstract) &&
                 (!type.IsInterface || Settings.HasFlag(TypeSettings.Interface)) &&
                 (!Attribute.IsDefined(type, typeof(ObsoleteAttribute)) || AllowObsolete);
         }
