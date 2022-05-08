@@ -36,6 +36,13 @@ Unity 2018.x or newer
 - [Attributes & Drawers](#drawers)
 	- [Regular Drawers](#regulardrawers)
 	- [Toolbox Drawers](#toolboxdrawers)
+		- [Toolbox Decorator Attributes](#toolboxdecorator)
+		- [Toolbox Condition Attributes](#toolboxcondition)
+		- [Toolbox Property (Self/List) Attributes](#toolboxproperty)
+		- [Toolbox Special Attributes](#toolboxspecial)
+		- [Toolbox Archetype Attributes](#toolboxarchetype)
+		- [SerializeReference (ReferencePicker)](#toolboxserializereference)
+		- [Toolbox Custom Editors](#toolboxeditors)
 	- [Material Drawers](#materialdrawers)
 - [Serialized Types](#serialized-types)
 - [Editor Extensions](#editor-extensions)
@@ -46,7 +53,7 @@ Unity 2018.x or newer
 
 ## Settings
 
-The most important file, it allows the user to manage all available features. Can be accessed from the Project Settings window (Edit/Project Settings.../Editor Toolbox) or directly inside the Project window. Make sure to have one valid settings file per project.
+The most important file, allows the user to manage all available features. Can be accessed from the Project Settings window (Edit/Project Settings.../Editor Toolbox) or directly inside the Project window. Make sure to have one valid settings file per project.
 
 Available features are divided into three groups:
 - Hierarchy
@@ -54,6 +61,9 @@ Available features are divided into three groups:
 - Inspector
 
 Each module is described in its respective section.
+
+If you want to keep your custom settings between UET versions, create your own settings file:
+```Create/Editor Toolbox/Settings```
 
 ## Attributes & Drawers <a name="drawers"></a>
 
@@ -80,17 +90,6 @@ public float var1 = 80.0f;
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/progressbar1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/progressbar2.png)
 
-#### NewLabelAttribute
-
-```csharp
-[NewLabel("Custom Label", "Element")]
-public int[] vars1 = new int[3];
-[NewLabel("Custom Label")]
-public float var2 = 25.4f;
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/newlabel.png)
-
 #### MinMaxSliderAttribute
 
 ```csharp
@@ -110,10 +109,6 @@ public Component var2;
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/assetpreview.png)
-
-#### HideLabelAttribute
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/hidelabel.png)
 
 #### SuffixAttribute
 
@@ -254,7 +249,7 @@ Examples **'How to'** create custom ToolboxDrawers you can find [HERE](https://g
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inspector.png)
 
-#### ToolboxDecoratorAttributes
+#### Toolbox Decorator Attributes <a name="toolboxdecorator"></a>
 
 Display/create something before and after property in the desired order (using Order property).   
 In fact **ToolboxDecoratorDrawers** are like extended version of built-in **DecoratorDrawers**. 
@@ -336,7 +331,7 @@ public int var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/button.png)
 
-#### ToolboxConditionAttributes 
+#### Toolbox Condition Attributes <a name="toolboxcondition"></a>
 
 Enable/disable or show/hide properties using custom conditions. You can use them together with any other type of drawer.
 Every ToolboxConditionDrawer supports boolean, int, string, UnityEngine.Object and enum types and works even with array/list properties.
@@ -387,7 +382,9 @@ public int[] vars1 = new [] { 1, 2, 3, 4 };
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enableif1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/enableif2.png)
 
-#### InLineEditorAttribute
+#### Toolbox Property Attributes <a name="toolboxproperty"></a>
+
+##### InLineEditorAttribute
 
 This attribute gives a great possibility to extend all reference-related (UnityEngine.Object) fields. 
 Using it you are able to 'inline' Editors for: components, ScriptableObjects, Materials, Renderers, MeshFilters, Textures, AudioClips, etc.
@@ -408,7 +405,7 @@ public Material var1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inlined1.png)
 
-#### Reorderable List
+##### Reorderable List
 
 Custom implementation of standard ReorderableList (UnityEditorInternal). Usable as an attribute in serialized fields or a single object in custom Editors.
 
@@ -447,7 +444,7 @@ private int GetValue()
 }
 ```
 
-#### ScrollableItemsAttribute
+##### ScrollableItemsAttribute
 
 It's a perfect solution to inspect large arrays/lists and optimize displaying them within the Inspector window.
 
@@ -458,7 +455,7 @@ public GameObject[] largeArray = new GameObject[19];
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scrollableitems.png)
 
-#### Other ToolboxProperty attributes
+##### Other ToolboxProperty attributes
 
 ```csharp
 [IgnoreParent]
@@ -473,7 +470,23 @@ public float minValue;
 public float MaxValue => 15.0f;
 ```
 
-#### ToolboxArchetypeAttributes
+#### Toolbox Special Attributes <a name="toolboxspecial"></a>
+
+Attributes handled internally by the ToolboxEditor. You can combine them with any other attributes.
+
+```csharp
+[NewLabel("Custom Label")]
+public float var1 = 25.4f;
+```
+
+```csharp
+[HideLabel]
+public float var1;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/hidelabel.png)
+
+#### Toolbox Archetype Attributes <a name="toolboxarchetype"></a>
 
 Using this attribute you are able to implement custom patterns of frequently grouped **ToolboxAttributes**.
 
@@ -512,6 +525,81 @@ public int var1;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/title.png)
 
+#### SerializeReference (ReferencePicker) <a name="toolboxserializereference></a>
+
+You can draw properties marked with the [SerializeReference] attribute with an additional type picker that allows you to manipulate what managed type will be serialized.
+
+```csharp
+[SerializeReference, ReferencePicker]
+public Interface1 var1;
+[SerializeReference, ReferencePicker]
+public ClassWithInterfaceBase var2;
+
+public interface Interface1 { }
+
+[Serializable]
+public struct Struct : Interface1
+{
+	public bool var1;
+	public bool var2;
+}
+
+public abstract class ClassWithInterfaceBase : Interface1 { }
+
+[Serializable]
+public class ClassWithInterface1 : ClassWithInterfaceBase
+{
+	public GameObject go;
+}
+
+[Serializable]
+public class ClassWithInterface2 : ClassWithInterfaceBase
+{
+	[LeftToggle]
+	public bool var1;
+}
+
+[Serializable]
+public class ClassWithInterface3 : ClassWithInterfaceBase
+{
+	public int var1;
+}
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/referencepicker.png)
+
+#### Custom Editors <a name="toolboxeditors"></a>
+
+If you want to create a custom **UnityEditor.Editor** for your components and still use Toolbox-related features be sure to inherit from the **Toolbox.Editor.ToolboxEditor** class.
+
+```csharp
+using UnityEditor;
+using UnityEngine;
+#if UNITY_2019_1_OR_NEWER
+using UnityEditor.UIElements;
+using UnityEngine.UIElements;
+#endif
+using Toolbox.Editor;
+
+[CustomEditor(typeof(SampleBehaviour))]
+public class SampleEditor : ToolboxEditor
+{
+	private void OnEnable()
+	{ }
+
+	private void OnDisable()
+	{ }
+
+	public override void DrawCustomInspector()
+	{
+		base.DrawCustomInspector();
+		
+		//for custom properties:
+		// - ToolboxEditorGui.DrawToolboxProperty(serializedObject.FindProperty("myProperty"));
+	}
+}
+```
+
 ### Material Drawers <a name="materialdrawers"></a>
 
 ```
@@ -547,7 +635,7 @@ _HideIfExample ("Range", Range(0, 1)) = 0.75
 Allows to serialize Types and pick them through a dedicated picker.
 
 ```csharp
-[ClassExtends(typeof(Collider), Grouping = ClassGrouping.None, AddTextSearchField = false)] //or [ClassImplements(typeof(interface))] for interfaces
+[TypeConstraint(typeof(Collider), AllowAbstract = false, AllowObsolete = false, TypeSettings = TypeSettings.Class, TypeGrouping = TypeGrouping.None)]
 public SerializedType var1;
 
 public void Usage()
