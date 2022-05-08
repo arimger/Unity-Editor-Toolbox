@@ -122,12 +122,6 @@ namespace UnityEngine
             indexByKey.Clear();
         }
 
-        [Obsolete("Use BuildNativeDictionary instead.")]
-        public Dictionary<TK, TV> BuiltNativeDictionary()
-        {
-            return new Dictionary<TK, TV>(dictionary);
-        }
-
         public Dictionary<TK, TV> BuildNativeDictionary()
         {
             return new Dictionary<TK, TV>(dictionary);
