@@ -6,10 +6,12 @@ using UnityEngine;
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 6 (Serialize Reference)")]
 public class SampleBehaviour6 : MonoBehaviour
 {
+#if UNITY_2019_3_OR_NEWER
     [SerializeReference, ReferencePicker]
     public Interface1 var1;
     [SerializeReference, ReferencePicker]
     public ClassWithInterfaceBase var2;
+#endif
 
     public interface Interface1 { }
 

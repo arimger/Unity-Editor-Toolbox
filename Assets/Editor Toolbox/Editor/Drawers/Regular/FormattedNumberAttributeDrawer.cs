@@ -55,7 +55,11 @@ namespace Toolbox.Editor.Drawers
             }
             else
             {
+#if UNITY_2019_2_OR_NEWER
                 position.xMin += EditorGUIUtility.labelWidth + EditorGUIUtility.standardVerticalSpacing;
+#else
+                position.xMin += EditorGUIUtility.labelWidth;
+#endif
             }
 
             var targetAttribute = attribute as FormattedNumberAttribute;
