@@ -13,6 +13,8 @@ public class SampleBehaviour5 : MonoBehaviour
     public SerializedType type2;
     [TypeConstraint(typeof(IMaskable), AddTextSearchField = true, TypeSettings = TypeSettings.Interface)]
     public SerializedType type3;
+    [TypeConstraint(typeof(Collider), AllowAbstract = false, AllowObsolete = false, TypeSettings = TypeSettings.Class, TypeGrouping = TypeGrouping.None)]
+    public SerializedType type4;
 
     [Label("Serialized Scene", skinStyle: SkinStyle.Box)]
 
