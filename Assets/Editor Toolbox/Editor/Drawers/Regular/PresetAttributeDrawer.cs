@@ -51,10 +51,26 @@ namespace Toolbox.Editor.Drawers
             var itemsCount = presetList.Count;
             var objects = new object[itemsCount];
             var options = new string[itemsCount];
+
+            var optionHandle = Attribute.OptionHandle;
+            if (!string.IsNullOrWhiteSpace(optionHandle))
+            {
+                if (ValueExtractionHelper.TryGetValue(optionHandle, declaringObject, out var optionValue))
+                {
+                    if (optionValue is IList optionList)
+                    {
+                        for (int i = 0; i < options.Length && i < optionList.Count; i++)
+                        {
+                            options[i] = optionList[i].ToString();
+                        }
+                    }
+                }
+            }
+            
             for (var i = 0; i < itemsCount; i++)
             {
                 objects[i] = presetList[i];
-                options[i] = presetList[i]?.ToString();
+                options[i] ??= presetList[i]?.ToString();
             }
 
             var value = property.GetProperValue(fieldInfo, declaringObject);
