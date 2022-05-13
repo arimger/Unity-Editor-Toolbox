@@ -69,10 +69,11 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("Preset", skinStyle: SkinStyle.Box)]
 
-    [Preset(nameof(presetValues)), Tooltip("Pick value")]
+    [Preset(nameof(presetValues), nameof(optionLabels)), Tooltip("Pick value")]
     public int presetTarget;
 
     private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
+    private readonly string[] optionLabels = new[] { "a", "b", "c", "d", "e" };
 
     [Label("Searchable Enum", skinStyle: SkinStyle.Box)]
 
