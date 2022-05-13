@@ -363,8 +363,12 @@ namespace Toolbox.Editor
             //using custom attributes and information about native drawers
             //we can use all associated and allowed ToolboxDrawers (for each type)
 
+            var decoratorWorkWithCondition = conditionAttribute != null && conditionAttribute.ApplyOnDecorators == true;
             //begin all needed decorator drawers in the proper order
-            BeginDecoratorDrawers();
+            if (!decoratorWorkWithCondition)
+            {
+                BeginDecoratorDrawers();
+            }
 
             //handle condition attribute and draw property if possible
             var conditionState = Validate(property);
@@ -376,13 +380,24 @@ namespace Toolbox.Editor
                 {
                     using (new EditorGUILayout.VerticalScope())
                     {
+                        if (decoratorWorkWithCondition)
+                        {
+                            BeginDecoratorDrawers();
+                        }
                         DrawProperty(property, label);
+                        if (decoratorWorkWithCondition)
+                        {
+                            CloseDecoratorDrawers();
+                        }
                     }
                 }
             }
 
             //close all needed decorator drawers in the proper order
-            CloseDecoratorDrawers();
+            if (!decoratorWorkWithCondition)
+            {
+                CloseDecoratorDrawers();
+            }
         }
 
         /// <summary>
