@@ -17,5 +17,11 @@ namespace UnityEngine
         /// </summary>
         [Obsolete("Feature not implemented. Decorators will be visible even if the target property is hidden.")]
         public bool HideWithProperty { get; set; }
+
+        /// <summary>
+        /// Indicates if decorator should be created independly to state of the property.
+        /// If <see cref="ApplyCondition"/> equals <see langword="true"/> it means that decorator will 
+        /// </summary>
+        public bool ApplyCondition { get; set; }
     }
 }
