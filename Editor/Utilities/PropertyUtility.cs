@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
 using System.Reflection;
@@ -115,8 +115,7 @@ namespace Toolbox.Editor
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
         internal static object GetProperValue(this SerializedProperty property, FieldInfo fieldInfo)
         {
-            var declaringObject = property.GetDeclaringObject();
-            return GetProperValue(property, fieldInfo, declaringObject);
+            return GetProperValue(property, fieldInfo, property.GetDeclaringObject());
         }
 
         /// <summary>
