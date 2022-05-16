@@ -13,14 +13,8 @@ namespace UnityEngine
         public int Order { get; set; }
 
         /// <summary>
-        /// Indicates if decorator should be visible only if the target property is visible.
-        /// </summary>
-        [Obsolete("Feature not implemented. Decorators will be visible even if the target property is hidden.")]
-        public bool HideWithProperty { get; set; }
-
-        /// <summary>
         /// Indicates if decorator should be created independly to state of the property.
-        /// If <see cref="ApplyCondition"/> equals <see langword="true"/> it means that decorator will 
+        /// If <see cref="ApplyCondition"/> equals <see langword="true"/> it means that the decorator can be hidden/disabled same as an associated property. 
         /// </summary>
         public bool ApplyCondition { get; set; }
     }
