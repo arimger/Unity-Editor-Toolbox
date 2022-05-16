@@ -16,5 +16,9 @@ namespace UnityEngine
     {
         public HideDisabledIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)
         { }
+                
+        public HideDisabledIfAttribute(string[] sourceHandles, object[] valueToMatches, bool logicAnd = true) 
+            : base(sourceHandles, valueToMatches, !logicAnd)
+        { }
     }
 }
