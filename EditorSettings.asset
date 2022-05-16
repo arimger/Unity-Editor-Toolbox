@@ -52,12 +52,14 @@ MonoBehaviour:
   - typeReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.BeginHorizontalGroupAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.BeginIndentAttributeDrawer, Toolbox.Editor
+  - typeReference: Toolbox.Editor.Drawers.BeginVerticalAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.DynamicHelpAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.EditorButtonAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.EndGroupAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.EndHorizontalAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.EndHorizontalGroupAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.EndIndentAttributeDrawer, Toolbox.Editor
+  - typeReference: Toolbox.Editor.Drawers.EndVerticalAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.GuiColorAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.HelpAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.HighlightAttributeDrawer, Toolbox.Editor
