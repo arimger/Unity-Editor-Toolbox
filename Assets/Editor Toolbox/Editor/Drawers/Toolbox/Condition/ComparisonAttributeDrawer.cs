@@ -49,8 +49,19 @@ namespace Toolbox.Editor.Drawers
                 resultItems[i] = OnComparisonResult(hasMixedValues ? false : result);
             }
 
+            // Logic And
+            if (attribute.LogicAnd)
+            {
+                foreach (var resultItem in resultItems)
+                {
+                    if (resultItem != PropertyCondition.Valid)
+                    {
+                        return resultItem;
+                    }
+                }
+            }
             // Logic Or
-            if (!attribute.LogicAnd)
+            else
             {
                 foreach (var resultItem in resultItems)
                 {
@@ -68,18 +79,7 @@ namespace Toolbox.Editor.Drawers
                     }
                 }
             }
-            // Logic And
-            else
-            {
-                foreach (var resultItem in resultItems)
-                {
-                    if (resultItem != PropertyCondition.Valid)
-                    {
-                        return resultItem;
-                    }
-                }
-            }
-            
+
             return PropertyCondition.Valid;
         }
 
