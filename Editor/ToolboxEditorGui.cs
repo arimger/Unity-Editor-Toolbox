@@ -205,21 +205,19 @@ namespace Toolbox.Editor
 
         public static void DrawMinMaxSlider(Rect rect, GUIContent label, ref float xValue, ref float yValue, float minValue, float maxValue)
         {
-            var padding = 8.0f;
-            var labelWidth = EditorGUIUtility.labelWidth;
+            rect = EditorGUI.PrefixLabel(rect, label);
+ 
             var fieldWidth = EditorGUIUtility.fieldWidth;
-
-            var minFieldRect = new Rect(rect.xMin + labelWidth, rect.y, fieldWidth, rect.height);
+            var minFieldRect = new Rect(rect.xMin, rect.y, fieldWidth, rect.height);
             var maxFieldRect = new Rect(rect.xMax - fieldWidth, rect.y, fieldWidth, rect.height);
-            var labelRect = new Rect(rect.x, rect.y, labelWidth, rect.height);
-            //set slider rect between min and max fields + additional padding
-            var sliderRect = new Rect(rect.x + labelWidth + fieldWidth + padding,
-                                      rect.y,
-                                      rect.width - labelWidth - fieldWidth * 2 - padding * 2,
-                                      rect.height);
 
-            //begin drawing using GUI methods
-            EditorGUI.LabelField(labelRect, label);
+            //set slider rect between min and max fields + additional padding
+            var spacing = 8.0f;
+            var sliderRect = Rect.MinMaxRect(minFieldRect.xMax + spacing,
+                                             rect.yMin, 
+                                             maxFieldRect.xMin - spacing, 
+                                             rect.yMax);
+
             EditorGUI.BeginChangeCheck();
             xValue = EditorGUI.FloatField(minFieldRect, xValue);
             yValue = EditorGUI.FloatField(maxFieldRect, yValue);
