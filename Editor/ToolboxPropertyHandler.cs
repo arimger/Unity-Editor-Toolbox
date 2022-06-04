@@ -302,29 +302,7 @@ namespace Toolbox.Editor
 
             for (var i = 0; i < decoratorAttributes.Count; i++)
             {
-                var attribute = decoratorAttributes[i];
-                var drawer = ToolboxDrawerModule.GetDecoratorDrawer(attribute);
-                if (drawer == null)
-                {
-                    continue;
-                }
-
-                if (attribute.ApplyCondition)
-                {
-                    var isValid = conditionState != PropertyCondition.NonValid;
-                    var disable = conditionState == PropertyCondition.Disabled;
-                    if (isValid)
-                    {
-                        using (new EditorGUI.DisabledScope(disable))
-                        {
-                            drawer.OnGuiBegin(attribute);
-                        }
-                    }
-                }
-                else
-                {
-                    drawer.OnGuiBegin(attribute);
-                }
+                HandleDecorator(decoratorAttributes[i], true, conditionState);
             }
         }
 
@@ -337,7 +315,38 @@ namespace Toolbox.Editor
 
             for (var i = decoratorAttributes.Count - 1; i >= 0; i--)
             {
-                ToolboxDrawerModule.GetDecoratorDrawer(decoratorAttributes[i])?.OnGuiClose(decoratorAttributes[i]);
+                HandleDecorator(decoratorAttributes[i], false, conditionState);
+            }
+        }
+
+        private void HandleDecorator(ToolboxDecoratorAttribute attribute, bool onBegin, PropertyCondition conditionState = PropertyCondition.Valid)
+        {
+            var drawer = ToolboxDrawerModule.GetDecoratorDrawer(attribute);
+            if (drawer == null)
+            {
+                return;
+            }
+
+            if (!attribute.ApplyCondition)
+            {
+                conditionState = PropertyCondition.Valid;
+            }
+
+            var isValid = conditionState != PropertyCondition.NonValid;
+            var disable = conditionState == PropertyCondition.Disabled;
+            if (isValid)
+            {
+                using (new EditorGUI.DisabledScope(disable))
+                {
+                    if (onBegin)
+                    {
+                        drawer.OnGuiBegin(attribute);
+                    }
+                    else
+                    {
+                        drawer.OnGuiClose(attribute);
+                    }
+                }
             }
         }
 
