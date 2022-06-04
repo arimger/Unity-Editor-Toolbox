@@ -167,6 +167,14 @@ public int presetTarget;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/preset.png)
 
+```csharp
+private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
+private readonly string[] optionLabels = new[] { "a", "b", "c", "d", "e" };
+
+[Preset(nameof(presetValues), nameof(optionLabels))]
+public int presetTarget;
+```
+
 #### SearchableEnumAttribute
 
 ```csharp
