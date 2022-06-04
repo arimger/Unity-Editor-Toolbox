@@ -52,6 +52,7 @@ public class SampleBehaviour2 : MonoBehaviour
         [Tooltip("Set to 1")]
         public int i = 0;
         [DisableIf(nameof(i), 1), ReorderableList, TagSelector]
+        [Help("Nested Information.", ApplyCondition = true)]
         public string[] strings;
     }
 
