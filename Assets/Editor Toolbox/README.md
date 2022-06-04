@@ -255,6 +255,8 @@ Display/create something before and after property in the desired order (using O
 In fact **ToolboxDecoratorDrawers** are like extended version of built-in **DecoratorDrawers**. 
 Unfortunately, standard decorators won't always work with ToolboxDrawers so try to use this replacement instead.
 
+Each **ToolboxDecoratorAttribute** has two basic properties **Order** (indicates the drawing order) and **ApplyCondition** (determines if decorator will be disabled/hidden along with associated property).
+
 ```csharp
 [BeginGroup("Group1")]
 public int var1;
