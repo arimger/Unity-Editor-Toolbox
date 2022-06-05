@@ -1,3 +1,14 @@
+## 0.11.3 [05.06.2022]
+
+### Added:
+- 'ApplyCondition' property to decorators (possibility to apply property condition state (disabled/hidden) to associated decorators
+- Begin/EndVerticalAttribute
+- Optional labels property ('OptionHandle') for the PresetAttribute
+
+### Changed:
+- Fix overriding labels in ReorderableLists
+- Fix drawing MinMaxSlider in indentations
+
 ## 0.11.1 [08.05.2022]
 
 ### Added:
