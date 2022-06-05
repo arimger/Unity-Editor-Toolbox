@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
+    using Toolbox.Editor.Internal;
+
     [CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]
     public class MinMaxSliderAttributeDrawer : PropertyDrawerBase
     {
@@ -20,7 +22,11 @@ namespace Toolbox.Editor.Drawers
 
             label = EditorGUI.BeginProperty(position, label, property);
             EditorGUI.BeginChangeCheck();
-            ToolboxEditorGui.DrawMinMaxSlider(position, label, ref xValue, ref yValue, minValue, maxValue);
+            using (new ZeroIndentScope())
+            {
+                ToolboxEditorGui.DrawMinMaxSlider(position, label, ref xValue, ref yValue, minValue, maxValue);
+            }
+
             if (EditorGUI.EndChangeCheck())
             {
                 property.vector2Value = new Vector2(xValue, yValue);

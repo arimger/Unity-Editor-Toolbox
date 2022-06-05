@@ -4,10 +4,10 @@ using System.Diagnostics;
 namespace UnityEngine
 {
     /// <summary>
-    /// Use this attribute to close previously created <see cref="BeginHorizontalAttribute"/>.
+    /// Begins vertical layout of properties. Has to be closed by the <see cref="EndVerticalAttribute"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     [Conditional("UNITY_EDITOR")]
-    public class EndHorizontalAttribute : ToolboxDecoratorAttribute
+    public class BeginVerticalAttribute : ToolboxDecoratorAttribute
     { }
 }

@@ -167,6 +167,14 @@ public int presetTarget;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/preset.png)
 
+```csharp
+private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
+private readonly string[] optionLabels = new[] { "a", "b", "c", "d", "e" };
+
+[Preset(nameof(presetValues), nameof(optionLabels))]
+public int presetTarget;
+```
+
 #### SearchableEnumAttribute
 
 ```csharp
@@ -254,6 +262,8 @@ Examples **'How to'** create custom ToolboxDrawers you can find [HERE](https://g
 Display/create something before and after property in the desired order (using Order property).   
 In fact **ToolboxDecoratorDrawers** are like extended version of built-in **DecoratorDrawers**. 
 Unfortunately, standard decorators won't always work with ToolboxDrawers so try to use this replacement instead.
+
+Each **ToolboxDecoratorAttribute** has two basic properties **Order** (indicates the drawing order) and **ApplyCondition** (determines if decorator will be disabled/hidden along with associated property).
 
 ```csharp
 [BeginGroup("Group1")]

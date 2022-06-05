@@ -8,8 +8,9 @@ public class SampleBehaviour4 : MonoBehaviour
 {
     [Label("Help", skinStyle: SkinStyle.Box)]
 
+    [Disable]
     [Help("Very useful warning", UnityMessageType.Warning)]
-    [Help("This error example", UnityMessageType.Error)]
+    [Help("This error example", UnityMessageType.Error, ApplyCondition = true)]
     [Help("Simple information", UnityMessageType.Info)]
     public int var0;
 

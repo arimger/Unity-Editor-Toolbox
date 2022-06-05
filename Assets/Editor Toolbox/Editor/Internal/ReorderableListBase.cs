@@ -497,7 +497,7 @@ namespace Toolbox.Editor.Internal
         /// </summary>
         public virtual void DoList()
         {
-            DoList(null);
+            DoList(TitleLabel);
         }
 
         /// <summary>

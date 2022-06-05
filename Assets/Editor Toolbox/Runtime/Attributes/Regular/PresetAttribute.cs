@@ -21,11 +21,13 @@ namespace UnityEngine
     [Conditional("UNITY_EDITOR")]
     public class PresetAttribute : PropertyAttribute
     {
-        public PresetAttribute(string sourceHandle)
+        public PresetAttribute(string sourceHandle, string optionHandle = null)
         {
             SourceHandle = sourceHandle;
+            OptionHandle = optionHandle;
         }
 
         public string SourceHandle { get; private set; }
+        public string OptionHandle { get; private set; }
     }
 }
