@@ -253,7 +253,7 @@ namespace Toolbox.Editor
 
         internal static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType, Object target)
         {
-            return GetFieldInfoFromProperty(target.GetType(), property.propertyPath, out propertyType);
+            return GetFieldInfoFromProperty(property, out propertyType, target.GetType());
         }
 
         public static FieldInfo GetFieldInfoFromProperty(SerializedProperty property, out Type type)
@@ -265,14 +265,15 @@ namespace Toolbox.Editor
                 return null;
             }
 
-            return GetFieldInfoFromProperty(classType, property.propertyPath, out type);
+            return GetFieldInfoFromProperty(property, out type, classType);
         }
 
-        public static FieldInfo GetFieldInfoFromProperty(Type host, string fieldPath, out Type type)
+        public static FieldInfo GetFieldInfoFromProperty(SerializedProperty property, out Type type, Type host)
         {
             FieldInfo field = null;
             type = host;
 
+            var fieldPath = property.propertyPath;
             var members = GetPropertyFieldTree(fieldPath, false);
             for (var i = 0; i < members.Length; i++)
             {
@@ -287,10 +288,21 @@ namespace Toolbox.Editor
                     continue;
                 }
 
+                const BindingFlags fieldFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
                 FieldInfo foundField = null;
                 for (var currentType = type; foundField == null && currentType != null; currentType = currentType.BaseType)
                 {
-                    foundField = currentType.GetField(member, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    foundField = currentType.GetField(member, fieldFlags);
+                    //NOTE: [SerializeReference] detected? If so we need to check dynamically cached type
+                    if (foundField == null)
+                    {
+                        var parent = property.GetParent();
+                        if (parent != null && parent.propertyType == SerializedPropertyType.ManagedReference)
+                        {
+                            TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(parent.managedReferenceFullTypename, out var parentType);
+                            foundField = parentType.GetField(member, fieldFlags);
+                        }
+                    }
                 }
 
                 if (foundField == null)
