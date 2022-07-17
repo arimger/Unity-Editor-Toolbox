@@ -29,7 +29,9 @@ public class SampleBehaviour6 : MonoBehaviour
     {
         [InLineEditor]
         public GameObject go;
+#if UNITY_2019_2_OR_NEWER
         [SerializeReference, ReferencePicker]
+#endif
         public Interface1 var1;
     }
 
