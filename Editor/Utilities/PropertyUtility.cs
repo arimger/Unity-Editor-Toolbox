@@ -7,8 +7,6 @@ using System.Runtime.CompilerServices;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-[assembly: InternalsVisibleTo("Toolbox.Editor.Tests")]
-
 namespace Toolbox.Editor
 {
     public static partial class PropertyUtility
@@ -27,7 +25,9 @@ namespace Toolbox.Editor
         internal static string GetPropertyHashKey(this SerializedProperty property)
         {
             var hash = property.serializedObject.GetHashCode();
-            return string.Format("{0}.{1}", hash, property.propertyPath);
+            return property.propertyType != SerializedPropertyType.ManagedReference
+                ? $"{hash}.{property.propertyPath}"
+                : $"{hash}.{property.propertyPath}.{property.managedReferenceFieldTypename}";
         }
 
         /// <summary>
@@ -36,7 +36,9 @@ namespace Toolbox.Editor
         internal static string GetPropertyTypeKey(this SerializedProperty property)
         {
             var type = property.serializedObject.targetObject.GetType();
-            return string.Format("{0}.{1}", type, property.propertyPath);
+            return property.propertyType != SerializedPropertyType.ManagedReference
+                ? $"{type}.{property.propertyPath}"
+                : $"{type}.{property.propertyPath}.{property.managedReferenceFieldTypename}";
         }
 
         /// <summary>
