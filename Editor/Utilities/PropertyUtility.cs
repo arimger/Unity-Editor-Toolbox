@@ -25,9 +25,13 @@ namespace Toolbox.Editor
         internal static string GetPropertyHashKey(this SerializedProperty property)
         {
             var hash = property.serializedObject.GetHashCode();
+#if UNITY_2019_2_OR_NEWER
             return property.propertyType != SerializedPropertyType.ManagedReference
                 ? $"{hash}.{property.propertyPath}"
                 : $"{hash}.{property.propertyPath}.{property.managedReferenceFieldTypename}";
+#else
+            return $"{hash}.{property.propertyPath}";
+#endif
         }
 
         /// <summary>
@@ -36,9 +40,13 @@ namespace Toolbox.Editor
         internal static string GetPropertyTypeKey(this SerializedProperty property)
         {
             var type = property.serializedObject.targetObject.GetType();
+#if UNITY_2019_2_OR_NEWER
             return property.propertyType != SerializedPropertyType.ManagedReference
                 ? $"{type}.{property.propertyPath}"
                 : $"{type}.{property.propertyPath}.{property.managedReferenceFieldTypename}";
+#else
+            return $"{type}.{property.propertyPath}";
+#endif
         }
 
         /// <summary>
@@ -296,6 +304,7 @@ namespace Toolbox.Editor
                 {
                     foundField = currentType.GetField(member, fieldFlags);
                     //NOTE: [SerializeReference] detected? If so we need to check dynamically cached type
+#if UNITY_2019_2_OR_NEWER
                     if (foundField == null)
                     {
                         var parent = property.GetParent();
@@ -305,6 +314,7 @@ namespace Toolbox.Editor
                             foundField = parentType.GetField(member, fieldFlags);
                         }
                     }
+#endif
                 }
 
                 if (foundField == null)
