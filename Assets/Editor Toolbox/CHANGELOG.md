@@ -1,3 +1,11 @@
+## 0.11.4 [17.07.2022]
+
+### Added:
+- ToolboxWizard, additional Toolbox-based equivalent for the ScriptableWizard class
+
+### Changed:
+- Fix caching FieldInfo for [SerializeReference] properties
+
 ## 0.11.3 [05.06.2022]
 
 ### Added:

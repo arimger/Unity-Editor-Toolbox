@@ -27,7 +27,10 @@ public class SampleBehaviour6 : MonoBehaviour
     [Serializable]
     public class ClassWithInterface1 : ClassWithInterfaceBase
     {
+        [InLineEditor]
         public GameObject go;
+        [SerializeReference, ReferencePicker]
+        public Interface1 var1;
     }
 
     [Serializable]
@@ -35,6 +38,8 @@ public class SampleBehaviour6 : MonoBehaviour
     {
         [LeftToggle]
         public bool var1;
+        [InLineEditor]
+        public Material mat;
     }
 
     [Serializable]
