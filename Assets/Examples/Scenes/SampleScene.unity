@@ -584,14 +584,21 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: SampleBehaviour6/Struct, ns: , asm: Assembly-CSharp}
+      type: {class: SampleBehaviour6/ClassWithInterface1, ns: , asm: Assembly-CSharp}
       data:
-        var1: 1
-        var2: 1
+        go: {fileID: 977748987}
+        var1:
+          id: 2
     00000001:
       type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
       data:
         var1: 0
+        mat: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
+    00000002:
+      type: {class: SampleBehaviour6/Struct, ns: , asm: Assembly-CSharp}
+      data:
+        var1: 1
+        var2: 0
 --- !u!4 &752799893
 Transform:
   m_ObjectHideFlags: 2
