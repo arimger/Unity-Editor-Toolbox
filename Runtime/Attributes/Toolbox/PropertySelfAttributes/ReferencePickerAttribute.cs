@@ -12,6 +12,16 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     [Conditional("UNITY_EDITOR")]
     public class ReferencePickerAttribute : ToolboxSelfPropertyAttribute
-    { }
+    {
+        public ReferencePickerAttribute()
+        { }
+
+        public ReferencePickerAttribute(Type parentType)
+        {
+            ParentType = parentType;
+        }
+
+        public Type ParentType { get; set; }
+    }
 }
 #endif

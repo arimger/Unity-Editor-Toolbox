@@ -13,9 +13,8 @@ namespace Toolbox.Editor.Drawers
         private readonly TypeField typeField = new TypeField(new TypeConstraintReference(null));
 
 
-        private void CreateTypeProperty(SerializedProperty property)
+        private void CreateTypeProperty(SerializedProperty property, Type parentType)
         {
-            property.GetFieldInfo(out Type propertyType);
             TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
             var position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
             position = EditorGUI.IndentedRect(position);
@@ -44,7 +43,7 @@ namespace Toolbox.Editor.Drawers
                 {
                     ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
                 }
-            }, currentType, propertyType);
+            }, currentType, parentType);
         }
 
         private void UpdateTypeProperty(SerializedProperty property, Type referenceType)
@@ -53,6 +52,24 @@ namespace Toolbox.Editor.Drawers
             property.serializedObject.Update();
             property.managedReferenceValue = obj;
             property.serializedObject.ApplyModifiedProperties();
+        }
+
+        private Type GetParentType(SerializedProperty property, ReferencePickerAttribute attribute)
+        {
+            property.GetFieldInfo(out Type propertyType);
+            var candidateType = attribute.ParentType;
+            if (candidateType != null)
+            {
+                if (propertyType.IsAssignableFrom(candidateType))
+                {
+                    return candidateType;
+                }
+
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
+                    $"Provided {nameof(attribute.ParentType)} ({candidateType}) cannot be used because it's not assignable from: '{propertyType}'");
+            }
+
+            return propertyType;
         }
 
 
@@ -66,7 +83,8 @@ namespace Toolbox.Editor.Drawers
                 }
 
                 EditorGUI.indentLevel++;
-                CreateTypeProperty(property);
+                var parentType = GetParentType(property, attribute);
+                CreateTypeProperty(property, parentType);
                 ToolboxEditorGui.DrawPropertyChildren(property);
                 EditorGUI.indentLevel--;
             }
