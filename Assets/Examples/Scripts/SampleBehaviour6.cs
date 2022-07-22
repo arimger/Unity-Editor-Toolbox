@@ -11,6 +11,8 @@ public class SampleBehaviour6 : MonoBehaviour
     public Interface1 var1;
     [SerializeReference, ReferencePicker]
     public ClassWithInterfaceBase var2;
+    [SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2))]
+    public ClassWithInterfaceBase var3;
 #endif
 
     public interface Interface1 { }
@@ -48,5 +50,11 @@ public class SampleBehaviour6 : MonoBehaviour
     public class ClassWithInterface3 : ClassWithInterfaceBase
     {
         public int var1;
+    }
+
+    [Serializable]
+    public class ClassWithInterface4 : ClassWithInterface2
+    {
+        public int var33;
     }
 }
