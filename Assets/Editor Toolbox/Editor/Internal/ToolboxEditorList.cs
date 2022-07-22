@@ -82,7 +82,7 @@ namespace Toolbox.Editor.Internal
                     var elementRect = elementGroup.rect;
                     //adjust label width to the known dragging area
                     EditorGUIUtility.labelWidth -= Style.dragAreaWidth;
-                    DrawElement(index);
+                    DrawElement(elementRect, index, isActive, hasFocus);
                     EditorGUIUtility.labelWidth += Style.dragAreaWidth;
                 }
 
@@ -125,11 +125,18 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-        private void DrawElement(int index)
+        private void DrawElement(Rect rect, int index, bool isActive, bool hasFocus)
         {
-            var element = List.GetArrayElementAtIndex(index);
-            var content = GetElementContent(element, index);
-            ToolboxEditorGui.DrawToolboxProperty(element, content);
+            if (drawElementCallback != null)
+            {
+                drawElementCallback(rect, index, isActive, hasFocus);
+            }
+            else
+            {
+                var element = List.GetArrayElementAtIndex(index);
+                var content = GetElementContent(element, index);
+                ToolboxEditorGui.DrawToolboxProperty(element, content);
+            }
         }
 
         /// <summary>
