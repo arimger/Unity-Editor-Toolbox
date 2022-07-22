@@ -79,6 +79,9 @@ namespace Toolbox.Editor.Internal
                     }
 
                     return "Scripts/" + type.FullName.Replace('.', '/');
+
+                case TypeGrouping.ByFlatName:
+                    return type.Name;
             }
         }
 

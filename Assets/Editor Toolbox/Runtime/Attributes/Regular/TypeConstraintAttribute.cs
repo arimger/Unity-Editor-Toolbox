@@ -134,6 +134,10 @@ namespace UnityEngine
         /// grouping method must only be used for <see cref="MonoBehaviour"/> types.
         /// </summary>
         ByAddComponentMenu,
+        /// <summary>
+        /// Only name of the <see cref="Type"/>.
+        /// </summary>
+        ByFlatName
     }
 
     /// <summary>
