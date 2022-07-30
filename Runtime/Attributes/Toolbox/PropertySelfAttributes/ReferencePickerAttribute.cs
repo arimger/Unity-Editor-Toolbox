@@ -16,12 +16,21 @@ namespace UnityEngine
         public ReferencePickerAttribute()
         { }
 
-        public ReferencePickerAttribute(Type parentType)
+        public ReferencePickerAttribute(Type parentType) : this(parentType, TypeGrouping.None)
+        { }
+
+        public ReferencePickerAttribute(Type parentType, TypeGrouping typeGrouping)
         {
             ParentType = parentType;
+            TypeGrouping = typeGrouping;
         }
 
         public Type ParentType { get; set; }
+        /// <summary>
+        /// Gets or sets grouping of selectable classes.
+        /// Defaults to <see cref="TypeGrouping.None"/> unless explicitly specified.
+        /// </summary>
+        public TypeGrouping TypeGrouping { get; set; } = TypeGrouping.None;
     }
 }
 #endif

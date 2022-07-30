@@ -10,8 +10,15 @@ namespace Toolbox.Editor.Drawers
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
-        private readonly TypeField typeField = new TypeField(new TypeConstraintReference(null));
+        private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintReference(null);
+        private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
+        private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
 
+
+        private void UpdateContexts(ReferencePickerAttribute attribute)
+        {
+            sharedAppearance.TypeGrouping = attribute.TypeGrouping;
+        }
 
         private void CreateTypeProperty(SerializedProperty property, Type parentType)
         {
@@ -72,7 +79,6 @@ namespace Toolbox.Editor.Drawers
             return propertyType;
         }
 
-
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReferencePickerAttribute attribute)
         {
             using (var propertyScope = new PropertyScope(property, label))
@@ -82,8 +88,10 @@ namespace Toolbox.Editor.Drawers
                     return;
                 }
 
-                EditorGUI.indentLevel++;
+                UpdateContexts(attribute);
                 var parentType = GetParentType(property, attribute);
+
+                EditorGUI.indentLevel++;
                 CreateTypeProperty(property, parentType);
                 ToolboxEditorGui.DrawPropertyChildren(property);
                 EditorGUI.indentLevel--;
