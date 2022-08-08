@@ -23,6 +23,14 @@ namespace Toolbox.Editor.Drawers
                             editor.ReloadPreviewInstances();
                         }
 
+                        if (a.HideScript)
+                        {
+                            if (editor is ToolboxEditor toolboxEditor)
+                            {
+                                toolboxEditor.IgnoreProperty(PropertyUtility.Defaults.scriptPropertyName);
+                            }
+                        }
+
                         return editor;
                     }
                     else
