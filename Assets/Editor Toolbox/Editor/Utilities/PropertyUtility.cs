@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 using UnityEditor;
 using Object = UnityEngine.Object;
@@ -14,7 +13,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Indicates if the property has all changes applied and can be safely used for reflection-based features.
         /// </summary>
-        internal static bool HasModifedProperties(this SerializedProperty property)
+        public static bool HasModifedProperties(this SerializedProperty property)
         {
             return property.serializedObject.hasModifiedProperties;
         }
@@ -22,7 +21,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates and returns unique (hash based) key for this property.
         /// </summary>
-        internal static string GetPropertyHashKey(this SerializedProperty property)
+        public static string GetPropertyHashKey(this SerializedProperty property)
         {
             var hash = property.serializedObject.GetHashCode();
 #if UNITY_2019_2_OR_NEWER
@@ -37,7 +36,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Creates and returns unique (type based) key for this property.
         /// </summary>
-        internal static string GetPropertyTypeKey(this SerializedProperty property)
+        public static string GetPropertyTypeKey(this SerializedProperty property)
         {
             var type = property.serializedObject.targetObject.GetType();
 #if UNITY_2019_2_OR_NEWER
@@ -52,7 +51,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Returns <see cref="object"/> which truly declares this property.
         /// </summary>
-        internal static object GetDeclaringObject(this SerializedProperty property)
+        public static object GetDeclaringObject(this SerializedProperty property)
         {
             return GetDeclaringObject(property, property.serializedObject.targetObject);
         }
@@ -60,7 +59,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Returns <see cref="object"/> which truly declares this property.
         /// </summary>
-        internal static object GetDeclaringObject(this SerializedProperty property, bool ignoreArrays)
+        public static object GetDeclaringObject(this SerializedProperty property, bool ignoreArrays)
         {
             return GetDeclaringObject(property, property.serializedObject.targetObject, ignoreArrays);
         }
@@ -68,7 +67,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Returns <see cref="object"/> which truly declares this property.
         /// </summary>
-        internal static object GetDeclaringObject(this SerializedProperty property, Object target)
+        public static object GetDeclaringObject(this SerializedProperty property, Object target)
         {
             return GetDeclaringObject(property, target, true);
         }
@@ -76,7 +75,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Returns <see cref="object"/> which truly declares this property.
         /// </summary>
-        internal static object GetDeclaringObject(this SerializedProperty property, Object target, bool ignoreArrays)
+        public static object GetDeclaringObject(this SerializedProperty property, Object target, bool ignoreArrays)
         {
             EnsureReflectionSafeness(property);
 
@@ -101,7 +100,7 @@ namespace Toolbox.Editor
             return validReference;
         }
 
-        internal static object GetTreePathReference(string treeField, object treeParent)
+        public static object GetTreePathReference(string treeField, object treeParent)
         {
             if (IsSerializableArrayElement(treeField, out var index))
             {
@@ -123,7 +122,7 @@ namespace Toolbox.Editor
         /// Returns proper <see cref="FieldInfo"/> value for this property, even if the property is an array element.
         /// </summary>
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
-        internal static object GetProperValue(this SerializedProperty property, FieldInfo fieldInfo)
+        public static object GetProperValue(this SerializedProperty property, FieldInfo fieldInfo)
         {
             return GetProperValue(property, fieldInfo, property.GetDeclaringObject());
         }
@@ -133,7 +132,7 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
-        internal static object GetProperValue(this SerializedProperty property, FieldInfo fieldInfo, object declaringObject)
+        public static object GetProperValue(this SerializedProperty property, FieldInfo fieldInfo, object declaringObject)
         {
             if (fieldInfo == null)
             {
@@ -161,7 +160,7 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
-        internal static void SetProperValue(this SerializedProperty property, FieldInfo fieldInfo, object value)
+        public static void SetProperValue(this SerializedProperty property, FieldInfo fieldInfo, object value)
         {
             SetProperValue(property, fieldInfo, value, true);
         }
@@ -173,7 +172,7 @@ namespace Toolbox.Editor
         /// </summary>
         /// <param name="property"></param>
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
-        internal static void SetProperValue(this SerializedProperty property, FieldInfo fieldInfo, object value, bool callOnValidate)
+        public static void SetProperValue(this SerializedProperty property, FieldInfo fieldInfo, object value, bool callOnValidate)
         {
             if (fieldInfo == null)
             {
@@ -211,7 +210,7 @@ namespace Toolbox.Editor
         /// Returns proper <see cref="Type"/> for this property, even if the property is an array element.
         /// </summary>
         /// <param name="fieldInfo">FieldInfo associated to provided property.</param>
-        internal static Type GetProperType(this SerializedProperty property, FieldInfo fieldInfo)
+        public static Type GetProperType(this SerializedProperty property, FieldInfo fieldInfo)
         {
             if (fieldInfo == null)
             {
@@ -233,7 +232,7 @@ namespace Toolbox.Editor
             }
         }
 
-        internal static Type GetScriptTypeFromProperty(SerializedProperty property)
+        public static Type GetScriptTypeFromProperty(SerializedProperty property)
         {
             var scriptProperty = property.serializedObject.FindProperty(Defaults.scriptPropertyName);
             if (scriptProperty == null)
@@ -251,17 +250,17 @@ namespace Toolbox.Editor
         }
 
 
-        internal static FieldInfo GetFieldInfo(this SerializedProperty property)
+        public static FieldInfo GetFieldInfo(this SerializedProperty property)
         {
             return GetFieldInfo(property, out _);
         }
 
-        internal static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType)
+        public static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType)
         {
             return GetFieldInfoFromProperty(property, out propertyType);
         }
 
-        internal static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType, Object target)
+        public static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType, Object target)
         {
             return GetFieldInfoFromProperty(property, out propertyType, target.GetType());
         }
