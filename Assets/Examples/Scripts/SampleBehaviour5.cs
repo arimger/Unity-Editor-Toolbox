@@ -15,6 +15,8 @@ public class SampleBehaviour5 : MonoBehaviour
     public SerializedType type3;
     [TypeConstraint(typeof(Collider), AllowAbstract = false, AllowObsolete = false, TypeSettings = TypeSettings.Class, TypeGrouping = TypeGrouping.None)]
     public SerializedType type4;
+    [TypeConstraint(typeof(Collider), AllowAbstract = false, AllowObsolete = false, TypeSettings = TypeSettings.Class, TypeGrouping = TypeGrouping.ByFlatName)]
+    public SerializedType type5;
 
     [Label("Serialized Scene", skinStyle: SkinStyle.Box)]
 

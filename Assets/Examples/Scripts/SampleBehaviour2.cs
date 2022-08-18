@@ -38,7 +38,7 @@ public class SampleBehaviour2 : MonoBehaviour
     [InLineEditor(drawSettings: true)]
     public AudioClip var24;
 
-    [InLineEditor]
+    [InLineEditor(HideScript = true)]
     public Mesh var25;
 
     [Label("Nested Properties", skinStyle: SkinStyle.Box)]

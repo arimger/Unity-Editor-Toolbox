@@ -581,6 +581,8 @@ MonoBehaviour:
     id: 0
   var2:
     id: 1
+  var3:
+    id: 2
   references:
     version: 1
     00000000:
@@ -588,13 +590,17 @@ MonoBehaviour:
       data:
         go: {fileID: 977748987}
         var1:
-          id: 2
+          id: 3
     00000001:
+      type: {class: SampleBehaviour6/ClassWithInterface3, ns: , asm: Assembly-CSharp}
+      data:
+        var1: 31
+    00000002:
       type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
       data:
         var1: 0
         mat: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
-    00000002:
+    00000003:
       type: {class: SampleBehaviour6/Struct, ns: , asm: Assembly-CSharp}
       data:
         var1: 1
@@ -974,6 +980,8 @@ MonoBehaviour:
     typeReference: 
   type4:
     typeReference: UnityEngine.BoxCollider, UnityEngine.PhysicsModule
+  type5:
+    typeReference: UnityEngine.TerrainCollider, UnityEngine.TerrainPhysicsModule
   scene1:
     sceneReference: {fileID: 102900000, guid: f11034f4657f51a47aac14f26410c500, type: 3}
     sceneName: SampleScene

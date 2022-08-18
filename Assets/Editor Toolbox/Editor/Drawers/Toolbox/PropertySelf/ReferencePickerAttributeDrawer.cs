@@ -10,12 +10,18 @@ namespace Toolbox.Editor.Drawers
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
-        private readonly TypeField typeField = new TypeField(new TypeConstraintReference(null));
+        private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintReference(null);
+        private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
+        private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
 
 
-        private void CreateTypeProperty(SerializedProperty property)
+        private void UpdateContexts(ReferencePickerAttribute attribute)
         {
-            property.GetFieldInfo(out Type propertyType);
+            sharedAppearance.TypeGrouping = attribute.TypeGrouping;
+        }
+
+        private void CreateTypeProperty(SerializedProperty property, Type parentType)
+        {
             TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
             var position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
             position = EditorGUI.IndentedRect(position);
@@ -44,7 +50,7 @@ namespace Toolbox.Editor.Drawers
                 {
                     ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
                 }
-            }, currentType, propertyType);
+            }, currentType, parentType);
         }
 
         private void UpdateTypeProperty(SerializedProperty property, Type referenceType)
@@ -55,6 +61,23 @@ namespace Toolbox.Editor.Drawers
             property.serializedObject.ApplyModifiedProperties();
         }
 
+        private Type GetParentType(SerializedProperty property, ReferencePickerAttribute attribute)
+        {
+            property.GetFieldInfo(out Type propertyType);
+            var candidateType = attribute.ParentType;
+            if (candidateType != null)
+            {
+                if (propertyType.IsAssignableFrom(candidateType))
+                {
+                    return candidateType;
+                }
+
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
+                    $"Provided {nameof(attribute.ParentType)} ({candidateType}) cannot be used because it's not assignable from: '{propertyType}'");
+            }
+
+            return propertyType;
+        }
 
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReferencePickerAttribute attribute)
         {
@@ -65,8 +88,11 @@ namespace Toolbox.Editor.Drawers
                     return;
                 }
 
+                UpdateContexts(attribute);
+                var parentType = GetParentType(property, attribute);
+
                 EditorGUI.indentLevel++;
-                CreateTypeProperty(property);
+                CreateTypeProperty(property, parentType);
                 ToolboxEditorGui.DrawPropertyChildren(property);
                 EditorGUI.indentLevel--;
             }

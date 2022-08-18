@@ -34,6 +34,12 @@ namespace UnityEngine
         public bool DrawSettings { get; private set; }
 
         /// <summary>
+        /// Indicates if the "m_Script" property should be hidden.
+        /// Will work only for Toolbox-based Editors.
+        /// </summary>
+        public bool HideScript { get; set; } = true;
+
+        /// <summary>
         /// Indicates if the inlined Editor should be disabled.
         /// </summary>
         public bool DisableEditor { get; set; }
