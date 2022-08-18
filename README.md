@@ -415,6 +415,11 @@ public Material var1;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/inlined1.png)
 
+```csharp
+[InLineEditor(HideScript = false)]
+public MyCustomType var1;
+```
+
 ##### Reorderable List
 
 Custom implementation of standard ReorderableList (UnityEditorInternal). Usable as an attribute in serialized fields or a single object in custom Editors.
@@ -540,9 +545,11 @@ public int var1;
 You can draw properties marked with the **[SerializeReference]** attribute with an additional type picker that allows you to manipulate what managed type will be serialized.
 
 ```csharp
-[SerializeReference, ReferencePicker]
+[SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.ByFlatName)]
 public Interface1 var1;
 [SerializeReference, ReferencePicker]
+public Interface1 var1;
+[SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2)]
 public ClassWithInterfaceBase var2;
 
 public interface Interface1 { }

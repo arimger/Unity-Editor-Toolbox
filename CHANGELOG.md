@@ -1,3 +1,14 @@
+## 0.11.5 [18.08.2022]
+
+### Added:
+- Possibility to hide the m_Script property while using the InLineEditorAttribute (HideScript = true)
+- Possibility to pick base type in the ReferencePickerAttribute
+- Possibility to pick display options in the ReferencePickerAttribute
+
+### Changed:
+- Fix displaying custom labels in the ToolboxEditorList
+- For now all methods placed in the PropertyUtility script are public
+
 ## 0.11.4 [17.07.2022]
 
 ### Added:
