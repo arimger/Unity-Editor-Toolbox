@@ -26,6 +26,7 @@ namespace Toolbox.Editor
         private SerializedProperty showSelectionsCountProperty;
         private SerializedProperty useToolboxFoldersProperty;
         private SerializedProperty useToolboxDrawersProperty;
+        private SerializedProperty forceDefaultListsProperty;
         private SerializedProperty largeIconScaleProperty;
         private SerializedProperty smallIconScaleProperty;
         private SerializedProperty largeIconPaddingProperty;
@@ -86,6 +87,7 @@ namespace Toolbox.Editor
 #endif
             //inspector-related properties
             useToolboxDrawersProperty = serializedObject.FindProperty("useToolboxDrawers");
+            forceDefaultListsProperty = serializedObject.FindProperty("forceDefaultLists");
 
             drawerHandlersLists = new ReorderableListBase[5];
 #if UNITY_2019_3_OR_NEWER
@@ -260,6 +262,7 @@ namespace Toolbox.Editor
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(useToolboxDrawersProperty);
+            EditorGUILayout.PropertyField(forceDefaultListsProperty);
             EditorGUILayout.Space();
 
             var validateInspector = false;
