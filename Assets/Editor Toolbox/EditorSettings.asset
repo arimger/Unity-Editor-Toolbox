@@ -47,6 +47,7 @@ MonoBehaviour:
     smallIcon: {fileID: 2800000, guid: e99d63b63394eba4aaf10385704d0ef3, type: 3}
     iconName: 
   useToolboxDrawers: 1
+  forceDefaultLists: 0
   decoratorDrawerHandlers:
   - typeReference: Toolbox.Editor.Drawers.BeginGroupAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox.Editor

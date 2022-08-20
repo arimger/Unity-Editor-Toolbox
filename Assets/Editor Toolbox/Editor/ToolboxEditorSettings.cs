@@ -43,6 +43,7 @@ namespace Toolbox.Editor
         void SetAllPossibleTargetTypeDrawers();
 
         bool UseToolboxDrawers { get; }
+        bool ForceDefaultLists { get; }
 
         List<SerializedType> DecoratorDrawerHandlers { get; }
         List<SerializedType> ConditionDrawerHandlers { get; }
@@ -83,6 +84,8 @@ namespace Toolbox.Editor
 
         [SerializeField]
         private bool useToolboxDrawers = true;
+        [SerializeField, Tooltip("Inspectors will use the default ReorderableList instead of a simple hierarchy.")]
+        private bool forceDefaultLists;
 
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxDecoratorDrawer<>))]
         private List<SerializedType> decoratorDrawerHandlers = new List<SerializedType>();
@@ -327,6 +330,12 @@ namespace Toolbox.Editor
             set => useToolboxDrawers = value;
         }
 
+        public bool ForceDefaultLists 
+        { 
+            get => forceDefaultLists; 
+            set => forceDefaultLists = value; 
+        }
+
         public List<SerializedType> DecoratorDrawerHandlers
         {
             get => decoratorDrawerHandlers;
@@ -356,7 +365,6 @@ namespace Toolbox.Editor
             get => targetTypeDrawerHandlers;
             set => targetTypeDrawerHandlers = value;
         }
-
 
         private static class Defaults
         {
