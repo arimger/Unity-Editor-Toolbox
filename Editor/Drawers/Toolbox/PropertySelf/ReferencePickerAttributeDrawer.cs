@@ -10,7 +10,7 @@ namespace Toolbox.Editor.Drawers
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
-        private const float minLabelWidth = 100.0f;
+        private const float neededLabelWidth = 100.0f;
         private const float labelWidthOffset = -80.0f;
 
         private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintReference(null);
@@ -80,7 +80,7 @@ namespace Toolbox.Editor.Drawers
             property.serializedObject.ApplyModifiedProperties();
         }
 
-        private Rect CreateTypePropertyPosition(in Rect labelPosition, in Rect inputPosition, bool isPropertyExpanded)
+        private Rect PrepareTypePropertyPosition(in Rect labelPosition, in Rect inputPosition, bool isPropertyExpanded)
         {
             var position = new Rect(inputPosition);
             var baseLabelWidth = EditorGUIUtility.labelWidth + labelWidthOffset;
@@ -88,8 +88,8 @@ namespace Toolbox.Editor.Drawers
             var labelWidth = Mathf.Max(baseLabelWidth, realLabelWidth);
             if (isPropertyExpanded)
             {
-                //NOTE: property is expanded and we have place to move it to the next row
-                if (labelWidth < minLabelWidth)
+                //property is expanded and we have place to move it to the next row
+                if (labelWidth < neededLabelWidth)
                 {
                     position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
                     position = EditorGUI.IndentedRect(position);
@@ -97,6 +97,7 @@ namespace Toolbox.Editor.Drawers
                 }
             }
 
+            //adjust position to already rendered label
             position.xMin += labelWidth;
             return position;
         }
@@ -112,7 +113,7 @@ namespace Toolbox.Editor.Drawers
                 EditorGUI.indentLevel++;
                 var labelRect = propertyScope.LabelRect;
                 var inputRect = propertyScope.InputRect;
-                var position = CreateTypePropertyPosition(in labelRect, in inputRect, isPropertyExpanded);
+                var position = PrepareTypePropertyPosition(in labelRect, in inputRect, isPropertyExpanded);
 
                 var parentType = GetParentType(property, attribute);
                 CreateTypeProperty(position, property, parentType);
