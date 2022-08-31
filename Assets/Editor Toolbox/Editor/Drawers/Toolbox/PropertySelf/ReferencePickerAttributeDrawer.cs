@@ -10,7 +10,8 @@ namespace Toolbox.Editor.Drawers
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
-        private const float minTypeFieldWidth = 30.0f;
+        private const float minLabelWidth = 100.0f;
+        private const float labelWidthOffset = -80.0f;
 
         private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintReference(null);
         private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
@@ -20,6 +21,24 @@ namespace Toolbox.Editor.Drawers
         private void UpdateContexts(ReferencePickerAttribute attribute)
         {
             sharedAppearance.TypeGrouping = attribute.TypeGrouping;
+        }
+
+        private Type GetParentType(SerializedProperty property, ReferencePickerAttribute attribute)
+        {
+            property.GetFieldInfo(out Type propertyType);
+            var candidateType = attribute.ParentType;
+            if (candidateType != null)
+            {
+                if (propertyType.IsAssignableFrom(candidateType))
+                {
+                    return candidateType;
+                }
+
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
+                    $"Provided {nameof(attribute.ParentType)} ({candidateType}) cannot be used because it's not assignable from: '{propertyType}'");
+            }
+
+            return propertyType;
         }
 
         private void CreateTypeProperty(Rect position, SerializedProperty property, Type parentType)
@@ -61,42 +80,43 @@ namespace Toolbox.Editor.Drawers
             property.serializedObject.ApplyModifiedProperties();
         }
 
-        private Type GetParentType(SerializedProperty property, ReferencePickerAttribute attribute)
+        private Rect CreateTypePropertyPosition(in Rect labelPosition, in Rect inputPosition, bool isPropertyExpanded)
         {
-            property.GetFieldInfo(out Type propertyType);
-            var candidateType = attribute.ParentType;
-            if (candidateType != null)
+            var position = new Rect(inputPosition);
+            var baseLabelWidth = EditorGUIUtility.labelWidth + labelWidthOffset;
+            var realLabelWidth = labelPosition.width;
+            var labelWidth = Mathf.Max(baseLabelWidth, realLabelWidth);
+            if (isPropertyExpanded)
             {
-                if (propertyType.IsAssignableFrom(candidateType))
+                //NOTE: property is expanded and we have place to move it to the next row
+                if (labelWidth < minLabelWidth)
                 {
-                    return candidateType;
+                    position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
+                    position = EditorGUI.IndentedRect(position);
+                    return position;
                 }
-
-                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    $"Provided {nameof(attribute.ParentType)} ({candidateType}) cannot be used because it's not assignable from: '{propertyType}'");
             }
 
-            return propertyType;
+            position.xMin += labelWidth;
+            return position;
         }
+
 
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReferencePickerAttribute attribute)
         {
             using (var propertyScope = new PropertyScope(property, label))
             {
                 UpdateContexts(attribute);
-                var parentType = GetParentType(property, attribute);
+
+                var isPropertyExpanded = propertyScope.IsVisible;
                 EditorGUI.indentLevel++;
+                var labelRect = propertyScope.LabelRect;
+                var inputRect = propertyScope.InputRect;
+                var position = CreateTypePropertyPosition(in labelRect, in inputRect, isPropertyExpanded);
 
-                var position = GUILayoutUtility.GetLastRect();
-                position.xMax = position.xMin + EditorGUIUtility.currentViewWidth;
-                var labelSize = EditorStyles.label.CalcSize(label);
-                var x = Mathf.Max(EditorGUIUtility.labelWidth, labelSize.x);
-                position.xMin = position.xMin + x;
-                //position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
-                //position = EditorGUI.IndentedRect(position);
-
+                var parentType = GetParentType(property, attribute);
                 CreateTypeProperty(position, property, parentType);
-                if (propertyScope.IsVisible)
+                if (isPropertyExpanded)
                 {
                     ToolboxEditorGui.DrawPropertyChildren(property);
                 }

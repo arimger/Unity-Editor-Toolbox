@@ -13,12 +13,12 @@ public class SampleBehaviour6 : MonoBehaviour
     public ClassWithInterfaceBase var2;
     [SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2))]
     public ClassWithInterfaceBase var3;
-    public int a;
     [SerializeField, SerializeReference, ReferencePicker]
     public Interface1[] vars;
 #endif
 
-    public interface Interface1 { }
+    public interface Interface1
+    { }
 
     [Serializable]
     public struct Struct : Interface1
@@ -27,7 +27,8 @@ public class SampleBehaviour6 : MonoBehaviour
         public bool var2;
     }
 
-    public abstract class ClassWithInterfaceBase : Interface1 { }
+    public abstract class ClassWithInterfaceBase : Interface1
+    { }
 
     [Serializable]
     public class ClassWithInterface1 : ClassWithInterfaceBase
