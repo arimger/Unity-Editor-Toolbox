@@ -10,6 +10,8 @@ namespace Toolbox.Editor.Drawers
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
+        private const float minTypeFieldWidth = 30.0f;
+
         private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintReference(null);
         private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
         private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
@@ -20,11 +22,9 @@ namespace Toolbox.Editor.Drawers
             sharedAppearance.TypeGrouping = attribute.TypeGrouping;
         }
 
-        private void CreateTypeProperty(SerializedProperty property, Type parentType)
+        private void CreateTypeProperty(Rect position, SerializedProperty property, Type parentType)
         {
             TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
-            var position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
-            position = EditorGUI.IndentedRect(position);
             typeField.OnGui(position, true, (type) =>
             {
                 try
@@ -83,17 +83,24 @@ namespace Toolbox.Editor.Drawers
         {
             using (var propertyScope = new PropertyScope(property, label))
             {
-                if (!propertyScope.IsVisible)
-                {
-                    return;
-                }
-
                 UpdateContexts(attribute);
                 var parentType = GetParentType(property, attribute);
-
                 EditorGUI.indentLevel++;
-                CreateTypeProperty(property, parentType);
-                ToolboxEditorGui.DrawPropertyChildren(property);
+
+                var position = GUILayoutUtility.GetLastRect();
+                position.xMax = position.xMin + EditorGUIUtility.currentViewWidth;
+                var labelSize = EditorStyles.label.CalcSize(label);
+                var x = Mathf.Max(EditorGUIUtility.labelWidth, labelSize.x);
+                position.xMin = position.xMin + x;
+                //position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
+                //position = EditorGUI.IndentedRect(position);
+
+                CreateTypeProperty(position, property, parentType);
+                if (propertyScope.IsVisible)
+                {
+                    ToolboxEditorGui.DrawPropertyChildren(property);
+                }
+
                 EditorGUI.indentLevel--;
             }
         }

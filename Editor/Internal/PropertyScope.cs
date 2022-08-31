@@ -35,6 +35,9 @@ namespace Toolbox.Editor.Internal
         {
             if (property.hasChildren)
             {
+                var size = EditorStyles.label.CalcSize(label);
+                size.x = Mathf.Max(16, size.x);
+                rect.xMax = rect.xMin + size.x;       
                 property.isExpanded = EditorGUI.Foldout(rect, property.isExpanded, label, true);
             }
             else
