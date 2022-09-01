@@ -40,6 +40,11 @@ namespace UnityEngine
         public bool AddTextSearchField { get; set; }
 
         /// <summary>
+        /// Indicates if types should be sorted alphabetically.
+        /// </summary>
+        public bool OrderTypes { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets grouping of selectable classes.
         /// Defaults to <see cref="ClassGrouping.None"/> unless explicitly specified.
         /// </summary>

@@ -53,6 +53,7 @@ namespace Toolbox.Editor.Drawers
             sharedConstraint.ApplyTarget(attribute.AssemblyType);
             if (sharedConstraint is TypeConstraintStandard constraint)
             {
+                constraint.IsOrdered = attribute.OrderTypes;
                 constraint.AllowAbstract = attribute.AllowAbstract;
                 constraint.AllowObsolete = attribute.AllowObsolete;
                 constraint.Settings = attribute.TypeSettings;

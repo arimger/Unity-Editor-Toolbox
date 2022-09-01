@@ -97,5 +97,8 @@ namespace Toolbox.Editor
 
             return null;
         }
+
+
+        public static float FoldoutOffset { get; internal set; } = 28.0f;
     }
 }
