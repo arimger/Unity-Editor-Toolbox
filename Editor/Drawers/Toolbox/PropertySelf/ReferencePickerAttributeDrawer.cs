@@ -10,6 +10,9 @@ namespace Toolbox.Editor.Drawers
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
+        private const float neededLabelWidth = 100.0f;
+        private const float labelWidthOffset = -80.0f;
+
         private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintReference(null);
         private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
         private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
@@ -20,11 +23,27 @@ namespace Toolbox.Editor.Drawers
             sharedAppearance.TypeGrouping = attribute.TypeGrouping;
         }
 
-        private void CreateTypeProperty(SerializedProperty property, Type parentType)
+        private Type GetParentType(SerializedProperty property, ReferencePickerAttribute attribute)
+        {
+            property.GetFieldInfo(out Type propertyType);
+            var candidateType = attribute.ParentType;
+            if (candidateType != null)
+            {
+                if (propertyType.IsAssignableFrom(candidateType))
+                {
+                    return candidateType;
+                }
+
+                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
+                    $"Provided {nameof(attribute.ParentType)} ({candidateType}) cannot be used because it's not assignable from: '{propertyType}'");
+            }
+
+            return propertyType;
+        }
+
+        private void CreateTypeProperty(Rect position, SerializedProperty property, Type parentType)
         {
             TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
-            var position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
-            position = EditorGUI.IndentedRect(position);
             typeField.OnGui(position, true, (type) =>
             {
                 try
@@ -61,39 +80,48 @@ namespace Toolbox.Editor.Drawers
             property.serializedObject.ApplyModifiedProperties();
         }
 
-        private Type GetParentType(SerializedProperty property, ReferencePickerAttribute attribute)
+        private Rect PrepareTypePropertyPosition(in Rect labelPosition, in Rect inputPosition, bool isPropertyExpanded)
         {
-            property.GetFieldInfo(out Type propertyType);
-            var candidateType = attribute.ParentType;
-            if (candidateType != null)
+            var position = new Rect(inputPosition);
+            var baseLabelWidth = EditorGUIUtility.labelWidth + labelWidthOffset;
+            var realLabelWidth = labelPosition.width;
+            var labelWidth = Mathf.Max(baseLabelWidth, realLabelWidth);
+            if (isPropertyExpanded)
             {
-                if (propertyType.IsAssignableFrom(candidateType))
+                //property is expanded and we have place to move it to the next row
+                if (labelWidth < neededLabelWidth)
                 {
-                    return candidateType;
+                    position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
+                    position = EditorGUI.IndentedRect(position);
+                    return position;
                 }
-
-                ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    $"Provided {nameof(attribute.ParentType)} ({candidateType}) cannot be used because it's not assignable from: '{propertyType}'");
             }
 
-            return propertyType;
+            //adjust position to already rendered label
+            position.xMin += labelWidth;
+            return position;
         }
+
 
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReferencePickerAttribute attribute)
         {
             using (var propertyScope = new PropertyScope(property, label))
             {
-                if (!propertyScope.IsVisible)
+                UpdateContexts(attribute);
+
+                var isPropertyExpanded = propertyScope.IsVisible;
+                EditorGUI.indentLevel++;
+                var labelRect = propertyScope.LabelRect;
+                var inputRect = propertyScope.InputRect;
+                var position = PrepareTypePropertyPosition(in labelRect, in inputRect, isPropertyExpanded);
+
+                var parentType = GetParentType(property, attribute);
+                CreateTypeProperty(position, property, parentType);
+                if (isPropertyExpanded)
                 {
-                    return;
+                    ToolboxEditorGui.DrawPropertyChildren(property);
                 }
 
-                UpdateContexts(attribute);
-                var parentType = GetParentType(property, attribute);
-
-                EditorGUI.indentLevel++;
-                CreateTypeProperty(property, parentType);
-                ToolboxEditorGui.DrawPropertyChildren(property);
                 EditorGUI.indentLevel--;
             }
         }
