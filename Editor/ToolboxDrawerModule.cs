@@ -10,6 +10,11 @@ namespace Toolbox.Editor
 {
     using Toolbox.Editor.Drawers;
 
+    //TODO:
+    //1. dedicated class to initialize and hold drawer-related data
+    //2. dedicated class used for settings initialization
+    //3. separate logic for resettings active drawers
+
     internal static class ToolboxDrawerModule
     {
         [InitializeOnLoadMethod]
@@ -271,14 +276,13 @@ namespace Toolbox.Editor
 
         internal static void ForceDefaultLists(bool value)
         {
-            const string targetDefine = "TOOLBOX_FORCE_DEFAULT_LISTS";
             if (value)
             {
-                ScriptingUtility.AppendDefine(targetDefine);
+                ScriptingUtility.AppendDefine(ToolboxDefines.defaultListsDefine);
             }
             else
             {
-                ScriptingUtility.RemoveDefine(targetDefine);
+                ScriptingUtility.RemoveDefine(ToolboxDefines.defaultListsDefine);
             }
         }
 
@@ -426,7 +430,7 @@ namespace Toolbox.Editor
 
         //TODO:
         //NOTE: unfortunately there is no valid, non-reflection way to check if property has a custom native drawer
-        private readonly static MethodInfo getDrawerTypeForTypeMethod =
+        private static readonly MethodInfo getDrawerTypeForTypeMethod =
             ReflectionUtility.GetEditorMethod("UnityEditor.ScriptAttributeUtility", "GetDrawerTypeForType",
                 BindingFlags.NonPublic | BindingFlags.Static);
     }

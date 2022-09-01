@@ -262,7 +262,9 @@ namespace Toolbox.Editor
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(useToolboxDrawersProperty);
+            EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
             EditorGUILayout.PropertyField(forceDefaultListsProperty);
+            EditorGUI.EndDisabledGroup();
             EditorGUILayout.Space();
 
             var validateInspector = false;

@@ -82,9 +82,10 @@ namespace Toolbox.Editor
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         private List<FolderData> customFolders = new List<FolderData>();
 
-        [SerializeField]
+        [SerializeField, Tooltip("Set to false if you don't want to use Toolbox attributes and related features.")]
         private bool useToolboxDrawers = true;
-        [SerializeField, Tooltip("Inspectors will use the default ReorderableList instead of a simple hierarchy.")]
+        [SerializeField, Tooltip("By default, Inspectors will use the built-in version of the list instead of the Toolbox-based one. " +
+            "Keep in mind that built-in properties don't support Toolbox attributes. \n\n Changing this property will recompile the code.")]
         private bool forceDefaultLists;
 
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxDecoratorDrawer<>))]
