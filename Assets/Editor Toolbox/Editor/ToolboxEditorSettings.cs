@@ -43,6 +43,7 @@ namespace Toolbox.Editor
         void SetAllPossibleTargetTypeDrawers();
 
         bool UseToolboxDrawers { get; }
+        bool ForceDefaultLists { get; }
 
         List<SerializedType> DecoratorDrawerHandlers { get; }
         List<SerializedType> ConditionDrawerHandlers { get; }
@@ -81,8 +82,11 @@ namespace Toolbox.Editor
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         private List<FolderData> customFolders = new List<FolderData>();
 
-        [SerializeField]
+        [SerializeField, Tooltip("Set to false if you don't want to use Toolbox attributes and related features.")]
         private bool useToolboxDrawers = true;
+        [SerializeField, Tooltip("By default, Inspectors will use the built-in version of the list instead of the Toolbox-based one. " +
+            "Keep in mind that built-in properties don't support Toolbox attributes. \n\n Changing this property will recompile the code.")]
+        private bool forceDefaultLists;
 
         [SerializeField, ReorderableList(ListStyle.Boxed), ClassExtends(typeof(ToolboxDecoratorDrawer<>))]
         private List<SerializedType> decoratorDrawerHandlers = new List<SerializedType>();
@@ -327,6 +331,12 @@ namespace Toolbox.Editor
             set => useToolboxDrawers = value;
         }
 
+        public bool ForceDefaultLists 
+        { 
+            get => forceDefaultLists; 
+            set => forceDefaultLists = value; 
+        }
+
         public List<SerializedType> DecoratorDrawerHandlers
         {
             get => decoratorDrawerHandlers;
@@ -356,7 +366,6 @@ namespace Toolbox.Editor
             get => targetTypeDrawerHandlers;
             set => targetTypeDrawerHandlers = value;
         }
-
 
         private static class Defaults
         {
