@@ -82,7 +82,7 @@ namespace Toolbox.Editor.Drawers
             using (new EditorGUI.DisabledScope(disable))
             {
                 var label = string.IsNullOrEmpty(attribute.ExtraLabel)
-                            ? attribute.MethodName
+                            ? ObjectNames.NicifyVariableName(attribute.MethodName)
                             : attribute.ExtraLabel;
                 var tooltip = attribute.Tooltip;
                 var content = new GUIContent(label, tooltip);

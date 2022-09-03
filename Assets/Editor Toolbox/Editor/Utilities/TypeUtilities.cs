@@ -106,6 +106,11 @@ namespace Toolbox.Editor
 
             typesList.Sort((a, b) => a.FullName.CompareTo(b.FullName));
 #endif
+            if (constraint.IsOrdered)
+            {
+                typesList.Sort((t1, t2) => t1.Name.CompareTo(t2.Name));
+            }
+
             return typesList;
         }
 

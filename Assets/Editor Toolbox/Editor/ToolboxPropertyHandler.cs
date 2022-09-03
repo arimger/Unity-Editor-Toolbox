@@ -444,15 +444,23 @@ namespace Toolbox.Editor
         /// </summary>
         public void OnGuiDefault(SerializedProperty property, GUIContent label)
         {
+#if TOOLBOX_FORCE_DEFAULT_LISTS
+            if (isArray)
+            {
+                EditorGUILayout.PropertyField(property, label, true);
+                return;
+            }
+#endif
             //all "single" properties and native drawers should be drawn in the native way
             if (hasBuiltInPropertyDrawer)
             {
                 ToolboxEditorGui.DrawNativeProperty(property, label);
-                return;
             }
-
             //handles property in default native way but supports ToolboxDrawers in children
-            ToolboxEditorGui.DrawDefaultProperty(property, label);
+            else
+            {
+                ToolboxEditorGui.DrawDefaultProperty(property, label);
+            }
         }
     }
 }

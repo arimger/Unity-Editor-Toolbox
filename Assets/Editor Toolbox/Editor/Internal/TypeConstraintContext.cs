@@ -32,16 +32,21 @@ namespace Toolbox.Editor.Internal
 
         public override bool Equals(object obj)
         {
-            return obj is TypeConstraintContext constraint &&
-                   EqualityComparer<Type>.Default.Equals(targetType, constraint.targetType);
+            return obj is TypeConstraintContext context &&
+                   EqualityComparer<Type>.Default.Equals(TargetType, context.TargetType) &&
+                   IsOrdered == context.IsOrdered;
         }
 
         public override int GetHashCode()
         {
-            return 1673078848 + EqualityComparer<Type>.Default.GetHashCode(targetType);
+            var hashCode = -509589530;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(TargetType);
+            hashCode = hashCode * -1521134295 + IsOrdered.GetHashCode();
+            return hashCode;
         }
 
 
         public Type TargetType => targetType;
+        public bool IsOrdered { get; set; } = true;
     }
 }
