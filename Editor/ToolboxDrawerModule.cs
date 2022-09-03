@@ -249,7 +249,7 @@ namespace Toolbox.Editor
             //create all type-only-related drawers
             PrepareTargetTypeDrawers(settings);
 
-            ForceDefaultLists(settings.ForceDefaultLists);
+            HandleDefaultLists(settings.ForceDefaultLists);
             //log errors into console only once
             validationEnabled = false;
         }
@@ -274,7 +274,7 @@ namespace Toolbox.Editor
             return targetTypeDrawers.ContainsKey(type.IsGenericType ? type.GetGenericTypeDefinition() : type);
         }
 
-        internal static void ForceDefaultLists(bool value)
+        internal static void HandleDefaultLists(bool value)
         {
             if (value)
             {
