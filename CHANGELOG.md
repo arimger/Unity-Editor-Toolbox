@@ -1,3 +1,13 @@
+## 0.11.7 [04.09.2022]
+
+### Added:
+- Possibility to force default (built-in) behaviour for arrays/list
+
+### Changed:
+- Improvements to EditorButton labels
+- Improvements to type fields while drawing [ReferencePicker]-based properties
+- Types returned by the TypeUtilities can now be sorted (additional property for the TypeConstraintContext class)
+
 ## 0.11.5 [18.08.2022]
 
 ### Added:
