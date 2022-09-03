@@ -24,8 +24,10 @@ Unity 2018.x or newer
 	- 1 way: Find Unity Package Manager (Window/Package Manager) and add package using this git URL:
 	```https://github.com/arimger/Unity-Editor-Toolbox.git#upm```
 	- 2 way: Copy and paste `Editor Toolbox` directory into your project (Assets/...) + add dependencies
+	- 3 way: Install via [OpenUpm registry](https://openupm.com):
+	```openupm add com.browar.editor-toolbox```
 - Open Edit/Project Settings/Editor Toolbox window
-- If settings file is not found, press "Refresh" button or create new one
+- If settings file is not found, press the "Refresh" button or create a new one
 - Manage settings in your way
 	- Enable/disable Hierarchy overlay, choose allowed information
 	- Enable/disable Project icons or/and assign own directories
