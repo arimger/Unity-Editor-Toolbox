@@ -1,4 +1,4 @@
-name: CI
+name: Update UPM branch
 on:
   push:
     branches:
