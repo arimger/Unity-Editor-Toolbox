@@ -16,7 +16,7 @@ namespace Toolbox
             return rect;
         }
 
-        public static Rect AlignButton(this Rect rect, float newHeight)
+        public static Rect AlignBottom(this Rect rect, float newHeight)
         {
             rect.yMin = rect.yMax - newHeight;
             return rect;
