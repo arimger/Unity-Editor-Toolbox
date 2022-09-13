@@ -1,6 +1,8 @@
 name: Run TestRunner 📝
 
-on: pull_request
+on: 
+  workflow_dispatch: {}
+  pull_request
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
