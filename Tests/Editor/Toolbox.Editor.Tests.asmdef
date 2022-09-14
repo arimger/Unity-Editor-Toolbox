@@ -1,12 +1,15 @@
 {
     "name": "Toolbox.Editor.Tests",
+    "rootNamespace": "",
     "references": [
         "GUID:27619889b8ba8c24980f49ee34dbb44a",
         "GUID:0acc523941302664db1f4e527237feb3",
         "GUID:696a0953692949b40bec8730e64e1fdd",
         "GUID:1b845e2499b39be4aab3e6ac2c8aa02a"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

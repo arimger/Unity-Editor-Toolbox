@@ -38,7 +38,7 @@ namespace Toolbox
 
         public static Rect AlignCenterY(this Rect rect, float newHeight)
         {
-            var offset = (rect.width - newHeight) / 2;
+            var offset = (rect.height - newHeight) / 2;
             rect.yMin += offset;
             rect.yMax -= offset;
             return rect;
@@ -67,6 +67,20 @@ namespace Toolbox
         {
             rect.xMin += range.x;
             rect.yMin += range.y;
+            return rect;
+        }
+
+        public static Rect SubMax(this Rect rect, Vector2 range)
+        {
+            rect.xMax -= range.x;
+            rect.yMin -= range.y;
+            return rect;
+        }
+
+        public static Rect SubMin(this Rect rect, Vector2 range)
+        {
+            rect.xMin -= range.x;
+            rect.yMin -= range.y;
             return rect;
         }
     }
