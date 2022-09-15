@@ -20,11 +20,12 @@ namespace UnityEngine
         }
 
         public string MethodName { get; private set; }
-
+        /// <summary>
+        /// If not <see langword="null"/> will be used to retrive validation method.
+        /// </summary>
+        public string ValidateMethodName { get; set; }
         public string ExtraLabel { get; private set; }
-
         public string Tooltip { get; set; }
-
         public ButtonActivityType ActivityType { get; private set; }
     }
 
