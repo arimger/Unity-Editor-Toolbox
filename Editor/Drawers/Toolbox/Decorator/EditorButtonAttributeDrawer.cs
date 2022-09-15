@@ -9,6 +9,30 @@ namespace Toolbox.Editor.Drawers
 {
     public class EditorButtonAttributeDrawer : ToolboxDecoratorDrawer<EditorButtonAttribute>
     {
+        private bool IsCoroutine(MethodInfo method)
+        {
+            return method.ReturnType == typeof(IEnumerator);
+        }
+
+        private MethodInfo GetMethod(EditorButtonAttribute attribute, Object[] targetObjects, string methodName)
+        {
+            var methodInfo = ReflectionUtility.GetObjectMethod(methodName, targetObjects);
+            if (methodInfo == null)
+            {
+                ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method not found.", methodName));
+                return null;
+            }
+
+            var parameters = methodInfo.GetParameters();
+            if (parameters.Length > 0)
+            {
+                ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method has to be parameterless.", methodName));
+                return null;
+            }
+
+            return methodInfo;
+        }
+
         private bool IsClickable(ButtonActivityType activityType)
         {
             switch (activityType)
@@ -26,9 +50,48 @@ namespace Toolbox.Editor.Drawers
             return true;
         }
 
-        private bool IsCoroutine(MethodInfo method)
+        private bool IsClickable(EditorButtonAttribute attribute, Object[] targetObjects)
         {
-            return method.ReturnType == typeof(IEnumerator);
+            if (!IsClickable(attribute.ActivityType))
+            {
+                return false;
+            }
+
+            var validateMethodName = attribute.ValidateMethodName;
+            if (string.IsNullOrEmpty(validateMethodName))
+            {
+                return true;
+            }
+
+            var validateMethodInfo = GetMethod(attribute, targetObjects, validateMethodName);
+            if (validateMethodInfo == null)
+            {
+                return true;
+            }
+
+            var returnType = validateMethodInfo.ReturnType;
+            if (returnType != typeof(bool))
+            {
+                ToolboxEditorLog.AttributeUsageWarning(attribute, "Validation method is invalid, return type has to be 'bool'.");
+                return true;
+            }
+
+            for (var i = 0; i < targetObjects.Length; i++)
+            {
+                var target = targetObjects[i];
+                if (target == null)
+                {
+                    continue;
+                }
+
+                var result = (bool)validateMethodInfo.Invoke(target, null);
+                if (!result)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void CallMethods(EditorButtonAttribute attribute, Object[] targetObjects)
@@ -78,7 +141,7 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            var disable = !IsClickable(attribute.ActivityType);
+            var disable = !IsClickable(attribute, targetObjects);
             using (new EditorGUI.DisabledScope(disable))
             {
                 var label = string.IsNullOrEmpty(attribute.ExtraLabel)
