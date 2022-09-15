@@ -22,6 +22,7 @@ namespace UnityEngine
         public string MethodName { get; private set; }
         /// <summary>
         /// If not <see langword="null"/> will be used to retrive validation method.
+        /// Validation method will be used to disable/enable the button in the Inspector Window.
         /// </summary>
         public string ValidateMethodName { get; set; }
         public string ExtraLabel { get; private set; }
