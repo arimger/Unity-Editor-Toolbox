@@ -1,3 +1,12 @@
+## 0.11.8 [15.09.2022]
+
+### Added:
+- Utility methods for the Rect type
+- Utility methods for the EditorPrefs API
+
+### Changed:
+- Possibility to define custom validation method in the EditorButton attribute
+
 ## 0.11.7 [04.09.2022]
 
 ### Added:
