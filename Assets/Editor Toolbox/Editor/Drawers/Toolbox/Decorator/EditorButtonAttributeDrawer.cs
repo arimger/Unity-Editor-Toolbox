@@ -9,11 +9,6 @@ namespace Toolbox.Editor.Drawers
 {
     public class EditorButtonAttributeDrawer : ToolboxDecoratorDrawer<EditorButtonAttribute>
     {
-        private bool IsCoroutine(MethodInfo method)
-        {
-            return method.ReturnType == typeof(IEnumerator);
-        }
-
         private MethodInfo GetMethod(EditorButtonAttribute attribute, Object[] targetObjects, string methodName)
         {
             var methodInfo = ReflectionUtility.GetObjectMethod(methodName, targetObjects);
@@ -31,6 +26,11 @@ namespace Toolbox.Editor.Drawers
             }
 
             return methodInfo;
+        }
+
+        private static bool IsCoroutine(MethodInfo methodInfo)
+        {
+            return methodInfo.ReturnType == typeof(IEnumerator);
         }
 
         private bool IsClickable(ButtonActivityType activityType)
@@ -58,7 +58,7 @@ namespace Toolbox.Editor.Drawers
             }
 
             var validateMethodName = attribute.ValidateMethodName;
-            if (string.IsNullOrEmpty(validateMethodName))
+            if (validateMethodName == null)
             {
                 return true;
             }
@@ -84,8 +84,7 @@ namespace Toolbox.Editor.Drawers
                     continue;
                 }
 
-                var result = (bool)validateMethodInfo.Invoke(target, null);
-                if (!result)
+                if (!(bool)validateMethodInfo.Invoke(target, null))
                 {
                     return false;
                 }
@@ -96,19 +95,9 @@ namespace Toolbox.Editor.Drawers
 
         private void CallMethods(EditorButtonAttribute attribute, Object[] targetObjects)
         {
-            var methodInfo = ReflectionUtility.GetObjectMethod(attribute.MethodName, targetObjects);
-            //validate method name (check if method exists)
+            var methodInfo = GetMethod(attribute, targetObjects, attribute.MethodName);
             if (methodInfo == null)
             {
-                ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method not found.", attribute.MethodName));
-                return;
-            }
-
-            //validate parameters count and log warning
-            var parameters = methodInfo.GetParameters();
-            if (parameters.Length > 0)
-            {
-                ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method has to be parameterless.", attribute.MethodName));
                 return;
             }
 
