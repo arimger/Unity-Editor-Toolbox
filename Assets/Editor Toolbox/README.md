@@ -313,12 +313,17 @@ public int var1;
 public int var1;
 ```
 ```csharp
-[EditorButton(nameof(MyMethod), "<b>My</b> Custom Label", activityType: ButtonActivityType.OnPlayMode)]
+[EditorButton(nameof(MyMethod), "<b>My</b> Custom Label", activityType: ButtonActivityType.OnPlayMode, ValidateMethodName = nameof(ValidationMethod))]
 public int var1;
 
 private void MyMethod()
 {
 	Debug.Log("MyMethod is invoked");
+}
+
+private bool ValidationMethod()
+{
+	return var1 == 0;
 }
 ```
 ```csharp

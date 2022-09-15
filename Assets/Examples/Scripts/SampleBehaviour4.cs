@@ -16,7 +16,7 @@ public class SampleBehaviour4 : MonoBehaviour
 
     [Label("Button", skinStyle: SkinStyle.Box)]
 
-    [EditorButton(nameof(TestMethod), Tooltip = "Custom Tooltip")]
+    [EditorButton(nameof(TestMethod), Tooltip = "Custom Tooltip", ValidateMethodName = nameof(ValidationMethod))]
     [EditorButton(nameof(TestCoroutine), "<b>Test Coroutine</b>", activityType: ButtonActivityType.OnPlayMode)]
     [EditorButton(nameof(TestStaticMethod), activityType: ButtonActivityType.OnEditMode)]
     public int var1;
@@ -24,6 +24,11 @@ public class SampleBehaviour4 : MonoBehaviour
     private void TestMethod()
     {
         Debug.Log(nameof(TestMethod) + " is called");
+    }
+
+    private bool ValidationMethod()
+    {
+        return var1 == 0;
     }
 
     private IEnumerator TestCoroutine()

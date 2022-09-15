@@ -47,11 +47,11 @@ namespace Toolbox.Editor
             currentTarget = target as ToolboxEditorSettings;
 
             //internal properties cached by 'EditorPrefs'
-            hierarchyAnimBool = new AnimBool(EditorPrefs.GetBool(string.Format("{0}.HierarchyEnabled", nameof(ToolboxEditorSettings)), false));
-            projectAnimBool = new AnimBool(EditorPrefs.GetBool(string.Format("{0}.ProjectEnabled", nameof(ToolboxEditorSettings)), false));
-            inspectorAnimBool = new AnimBool(EditorPrefs.GetBool(string.Format("{0}.InspectorEnabled", nameof(ToolboxEditorSettings)), false));
+            hierarchyAnimBool = new AnimBool(ToolboxPrefs.GetBool(nameof(ToolboxEditorSettings), "HierarchyEnabled"));
+            projectAnimBool = new AnimBool(ToolboxPrefs.GetBool(nameof(ToolboxEditorSettings), "ProjectEnabled"));
+            inspectorAnimBool = new AnimBool(ToolboxPrefs.GetBool(nameof(ToolboxEditorSettings), "InspectorEnabled"));
 
-            enabledToShowDrawerType = EditorPrefs.GetInt(string.Format("{0}.PickedDrawerType", nameof(ToolboxEditorSettings)), 0);
+            enabledToShowDrawerType = ToolboxPrefs.GetInt(nameof(ToolboxEditorSettings), "PickedDrawerType");
 
             var repaintAction = new UnityAction(() =>
             {
@@ -131,10 +131,10 @@ namespace Toolbox.Editor
 
         private void OnDisable()
         {
-            EditorPrefs.SetBool(string.Format("{0}.HierarchyEnabled", nameof(ToolboxEditorSettings)), hierarchyAnimBool.target);
-            EditorPrefs.SetBool(string.Format("{0}.ProjectEnabled", nameof(ToolboxEditorSettings)), projectAnimBool.target);
-            EditorPrefs.SetBool(string.Format("{0}.InspectorEnabled", nameof(ToolboxEditorSettings)), inspectorAnimBool.target);
-            EditorPrefs.SetInt(string.Format("{0}.PickedDrawerType", nameof(ToolboxEditorSettings)), enabledToShowDrawerType);
+            ToolboxPrefs.SetBool(nameof(ToolboxEditorSettings), "HierarchyEnabled", hierarchyAnimBool.target);
+            ToolboxPrefs.SetBool(nameof(ToolboxEditorSettings), "ProjectEnabled", projectAnimBool.target);
+            ToolboxPrefs.SetBool(nameof(ToolboxEditorSettings), "InspectorEnabled", inspectorAnimBool.target);
+            ToolboxPrefs.SetInt(nameof(ToolboxEditorSettings), "PickedDrawerType", enabledToShowDrawerType);
         }
 
         private void DrawHierarchySettings()
