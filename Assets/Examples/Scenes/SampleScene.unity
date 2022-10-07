@@ -583,6 +583,7 @@ MonoBehaviour:
     id: 1
   var3:
     id: 2
+  vars: []
   references:
     version: 1
     00000000:

@@ -10,7 +10,6 @@ namespace Toolbox.Editor.Drawers
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
-        private const float neededLabelWidth = 100.0f;
         private const float labelWidthOffset = -80.0f;
 
         private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintReference(null);
@@ -89,12 +88,9 @@ namespace Toolbox.Editor.Drawers
             if (isPropertyExpanded)
             {
                 //property is expanded and we have place to move it to the next row
-                if (labelWidth < neededLabelWidth)
-                {
-                    position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
-                    position = EditorGUI.IndentedRect(position);
-                    return position;
-                }
+                position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
+                position = EditorGUI.IndentedRect(position);
+                return position;
             }
 
             //adjust position to already rendered label
