@@ -38,9 +38,12 @@ namespace UnityEngine
 #endif
         }
 
-
+        //TODO:
+        // 1 - move it to other class
+        // 2 - try cache indexes in runtime but only if needed
+        // 3 - update indexes before build
 #if UNITY_EDITOR
-        [InitializeOnLoadMethod]
+        [InitializeOnLoadMethod, RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
             UpdateAllIndexes();
