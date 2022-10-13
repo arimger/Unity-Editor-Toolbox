@@ -36,17 +36,19 @@ namespace Toolbox.Editor.Internal
             InputRect = rect;
             var size = EditorStyles.label.CalcSize(label);
             rect.xMax = rect.xMin + size.x;
+            rect.xMax += EditorGuiUtility.IndentSize;
+            rect.xMax += EditorGuiUtility.SpacingSize;
             LabelRect = rect;
             if (property.hasVisibleChildren)
             {
                 var labelRect = LabelRect;
-                labelRect.xMax += EditorGuiUtility.FoldoutOffset;
+                labelRect.xMax += EditorGuiUtility.FoldoutSize;
                 LabelRect = labelRect;
                 property.isExpanded = EditorGUI.Foldout(labelRect, property.isExpanded, label, true);
             }
             else
             {
-                EditorGUI.LabelField(rect, label);
+                EditorGUI.LabelField(LabelRect, label);
             }
         }
 
