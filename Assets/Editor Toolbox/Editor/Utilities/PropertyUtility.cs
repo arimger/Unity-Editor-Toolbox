@@ -10,6 +10,11 @@ namespace Toolbox.Editor
 {
     public static partial class PropertyUtility
     {
+        //TODO: temp
+        private static readonly MethodInfo getGetFieldInfoFromPropertyMethod =
+            ReflectionUtility.GetEditorMethod("UnityEditor.ScriptAttributeUtility", "GetFieldInfoFromProperty",
+                BindingFlags.NonPublic | BindingFlags.Static);
+
         /// <summary>
         /// Indicates if the property has all changes applied and can be safely used for reflection-based features.
         /// </summary>
@@ -257,7 +262,13 @@ namespace Toolbox.Editor
 
         public static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType)
         {
-            return GetFieldInfoFromProperty(property, out propertyType);
+            var parameters = new object[] { property, null };
+            var result = getGetFieldInfoFromPropertyMethod.Invoke(null, parameters) as FieldInfo;
+            propertyType = parameters[1] as Type;
+            return result;
+
+            //NOTE: ...
+            //return GetFieldInfoFromProperty(property, out propertyType);
         }
 
         public static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType, Object target)
@@ -277,8 +288,12 @@ namespace Toolbox.Editor
             return GetFieldInfoFromProperty(property, out type, classType);
         }
 
+        //NOTE: ...
+        //TODO: make it internal
         public static FieldInfo GetFieldInfoFromProperty(SerializedProperty property, out Type type, Type host)
         {
+            const BindingFlags fieldFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
             FieldInfo field = null;
             type = host;
 
@@ -297,7 +312,6 @@ namespace Toolbox.Editor
                     continue;
                 }
 
-                const BindingFlags fieldFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
                 FieldInfo foundField = null;
                 for (var currentType = type; foundField == null && currentType != null; currentType = currentType.BaseType)
                 {
