@@ -36,7 +36,7 @@ namespace Toolbox.Editor.Tests
         public void TestGetValuePass(string propertyPath, object value)
         {
             var property = scriptableObject.FindProperty(propertyPath);
-            var fieldInfo = property.GetFieldInfo(out _, scriptableObject.targetObject);
+            var fieldInfo = property.GetFieldInfo(out _);
             property.SetProperValue(fieldInfo, value);
             var newValue = property.GetProperValue(fieldInfo);
             Assert.AreEqual(value, newValue);
