@@ -1,5 +1,7 @@
 ﻿using System;
+
 using Toolbox.Serialization;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -26,30 +28,24 @@ namespace UnityEngine
 
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
-            UnityEngine.Debug.Log("BEFORE");
             UpdateProperties();
         }
 
         void ISerializationCallbackReceiver.OnAfterDeserialize()
-        {
-            UnityEngine.Debug.Log("AFTER");
-            UpdateProperties();
-        }
+        { }
 
 
         private void UpdateProperties()
         {
-#if UNITY_EDITOR
+#if UNITY_EDITOR       
             if (SceneSerializationUtility.TryGetSceneData(sceneReference, out var sceneData))
             {
-                UnityEngine.Debug.Log("UPDATE");
                 SceneName = sceneData.SceneName;
                 ScenePath = sceneData.ScenePath;
                 BuildIndex = sceneData.BuildIndex;
             }
             else
             {
-                UnityEngine.Debug.Log("RESET");
                 SceneName = string.Empty;
                 ScenePath = string.Empty;
                 BuildIndex = -1;
