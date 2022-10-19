@@ -2,14 +2,13 @@
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using UnityEngine;
 
 namespace Toolbox.Serialization
 {
     internal static class SceneSerializationUtility
     {
 #if UNITY_EDITOR
-        private readonly static Dictionary<SceneAsset, SceneData> cachedScenes = new Dictionary<SceneAsset, SceneData>();
+        private static readonly Dictionary<SceneAsset, SceneData> cachedScenes = new Dictionary<SceneAsset, SceneData>();
         private static bool isInitialized;
 
 
@@ -21,18 +20,25 @@ namespace Toolbox.Serialization
                 return;
             }
 
-            UnityEngine.Debug.Log("INIT");
-            UpdateAllIndexes();
-
-            EditorBuildSettings.sceneListChanged -= UpdateAllIndexes;
-            EditorBuildSettings.sceneListChanged += UpdateAllIndexes;
+            ConfirmCache();
+            EditorBuildSettings.sceneListChanged -= RefreshCache;
+            EditorBuildSettings.sceneListChanged += RefreshCache;
             isInitialized = true;
         }
 
-        private static void UpdateAllIndexes()
+        private static void ConfirmCache()
+        {
+            //NOTE: refresh data only if the cache is empty,
+            //it probably means that it's our first time when we are updating it
+            if (cachedScenes.Count == 0)
+            {
+                RefreshCache();
+            }
+        }
+
+        private static void RefreshCache()
         {
             cachedScenes.Clear();
-            UnityEngine.Debug.Log("UPDATE INDEXES");
             var buildIndex = -1;
             foreach (var scene in EditorBuildSettings.scenes)
             {
@@ -42,7 +48,7 @@ namespace Toolbox.Serialization
                 }
 
                 buildIndex++;
-                var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(scene.path);
+                var sceneAsset = EditorGUIUtility.Load(scene.path) as SceneAsset;
                 if (sceneAsset != null)
                 {
                     cachedScenes.Add(sceneAsset, new SceneData()
@@ -58,6 +64,7 @@ namespace Toolbox.Serialization
 
         public static bool TryGetSceneData(SceneAsset sceneAsset, out SceneData data)
         {
+            ConfirmCache();
             if (!sceneAsset || !cachedScenes.TryGetValue(sceneAsset, out data))
             {
                 data = null;
