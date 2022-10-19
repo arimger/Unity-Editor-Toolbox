@@ -10,7 +10,8 @@ namespace Toolbox.Editor
 {
     public static partial class PropertyUtility
     {
-        //TODO: temp
+        //NOTE: last non-reflection implementation was ok but support for [SerializeReference] makes it a bit slow
+        // unfortunately UnityEditor.ScriptAttributeUtility.GetFieldInfoFromProperty is internal so we have to retrive it using reflection
         private static readonly MethodInfo getGetFieldInfoFromPropertyMethod =
             ReflectionUtility.GetEditorMethod("UnityEditor.ScriptAttributeUtility", "GetFieldInfoFromProperty",
                 BindingFlags.NonPublic | BindingFlags.Static);
@@ -254,7 +255,6 @@ namespace Toolbox.Editor
             return scriptInstance.GetClass();
         }
 
-
         public static FieldInfo GetFieldInfo(this SerializedProperty property)
         {
             return GetFieldInfo(property, out _);
@@ -266,16 +266,9 @@ namespace Toolbox.Editor
             var result = getGetFieldInfoFromPropertyMethod.Invoke(null, parameters) as FieldInfo;
             propertyType = parameters[1] as Type;
             return result;
-
-            //NOTE: ...
-            //return GetFieldInfoFromProperty(property, out propertyType);
         }
 
-        public static FieldInfo GetFieldInfo(this SerializedProperty property, out Type propertyType, Object target)
-        {
-            return GetFieldInfoFromProperty(property, out propertyType, target.GetType());
-        }
-
+        [Obsolete("This method is no longer safe, use GetFieldInfo() instead.")]
         public static FieldInfo GetFieldInfoFromProperty(SerializedProperty property, out Type type)
         {
             var classType = GetScriptTypeFromProperty(property);
@@ -288,8 +281,7 @@ namespace Toolbox.Editor
             return GetFieldInfoFromProperty(property, out type, classType);
         }
 
-        //NOTE: ...
-        //TODO: make it internal
+        [Obsolete("This method is no longer safe, use GetFieldInfo() instead.")]
         public static FieldInfo GetFieldInfoFromProperty(SerializedProperty property, out Type type, Type host)
         {
             const BindingFlags fieldFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -397,7 +389,7 @@ namespace Toolbox.Editor
 
         public static T GetAttribute<T>(SerializedProperty property) where T : Attribute
         {
-            return GetAttribute<T>(property, GetFieldInfoFromProperty(property, out _));
+            return GetAttribute<T>(property, GetFieldInfo(property, out _));
         }
 
         public static T GetAttribute<T>(SerializedProperty property, FieldInfo fieldInfo) where T : Attribute
@@ -407,7 +399,7 @@ namespace Toolbox.Editor
 
         public static T[] GetAttributes<T>(SerializedProperty property) where T : Attribute
         {
-            return GetAttributes<T>(property, GetFieldInfoFromProperty(property, out _));
+            return GetAttributes<T>(property, GetFieldInfo(property, out _));
         }
 
         public static T[] GetAttributes<T>(SerializedProperty property, FieldInfo fieldInfo) where T : Attribute

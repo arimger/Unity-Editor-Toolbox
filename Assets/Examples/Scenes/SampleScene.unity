@@ -583,7 +583,8 @@ MonoBehaviour:
     id: 1
   var3:
     id: 2
-  vars: []
+  vars:
+  - id: 3
   references:
     version: 1
     00000000:
@@ -591,7 +592,7 @@ MonoBehaviour:
       data:
         go: {fileID: 977748987}
         var1:
-          id: 3
+          id: 4
     00000001:
       type: {class: SampleBehaviour6/ClassWithInterface3, ns: , asm: Assembly-CSharp}
       data:
@@ -602,6 +603,8 @@ MonoBehaviour:
         var1: 0
         mat: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
     00000003:
+      type: {class: , ns: , asm: }
+    00000004:
       type: {class: SampleBehaviour6/Struct, ns: , asm: Assembly-CSharp}
       data:
         var1: 1
