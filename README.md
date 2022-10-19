@@ -555,6 +555,8 @@ public int var1;
 
 You can draw properties marked with the **[SerializeReference]** attribute with an additional type picker that allows you to manipulate what managed type will be serialized.
 
+To prevent issues after renaming types use `UnityEngine.Scripting.APIUpdating.MovedFromAttribute`.
+
 ```csharp
 [SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.ByFlatName)]
 public Interface1 var1;
