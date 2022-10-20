@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+
+using Toolbox.Serialization;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,8 +15,6 @@ namespace UnityEngine
     public class SerializedScene : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
-        private readonly static Dictionary<SceneAsset, int> cachedBuildIndexes = new Dictionary<SceneAsset, int>();
-
         [SerializeField]
         private SceneAsset sceneReference;
 #endif
@@ -26,87 +26,34 @@ namespace UnityEngine
         private int buildIndex;
 
 
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
+        {
+            UpdateProperties();
+        }
+
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         { }
 
-        void ISerializationCallbackReceiver.OnBeforeSerialize()
+
+        private void UpdateProperties()
         {
-#if UNITY_EDITOR
-            TryGetBuildIndex(sceneReference, out buildIndex);
-            TryGetSceneName(sceneReference, out sceneName);
-            TryGetScenePath(sceneReference, out scenePath);
+#if UNITY_EDITOR       
+            if (SceneSerializationUtility.TryGetSceneData(sceneReference, out var sceneData))
+            {
+                SceneName = sceneData.SceneName;
+                ScenePath = sceneData.ScenePath;
+                BuildIndex = sceneData.BuildIndex;
+            }
+            else
+            {
+                SceneName = string.Empty;
+                ScenePath = string.Empty;
+                BuildIndex = -1;
+            }
 #endif
         }
 
-        //TODO:
-        // 1 - move it to other class
-        // 2 - try cache indexes in runtime but only if needed
-        // 3 - update indexes before build
 #if UNITY_EDITOR
-        [InitializeOnLoadMethod, RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize()
-        {
-            UpdateAllIndexes();
-
-            EditorBuildSettings.sceneListChanged -= UpdateAllIndexes;
-            EditorBuildSettings.sceneListChanged += UpdateAllIndexes;
-        }
-
-        private static void UpdateAllIndexes()
-        {
-            cachedBuildIndexes.Clear();
-
-            var buildIndex = -1;
-            foreach (var scene in EditorBuildSettings.scenes)
-            {
-                if (scene.enabled)
-                {
-                    buildIndex++;
-                    var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(scene.path);
-                    if (sceneAsset != null)
-                    {
-                        cachedBuildIndexes.Add(sceneAsset, buildIndex);
-                    }
-                }
-            }
-        }
-
-        private static bool TryGetBuildIndex(SceneAsset sceneAsset, out int index)
-        {
-            if (sceneAsset == null || !cachedBuildIndexes.TryGetValue(sceneAsset, out index))
-            {
-                index = -1;
-                return false;
-            }
-
-            return true;
-        }
-
-        private static bool TryGetSceneName(SceneAsset sceneAsset, out string name)
-        {
-            if (sceneAsset == null)
-            {
-                name = null;
-                return false;
-            }
-
-            name = sceneAsset.name;
-            return true;
-        }
-
-        public static bool TryGetScenePath(SceneAsset sceneAsset, out string path)
-        {
-            if (sceneAsset == null)
-            {
-                path = null;
-                return false;
-            }
-
-            path = AssetDatabase.GetAssetPath(sceneAsset);
-            return true;
-        }
-
-
         public SceneAsset SceneReference
         {
             get => sceneReference;
