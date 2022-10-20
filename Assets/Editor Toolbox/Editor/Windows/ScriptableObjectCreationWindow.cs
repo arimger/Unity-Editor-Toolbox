@@ -2,17 +2,38 @@
 using System.Reflection;
 
 using UnityEditor;
-using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor.Windows
 {
+    using Toolbox.Editor.Internal;
+
     public class ScriptableObjectCreationWindow : EditorWindow
     {
-        private SearchField searchField;
+        private class TypeConstraintScriptableObject : TypeConstraintStandard
+        {
+            public TypeConstraintScriptableObject() : base(typeof(ScriptableObject), TypeSettings.Class, false, false)
+            { }
 
 
-        [MenuItem("Assets/Create/ScriptableObject Creation Window", priority = 5)]
+            public override bool IsSatisfied(Type type)
+            {
+                return Attribute.IsDefined(type, typeof(CreateAssetMenuAttribute)) && base.IsSatisfied(type);
+            }
+        }
+
+
+        private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintScriptableObject();
+        private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
+        private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
+
+        private Type activeType;
+        private int instancesCount = 1;
+        private string baseName;
+        private Object defaultObject;
+
+        [MenuItem("Assets/Create/Toolbox/ScriptableObject Creation Window", priority = 5)]
         internal static void Initialize()
         {
             var window = GetWindow<ScriptableObjectCreationWindow>();
@@ -21,39 +42,63 @@ namespace Toolbox.Editor.Windows
         }
 
 
-        private void OnEnable()
-        {
-            searchField = new SearchField();
-        }
-
         private void OnGUI()
         {
-            using (new EditorGUILayout.HorizontalScope())
+            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
-                using (new EditorGUILayout.VerticalScope())
-                {
-                    DrawSearchPanel();
-                }
-
-                using (new EditorGUILayout.VerticalScope())
-                {
-                    DrawCreatePanel();
-                }
+                DrawSettingsPanel();
             }
+
+            DrawCreatePanel();
         }
 
-        private void DrawSearchPanel()
+
+        private void DrawSettingsPanel()
         {
-            var rect = GUILayoutUtility.GetRect(100.0f, 16.0f);
-            searchField.OnGUI(rect, string.Empty);
+            EditorGUILayout.LabelField("Settings", EditorStyles.boldLabel);
+            var rect = EditorGUILayout.GetControlRect(true);
+            typeField.OnGui(rect, true, OnTypeSelected, activeType);
+            if (activeType == null)
+            {
+                return;
+            }
+
+            instancesCount = EditorGUILayout.IntField("Instances To Create", instancesCount);
+            instancesCount = Mathf.Min(instancesCount, 1);
+            baseName = EditorGUILayout.TextField("Base Name", baseName);
+            EditorGUI.BeginChangeCheck();
+            defaultObject = EditorGUILayout.ObjectField(new GUIContent("Default Object"), defaultObject, activeType, false);
+            if (EditorGUI.EndChangeCheck())
+            {
+                //TODO: validate default Object
+            }
         }
 
         private void DrawCreatePanel()
         {
             if (GUILayout.Button("Create"))
             {
-                Debug.Log(GetActiveFolderPath());
+                CreateObjects();
             }
+        }
+
+        private void CreateObjects()
+        {
+            CreateObjects(activeType, defaultObject);
+        }
+
+        private void CreateObjects(Type targetType, Object defaultObject)
+        {
+            //TODO: validate default Object
+            for (var i = 0; i < instancesCount; i++)
+            {
+                //TODO: instantiate SOs
+            }
+        }
+
+        private Object CreateObject(Type targetType, Object defaultObject)
+        {
+            return defaultObject != null ? Instantiate(defaultObject) : CreateInstance(targetType);
         }
 
         private static string GetActiveFolderPath()
@@ -63,6 +108,20 @@ namespace Toolbox.Editor.Windows
             object obj = getActiveFolderPath.Invoke(null, new object[0]);
             string pathToCurrentFolder = obj.ToString();
             return pathToCurrentFolder;
+        }
+
+        private void OnTypeSelected(Type type)
+        {
+            activeType = type;
+            var attribute = type?.GetCustomAttribute<CreateAssetMenuAttribute>();
+            if (attribute != null)
+            {
+                baseName = attribute.fileName;
+            }
+            else
+            {
+                baseName = string.Empty;
+            }
         }
     }
 }

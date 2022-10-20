@@ -1,6 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu(fileName = "Sample Scriptable Object")]
 public class SampleScriptableObject : ScriptableObject
 {
     public bool var1;
