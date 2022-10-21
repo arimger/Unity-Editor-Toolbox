@@ -2,6 +2,7 @@
 
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
@@ -206,7 +207,7 @@ namespace Toolbox.Editor
         public static void DrawMinMaxSlider(Rect rect, GUIContent label, ref float xValue, ref float yValue, float minValue, float maxValue)
         {
             rect = EditorGUI.PrefixLabel(rect, label);
- 
+
             var fieldWidth = EditorGUIUtility.fieldWidth;
             var minFieldRect = new Rect(rect.xMin, rect.y, fieldWidth, rect.height);
             var maxFieldRect = new Rect(rect.xMax - fieldWidth, rect.y, fieldWidth, rect.height);
@@ -214,8 +215,8 @@ namespace Toolbox.Editor
             //set slider rect between min and max fields + additional padding
             var spacing = 8.0f;
             var sliderRect = Rect.MinMaxRect(minFieldRect.xMax + spacing,
-                                             rect.yMin, 
-                                             maxFieldRect.xMin - spacing, 
+                                             rect.yMin,
+                                             maxFieldRect.xMin - spacing,
                                              rect.yMax);
 
             EditorGUI.BeginChangeCheck();
@@ -603,6 +604,37 @@ namespace Toolbox.Editor
         public static void CloseProperty()
         {
             EditorGUI.EndProperty();
+        }
+
+        /// <summary>
+        /// Displays all visible children associated to the given <see cref="Object"/>.
+        /// This method doesn't support Toolbox-based features.
+        /// </summary>
+        public static void DrawObjectProperties(Object instance)
+        {
+            using (SerializedObject serializedObject = new SerializedObject(instance))
+            {
+                using (var iterator = serializedObject.GetIterator())
+                {
+                    if (iterator.NextVisible(true))
+                    {
+                        do
+                        {
+                            var name = iterator.name;
+                            SerializedProperty childProperty = serializedObject.FindProperty(name);
+                            if (PropertyUtility.IsDefaultScriptProperty(childProperty))
+                            {
+                                continue;
+                            }
+
+                            DrawDefaultProperty(childProperty);
+                        }
+                        while (iterator.NextVisible(false));
+                    }
+                }
+
+                serializedObject.ApplyModifiedProperties();
+            }
         }
     }
 }
