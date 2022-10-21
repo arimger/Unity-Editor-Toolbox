@@ -627,7 +627,7 @@ namespace Toolbox.Editor
                                 continue;
                             }
 
-                            DrawDefaultProperty(childProperty);
+                            DrawNativeProperty(childProperty);
                         }
                         while (iterator.NextVisible(false));
                     }
