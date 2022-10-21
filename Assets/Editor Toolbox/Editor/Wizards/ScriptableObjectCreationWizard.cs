@@ -65,6 +65,7 @@ namespace Toolbox.Editor.Wizards
         private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
 
         private readonly CreationData data = new CreationData();
+        private bool editDefaultObject;
 
         [MenuItem("Assets/Create/Toolbox/ScriptableObject Creation Wizard", priority = 9)]
         internal static void Initialize()
@@ -88,7 +89,25 @@ namespace Toolbox.Editor.Wizards
             data.InstanceName = EditorGUILayout.TextField("Instance Name", data.InstanceName);
             data.InstancesCount = EditorGUILayout.IntField("Instances To Create", data.InstancesCount);
             var content = new GUIContent("Default Object", "Will be used as a blueprint for all created ScriptableObjects.");
-            data.DefaultObject = EditorGUILayout.ObjectField(content, data.DefaultObject, data.InstanceType, false);
+            var instance = EditorGUILayout.ObjectField(content, data.DefaultObject, data.InstanceType, false);
+            if (instance != null)
+            {
+                editDefaultObject = GUILayout.Toggle(editDefaultObject,
+                    Style.foldoutContent, Style.foldoutStyle, Style.foldoutOptions);
+            }
+            else
+            {
+                editDefaultObject = false;
+            }
+
+            if (editDefaultObject)
+            {
+                EditorGUI.indentLevel++;
+                ToolboxEditorGui.DrawObjectProperties(instance);
+                EditorGUI.indentLevel--;
+            }
+
+            data.DefaultObject = instance;
             if (EditorGUI.EndChangeCheck())
             {
                 OnWizardUpdate();
@@ -177,12 +196,42 @@ namespace Toolbox.Editor.Wizards
         protected override void OnWizardGui()
         {
             base.OnWizardGui();
-            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            using (new EditorGUILayout.VerticalScope(Style.backgroundStyle))
             {
                 DrawSettingsPanel();
             }
         }
 
         protected override bool CloseOnCreate => false;
+
+        private static class Style
+        {
+            internal static readonly GUIStyle backgroundStyle;
+            internal static readonly GUIStyle foldoutStyle;
+
+            internal static readonly GUIContent foldoutContent = new GUIContent("Inspect", "Show/Hide Properties");
+
+            internal static readonly GUILayoutOption[] foldoutOptions = new GUILayoutOption[]
+            {
+                GUILayout.Width(60.0f)
+            };
+
+            static Style()
+            {
+                backgroundStyle = new GUIStyle(EditorStyles.helpBox)
+                {
+                    padding = new RectOffset(13, 13, 8, 8)
+                };
+                foldoutStyle = new GUIStyle(EditorStyles.miniButton)
+                {
+#if UNITY_2019_3_OR_NEWER
+                    fontSize = 10,
+#else
+                    fontSize = 9,
+#endif
+                    alignment = TextAnchor.MiddleCenter
+                };
+            }
+        }
     }
 }
