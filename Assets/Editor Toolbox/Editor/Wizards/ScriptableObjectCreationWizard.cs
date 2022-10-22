@@ -65,9 +65,10 @@ namespace Toolbox.Editor.Wizards
         private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
 
         private readonly CreationData data = new CreationData();
-        private bool editDefaultObject;
 
-        [MenuItem("Assets/Create/Toolbox/ScriptableObject Creation Wizard", priority = 9)]
+        private bool inspectDefaultObject;
+
+        [MenuItem("Assets/Create/Toolbox/ScriptableObject Creation Wizard", priority = 5)]
         internal static void Initialize()
         {
             var window = GetWindow<ScriptableObjectCreationWizard>();
@@ -86,28 +87,28 @@ namespace Toolbox.Editor.Wizards
             }
 
             EditorGUI.BeginChangeCheck();
-            data.InstanceName = EditorGUILayout.TextField("Instance Name", data.InstanceName);
-            data.InstancesCount = EditorGUILayout.IntField("Instances To Create", data.InstancesCount);
-            var content = new GUIContent("Default Object", "Will be used as a blueprint for all created ScriptableObjects.");
-            var instance = EditorGUILayout.ObjectField(content, data.DefaultObject, data.InstanceType, false);
-            if (instance != null)
+            data.InstanceName = EditorGUILayout.TextField(Style.nameContent, data.InstanceName);
+            data.InstancesCount = EditorGUILayout.IntField(Style.countContent, data.InstancesCount);
+            var assignedInstance = EditorGUILayout.ObjectField(Style.objectContent, data.DefaultObject, data.InstanceType, false);
+            if (assignedInstance != null)
             {
-                editDefaultObject = GUILayout.Toggle(editDefaultObject,
+                inspectDefaultObject = GUILayout.Toggle(inspectDefaultObject,
                     Style.foldoutContent, Style.foldoutStyle, Style.foldoutOptions);
             }
             else
             {
-                editDefaultObject = false;
+                inspectDefaultObject = false;
             }
 
-            if (editDefaultObject)
+            if (inspectDefaultObject)
             {
-                EditorGUI.indentLevel++;
-                ToolboxEditorGui.DrawObjectProperties(instance);
-                EditorGUI.indentLevel--;
+                using (new EditorGUILayout.VerticalScope(Style.backgroundStyle))
+                {
+                    ToolboxEditorGui.DrawObjectProperties(assignedInstance);
+                }
             }
 
-            data.DefaultObject = instance;
+            data.DefaultObject = assignedInstance;
             if (EditorGUI.EndChangeCheck())
             {
                 OnWizardUpdate();
@@ -209,6 +210,9 @@ namespace Toolbox.Editor.Wizards
             internal static readonly GUIStyle backgroundStyle;
             internal static readonly GUIStyle foldoutStyle;
 
+            internal static readonly GUIContent nameContent = new GUIContent("Instance Name");
+            internal static readonly GUIContent countContent = new GUIContent("Instances To Create", "Indicates how many instances will be created.");
+            internal static readonly GUIContent objectContent = new GUIContent("Default Object", "Will be used as a blueprint for all created ScriptableObjects.");
             internal static readonly GUIContent foldoutContent = new GUIContent("Inspect", "Show/Hide Properties");
 
             internal static readonly GUILayoutOption[] foldoutOptions = new GUILayoutOption[]

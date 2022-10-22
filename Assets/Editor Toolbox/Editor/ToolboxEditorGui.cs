@@ -607,29 +607,24 @@ namespace Toolbox.Editor
         }
 
         /// <summary>
-        /// Displays all visible children associated to the given <see cref="Object"/>.
+        /// Displays all visible children (except the default script property) associated to the given <see cref="Object"/>.
         /// This method doesn't support Toolbox-based features.
         /// </summary>
         public static void DrawObjectProperties(Object instance)
         {
             using (SerializedObject serializedObject = new SerializedObject(instance))
             {
-                using (var iterator = serializedObject.GetIterator())
+                var property = serializedObject.GetIterator();
+                if (property.NextVisible(true))
                 {
-                    if (iterator.NextVisible(true))
+                    if (!PropertyUtility.IsDefaultScriptProperty(property))
                     {
-                        do
-                        {
-                            var name = iterator.name;
-                            SerializedProperty childProperty = serializedObject.FindProperty(name);
-                            if (PropertyUtility.IsDefaultScriptProperty(childProperty))
-                            {
-                                continue;
-                            }
+                        DrawNativeProperty(property.Copy());
+                    }
 
-                            DrawNativeProperty(childProperty);
-                        }
-                        while (iterator.NextVisible(false));
+                    while (property.NextVisible(false))
+                    {
+                        DrawNativeProperty(property.Copy());
                     }
                 }
 
