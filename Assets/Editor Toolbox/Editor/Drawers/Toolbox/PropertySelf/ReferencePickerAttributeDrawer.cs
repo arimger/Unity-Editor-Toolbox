@@ -10,7 +10,6 @@ namespace Toolbox.Editor.Drawers
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
-        private const float neededLabelWidth = 100.0f;
         private const float labelWidthOffset = -80.0f;
 
         private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintReference(null);
@@ -25,20 +24,21 @@ namespace Toolbox.Editor.Drawers
 
         private Type GetParentType(SerializedProperty property, ReferencePickerAttribute attribute)
         {
-            property.GetFieldInfo(out Type propertyType);
+            var fieldInfo = property.GetFieldInfo(out _);
+            var fieldType = property.GetProperType(fieldInfo);
             var candidateType = attribute.ParentType;
             if (candidateType != null)
             {
-                if (propertyType.IsAssignableFrom(candidateType))
+                if (fieldType.IsAssignableFrom(candidateType))
                 {
                     return candidateType;
                 }
 
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property,
-                    $"Provided {nameof(attribute.ParentType)} ({candidateType}) cannot be used because it's not assignable from: '{propertyType}'");
+                    $"Provided {nameof(attribute.ParentType)} ({candidateType}) cannot be used because it's not assignable from: '{fieldType}'");
             }
 
-            return propertyType;
+            return fieldType;
         }
 
         private void CreateTypeProperty(Rect position, SerializedProperty property, Type parentType)
@@ -89,12 +89,9 @@ namespace Toolbox.Editor.Drawers
             if (isPropertyExpanded)
             {
                 //property is expanded and we have place to move it to the next row
-                if (labelWidth < neededLabelWidth)
-                {
-                    position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
-                    position = EditorGUI.IndentedRect(position);
-                    return position;
-                }
+                position = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
+                position = EditorGUI.IndentedRect(position);
+                return position;
             }
 
             //adjust position to already rendered label

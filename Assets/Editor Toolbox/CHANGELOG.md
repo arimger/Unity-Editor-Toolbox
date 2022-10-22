@@ -1,3 +1,13 @@
+## 0.11.9 [22.10.2022]
+
+### Added:
+- ScriptableObjectCreationWizard (possibility to create multiple ScriptableObjects at once)
+
+### Changed:
+- Fix displaying empty fields marked with the [SerializeReference] attribute
+- Fix Scene data serialization in the SerializedScene class
+- Fix retrieving FieldInfo from nested [SerializeReference]-based fields
+
 ## 0.11.8 [15.09.2022]
 
 ### Added:

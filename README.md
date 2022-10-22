@@ -69,7 +69,9 @@ Available features are divided into three groups:
 Each module is described in its respective section.
 
 If you want to keep your custom settings between UET versions, create your own settings file:
-```Create/Editor Toolbox/Settings```
+```
+Create/Editor Toolbox/Settings
+```
 
 ## Attributes & Drawers <a name="drawers"></a>
 
@@ -555,6 +557,8 @@ public int var1;
 
 You can draw properties marked with the **[SerializeReference]** attribute with an additional type picker that allows you to manipulate what managed type will be serialized.
 
+To prevent issues after renaming types use `UnityEngine.Scripting.APIUpdating.MovedFromAttribute`.
+
 ```csharp
 [SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.ByFlatName)]
 public Interface1 var1;
@@ -813,3 +817,10 @@ public static class MyEditorUtility
 Copy and paste all components from/to particular GameObject.
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/utils.png)
+
+Create multiple ScriptableObjects at once.
+```
+Assets/Create/Toolbox/ScriptableObject Creation Wizard
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/createso.png)

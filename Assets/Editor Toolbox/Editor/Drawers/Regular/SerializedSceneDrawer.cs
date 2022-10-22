@@ -103,16 +103,24 @@ namespace Toolbox.Editor.Drawers
                 var sceneAsset = property.objectReferenceValue as SceneAsset;
                 var scenePath = AssetDatabase.GetAssetPath(sceneAsset);
                 var sceneGuid = AssetDatabase.AssetPathToGUID(scenePath);
+                var sceneIndex = -1;
                 for (var i = 0; i < EditorBuildSettings.scenes.Length; i++)
                 {
                     var sceneSettings = EditorBuildSettings.scenes[i];
+                    var isEnabled = sceneSettings.enabled;
+                    if (isEnabled)
+                    {
+                        sceneIndex++;
+                    }
+
                     var guid = sceneSettings.guid;
                     if (guid.Equals(new GUID(sceneGuid)))
                     {
-                        sceneData.index = i;
-                        sceneData.enabled = sceneSettings.enabled;
+                        sceneData.index = isEnabled ? sceneIndex : -1;
+                        sceneData.enabled = isEnabled;
                         sceneData.guid = guid;
                         sceneData.inBuild = true;
+                        break;
                     }
                 }
 

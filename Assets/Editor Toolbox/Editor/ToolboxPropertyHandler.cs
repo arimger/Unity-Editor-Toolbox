@@ -286,11 +286,11 @@ namespace Toolbox.Editor
                     //draw target property using the associated type drawer
                     ToolboxDrawerModule.GetTargetTypeDrawer(type)?.OnGui(property, label);
                 }
+
+                return;
             }
-            else
-            {
-                OnGuiDefault(property, label);
-            }
+
+            OnGuiDefault(property, label);
         }
 
         private void BeginDecoratorDrawers(PropertyCondition conditionState = PropertyCondition.Valid)

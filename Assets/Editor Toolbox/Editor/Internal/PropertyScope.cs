@@ -33,19 +33,22 @@ namespace Toolbox.Editor.Internal
 
         private void TryDrawLabel(Rect rect, GUIContent label)
         {
-            LabelRect = rect;
             InputRect = rect;
-            if (property.hasChildren)
+            var size = EditorStyles.label.CalcSize(label);
+            rect.xMax = rect.xMin + size.x;
+            rect.xMax += EditorGuiUtility.IndentSize;
+            rect.xMax += EditorGuiUtility.SpacingSize;
+            LabelRect = rect;
+            if (property.hasVisibleChildren)
             {
-                var size = EditorStyles.label.CalcSize(label);
-                size.x = Mathf.Max(EditorGuiUtility.FoldoutOffset, size.x);
-                rect.xMax = rect.xMin + size.x;
-                LabelRect = rect;
-                property.isExpanded = EditorGUI.Foldout(rect, property.isExpanded, label, true);
+                var labelRect = LabelRect;
+                labelRect.xMax += EditorGuiUtility.FoldoutSize;
+                LabelRect = labelRect;
+                property.isExpanded = EditorGUI.Foldout(labelRect, property.isExpanded, label, true);
             }
             else
             {
-                EditorGUI.LabelField(rect, label);
+                EditorGUI.LabelField(LabelRect, label);
             }
         }
 
