@@ -13,7 +13,7 @@ public class SampleBehaviour6 : MonoBehaviour
     public ClassWithInterfaceBase var2;
     [SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2))]
     public ClassWithInterfaceBase var3;
-    [SerializeField, SerializeReference, ReferencePicker]
+    [SerializeReference, ReferencePicker]
     public Interface1[] vars;
 #endif
 

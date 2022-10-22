@@ -40,8 +40,11 @@ namespace Toolbox.Editor.Wizards
                     if (HandleCreateButton())
                     {
                         OnWizardCreate();
-                        Close();
-                        GUIUtility.ExitGUI();
+                        if (CloseOnCreate)
+                        {
+                            Close();
+                            GUIUtility.ExitGUI();
+                        }
                     }
 
                     GUI.enabled = true;
@@ -60,6 +63,11 @@ namespace Toolbox.Editor.Wizards
 
             targetEditor = Editor.CreateEditor(this);
             targetEditor.hideFlags = HideFlags.HideAndDontSave;
+            if (targetEditor is ToolboxEditor toolboxEditor)
+            {
+                toolboxEditor.IgnoreProperty(PropertyUtility.Defaults.scriptPropertyName);
+            }
+
             OnWizardUpdate();
         }
 
@@ -88,6 +96,8 @@ namespace Toolbox.Editor.Wizards
             return GetWindow<T>(true, title);
         }
 
-        protected bool IsValid { get; set; } = true;
+        protected virtual bool IsValid { get; set; } = true;
+
+        protected virtual bool CloseOnCreate => true;
     }
 }
