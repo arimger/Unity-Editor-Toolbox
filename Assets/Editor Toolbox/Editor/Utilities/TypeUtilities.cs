@@ -103,12 +103,11 @@ namespace Toolbox.Editor
             {
                 typesList.AddRange(FindTypes(constraint, assembly));
             }
-
-            typesList.Sort((a, b) => a.FullName.CompareTo(b.FullName));
 #endif
             if (constraint.IsOrdered)
             {
-                typesList.Sort((t1, t2) => t1.Name.CompareTo(t2.Name));
+                var comparer = constraint.Comparer;
+                typesList.Sort(comparer);
             }
 
             return typesList;
