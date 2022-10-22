@@ -19,7 +19,9 @@ namespace Toolbox.Editor.Wizards
         private class TypeConstraintScriptableObject : TypeConstraintStandard
         {
             public TypeConstraintScriptableObject() : base(typeof(ScriptableObject), TypeSettings.Class, false, false)
-            { }
+            {
+                Comparer = (t1, t2) => t1.FullName.CompareTo(t2.FullName);
+            }
 
             public override bool IsSatisfied(Type type)
             {

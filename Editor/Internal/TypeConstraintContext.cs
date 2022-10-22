@@ -47,6 +47,7 @@ namespace Toolbox.Editor.Internal
 
 
         public Type TargetType => targetType;
+        public Comparison<Type> Comparer { get; set; } = (t1, t2) => t1.Name.CompareTo(t2.Name);
         public bool IsOrdered { get; set; } = true;
     }
 }
