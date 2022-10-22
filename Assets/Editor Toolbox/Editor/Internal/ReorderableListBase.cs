@@ -141,7 +141,6 @@ namespace Toolbox.Editor.Internal
 
                         //don't allow arrowing through the ends of the list
                         Index = Mathf.Clamp(Index, 0, List.arraySize - 1);
-
                     }
 
                     break;
@@ -474,7 +473,8 @@ namespace Toolbox.Editor.Internal
             var property = List.GetArrayElementAtIndex(Index);
             var newValue = overrideNewElementCallback(Index);
             //update property directly by the reflection
-            property.SetProperValue(property.GetFieldInfo(), newValue, false);
+            var fieldInfo = property.GetFieldInfo();
+            property.SetProperValue(fieldInfo, newValue, false);
         }
 
         public void RemoveElement()
