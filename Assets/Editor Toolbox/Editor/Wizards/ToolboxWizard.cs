@@ -11,6 +11,14 @@ namespace Toolbox.Editor.Wizards
 
         private Vector2 scrollPosition;
 
+        private void OnEnable()
+        {
+            if (targetEditor != null)
+            {
+                ReinitEditor(targetEditor);
+            }
+        }
+
         private void OnDestroy()
         {
             DestroyImmediate(targetEditor);
@@ -54,7 +62,7 @@ namespace Toolbox.Editor.Wizards
             }
         }
 
-        private void PrepareEditor()
+        private void CreateEditor()
         {
             if (targetEditor != null)
             {
@@ -62,13 +70,22 @@ namespace Toolbox.Editor.Wizards
             }
 
             targetEditor = Editor.CreateEditor(this);
-            targetEditor.hideFlags = HideFlags.HideAndDontSave;
-            if (targetEditor is ToolboxEditor toolboxEditor)
+            ReinitEditor(targetEditor);
+            OnWizardUpdate();
+        }
+
+        private void ReinitEditor(Editor editor)
+        {
+            if (editor == null)
+            {
+                return;
+            }
+
+            editor.hideFlags = HideFlags.HideAndDontSave;
+            if (editor is ToolboxEditor toolboxEditor)
             {
                 toolboxEditor.IgnoreProperty(PropertyUtility.Defaults.scriptPropertyName);
             }
-
-            OnWizardUpdate();
         }
 
         protected virtual void OnWizardCreate()
@@ -79,7 +96,7 @@ namespace Toolbox.Editor.Wizards
 
         protected virtual void OnWizardGui()
         {
-            PrepareEditor();
+            CreateEditor();
             targetEditor.OnInspectorGUI();
         }
 
