@@ -14,61 +14,41 @@ namespace Toolbox.Editor
     [CanEditMultipleObjects]
     public class ToolboxEditor : Editor, IToolboxEditor
     {
-        private readonly HashSet<string> propertiesToIgnore = new HashSet<string>();
-
-        //TODO: better initialization
-        private IToolboxEditor nestedEditor;
-
         /// <summary>
         /// Inspector GUI re-draw call.
         /// </summary>
         public sealed override void OnInspectorGUI()
         {
-            nestedEditor ??= new BasicToolboxEditor(this);
             ToolboxEditorHandler.HandleToolboxEditor(this);
         }
 
-        /// <summary>
-        /// Handles property display process using custom <see cref="Drawers.ToolboxDrawer"/>.
-        /// </summary>
-        /// <param name="property">Property to display.</param>
+        //TODO: how to handle this method, currently unused
+        /// <inheritdoc />
         public virtual void DrawCustomProperty(SerializedProperty property)
         {
-            nestedEditor.DrawCustomProperty(property);
+            Drawer.DrawToolboxProperty(property);
         }
 
-        /// <summary>
-        /// Draws each available property using internally <see cref="Drawers.ToolboxDrawer"/>s.
-        /// </summary>
+        /// <inheritdoc />
         public virtual void DrawCustomInspector()
         {
-            nestedEditor.DrawCustomInspector();
+            Drawer.DrawToolboxInspector(serializedObject);
         }
 
-        /// <summary>
-        /// Draws each available property using internally <see cref="Drawers.ToolboxDrawer"/>s.
-        /// </summary>
-        public virtual void DrawCustomInspector(SerializedObject serializedObject)
-        {
-            nestedEditor.DrawCustomInspector(serializedObject);
-        }
-
-        /// <summary>
-        /// Forces provided <see cref="SerializedProperty"/> to be ignored in the drawing process.
-        /// </summary>
+        /// <inheritdoc />
         public void IgnoreProperty(SerializedProperty property)
         {
-            IgnoreProperty(property.propertyPath);
+            Drawer.IgnoreProperty(property);
         }
 
-        /// <summary>
-        /// Forces associated <see cref="SerializedProperty"/> to be ignored in the drawing process.
-        /// </summary>
+        /// <inheritdoc />
         public void IgnoreProperty(string propertyPath)
         {
-            propertiesToIgnore.Add(propertyPath);
+            Drawer.IgnoreProperty(propertyPath);
         }
 
+
         Editor IToolboxEditor.ContextEditor => this;
+        public IToolboxEditorDrawer Drawer { get; } = new ToolboxEditorDrawer();
     }
 }

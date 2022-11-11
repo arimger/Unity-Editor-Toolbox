@@ -6,10 +6,11 @@ namespace Toolbox.Editor
 
     public interface IToolboxEditor
     {
-        void DrawCustomProperty(SerializedProperty property);
         void DrawCustomInspector();
-        void DrawCustomInspector(SerializedObject serializedObject);
+        void IgnoreProperty(SerializedProperty property);
+        void IgnoreProperty(string propertyPath);
 
         Editor ContextEditor { get; }
+        IToolboxEditorDrawer Drawer { get; }
     }
 }
