@@ -7,7 +7,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(BeginGroupAttribute attribute)
         {
-            ToolboxLayoutHelper.BeginVertical(Style.groupBackgroundStyle);
+            ToolboxLayoutHandler.BeginVertical(Style.groupBackgroundStyle);
             if (attribute.HasLabel)
             {
                 GUILayout.Label(attribute.Label, EditorStyles.boldLabel);

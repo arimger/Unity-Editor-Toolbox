@@ -13,7 +13,7 @@ namespace Toolbox.Editor.Drawers
             EditorGUIUtility.fieldWidth = width * attribute.FieldToWidthRatio;
 
             //begin horizontal group using internal utility
-            ToolboxLayoutHelper.BeginHorizontal();
+            ToolboxLayoutHandler.BeginHorizontal();
         }
     }
 }
