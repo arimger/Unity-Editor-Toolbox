@@ -6,7 +6,6 @@ namespace Toolbox.Editor
 
     internal static class ToolboxEditorHandler
     {
-        //TODO: how to pass dditor and multiple serialized objects
         public static void HandleToolboxEditor(IToolboxEditor editor)
         {
             try
@@ -34,6 +33,9 @@ namespace Toolbox.Editor
         public static event Action<Editor> OnBreakToolboxEditor;
         public static event Action<Editor> OnCloseToolboxEditor;
 
+        /// <summary>
+        /// Currently maintained <see cref="Editor"/>.
+        /// </summary>
         public static Editor ContextEditor { get; private set; }
     }
 }
