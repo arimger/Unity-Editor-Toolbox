@@ -13,32 +13,19 @@ namespace Toolbox.Editor
     /// </summary>
     [CustomEditor(typeof(Object), true, isFallback = true)]
     [CanEditMultipleObjects]
-    public class ToolboxEditor : Editor
+    public class ToolboxEditor : Editor, IToolboxEditor
     {
+        private readonly IToolboxEditor nestedEditor = new BasicToolboxEditor();
+
         private readonly HashSet<string> propertiesToIgnore = new HashSet<string>();
 
 
         /// <summary>
         /// Inspector GUI re-draw call.
         /// </summary>
-        public override sealed void OnInspectorGUI()
+        public sealed override void OnInspectorGUI()
         {
-            try
-            {
-                OnBeginToolboxEditor?.Invoke(this);
-                DrawCustomInspector();
-            }
-            catch (Exception)
-            {
-                //make sure to catch all Exceptions (especially ExitGUIException),
-                //it will allow us to safely dispose all layout-based controls, etc.
-                OnBreakToolboxEditor?.Invoke(this);
-                throw;
-            }
-            finally
-            {
-                OnCloseToolboxEditor?.Invoke(this);
-            }
+            ToolboxEditorHandler.HandleToolboxEditor(this);
         }
 
         /// <summary>
@@ -47,51 +34,23 @@ namespace Toolbox.Editor
         /// <param name="property">Property to display.</param>
         public virtual void DrawCustomProperty(SerializedProperty property)
         {
-            var propertyPath = property.propertyPath;
-            if (propertiesToIgnore.Contains(propertyPath))
-            {
-                return;
-            }
-
-            ToolboxEditorGui.DrawToolboxProperty(property);
+            nestedEditor.DrawCustomProperty(property);
         }
 
         /// <summary>
-        /// Draws each available property using internal <see cref="Drawers.ToolboxDrawer"/>s.
+        /// Draws each available property using internally <see cref="Drawers.ToolboxDrawer"/>s.
         /// </summary>
         public virtual void DrawCustomInspector()
         {
-            if (ToolboxDrawerModule.ToolboxDrawersAllowed)
-            {
-                serializedObject.Update();
+            nestedEditor.DrawCustomInspector();
+        }
 
-                var isExpanded = true;
-                var property = serializedObject.GetIterator();
-                //enter to the 'Base' property
-                if (property.NextVisible(isExpanded))
-                {
-                    isExpanded = false;
-                    var script = PropertyUtility.IsDefaultScriptProperty(property);
-
-                    //try to draw the first property (m_Script)
-                    using (new EditorGUI.DisabledScope(script))
-                    {
-                        DrawCustomProperty(property.Copy());
-                    }
-
-                    //iterate over all other serialized properties
-                    //NOTE: every child will be handled internally
-                    while (property.NextVisible(isExpanded))
-                    {
-                        DrawCustomProperty(property.Copy());
-                    }
-                }
-
-                serializedObject.ApplyModifiedProperties();
-                return;
-            }
-
-            DrawDefaultInspector();
+        /// <summary>
+        /// Draws each available property using internally <see cref="Drawers.ToolboxDrawer"/>s.
+        /// </summary>
+        public virtual void DrawCustomInspector(SerializedObject serializedObject)
+        {
+            nestedEditor.DrawCustomInspector(serializedObject);
         }
 
         /// <summary>
@@ -114,5 +73,7 @@ namespace Toolbox.Editor
         public static event Action<Editor> OnBeginToolboxEditor;
         public static event Action<Editor> OnBreakToolboxEditor;
         public static event Action<Editor> OnCloseToolboxEditor;
+
+        Editor IToolboxEditor.ContextEditor => this;
     }
 }
