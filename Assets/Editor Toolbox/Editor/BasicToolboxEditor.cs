@@ -2,10 +2,15 @@
 
 namespace Toolbox.Editor
 {
+    using Editor = UnityEditor.Editor;
+
     //TODO: new name
     public class BasicToolboxEditor : IToolboxEditor
     {
-        public UnityEditor.Editor ContextEditor => throw new System.NotImplementedException();
+        public BasicToolboxEditor(Editor contextEditor)
+        {
+            ContextEditor = contextEditor;
+        }
 
         public void DrawCustomProperty(SerializedProperty property)
         {
@@ -22,7 +27,6 @@ namespace Toolbox.Editor
             if (!ToolboxDrawerModule.ToolboxDrawersAllowed)
             {
                 ContextEditor.DrawDefaultInspector();
-                //DrawDefaultInspector();
                 return;
             }
 
@@ -48,5 +52,7 @@ namespace Toolbox.Editor
 
             serializedObject.ApplyModifiedProperties();
         }
+
+        public Editor ContextEditor { get; }
     }
 }

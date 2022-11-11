@@ -6,6 +6,7 @@ namespace Toolbox.Editor
 
     internal static class ToolboxEditorHandler
     {
+        //TODO: how to pass dditor and multiple serialized objects
         public static void HandleToolboxEditor(IToolboxEditor editor)
         {
             try

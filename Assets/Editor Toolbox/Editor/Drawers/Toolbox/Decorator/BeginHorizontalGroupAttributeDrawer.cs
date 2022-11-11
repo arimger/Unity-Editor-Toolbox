@@ -37,14 +37,14 @@ namespace Toolbox.Editor.Drawers
             EditorGUIUtility.labelWidth = fixedWidth * attribute.LabelToWidthRatio;
             EditorGUIUtility.fieldWidth = fixedWidth * attribute.FieldToWidthRatio;
 
-            ToolboxLayoutHelper.BeginVertical(Style.groupBackgroundStyle);
+            ToolboxLayoutHandler.BeginVertical(Style.groupBackgroundStyle);
             if (attribute.HasLabel)
             {
                 GUILayout.Label(attribute.Label, EditorStyles.boldLabel);
             }
 
             HandleScrollView(fixedHeight);
-            ToolboxLayoutHelper.BeginHorizontal();
+            ToolboxLayoutHandler.BeginHorizontal();
         }
 
 

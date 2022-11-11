@@ -6,7 +6,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(BeginVerticalAttribute attribute)
         {
-            ToolboxLayoutHelper.BeginVertical();
+            ToolboxLayoutHandler.BeginVertical();
         }
     }
 }

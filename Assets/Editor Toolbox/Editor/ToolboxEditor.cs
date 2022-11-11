@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using UnityEditor;
 
@@ -15,16 +14,17 @@ namespace Toolbox.Editor
     [CanEditMultipleObjects]
     public class ToolboxEditor : Editor, IToolboxEditor
     {
-        private readonly IToolboxEditor nestedEditor = new BasicToolboxEditor();
-
         private readonly HashSet<string> propertiesToIgnore = new HashSet<string>();
 
+        //TODO: better initialization
+        private IToolboxEditor nestedEditor;
 
         /// <summary>
         /// Inspector GUI re-draw call.
         /// </summary>
         public sealed override void OnInspectorGUI()
         {
+            nestedEditor ??= new BasicToolboxEditor(this);
             ToolboxEditorHandler.HandleToolboxEditor(this);
         }
 
@@ -68,11 +68,6 @@ namespace Toolbox.Editor
         {
             propertiesToIgnore.Add(propertyPath);
         }
-
-
-        public static event Action<Editor> OnBeginToolboxEditor;
-        public static event Action<Editor> OnBreakToolboxEditor;
-        public static event Action<Editor> OnCloseToolboxEditor;
 
         Editor IToolboxEditor.ContextEditor => this;
     }
