@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 using UnityEditor;
 
@@ -26,13 +26,13 @@ namespace Toolbox.Editor
         /// <inheritdoc />
         public virtual void DrawCustomProperty(SerializedProperty property)
         {
-            Drawer.DrawToolboxProperty(property);
+            //Drawer.DrawProperty(property);
         }
 
         /// <inheritdoc />
         public virtual void DrawCustomInspector()
         {
-            Drawer.DrawToolboxInspector(serializedObject);
+            Drawer.DrawEditor(serializedObject);
         }
 
         /// <inheritdoc />
@@ -50,5 +50,14 @@ namespace Toolbox.Editor
 
         Editor IToolboxEditor.ContextEditor => this;
         public IToolboxEditorDrawer Drawer { get; } = new ToolboxEditorDrawer();
+
+#pragma warning disable 0067
+        [Obsolete("ToolboxEditorHandler.OnBeginToolboxEditor")]
+        public static event Action<Editor> OnBeginToolboxEditor;
+        [Obsolete("ToolboxEditorHandler.OnBreakToolboxEditor")]
+        public static event Action<Editor> OnBreakToolboxEditor;
+        [Obsolete("ToolboxEditorHandler.OnCloseToolboxEditor")]
+        public static event Action<Editor> OnCloseToolboxEditor;
+#pragma warning restore 0067
     }
 }

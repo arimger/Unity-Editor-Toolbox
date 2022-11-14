@@ -14,21 +14,25 @@ namespace Toolbox.Editor.Editors
 
         public virtual void DrawCustomInspector()
         {
-            Drawer.DrawToolboxInspector(serializedObject);
+            Drawer.DrawEditor(serializedObject);
             if (extraDataType != null)
             {
-                Drawer.DrawToolboxInspector(extraDataSerializedObject);
+                Drawer.DrawEditor(extraDataSerializedObject);
             }
 
             ApplyRevertGUI();
         }
 
-        //TODO: ignore properties
         public void IgnoreProperty(SerializedProperty property)
-        { }
+        {
+            Drawer.IgnoreProperty(property);
+        }
 
         public void IgnoreProperty(string propertyPath)
-        { }
+        {
+            Drawer.IgnoreProperty(propertyPath);
+        }
+
 
         Editor IToolboxEditor.ContextEditor => this;
         public IToolboxEditorDrawer Drawer { get; } = new ToolboxEditorDrawer();
