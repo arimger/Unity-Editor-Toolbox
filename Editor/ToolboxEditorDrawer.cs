@@ -8,67 +8,42 @@ namespace Toolbox.Editor
     public class ToolboxEditorDrawer : IToolboxEditorDrawer
     {
         private readonly HashSet<string> propertiesToIgnore = new HashSet<string>();
-
-        //TODO: refactor
-        /// <inheritdoc />
-        public void DrawToolboxProperty(SerializedProperty property)
-        {
-            var propertyPath = property.propertyPath;
-            if (propertiesToIgnore.Contains(propertyPath))
-            {
-                return;
-            }
-
-            ToolboxEditorGui.DrawToolboxProperty(property);
-        }
-
-        /// <inheritdoc />
-        public void DrawDefaultProperty(SerializedProperty property)
-        {
-            var propertyPath = property.propertyPath;
-            if (propertiesToIgnore.Contains(propertyPath))
-            {
-                return;
-            }
-
-            ToolboxEditorGui.DrawNativeProperty(property);
-        }
-
-        /// <inheritdoc />
-        public void DrawToolboxInspector(SerializedObject serializedObject)
-        {
-            if (!ToolboxDrawerModule.ToolboxDrawersAllowed)
-            {
-                DrawDefaultInspector(serializedObject);
-                return;
-            }
-
-            //TODO: how to handle default/toolbox drawers
-            //Action<SerializedProperty> drawAction = ToolboxDrawerModule.ToolboxDrawersAllowed
-            //    ? (Action<SerializedProperty>)DrawToolboxProperty
-            //    : DrawDefaultProperty;
-            serializedObject.UpdateIfRequiredOrScript();
-            var property = serializedObject.GetIterator();
-            if (property.NextVisible(true))
-            {
-                var isScript = PropertyUtility.IsDefaultScriptProperty(property);
-                using (new EditorGUI.DisabledScope(isScript))
-                {
-                    DrawToolboxProperty(property.Copy());
-                }
-
-                while (property.NextVisible(false))
-                {
-                    DrawToolboxProperty(property.Copy());
-                }
-            }
-
-            serializedObject.ApplyModifiedProperties();
-        }
-
         //TODO:
+        private readonly Action<SerializedProperty> toolboxDrawingAction;
+        private readonly Action<SerializedProperty> defaultDrawingAction;
+
+        public ToolboxEditorDrawer()
+        {
+            toolboxDrawingAction = ToolboxEditorGui.DrawToolboxProperty;
+            defaultDrawingAction = ToolboxEditorGui.DrawNativeProperty;
+        }
+
+        private void DrawProperty(SerializedProperty property, Action<SerializedProperty> drawingAction)
+        {
+            var propertyPath = property.propertyPath;
+            if (IsPropertyIgnored(propertyPath))
+            {
+                return;
+            }
+
+            drawingAction(property);
+        }
+
         /// <inheritdoc />
-        public void DrawDefaultInspector(SerializedObject serializedObject)
+        public void DrawEditor(SerializedObject serializedObject)
+        {
+            if (ToolboxDrawerModule.ToolboxDrawersAllowed)
+            {
+                DrawToolboxEditor(serializedObject);
+            }
+            else
+            {
+                DrawDefaultEditor(serializedObject);
+            }
+        }
+
+        /// <inheritdoc />
+        public void DrawEditor(SerializedObject serializedObject, Action<SerializedProperty> drawingAction)
         {
             serializedObject.UpdateIfRequiredOrScript();
             var property = serializedObject.GetIterator();
@@ -77,16 +52,28 @@ namespace Toolbox.Editor
                 var isScript = PropertyUtility.IsDefaultScriptProperty(property);
                 using (new EditorGUI.DisabledScope(isScript))
                 {
-                    EditorGUILayout.PropertyField(property, true);
+                    DrawProperty(property.Copy(), drawingAction);
                 }
 
                 while (property.NextVisible(false))
                 {
-                    EditorGUILayout.PropertyField(property, true);
+                    DrawProperty(property.Copy(), drawingAction);
                 }
             }
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        /// <inheritdoc />
+        public void DrawToolboxEditor(SerializedObject serializedObject)
+        {
+            DrawEditor(serializedObject, ToolboxEditorGui.DrawToolboxProperty);
+        }
+
+        /// <inheritdoc />
+        public void DrawDefaultEditor(SerializedObject serializedObject)
+        {
+            DrawEditor(serializedObject, ToolboxEditorGui.DrawNativeProperty);
         }
 
         /// <inheritdoc />
@@ -99,6 +86,12 @@ namespace Toolbox.Editor
         public void IgnoreProperty(string propertyPath)
         {
             propertiesToIgnore.Add(propertyPath);
+        }
+
+        /// <inheritdoc />
+        public bool IsPropertyIgnored(string propertyPath)
+        {
+            return propertiesToIgnore.Contains(propertyPath);
         }
     }
 }
