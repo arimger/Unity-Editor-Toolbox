@@ -5,17 +5,23 @@ using UnityEditor;
 
 namespace Toolbox.Editor
 {
+    /// <summary>
+    /// Default drawer responsible for drawing <see cref="UnityEditor.Editor"/>s.
+    /// This helper class that can be used across many Toolbox-based editors that cannot share the same base class.
+    /// </summary>
     public class ToolboxEditorDrawer : IToolboxEditorDrawer
     {
         private readonly HashSet<string> propertiesToIgnore = new HashSet<string>();
-        //TODO:
         private readonly Action<SerializedProperty> toolboxDrawingAction;
         private readonly Action<SerializedProperty> defaultDrawingAction;
 
-        public ToolboxEditorDrawer()
+        public ToolboxEditorDrawer() : this(ToolboxEditorGui.DrawToolboxProperty, ToolboxEditorGui.DrawNativeProperty)
+        { }
+
+        public ToolboxEditorDrawer(Action<SerializedProperty> toolboxDrawingAction, Action<SerializedProperty> defaultDrawingAction)
         {
-            toolboxDrawingAction = ToolboxEditorGui.DrawToolboxProperty;
-            defaultDrawingAction = ToolboxEditorGui.DrawNativeProperty;
+            this.toolboxDrawingAction = toolboxDrawingAction;
+            this.defaultDrawingAction = defaultDrawingAction;
         }
 
         private void DrawProperty(SerializedProperty property, Action<SerializedProperty> drawingAction)
@@ -67,13 +73,13 @@ namespace Toolbox.Editor
         /// <inheritdoc />
         public void DrawToolboxEditor(SerializedObject serializedObject)
         {
-            DrawEditor(serializedObject, ToolboxEditorGui.DrawToolboxProperty);
+            DrawEditor(serializedObject, toolboxDrawingAction);
         }
 
         /// <inheritdoc />
         public void DrawDefaultEditor(SerializedObject serializedObject)
         {
-            DrawEditor(serializedObject, ToolboxEditorGui.DrawNativeProperty);
+            DrawEditor(serializedObject, defaultDrawingAction);
         }
 
         /// <inheritdoc />
@@ -86,6 +92,12 @@ namespace Toolbox.Editor
         public void IgnoreProperty(string propertyPath)
         {
             propertiesToIgnore.Add(propertyPath);
+        }
+
+        /// <inheritdoc />
+        public bool IsPropertyIgnored(SerializedProperty property)
+        {
+            return IsPropertyIgnored(property.propertyPath);
         }
 
         /// <inheritdoc />

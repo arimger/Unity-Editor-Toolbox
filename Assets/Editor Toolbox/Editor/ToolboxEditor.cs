@@ -22,12 +22,10 @@ namespace Toolbox.Editor
             ToolboxEditorHandler.HandleToolboxEditor(this);
         }
 
-        //TODO: how to handle this method, currently unused
         /// <inheritdoc />
+        [Obsolete("To draw properties in a different way override the Drawer property.")]
         public virtual void DrawCustomProperty(SerializedProperty property)
-        {
-            //Drawer.DrawProperty(property);
-        }
+        { }
 
         /// <inheritdoc />
         public virtual void DrawCustomInspector()
@@ -49,7 +47,7 @@ namespace Toolbox.Editor
 
 
         Editor IToolboxEditor.ContextEditor => this;
-        public IToolboxEditorDrawer Drawer { get; } = new ToolboxEditorDrawer();
+        public virtual IToolboxEditorDrawer Drawer { get; } = new ToolboxEditorDrawer();
 
 #pragma warning disable 0067
         [Obsolete("ToolboxEditorHandler.OnBeginToolboxEditor")]
