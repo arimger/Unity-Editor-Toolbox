@@ -48,6 +48,11 @@ namespace Toolbox.Serialization
                 var sceneAsset = EditorGUIUtility.Load(scene.path) as SceneAsset;
                 if (sceneAsset != null)
                 {
+                    if (cachedScenes.ContainsKey(sceneAsset))
+                    {
+                        continue;
+                    }
+
                     cachedScenes.Add(sceneAsset, new SceneData()
                     {
                         BuildIndex = buildIndex,
