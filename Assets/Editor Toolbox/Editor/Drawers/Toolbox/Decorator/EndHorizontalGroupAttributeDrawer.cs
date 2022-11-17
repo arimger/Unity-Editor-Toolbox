@@ -7,9 +7,9 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiCloseSafe(EndHorizontalGroupAttribute attribute)
         {
-            ToolboxLayoutHelper.CloseHorizontal();
+            ToolboxLayoutHandler.CloseHorizontal();
             EditorGUILayout.EndScrollView();
-            ToolboxLayoutHelper.CloseVertical();
+            ToolboxLayoutHandler.CloseVertical();
 
             EditorGUIUtility.labelWidth = 0.0f;
             EditorGUIUtility.fieldWidth = 0.0f;
