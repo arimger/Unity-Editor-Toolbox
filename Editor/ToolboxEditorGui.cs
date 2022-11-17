@@ -546,7 +546,7 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawNativeProperty(SerializedProperty property, GUIContent label)
         {
-            EditorGUILayout.PropertyField(property, label, property.isExpanded);
+            EditorGUILayout.PropertyField(property, label);
         }
 
         /// <summary>
