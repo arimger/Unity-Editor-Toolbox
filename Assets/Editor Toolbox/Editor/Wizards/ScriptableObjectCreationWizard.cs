@@ -71,7 +71,7 @@ namespace Toolbox.Editor.Wizards
         private bool inspectDefaultObject;
         private bool useSearchField = true;
 
-        [MenuItem("Assets/Create/Toolbox/ScriptableObject Creation Wizard", priority = 5)]
+        [MenuItem("Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard", priority = 5)]
         internal static void Initialize()
         {
             var window = GetWindow<ScriptableObjectCreationWizard>();
