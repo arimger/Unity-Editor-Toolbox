@@ -26,8 +26,7 @@ namespace Toolbox.Editor
 
         private void DrawProperty(SerializedProperty property, Action<SerializedProperty> drawingAction)
         {
-            var propertyPath = property.propertyPath;
-            if (IsPropertyIgnored(propertyPath))
+            if (IsPropertyIgnored(property))
             {
                 return;
             }
