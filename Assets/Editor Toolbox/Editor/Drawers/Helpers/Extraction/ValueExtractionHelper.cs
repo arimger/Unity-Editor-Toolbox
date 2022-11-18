@@ -9,7 +9,7 @@ namespace Toolbox.Editor.Drawers
     {
         private static readonly Func<object, object, bool> defaultComparer = (o1, o2) =>
         {
-            return o1.Equals(o2);
+            return o1 == o2;
         };
 
         private static readonly List<IValueExtractor> extractors = new List<IValueExtractor>()
