@@ -8,6 +8,7 @@ namespace UnityEngine
 {
     /// <summary>
     /// Standardized header, it's composition of the <see cref="LabelAttribute"/> and the <see cref="LineAttribute"/>.
+    /// <para><see cref="LineAttribute"/> is always created with <see cref="Order"/> + 1.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     [Conditional("UNITY_EDITOR")]
@@ -27,17 +28,32 @@ namespace UnityEngine
                 new LabelAttribute(Label)
                 {
 #if UNITY_EDITOR
-                    SpaceAfter = -EditorGUIUtility.standardVerticalSpacing
+                    SpaceAfter = -EditorGUIUtility.standardVerticalSpacing,
 #endif
+                    Order = Order,
+                    ApplyCondition = ApplyCondition
                 },
                 new LineAttribute(padding: 0)
                 {
-                    ApplyIndent = true
+                    ApplyIndent = true,
+                    Order = Order + 1,
+                    ApplyCondition = ApplyCondition
                 }
             };
         }
 
 
         public string Label { get; private set; }
+
+        /// <summary>
+        /// Order of the decorator relative to other drawers on the same property.
+        /// </summary>
+        public int Order { get; set; }
+
+        /// <summary>
+        /// Indicates if decorator should be created independly to state of the property.
+        /// If <see cref="ApplyCondition"/> equals <see langword="true"/> it means that the decorator can be hidden/disabled same as an associated property. 
+        /// </summary>
+        public bool ApplyCondition { get; set; }
     }
 }
