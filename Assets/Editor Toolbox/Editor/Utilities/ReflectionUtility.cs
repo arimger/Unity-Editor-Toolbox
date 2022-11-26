@@ -40,9 +40,29 @@ namespace Toolbox.Editor
             }
 
             var targetType = targetObjects[0].GetType();
-            var methodInfo = targetType.GetMethod(methodName,
-                bindingFlags, null, CallingConventions.Any, new Type[0], null);
+            var methodInfo = GetObjectMethod(targetType, methodName, bindingFlags);
+            if (methodInfo == null && bindingFlags.HasFlag(BindingFlags.NonPublic))
+            {
+                //NOTE: if a method is not found and we searching for a private method we should look into parent classes
+                var baseType = targetType.BaseType;
+                while (baseType != null)
+                {
+                    methodInfo = GetObjectMethod(baseType, methodName, bindingFlags);
+                    if (methodInfo != null)
+                    {
+                        break;
+                    }
+
+                    baseType = baseType.BaseType;
+                }
+            }
+
             return methodInfo;
+        }
+
+        internal static MethodInfo GetObjectMethod(Type targetType, string methodName, BindingFlags bindingFlags)
+        {
+            return targetType.GetMethod(methodName, bindingFlags, null, CallingConventions.Any, new Type[0], null);
         }
 
         /// <summary>

@@ -41,10 +41,7 @@ namespace Toolbox.Editor.Internal
             LabelRect = rect;
             if (property.hasVisibleChildren)
             {
-                var labelRect = LabelRect;
-                labelRect.xMax += EditorGuiUtility.FoldoutSize;
-                LabelRect = labelRect;
-                property.isExpanded = EditorGUI.Foldout(labelRect, property.isExpanded, label, true);
+                property.isExpanded = EditorGUI.Foldout(LabelRect, property.isExpanded, label, true);
             }
             else
             {

@@ -78,5 +78,13 @@ namespace UnityEngine
             get => buildIndex;
             set => buildIndex = value;
         }
+
+        /// <summary>
+        /// Indicates if serialized <see cref="BuildIndex"/> has appropriate value and can be loaded in runtime.
+        /// </summary>
+        public bool CanBeLoaded
+        {
+            get => BuildIndex != SceneSerializationUtility.InvalidSceneIndex;
+        }
     }
 }

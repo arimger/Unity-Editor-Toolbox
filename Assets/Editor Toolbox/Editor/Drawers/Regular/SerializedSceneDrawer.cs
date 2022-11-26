@@ -10,10 +10,10 @@ namespace Toolbox.Editor.Drawers
         private bool HasSceneDetails(SerializedProperty property)
         {
             var sceneProperty = property.FindPropertyRelative("sceneReference");
-            return attribute != null && sceneProperty.objectReferenceValue;
+            return attribute != null && attribute is SceneDetailsAttribute && sceneProperty.objectReferenceValue;
         }
 
-        private void DrawIncludedSceneDetails(Rect position, SceneData sceneData)
+        private void DrawSceneDetails(Rect position, SceneData sceneData)
         {
             EditorGUI.BeginDisabledGroup(true);
             var spacing = EditorGUIUtility.standardVerticalSpacing;
@@ -21,19 +21,6 @@ namespace Toolbox.Editor.Drawers
             position.y += EditorGUIUtility.singleLineHeight + spacing;
             EditorGUI.Toggle(position, Style.isEnabledContent, sceneData.enabled);
             EditorGUI.EndDisabledGroup();
-        }
-
-        private void DrawRejectedSceneDetails(Rect position, SceneData sceneData)
-        {
-            EditorGUI.BeginDisabledGroup(true);
-            var spacing = EditorGUIUtility.standardVerticalSpacing;
-            EditorGUI.LabelField(position, Style.notInBuildContent);
-            position.y += EditorGUIUtility.singleLineHeight + spacing;
-            EditorGUI.EndDisabledGroup();
-            if (GUI.Button(position, Style.showDetailsContent))
-            {
-                OpenBuildSettings();
-            }
         }
 
         private void OpenBuildSettings()
@@ -69,11 +56,18 @@ namespace Toolbox.Editor.Drawers
             position.y += EditorGUIUtility.singleLineHeight + spacing;
             if (sceneData.inBuild)
             {
-                DrawIncludedSceneDetails(position, sceneData);
+                DrawSceneDetails(position, sceneData);
             }
             else
             {
-                DrawRejectedSceneDetails(position, sceneData);
+                EditorGUI.BeginDisabledGroup(true);
+                EditorGUI.LabelField(position, Style.notInBuildContent);
+                position.y += EditorGUIUtility.singleLineHeight + spacing;
+                EditorGUI.EndDisabledGroup();
+                if (GUI.Button(position, Style.showDetailsContent))
+                {
+                    OpenBuildSettings();
+                }
             }
         }
 

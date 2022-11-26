@@ -6,7 +6,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiCloseSafe(EndVerticalAttribute attribute)
         {
-            ToolboxLayoutHelper.CloseVertical();
+            ToolboxLayoutHandler.CloseVertical();
         }
     }
 }
