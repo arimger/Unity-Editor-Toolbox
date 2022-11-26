@@ -63,14 +63,15 @@ namespace Toolbox.Editor.Wizards
         }
 
         private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintScriptableObject();
-        private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
+        private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.ByNamespace, true);
         private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
 
         private readonly CreationData data = new CreationData();
 
         private bool inspectDefaultObject;
+        private bool useSearchField = true;
 
-        [MenuItem("Assets/Create/Toolbox/ScriptableObject Creation Wizard", priority = 5)]
+        [MenuItem("Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard", priority = 5)]
         internal static void Initialize()
         {
             var window = GetWindow<ScriptableObjectCreationWizard>();
@@ -81,12 +82,17 @@ namespace Toolbox.Editor.Wizards
         private void DrawSettingsPanel()
         {
             EditorGUILayout.LabelField("Settings", EditorStyles.boldLabel);
+
+            useSearchField = EditorGUILayout.ToggleLeft("Use Search Field", useSearchField);
+
             var rect = EditorGUILayout.GetControlRect(true);
-            typeField.OnGui(rect, true, OnTypeSelected, data.InstanceType);
+            typeField.OnGui(rect, useSearchField, OnTypeSelected, data.InstanceType);
             if (data.InstanceType == null)
             {
                 return;
             }
+
+            ToolboxEditorGui.DrawLine();
 
             EditorGUI.BeginChangeCheck();
             data.InstanceName = EditorGUILayout.TextField(Style.nameContent, data.InstanceName);

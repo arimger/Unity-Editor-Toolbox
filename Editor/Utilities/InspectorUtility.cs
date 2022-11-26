@@ -17,13 +17,13 @@ namespace Toolbox.Editor
         static InspectorUtility()
         {
             //we can use each new Editor to check if 'OnEditorReload' should be called
-            ToolboxEditor.OnBeginToolboxEditor += CheckReloads;
+            ToolboxEditorHandler.OnBeginToolboxEditor += CheckReloads;
 
             //we can use 'OnBeginToolboxEditor' and 'OnCloseToolboxEditor' to cache 
             //processed Editors and determine the real context of the serialization
-            ToolboxEditor.OnBeginToolboxEditor += OnBeginEditor;
-            ToolboxEditor.OnBreakToolboxEditor += OnBreakEditor;
-            ToolboxEditor.OnCloseToolboxEditor += OnCloseEditor;
+            ToolboxEditorHandler.OnBeginToolboxEditor += OnBeginEditor;
+            ToolboxEditorHandler.OnBreakToolboxEditor += OnBreakEditor;
+            ToolboxEditorHandler.OnCloseToolboxEditor += OnCloseEditor;
         }
 
 

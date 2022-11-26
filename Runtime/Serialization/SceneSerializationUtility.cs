@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -42,15 +43,16 @@ namespace Toolbox.Serialization
             var buildIndex = -1;
             foreach (var scene in EditorBuildSettings.scenes)
             {
-                if (!scene.enabled)
-                {
-                    continue;
-                }
-
                 buildIndex++;
+                var sceneIndex = scene.enabled ? buildIndex : InvalidSceneIndex;
                 var sceneAsset = EditorGUIUtility.Load(scene.path) as SceneAsset;
                 if (sceneAsset != null)
                 {
+                    if (cachedScenes.ContainsKey(sceneAsset))
+                    {
+                        continue;
+                    }
+
                     cachedScenes.Add(sceneAsset, new SceneData()
                     {
                         BuildIndex = buildIndex,
@@ -74,5 +76,8 @@ namespace Toolbox.Serialization
             return true;
         }
 #endif
+
+
+        public static int InvalidSceneIndex => -1;
     }
 }
