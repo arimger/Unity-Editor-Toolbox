@@ -825,7 +825,7 @@ Copy and paste all components from/to particular GameObject.
 
 Create multiple ScriptableObjects at once.
 ```
-Assets/Create/Toolbox/ScriptableObject Creation Wizard
+Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/createso.png)

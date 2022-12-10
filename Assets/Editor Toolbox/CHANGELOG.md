@@ -1,3 +1,13 @@
+## 0.12.0 [10.12.2022]
+
+### Changed:
+- UX improvements for the ScriptableObjectCreationWizard
+- New API for drawing custom Editors (check HOWTO.md for more details)
+- Fix label drawing while using the [ReferencePickerAttribute]
+- Fix searching for private methods in base classes while using the [EditorButtonAttribute]
+- Fix minor issues while using conditional drawers during multi-selection
+- Fix minor issues while using the [TitleAttribute] in groups
+
 ## 0.11.9 [22.10.2022]
 
 ### Added:
