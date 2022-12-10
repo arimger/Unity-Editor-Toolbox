@@ -15,7 +15,12 @@ namespace Toolbox.Editor
         private readonly Action<SerializedProperty> toolboxDrawingAction;
         private readonly Action<SerializedProperty> defaultDrawingAction;
 
-        public ToolboxEditorDrawer() : this(ToolboxEditorGui.DrawToolboxProperty, ToolboxEditorGui.DrawNativeProperty)
+        public ToolboxEditorDrawer()
+            : this(ToolboxEditorGui.DrawToolboxProperty)
+        { }
+
+        public ToolboxEditorDrawer(Action<SerializedProperty> toolboxDrawingAction)
+            : this(toolboxDrawingAction, ToolboxEditorGui.DrawNativeProperty)
         { }
 
         public ToolboxEditorDrawer(Action<SerializedProperty> toolboxDrawingAction, Action<SerializedProperty> defaultDrawingAction)
@@ -26,12 +31,10 @@ namespace Toolbox.Editor
 
         private void DrawProperty(SerializedProperty property, Action<SerializedProperty> drawingAction)
         {
-            if (IsPropertyIgnored(property))
+            if (!IsPropertyIgnored(property))
             {
-                return;
+                drawingAction(property);
             }
-
-            drawingAction(property);
         }
 
         /// <inheritdoc />

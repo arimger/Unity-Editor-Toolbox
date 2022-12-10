@@ -47,6 +47,7 @@ namespace Toolbox.Editor
 
 
         Editor IToolboxEditor.ContextEditor => this;
+        /// <inheritdoc />
         public virtual IToolboxEditorDrawer Drawer { get; } = new ToolboxEditorDrawer();
 
 #pragma warning disable 0067
