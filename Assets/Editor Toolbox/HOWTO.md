@@ -179,6 +179,8 @@ public class IntDrawer : ToolboxTargetTypeDrawer
 
 ## Custom Editor
 
+If you want to create a custom **UnityEditor.Editor** for your components and still use Toolbox-related features be sure to inherit from the **Toolbox.Editor.ToolboxEditor** class.
+
 ```csharp
 using UnityEditor;
 using UnityEngine;
@@ -216,6 +218,17 @@ public class SampleEditor : ToolboxEditor
 	}
 #endif
 
+	private static void DrawMyCustomProperty(SerializedProperty property)
+	{
+		EditorGUILayout.PropertyField(property);
+	}
+		
+	/// <summary>
+	/// You can override this property with your custom IToolboxEditorDrawer implementation to override the default way how the Editor is drawn.
+	/// Additionally, you can assign your custom method directly for the ToolboxEditorDrawer.
+	/// </summary>
+	public override IToolboxEditorDrawer Drawer { get; } = new ToolboxEditorDrawer(DrawMyCustomProperty);
+	
 	private static class Style
 	{
 		internal static readonly GUIStyle labelStyle;

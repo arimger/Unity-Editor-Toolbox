@@ -22,18 +22,14 @@ Unity 2018.x or newer
 
 - Install Editor Toolbox package:
 	- 1 way: Find Unity Package Manager (Window/Package Manager) and add package using this git URL:
-        
-        ```
-        https://github.com/arimger/Unity-Editor-Toolbox.git#upm
-        ```
-        
+	```
+	https://github.com/arimger/Unity-Editor-Toolbox.git#upm
+	```
 	- 2 way: Copy and paste `Assets/Editor Toolbox` directory into your project (Assets/...) + add dependencies
 	- 3 way: Install via [OpenUPM registry](https://openupm.com):
-        
-        ```
-        openupm add com.browar.editor-toolbox
-        ```
-        
+	```
+	openupm add com.browar.editor-toolbox
+	```
 - Open Edit/Project Settings/Editor Toolbox window
 - If settings file is not found, press the "Refresh" button or create a new one
 - Manage settings in your way
@@ -607,6 +603,7 @@ public class ClassWithInterface3 : ClassWithInterfaceBase
 #### Custom Editors <a name="toolboxeditors"></a>
 
 If you want to create a custom **UnityEditor.Editor** for your components and still use Toolbox-related features be sure to inherit from the **Toolbox.Editor.ToolboxEditor** class.
+More details (e.g. how to customize properties drawing) you can find in the [HOWTO](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Assets/Editor%20Toolbox/HOWTO.md) document.
 
 ```csharp
 using UnityEditor;
@@ -635,6 +632,10 @@ public class SampleEditor : ToolboxEditor
 	}
 }
 ```
+
+##### Custom Editor Implementation
+- **Toolbox.Editor.ToolboxEditor** - default class, override it if you want to implement a custom Editor for your components and ScriptableObjects
+- **Toolbox.Editor.ToolboxScriptedImporterEditor** - override it if you want to implement a custom Editor for your custom importers
 
 ### Material Drawers <a name="materialdrawers"></a>
 

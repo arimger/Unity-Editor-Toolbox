@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using UnityEditor;
 
@@ -13,106 +12,51 @@ namespace Toolbox.Editor
     /// </summary>
     [CustomEditor(typeof(Object), true, isFallback = true)]
     [CanEditMultipleObjects]
-    public class ToolboxEditor : Editor
+    public class ToolboxEditor : Editor, IToolboxEditor
     {
-        private readonly HashSet<string> propertiesToIgnore = new HashSet<string>();
-
-
         /// <summary>
         /// Inspector GUI re-draw call.
         /// </summary>
-        public override sealed void OnInspectorGUI()
+        public sealed override void OnInspectorGUI()
         {
-            try
-            {
-                OnBeginToolboxEditor?.Invoke(this);
-                DrawCustomInspector();
-            }
-            catch (Exception)
-            {
-                //make sure to catch all Exceptions (especially ExitGUIException),
-                //it will allow us to safely dispose all layout-based controls, etc.
-                OnBreakToolboxEditor?.Invoke(this);
-                throw;
-            }
-            finally
-            {
-                OnCloseToolboxEditor?.Invoke(this);
-            }
+            ToolboxEditorHandler.HandleToolboxEditor(this);
         }
 
-        /// <summary>
-        /// Handles property display process using custom <see cref="Drawers.ToolboxDrawer"/>.
-        /// </summary>
-        /// <param name="property">Property to display.</param>
+        /// <inheritdoc />
+        [Obsolete("To draw properties in a different way override the Drawer property.")]
         public virtual void DrawCustomProperty(SerializedProperty property)
-        {
-            var propertyPath = property.propertyPath;
-            if (propertiesToIgnore.Contains(propertyPath))
-            {
-                return;
-            }
+        { }
 
-            ToolboxEditorGui.DrawToolboxProperty(property);
-        }
-
-        /// <summary>
-        /// Draws each available property using internal <see cref="Drawers.ToolboxDrawer"/>s.
-        /// </summary>
+        /// <inheritdoc />
         public virtual void DrawCustomInspector()
         {
-            if (ToolboxDrawerModule.ToolboxDrawersAllowed)
-            {
-                serializedObject.Update();
-
-                var isExpanded = true;
-                var property = serializedObject.GetIterator();
-                //enter to the 'Base' property
-                if (property.NextVisible(isExpanded))
-                {
-                    isExpanded = false;
-                    var script = PropertyUtility.IsDefaultScriptProperty(property);
-
-                    //try to draw the first property (m_Script)
-                    using (new EditorGUI.DisabledScope(script))
-                    {
-                        DrawCustomProperty(property.Copy());
-                    }
-
-                    //iterate over all other serialized properties
-                    //NOTE: every child will be handled internally
-                    while (property.NextVisible(isExpanded))
-                    {
-                        DrawCustomProperty(property.Copy());
-                    }
-                }
-
-                serializedObject.ApplyModifiedProperties();
-                return;
-            }
-
-            DrawDefaultInspector();
+            Drawer.DrawEditor(serializedObject);
         }
 
-        /// <summary>
-        /// Forces provided <see cref="SerializedProperty"/> to be ignored in the drawing process.
-        /// </summary>
+        /// <inheritdoc />
         public void IgnoreProperty(SerializedProperty property)
         {
-            IgnoreProperty(property.propertyPath);
+            Drawer.IgnoreProperty(property);
         }
 
-        /// <summary>
-        /// Forces associated <see cref="SerializedProperty"/> to be ignored in the drawing process.
-        /// </summary>
+        /// <inheritdoc />
         public void IgnoreProperty(string propertyPath)
         {
-            propertiesToIgnore.Add(propertyPath);
+            Drawer.IgnoreProperty(propertyPath);
         }
 
 
+        Editor IToolboxEditor.ContextEditor => this;
+        /// <inheritdoc />
+        public virtual IToolboxEditorDrawer Drawer { get; } = new ToolboxEditorDrawer();
+
+#pragma warning disable 0067
+        [Obsolete("ToolboxEditorHandler.OnBeginToolboxEditor")]
         public static event Action<Editor> OnBeginToolboxEditor;
+        [Obsolete("ToolboxEditorHandler.OnBreakToolboxEditor")]
         public static event Action<Editor> OnBreakToolboxEditor;
+        [Obsolete("ToolboxEditorHandler.OnCloseToolboxEditor")]
         public static event Action<Editor> OnCloseToolboxEditor;
+#pragma warning restore 0067
     }
 }

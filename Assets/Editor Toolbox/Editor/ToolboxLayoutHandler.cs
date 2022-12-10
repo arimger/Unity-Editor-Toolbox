@@ -10,17 +10,17 @@ namespace Toolbox.Editor
     /// <para>Remark: can be used only within the Toolbox Editors.</para>
     /// </summary>
     [InitializeOnLoad]
-    internal static class ToolboxLayoutHelper
+    internal static class ToolboxLayoutHandler
     {
-        static ToolboxLayoutHelper()
+        static ToolboxLayoutHandler()
         {
             //events exposed by the ToolboxEditor are used to maintain created layout data
             //previously created scopes are validated and closed if it is needed
             //additionally this class sends appropriate warning messages to the Console window
 
-            ToolboxEditor.OnBeginToolboxEditor += OnBeginEditor;
-            ToolboxEditor.OnBreakToolboxEditor += OnBreakEditor;
-            ToolboxEditor.OnCloseToolboxEditor += OnCloseEditor;
+            ToolboxEditorHandler.OnBeginToolboxEditor += OnBeginEditor;
+            ToolboxEditorHandler.OnBreakToolboxEditor += OnBreakEditor;
+            ToolboxEditorHandler.OnCloseToolboxEditor += OnCloseEditor;
 
             //we have to reset the current state between Editors to keep values independent
             InspectorUtility.OnEditorReload += ResetCache;

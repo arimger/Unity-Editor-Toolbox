@@ -603,6 +603,7 @@ public class ClassWithInterface3 : ClassWithInterfaceBase
 #### Custom Editors <a name="toolboxeditors"></a>
 
 If you want to create a custom **UnityEditor.Editor** for your components and still use Toolbox-related features be sure to inherit from the **Toolbox.Editor.ToolboxEditor** class.
+More details (e.g. how to customize properties drawing) you can find in the [HOWTO](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Assets/Editor%20Toolbox/HOWTO.md) document.
 
 ```csharp
 using UnityEditor;
@@ -631,6 +632,10 @@ public class SampleEditor : ToolboxEditor
 	}
 }
 ```
+
+##### Custom Editor Implementation
+- **Toolbox.Editor.ToolboxEditor** - default class, override it if you want to implement a custom Editor for your components and ScriptableObjects
+- **Toolbox.Editor.ToolboxScriptedImporterEditor** - override it if you want to implement a custom Editor for your custom importers
 
 ### Material Drawers <a name="materialdrawers"></a>
 
@@ -820,7 +825,7 @@ Copy and paste all components from/to particular GameObject.
 
 Create multiple ScriptableObjects at once.
 ```
-Assets/Create/Toolbox/ScriptableObject Creation Wizard
+Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/createso.png)
