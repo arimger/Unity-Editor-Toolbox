@@ -1,9 +1,11 @@
-﻿using UnityEditor;
+﻿using System;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    [CustomPropertyDrawer(typeof(LabelByChildAttribute))]
+    [Obsolete("For now the LabelByChildAttribute is handled internally by the ToolboxPropertyHandler.")]
     public class LabelByChildAttributeDrawer : PropertyDrawerBase
     {
         private GUIContent GetLabelByValue(SerializedProperty property, GUIContent label)

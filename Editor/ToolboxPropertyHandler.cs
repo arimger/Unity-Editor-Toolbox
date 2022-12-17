@@ -178,6 +178,13 @@ namespace Toolbox.Editor
                     case NewLabelAttribute a:
                         label.text = a.NewLabel;
                         return;
+                    case LabelByChildAttribute a:
+                        if (!isArray)
+                        {
+                            PropertyUtility.OverrideLabelByChild(label, property, a.ChildName);
+                        }
+
+                        return;
                 }
             }
 

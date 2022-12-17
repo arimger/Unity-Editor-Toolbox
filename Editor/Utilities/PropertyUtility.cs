@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 
 using UnityEditor;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
@@ -333,6 +334,86 @@ namespace Toolbox.Editor
             }
 
             return field;
+        }
+
+        public static void OverrideLabelByChild(GUIContent label, SerializedProperty property, string childName)
+        {
+            var childProperty = property.FindPropertyRelative(childName);
+            if (childProperty != null)
+            {
+                OverrideLabelByValue(label, childProperty);
+            }
+            else
+            {
+                label.text = "<cannot find child property>";
+            }
+        }
+
+        public static void OverrideLabelByValue(GUIContent label, SerializedProperty property)
+        {
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.Generic:
+                    break;
+                case SerializedPropertyType.Integer:
+                    label.text = property.intValue.ToString();
+                    break;
+                case SerializedPropertyType.Boolean:
+                    label.text = property.boolValue.ToString();
+                    break;
+                case SerializedPropertyType.Float:
+                    label.text = property.floatValue.ToString();
+                    break;
+                case SerializedPropertyType.String:
+                    label.text = property.stringValue;
+                    break;
+                case SerializedPropertyType.Color:
+                    label.text = property.colorValue.ToString();
+                    break;
+                case SerializedPropertyType.ObjectReference:
+                    label.text = property.objectReferenceValue ? property.objectReferenceValue.name : "null";
+                    break;
+                case SerializedPropertyType.LayerMask:
+                    switch (property.intValue)
+                    {
+                        case 0:
+                            label.text = "Nothing";
+                            break;
+                        case ~0:
+                            label.text = "Everything";
+                            break;
+                        default:
+                            label.text = LayerMask.LayerToName((int)Mathf.Log(property.intValue, 2));
+                            break;
+                    }
+                    break;
+                case SerializedPropertyType.Enum:
+                    label.text = property.enumNames[property.enumValueIndex];
+                    break;
+                case SerializedPropertyType.Vector2:
+                    label.text = property.vector2Value.ToString();
+                    break;
+                case SerializedPropertyType.Vector3:
+                    label.text = property.vector3Value.ToString();
+                    break;
+                case SerializedPropertyType.Vector4:
+                    label.text = property.vector4Value.ToString();
+                    break;
+                case SerializedPropertyType.Rect:
+                    label.text = property.rectValue.ToString();
+                    break;
+                case SerializedPropertyType.Character:
+                    label.text = ((char)property.intValue).ToString();
+                    break;
+                case SerializedPropertyType.Bounds:
+                    label.text = property.boundsValue.ToString();
+                    break;
+                case SerializedPropertyType.Quaternion:
+                    label.text = property.quaternionValue.ToString();
+                    break;
+                default:
+                    break;
+            }
         }
 
 
