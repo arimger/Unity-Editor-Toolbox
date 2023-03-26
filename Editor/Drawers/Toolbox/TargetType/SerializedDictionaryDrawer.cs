@@ -17,18 +17,26 @@ namespace Toolbox.Editor.Drawers
                 var pairsProperty = a.pairsProperty;
                 var errorProperty = a.errorProperty;
 
-                var list = new ToolboxEditorList(pairsProperty, "Pair", true, true, false);
+                var list = new ToolboxEditorList(pairsProperty, "Pair", true, true, false)
+                {
+                    Foldable = true
+                };
                 list.drawHeaderCallback += (rect) =>
                 {
                     //cache preprocessed label to get prefab related functions
                     var label = EditorGUI.BeginProperty(rect, null, p);
+
                     //create additional warning message if there is a collision
                     if (errorProperty.boolValue)
                     {
-                        label.image = EditorGuiUtility.GetHelpIcon(MessageType.Warning);
                         label.text += string.Format(" [{0}]", Style.warningMessage);
+                        var warningRect = rect;
+                        warningRect.xMin = warningRect.xMax - Style.warningIconOffset;
+                        var warningIcon = new GUIContent(EditorGuiUtility.GetHelpIcon(MessageType.Warning));
+                        EditorGUI.LabelField(warningRect, warningIcon);
                     }
-                    EditorGUI.LabelField(rect, label);
+
+                    list.DrawStandardFoldout(rect, label);
                     EditorGUI.EndProperty();
                 };
                 list.drawFooterCallback += (rect) =>
@@ -87,6 +95,7 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
+            internal static readonly float warningIconOffset = 25.0f;
             internal static readonly string warningMessage = "keys are not unique, it will break deserialization";
         }
 
