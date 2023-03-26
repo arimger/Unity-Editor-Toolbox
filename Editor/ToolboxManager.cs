@@ -6,7 +6,6 @@ namespace Toolbox.Editor
 {
     using Editor = UnityEditor.Editor;
 
-    [InitializeOnLoad]
     internal static class ToolboxManager
     {
         private const string settingsType = nameof(ToolboxEditorSettings);
