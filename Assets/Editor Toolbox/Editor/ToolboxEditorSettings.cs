@@ -7,8 +7,8 @@ using UnityEngine.Serialization;
 namespace Toolbox.Editor
 {
     using Toolbox.Editor.Drawers;
-    using Toolbox.Editor.Hierarchy;
     using Toolbox.Editor.Folders;
+    using Toolbox.Editor.Hierarchy;
 
     internal interface IToolboxGeneralSettings
     { }
@@ -201,6 +201,37 @@ namespace Toolbox.Editor
 
         #endregion
 
+        public void Reset()
+        {
+            ResetHierarchySettings();
+            ResetProjectSettings();
+            ResetInspectorSettings();
+        }
+
+        public void ResetHierarchySettings()
+        {
+            UseToolboxHierarchy = true;
+            RowDataTypes = Defaults.rowDataTypes;
+            DrawHorizontalLines = true;
+            ShowSelectionsCount = true;
+        }
+
+        public void ResetProjectSettings()
+        {
+            UseToolboxProject = true;
+            ResetIconRectProperties();
+            CustomFolders = new List<FolderData>();
+        }
+
+        public void ResetInspectorSettings()
+        {
+            UseToolboxDrawers = true;
+            SetAllPossibleDecoratorDrawers();
+            SetAllPossibleConditionDrawers();
+            SetAllPossibleSelfPropertyDrawers();
+            SetAllPossibleListPropertyDrawers();
+            SetAllPossibleTargetTypeDrawers();
+        }
 
         public void SetAllPossibleDecoratorDrawers()
         {
@@ -251,7 +282,6 @@ namespace Toolbox.Editor
                 targetTypeDrawerHandlers.Add(new SerializedType(types[i]));
             }
         }
-
 
         public void ResetIconRectProperties()
         {
@@ -331,10 +361,10 @@ namespace Toolbox.Editor
             set => useToolboxDrawers = value;
         }
 
-        public bool ForceDefaultLists 
-        { 
-            get => forceDefaultLists; 
-            set => forceDefaultLists = value; 
+        public bool ForceDefaultLists
+        {
+            get => forceDefaultLists;
+            set => forceDefaultLists = value;
         }
 
         public List<SerializedType> DecoratorDrawerHandlers
