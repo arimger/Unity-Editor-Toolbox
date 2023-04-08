@@ -13,6 +13,10 @@ public class SampleBehaviour2 : MonoBehaviour
     [InLineEditor]
     public GameObject[] list;
 
+    [Tooltip("Sample List Labeled By Child")]
+    [SerializeField, ReorderableList(ListStyle.Round, elementLabel: "tag", Foldable = true, LabelByChild = true)]
+    private SampleListClass[] list2;
+
     [ReorderableList(ListStyle.Lined, "String", true, false)]
     public string[] strings;
 
@@ -74,4 +78,15 @@ public class SampleBehaviour2 : MonoBehaviour
     public float var40;
     [DynamicMinMaxSlider(nameof(a1), nameof(b1))]
     public Vector2 var41;
+
+    [System.Serializable]
+    private class SampleListClass
+    {
+        [BeginGroup]
+        [TagSelector]
+        public string tag;
+        public string stringValue;
+        [EndGroup]
+        public int intValue;
+    }
 }

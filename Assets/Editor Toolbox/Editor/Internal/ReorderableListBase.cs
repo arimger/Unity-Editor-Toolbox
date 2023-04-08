@@ -79,6 +79,10 @@ namespace Toolbox.Editor.Internal
         { }
 
         public ReorderableListBase(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels, bool foldable)
+            : this(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels, foldable, false)
+        { }
+
+        public ReorderableListBase(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels, bool foldable, bool labelByChild)
         {
             //validate parameters
             if (list == null || list.isArray == false)
@@ -95,6 +99,7 @@ namespace Toolbox.Editor.Internal
             HasLabels = hasLabels;
             ElementLabel = elementLabel;
             Foldable = foldable;
+            LabelByChild = labelByChild;
 
             //set serialized data
             List = list;
@@ -783,6 +788,14 @@ namespace Toolbox.Editor.Internal
         /// Indicates if list should be able to fold itself.
         /// </summary>
         public bool Foldable
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Indicates if list element should be named by one of child's property.
+        /// </summary>
+        public bool LabelByChild
         {
             get; set;
         }

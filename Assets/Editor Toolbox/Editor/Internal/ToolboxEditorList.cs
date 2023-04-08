@@ -2,6 +2,7 @@
 using System.Linq;
 
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace Toolbox.Editor.Internal
@@ -41,6 +42,9 @@ namespace Toolbox.Editor.Internal
             : base(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels, foldable)
         { }
 
+        public ToolboxEditorList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels, bool foldable, bool labelByChild)
+            : base(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels, foldable, labelByChild)
+        { }
 
         private void ValidateElementsRects(int arraySize)
         {
@@ -135,8 +139,91 @@ namespace Toolbox.Editor.Internal
             {
                 var element = List.GetArrayElementAtIndex(index);
                 var content = GetElementContent(element, index);
+
+                if (LabelByChild)
+                {
+                    SerializedProperty childProperty = element.FindPropertyRelative(ElementLabel);
+                    string propertyName = GetPropertyName(childProperty);
+                    if (!string.IsNullOrWhiteSpace(propertyName))
+                        content.text = propertyName;
+                }
+
                 ToolboxEditorGui.DrawToolboxProperty(element, content);
             }
+        }
+
+        private string GetPropertyName(SerializedProperty property)
+        {
+            string propertyName = "";
+
+            if(property == null)
+                return propertyName;
+
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.Generic:
+                    break;
+                case SerializedPropertyType.Integer:
+                    propertyName = property.intValue.ToString();
+                    break;
+                case SerializedPropertyType.Boolean:
+                    propertyName = property.boolValue.ToString();
+                    break;
+                case SerializedPropertyType.Float:
+                    propertyName = property.floatValue.ToString();
+                    break;
+                case SerializedPropertyType.String:
+                    propertyName = property.stringValue;
+                    break;
+                case SerializedPropertyType.Color:
+                    propertyName = property.colorValue.ToString();
+                    break;
+                case SerializedPropertyType.ObjectReference:
+                    propertyName = property.objectReferenceValue ? property.objectReferenceValue.name : "null";
+                    break;
+                case SerializedPropertyType.LayerMask:
+                    switch (property.intValue)
+                    {
+                        case 0:
+                            propertyName = "Nothing";
+                            break;
+                        case ~0:
+                            propertyName = "Everything";
+                            break;
+                        default:
+                            propertyName = LayerMask.LayerToName((int)Mathf.Log(property.intValue, 2));
+                            break;
+                    }
+                    break;
+                case SerializedPropertyType.Enum:
+                    propertyName = property.enumNames[property.enumValueIndex];
+                    break;
+                case SerializedPropertyType.Vector2:
+                    propertyName = property.vector2Value.ToString();
+                    break;
+                case SerializedPropertyType.Vector3:
+                    propertyName = property.vector3Value.ToString();
+                    break;
+                case SerializedPropertyType.Vector4:
+                    propertyName = property.vector4Value.ToString();
+                    break;
+                case SerializedPropertyType.Rect:
+                    propertyName = property.rectValue.ToString();
+                    break;
+                case SerializedPropertyType.Character:
+                    propertyName = ((char)property.intValue).ToString();
+                    break;
+                case SerializedPropertyType.Bounds:
+                    propertyName = property.boundsValue.ToString();
+                    break;
+                case SerializedPropertyType.Quaternion:
+                    propertyName = property.quaternionValue.ToString();
+                    break;
+                default:
+                    break;
+            }
+
+            return propertyName;
         }
 
         /// <summary>

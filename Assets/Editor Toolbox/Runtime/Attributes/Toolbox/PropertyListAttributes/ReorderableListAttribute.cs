@@ -30,6 +30,10 @@ namespace UnityEngine
         /// </summary>
         public bool Foldable { get; set; }
         /// <summary>
+        /// Indicates if list element should be named by one of child's property.
+        /// </summary>
+        public bool LabelByChild { get; set; }
+        /// <summary>
         /// Indicates whether list should have a label above elements.
         /// </summary>
         public bool HasHeader { get; set; } = true;
