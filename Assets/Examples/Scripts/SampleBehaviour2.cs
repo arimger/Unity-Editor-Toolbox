@@ -14,8 +14,8 @@ public class SampleBehaviour2 : MonoBehaviour
     public GameObject[] list;
 
     [Tooltip("Sample List Labeled By Child")]
-    [SerializeField, ReorderableList(ListStyle.Round, elementLabel: "tag", Foldable = true, LabelByChild = true)]
-    private SampleListClass[] list2;
+    [SerializeField, ReorderableList(ListStyle.Boxed, elementLabel: "tag", Foldable = true, LabelByChild = true)]
+    private SampleListClass[] labelByChildList;
 
     [ReorderableList(ListStyle.Lined, "String", true, false)]
     public string[] strings;

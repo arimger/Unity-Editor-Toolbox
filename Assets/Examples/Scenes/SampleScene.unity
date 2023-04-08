@@ -438,23 +438,17 @@ MonoBehaviour:
   - {fileID: 661896457}
   - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
   - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
-  list2:
-  - tag: Untagged
-    stringValue: 
-    intValue: 0
+  labelByChildList:
   - tag: Respawn
     stringValue: 
     intValue: 0
-  - tag: Finish
-    stringValue: 
-    intValue: 0
-  - tag: EditorOnly
-    stringValue: 
-    intValue: 0
-  - tag: MainCamera
-    stringValue: 
-    intValue: 0
   - tag: Player
+    stringValue: 
+    intValue: 0
+  - tag: GameController
+    stringValue: 
+    intValue: 0
+  - tag: SampleTag 2
     stringValue: 
     intValue: 0
   strings:
