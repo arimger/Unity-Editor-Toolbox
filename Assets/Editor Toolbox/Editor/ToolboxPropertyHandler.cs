@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor
 {
+    using Toolbox.Attributes;
     using Toolbox.Editor.Drawers;
 
     /// <summary>
@@ -82,6 +83,12 @@ namespace Toolbox.Editor
         /// Determines whenever property has a custom <see cref="ToolboxConditionDrawer{T}"/>
         /// </summary>
         private bool hasToolboxConditionDrawer;
+
+        /// <summary>
+        /// Temporary solution to cache all attributes responsible for overriding label.
+        /// This will be replaced with validation attributes.
+        /// </summary>
+        private ILabelProcessorAttribute labelProcessorAttribute;
 
 
         /// <summary>
@@ -166,26 +173,27 @@ namespace Toolbox.Editor
 
         private void HandleNewAttribute(PropertyAttribute attribute)
         {
-            if (!isChild)
+            //NOTE: setting tooltip and labels is valid only for parent or single properties
+            //it's a bit ugly but, it's the only semi-acceptable way to support built-in TooltipAttribute
+            //TODO: move these attributes to validation drawers
+            switch (attribute)
             {
-                //NOTE: setting tooltip and labels is valid only for parent or single properties
-                //it's a bit ugly but, it's the only semi-acceptable way to support built-in TooltipAttribute
-                switch (attribute)
-                {
-                    case TooltipAttribute a:
-                        label.tooltip = a.tooltip;
-                        return;
-                    case NewLabelAttribute a:
-                        label.text = a.NewLabel;
-                        return;
-                    case LabelByChildAttribute a:
-                        if (!isArray)
-                        {
-                            PropertyUtility.OverrideLabelByChild(label, property, a.ChildName);
-                        }
+                case TooltipAttribute a:
+                    label.tooltip = a.tooltip;
+                    return;
+                case NewLabelAttribute a:
+                    if (!isChild)
+                    {
+                        labelProcessorAttribute = a;
+                    }
+                    return;
+                case LabelByChildAttribute a:
+                    if (!isArray)
+                    {
+                        labelProcessorAttribute = a;
+                    }
 
-                        return;
-                }
+                    return;
             }
 
             var attributeType = attribute.GetType();
@@ -276,6 +284,8 @@ namespace Toolbox.Editor
 
         private void DrawProperty(SerializedProperty property, GUIContent label)
         {
+            ProcessLabel(property, label);
+
             //get toolbox drawer for the property or draw it in the default way
             if (hasToolboxPropertyDrawer && (!hasBuiltInPropertyDrawer || isArray))
             {
@@ -323,6 +333,25 @@ namespace Toolbox.Editor
             for (var i = decoratorAttributes.Count - 1; i >= 0; i--)
             {
                 HandleDecorator(decoratorAttributes[i], false, conditionState);
+            }
+        }
+
+        //TODO: replace this method with validation attributes
+        private void ProcessLabel(SerializedProperty property, GUIContent label)
+        {
+            if (labelProcessorAttribute == null)
+            {
+                return;
+            }
+
+            switch (labelProcessorAttribute)
+            {
+                case NewLabelAttribute a:
+                    label.text = a.NewLabel;
+                    return;
+                case LabelByChildAttribute a:
+                    PropertyUtility.OverrideLabelByChild(label, property, a.ChildName);
+                    return;
             }
         }
 

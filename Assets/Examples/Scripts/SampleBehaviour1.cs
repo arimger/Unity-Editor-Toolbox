@@ -103,28 +103,6 @@ public class SampleBehaviour1 : MonoBehaviour
     [PrefabObjectOnly]
     public GameObject prefabReference;
 
-    [Label("Label By Child", skinStyle: SkinStyle.Box)]
-
-    [LabelByChild("var3.var2")]
-    public SampleClass1 sampleField;
-    [LabelByChild("var2")]
-    public SampleClass1[] sampleFields;
-
-    [System.Serializable]
-    public class SampleClass1
-    {
-        public Material var1;
-        public KeyCode var2;
-        public SampleClass2 var3;
-    }
-
-    [System.Serializable]
-    public class SampleClass2
-    {
-        public int var1;
-        public string var2;
-    }
-
     [Label("Formatted Number", skinStyle: SkinStyle.Box)]
 
     [FormattedNumber]

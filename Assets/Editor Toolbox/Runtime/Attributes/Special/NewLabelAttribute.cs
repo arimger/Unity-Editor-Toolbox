@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 
+using Toolbox.Attributes;
+
 namespace UnityEngine
 {
     /// <summary>
@@ -10,7 +12,7 @@ namespace UnityEngine
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     [Conditional("UNITY_EDITOR")]
-    public class NewLabelAttribute : PropertyAttribute
+    public class NewLabelAttribute : PropertyAttribute, ILabelProcessorAttribute
     {
         public NewLabelAttribute(string newLabel)
         {
