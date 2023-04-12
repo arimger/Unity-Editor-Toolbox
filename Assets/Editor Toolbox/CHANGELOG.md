@@ -1,3 +1,9 @@
+## 0.12.1 [12.04.2023]
+
+### Changed:
+- Fix LabelByChild usage within lists
+- Possibility to foldout/in dictionaries
+
 ## 0.12.0 [10.12.2022]
 
 ### Changed:

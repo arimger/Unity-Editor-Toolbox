@@ -78,6 +78,7 @@ Create/Editor Toolbox/Settings
 ### Regular Drawers <a name="regulardrawers"></a>
 
 Drawers based on built-in classes **PropertyDrawer/DecoratorDrawer** and associated **PropertyAttribute**.
+Regular drawers have priority over Toolbox drawers and they cannot be mixed.
 
 #### TagSelectorAttribute
 
@@ -207,34 +208,6 @@ public string password;
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/password.png)
-
-#### LabelByChildAttribute
-
-```csharp
-[System.Serializable]
-public class SampleClass1
-{
-	public Material var1;
-	public KeyCode var2;
-	public SampleClass2 var3;
-}
-
-[System.Serializable]
-public class SampleClass2
-{
-	public int var1;
-	public string var2;
-}
-
-[LabelByChild("var2")]
-public SampleClass1[] vars1;
-[LabelByChild("var3.var2")]
-public SampleClass1 var1;
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild1.png)
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild2.png)
 
 #### ChildObjectOnlyAttribute
 
@@ -390,6 +363,16 @@ public int var1;
 ```
 
 ```csharp
+public int var1;
+
+[ShowDisabledIf(nameof(var1), 3, Comparison = UnityComparisonMethod.LessEqual)]
+public int var2;
+
+[HideDisabledIf(nameof(var1), 3, Comparison = UnityComparisonMethod.GreaterEqual)]
+public int var3;
+```
+
+```csharp
 public bool boolValue = true;
 [ShowWarningIf(nameof(boolValue), false, "Message", DisableField = true)]
 public int var1;
@@ -502,10 +485,14 @@ public float MaxValue => 15.0f;
 
 Attributes handled internally by the ToolboxEditor. You can combine them with any other attributes.
 
+##### NewLabelAttribute
+
 ```csharp
 [NewLabel("Custom Label")]
 public float var1 = 25.4f;
 ```
+
+##### HideLabelAttribute
 
 ```csharp
 [HideLabel]
@@ -513,6 +500,34 @@ public float var1;
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/hidelabel.png)
+
+##### LabelByChildAttribute
+
+```csharp
+[System.Serializable]
+public class SampleClass1
+{
+	public Material var1;
+	public KeyCode var2;
+	public SampleClass2 var3;
+}
+
+[System.Serializable]
+public class SampleClass2
+{
+	public int var1;
+	public string var2;
+}
+
+[LabelByChild("var2")]
+public SampleClass1[] vars1;
+[LabelByChild("var3.var2")]
+public SampleClass1 var1;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild1.png)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelbychild2.png)
 
 #### Toolbox Archetype Attributes <a name="toolboxarchetype"></a>
 
@@ -825,7 +840,7 @@ Copy and paste all components from/to particular GameObject.
 
 Create multiple ScriptableObjects at once.
 ```
-Assets/Create/Toolbox/ScriptableObject Creation Wizard
+Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/createso.png)
