@@ -186,6 +186,7 @@ namespace Toolbox.Editor
                     {
                         labelProcessorAttribute = a;
                     }
+
                     return;
                 case LabelByChildAttribute a:
                     if (!isArray)
@@ -336,25 +337,6 @@ namespace Toolbox.Editor
             }
         }
 
-        //TODO: replace this method with validation attributes
-        private void ProcessLabel(SerializedProperty property, GUIContent label)
-        {
-            if (labelProcessorAttribute == null)
-            {
-                return;
-            }
-
-            switch (labelProcessorAttribute)
-            {
-                case NewLabelAttribute a:
-                    label.text = a.NewLabel;
-                    return;
-                case LabelByChildAttribute a:
-                    PropertyUtility.OverrideLabelByChild(label, property, a.ChildName);
-                    return;
-            }
-        }
-
         private void HandleDecorator(ToolboxDecoratorAttribute attribute, bool onBegin, PropertyCondition conditionState = PropertyCondition.Valid)
         {
             var drawer = ToolboxDrawerModule.GetDecoratorDrawer(attribute);
@@ -394,6 +376,25 @@ namespace Toolbox.Editor
             }
 
             return ToolboxDrawerModule.GetConditionDrawer(conditionAttribute)?.OnGuiValidate(property, conditionAttribute) ?? PropertyCondition.Valid;
+        }
+
+        //TODO: replace this method with validation attributes
+        private void ProcessLabel(SerializedProperty property, GUIContent label)
+        {
+            if (labelProcessorAttribute == null)
+            {
+                return;
+            }
+
+            switch (labelProcessorAttribute)
+            {
+                case NewLabelAttribute a:
+                    label.text = a.NewLabel;
+                    return;
+                case LabelByChildAttribute a:
+                    PropertyUtility.OverrideLabelByChild(label, property, a.ChildName);
+                    return;
+            }
         }
 
 
