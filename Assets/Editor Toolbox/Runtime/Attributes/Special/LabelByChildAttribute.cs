@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 
+using Toolbox.Attributes;
+
 namespace UnityEngine
 {
     /// <summary>
@@ -22,7 +24,7 @@ namespace UnityEngine
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     [Conditional("UNITY_EDITOR")]
-    public class LabelByChildAttribute : PropertyAttribute
+    public class LabelByChildAttribute : PropertyAttribute, ILabelProcessorAttribute
     {
         public LabelByChildAttribute(string childName)
         {

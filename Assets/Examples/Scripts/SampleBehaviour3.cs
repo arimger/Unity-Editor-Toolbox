@@ -55,4 +55,14 @@ public class SampleBehaviour3 : MonoBehaviour
 
     [ShowWarningIf(nameof(var40), 3, "Value has to be greater than 3", Comparison = UnityComparisonMethod.LessEqual, DisableField = false)]
     public int var40;
+
+    [Label("Show Disabled If", skinStyle: SkinStyle.Box)]
+
+    [ShowDisabledIf(nameof(var40), 3, Comparison = UnityComparisonMethod.LessEqual)]
+    public int var42;
+
+    [Label("Hide Disabled If", skinStyle: SkinStyle.Box)]
+
+    [HideDisabledIf(nameof(var40), 3, Comparison = UnityComparisonMethod.GreaterEqual)]
+    public int var43;
 }
