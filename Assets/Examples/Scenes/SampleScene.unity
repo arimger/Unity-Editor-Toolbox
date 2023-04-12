@@ -1149,16 +1149,23 @@ MonoBehaviour:
   var1: 25.4
   var2: {fileID: 977748988}
   var3: 0
-  var4:
-  - var1: 36
-  - var1: 52
   sampleField:
     var1: {fileID: 0}
     var2: 266
     var3:
       var1: 0
       var2: New Label from var2.var3
-  sampleFields: []
+  sampleFields:
+  - var1: {fileID: 0}
+    var2: 274
+    var3:
+      var1: 0
+      var2: 
+  - var1: {fileID: 0}
+    var2: 277
+    var3:
+      var1: 0
+      var2: 
 --- !u!4 &1583836799
 Transform:
   m_ObjectHideFlags: 2
@@ -1257,6 +1264,8 @@ MonoBehaviour:
   var41: 00000000000000000000000000000000
   var39: 0
   var40: 2
+  var42: 0
+  var43: 0
 --- !u!1 &1972418676
 GameObject:
   m_ObjectHideFlags: 0

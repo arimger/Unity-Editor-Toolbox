@@ -22,7 +22,7 @@ public class SampleBehaviour7 : MonoBehaviour
 
     [LabelByChild("var3.var2")]
     public SampleClass1 sampleField;
-    [LabelByChild("var2"), ReorderableList]
+    [LabelByChild("var2"), ReorderableList, Tooltip("Sample usage of the LabelByChildAttribute within a list")]
     public SampleClass1[] sampleFields;
 
     [Serializable]
