@@ -44,6 +44,10 @@ namespace Toolbox.Serialization
             foreach (var scene in EditorBuildSettings.scenes)
             {
                 buildIndex++;
+
+                if (string.IsNullOrEmpty(scene.path))
+                    continue;
+
                 var sceneIndex = scene.enabled ? buildIndex : InvalidSceneIndex;
                 var sceneAsset = EditorGUIUtility.Load(scene.path) as SceneAsset;
                 if (sceneAsset != null)
