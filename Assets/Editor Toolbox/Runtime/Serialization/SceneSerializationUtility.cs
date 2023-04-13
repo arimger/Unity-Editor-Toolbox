@@ -43,6 +43,11 @@ namespace Toolbox.Serialization
             var buildIndex = -1;
             foreach (var scene in EditorBuildSettings.scenes)
             {
+                if (string.IsNullOrEmpty(scene.path))
+                {
+                    continue;
+                }
+
                 buildIndex++;
                 var sceneIndex = scene.enabled ? buildIndex : InvalidSceneIndex;
                 var sceneAsset = EditorGUIUtility.Load(scene.path) as SceneAsset;
