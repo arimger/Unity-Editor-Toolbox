@@ -52,8 +52,15 @@ namespace Toolbox.Editor
         List<SerializedType> TargetTypeDrawerHandlers { get; }
     }
 
+    internal interface IToolboxSceneViewSettings
+    {
+        bool UseToolboxSceneView { get; }
+
+        KeyCode SelectorKey { get; }
+    }
+
     [CreateAssetMenu(fileName = "Editor Toolbox Settings", menuName = "Editor Toolbox/Settings")]
-    internal class ToolboxEditorSettings : ScriptableObject, IToolboxGeneralSettings, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxInspectorSettings
+    internal class ToolboxEditorSettings : ScriptableObject, IToolboxGeneralSettings, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxInspectorSettings, IToolboxSceneViewSettings
     {
         [SerializeField]
         private bool useToolboxHierarchy = true;
@@ -82,6 +89,12 @@ namespace Toolbox.Editor
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         private List<FolderData> customFolders = new List<FolderData>();
 
+        [SerializeField]
+        private bool useToolboxScene = true;
+
+        [SerializeField]
+        private KeyCode selectorKey = KeyCode.LeftControl;
+
         [SerializeField, Tooltip("Set to false if you don't want to use Toolbox attributes and related features.")]
         private bool useToolboxDrawers = true;
         [SerializeField, Tooltip("By default, Inspectors will use the built-in version of the list instead of the Toolbox-based one. " +
@@ -103,11 +116,12 @@ namespace Toolbox.Editor
         private bool hierarchySettingsDirty;
         private bool projectSettingsDirty;
         private bool inspectorSettingsDirty;
+        private bool sceneSettingsDirty;
 
         internal event Action<IToolboxHierarchySettings> OnHierarchySettingsChanged;
         internal event Action<IToolboxProjectSettings> OnProjectSettingsChanged;
         internal event Action<IToolboxInspectorSettings> OnInspectorSettingsChanged;
-
+        internal event Action<IToolboxSceneViewSettings> OnSceneViewSettingsChanged;
 
         #region Methods: Internal/data validation
 
@@ -122,7 +136,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Forces Project settings validation in the next <see cref="OnValidate"/> call.
         /// </summary>
-        internal void SetProjectSettingsDirty()
+        internal void SetSceneViewSettingsDirty()
         {
             projectSettingsDirty = true;
         }
@@ -135,6 +149,13 @@ namespace Toolbox.Editor
             inspectorSettingsDirty = true;
         }
 
+        /// <summary>
+        /// Forces Scene settings validation in the next <see cref="OnValidate"/> call.
+        /// </summary>
+        internal void SetSceneSettingsDirty()
+        {
+            sceneSettingsDirty = true;
+        }
 
         internal void ValidateHierarchySettings()
         {
@@ -151,11 +172,17 @@ namespace Toolbox.Editor
             OnInspectorSettingsChanged?.Invoke(this);
         }
 
+        internal void ValidateSceneSettings()
+        {
+            OnSceneViewSettingsChanged?.Invoke(this);
+        }
+
         internal void Validate()
         {
             ValidateHierarchySettings();
             ValidateProjectSettings();
             ValidateInspectorSettings();
+            ValidateSceneSettings();
         }
 
 
@@ -183,6 +210,11 @@ namespace Toolbox.Editor
                 {
                     ValidateInspectorSettings();
                 }
+
+                if (sceneSettingsDirty)
+                {
+                    ValidateSceneSettings();
+                }
             }
             else
             {
@@ -206,6 +238,7 @@ namespace Toolbox.Editor
             ResetHierarchySettings();
             ResetProjectSettings();
             ResetInspectorSettings();
+            ResetSceneSettings();
         }
 
         public void ResetHierarchySettings()
@@ -231,6 +264,12 @@ namespace Toolbox.Editor
             SetAllPossibleSelfPropertyDrawers();
             SetAllPossibleListPropertyDrawers();
             SetAllPossibleTargetTypeDrawers();
+        }
+
+        public void ResetSceneSettings()
+        {
+            UseToolboxSceneView = true;
+            SelectorKey = KeyCode.LeftControl;
         }
 
         public void SetAllPossibleDecoratorDrawers()
@@ -353,6 +392,18 @@ namespace Toolbox.Editor
         {
             get => customFolders;
             set => customFolders = value;
+        }
+
+        public bool UseToolboxSceneView
+        {
+            get => useToolboxScene;
+            set => useToolboxScene = value;
+        }
+
+        public KeyCode SelectorKey
+        {
+            get => selectorKey;
+            set => selectorKey = value;
         }
 
         public bool UseToolboxDrawers
