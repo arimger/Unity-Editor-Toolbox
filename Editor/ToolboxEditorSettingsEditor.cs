@@ -18,6 +18,7 @@ namespace Toolbox.Editor
         private AnimBool hierarchyAnimBool;
         private AnimBool projectAnimBool;
         private AnimBool inspectorAnimBool;
+        private AnimBool sceneViewAnimBool;
 
         private int enabledToShowDrawerType;
 
@@ -31,6 +32,8 @@ namespace Toolbox.Editor
         private SerializedProperty smallIconScaleProperty;
         private SerializedProperty largeIconPaddingProperty;
         private SerializedProperty smallIconPaddingProperty;
+        private SerializedProperty useToolboxSceneViewProperty;
+        private SerializedProperty selectorKeyProperty;
 
         private ReorderableListBase rowDataItemsList;
         private ReorderableListBase customFoldersList;
@@ -50,6 +53,7 @@ namespace Toolbox.Editor
             hierarchyAnimBool = new AnimBool(ToolboxPrefs.GetBool(nameof(ToolboxEditorSettings), "HierarchyEnabled"));
             projectAnimBool = new AnimBool(ToolboxPrefs.GetBool(nameof(ToolboxEditorSettings), "ProjectEnabled"));
             inspectorAnimBool = new AnimBool(ToolboxPrefs.GetBool(nameof(ToolboxEditorSettings), "InspectorEnabled"));
+            sceneViewAnimBool = new AnimBool(ToolboxPrefs.GetBool(nameof(ToolboxEditorSettings), "SceneViewEnabled"));
 
             enabledToShowDrawerType = ToolboxPrefs.GetInt(nameof(ToolboxEditorSettings), "PickedDrawerType");
 
@@ -63,6 +67,7 @@ namespace Toolbox.Editor
             hierarchyAnimBool.valueChanged.AddListener(repaintAction);
             projectAnimBool.valueChanged.AddListener(repaintAction);
             inspectorAnimBool.valueChanged.AddListener(repaintAction);
+            sceneViewAnimBool.valueChanged.AddListener(repaintAction);
 
             //hierarchy-related properties
             useToolboxHierarchyProperty = serializedObject.FindProperty("useToolboxHierarchy");
@@ -127,6 +132,11 @@ namespace Toolbox.Editor
                 "",
                 ""
             };
+
+            //SceneView-related properties
+            useToolboxSceneViewProperty = serializedObject.FindProperty("useToolboxSceneView");
+            selectorKeyProperty = serializedObject.FindProperty("selectorKey");
+
         }
 
         private void OnDisable()
@@ -250,7 +260,7 @@ namespace Toolbox.Editor
             EditorGUILayout.Space();
             if (EditorGUI.EndChangeCheck())
             {
-                currentTarget.SetProjectSettingsDirty();
+                currentTarget.SetSceneViewSettingsDirty();
             }
 
             EditorGUI.indentLevel--;
@@ -329,6 +339,26 @@ namespace Toolbox.Editor
             if (EditorGUI.EndChangeCheck())
             {
                 currentTarget.SetInspectorSettingsDirty();
+            }
+
+            EditorGUI.indentLevel--;
+        }
+
+        private void DrawSceneViewSettings()
+        {
+            EditorGUI.indentLevel++;
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.Space();
+            EditorGUILayout.PropertyField(useToolboxDrawersProperty);
+            EditorGUILayout.Space();
+
+            EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
+            EditorGUILayout.PropertyField(selectorKeyProperty);
+            EditorGUI.EndDisabledGroup();
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                currentTarget.SetSceneViewSettingsDirty();
             }
 
             EditorGUI.indentLevel--;
@@ -425,9 +455,19 @@ namespace Toolbox.Editor
                 }
             }
 
+            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
+            //handle inspector settings section
+            sceneViewAnimBool.target = DrawHeaderFoldout(sceneViewAnimBool.target, Style.sceneViewSettingsContent, true, Style.sectionHeaderStyle, Style.headersGroupStyle);
+            using (var group = new EditorGUILayout.FadeGroupScope(sceneViewAnimBool.faded))
+            {
+                if (group.visible)
+                {
+                    DrawSceneViewSettings();
+                }
+            }
+
             serializedObject.ApplyModifiedProperties();
         }
-
 
         internal static class Style
         {
@@ -451,6 +491,8 @@ namespace Toolbox.Editor
                 EditorGUIUtility.IconContent("Project").image);
             internal static readonly GUIContent inspectorSettingsContent = new GUIContent("Inspector",
                 EditorGUIUtility.IconContent("UnityEditor.InspectorWindow").image);
+            internal static readonly GUIContent sceneViewSettingsContent = new GUIContent("SceneView",
+                EditorGUIUtility.IconContent("UnityEditor.SceneView").image);
 
             internal static readonly GUILayoutOption[] resetButtonOptions = new GUILayoutOption[]
             {
