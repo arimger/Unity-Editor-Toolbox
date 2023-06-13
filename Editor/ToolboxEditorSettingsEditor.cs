@@ -136,7 +136,6 @@ namespace Toolbox.Editor
             //SceneView-related properties
             useToolboxSceneViewProperty = serializedObject.FindProperty("useToolboxSceneView");
             selectorKeyProperty = serializedObject.FindProperty("selectorKey");
-
         }
 
         private void OnDisable()
@@ -260,7 +259,7 @@ namespace Toolbox.Editor
             EditorGUILayout.Space();
             if (EditorGUI.EndChangeCheck())
             {
-                currentTarget.SetSceneViewSettingsDirty();
+                currentTarget.SetProjectSettingsDirty();
             }
 
             EditorGUI.indentLevel--;
@@ -349,10 +348,10 @@ namespace Toolbox.Editor
             EditorGUI.indentLevel++;
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.Space();
-            EditorGUILayout.PropertyField(useToolboxDrawersProperty);
+            EditorGUILayout.PropertyField(useToolboxSceneViewProperty);
             EditorGUILayout.Space();
 
-            EditorGUI.BeginDisabledGroup(!useToolboxDrawersProperty.boolValue);
+            EditorGUI.BeginDisabledGroup(!useToolboxSceneViewProperty.boolValue);
             EditorGUILayout.PropertyField(selectorKeyProperty);
             EditorGUI.EndDisabledGroup();
 

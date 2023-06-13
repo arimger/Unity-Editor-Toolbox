@@ -12,7 +12,6 @@ namespace Toolbox.Editor
 
         private static Editor globalSettingsEditor;
 
-
         private static void ForceModulesUpdate()
         {
             //perform separated modules update
