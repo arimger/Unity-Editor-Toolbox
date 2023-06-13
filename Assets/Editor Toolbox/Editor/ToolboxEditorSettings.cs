@@ -90,7 +90,7 @@ namespace Toolbox.Editor
         private List<FolderData> customFolders = new List<FolderData>();
 
         [SerializeField]
-        private bool useToolboxScene = true;
+        private bool useToolboxSceneView = true;
 
         [SerializeField]
         private KeyCode selectorKey = KeyCode.LeftControl;
@@ -116,7 +116,7 @@ namespace Toolbox.Editor
         private bool hierarchySettingsDirty;
         private bool projectSettingsDirty;
         private bool inspectorSettingsDirty;
-        private bool sceneSettingsDirty;
+        private bool sceneViewSettingsDirty;
 
         internal event Action<IToolboxHierarchySettings> OnHierarchySettingsChanged;
         internal event Action<IToolboxProjectSettings> OnProjectSettingsChanged;
@@ -136,7 +136,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Forces Project settings validation in the next <see cref="OnValidate"/> call.
         /// </summary>
-        internal void SetSceneViewSettingsDirty()
+        internal void SetProjectSettingsDirty()
         {
             projectSettingsDirty = true;
         }
@@ -152,9 +152,9 @@ namespace Toolbox.Editor
         /// <summary>
         /// Forces Scene settings validation in the next <see cref="OnValidate"/> call.
         /// </summary>
-        internal void SetSceneSettingsDirty()
+        internal void SetSceneViewSettingsDirty()
         {
-            sceneSettingsDirty = true;
+            sceneViewSettingsDirty = true;
         }
 
         internal void ValidateHierarchySettings()
@@ -172,7 +172,7 @@ namespace Toolbox.Editor
             OnInspectorSettingsChanged?.Invoke(this);
         }
 
-        internal void ValidateSceneSettings()
+        internal void ValidateSceneViewSettings()
         {
             OnSceneViewSettingsChanged?.Invoke(this);
         }
@@ -182,7 +182,7 @@ namespace Toolbox.Editor
             ValidateHierarchySettings();
             ValidateProjectSettings();
             ValidateInspectorSettings();
-            ValidateSceneSettings();
+            ValidateSceneViewSettings();
         }
 
 
@@ -211,9 +211,9 @@ namespace Toolbox.Editor
                     ValidateInspectorSettings();
                 }
 
-                if (sceneSettingsDirty)
+                if (sceneViewSettingsDirty)
                 {
-                    ValidateSceneSettings();
+                    ValidateSceneViewSettings();
                 }
             }
             else
@@ -396,8 +396,8 @@ namespace Toolbox.Editor
 
         public bool UseToolboxSceneView
         {
-            get => useToolboxScene;
-            set => useToolboxScene = value;
+            get => useToolboxSceneView;
+            set => useToolboxSceneView = value;
         }
 
         public KeyCode SelectorKey
