@@ -36,7 +36,8 @@ Unity 2018.x or newer
 	- Enable/disable Hierarchy overlay, choose allowed information
 	- Enable/disable Project icons or/and assign own directories
 	- Enable/disable Toolbox drawers or/and assign custom drawers
-
+	- Enable/disable Toolbox Scene View and assign hotkeys
+	
 ## Table Of Contents
 
 - [Attributes & Drawers](#drawers)
@@ -56,15 +57,17 @@ Unity 2018.x or newer
 	- [Project](#project)
 	- [Toolbar](#toolbar)
 	- [Utilities](#utilities)
+	- [SceneView](#sceneview)
 
 ## Settings
 
 The most important file, allows the user to manage all available features. Can be accessed from the Project Settings window (Edit/Project Settings.../Editor Toolbox) or directly inside the Project window. Make sure to have one valid settings file per project.
 
-Available features are divided into three groups:
+Available features are divided into four groups:
 - Hierarchy
 - Project
 - Inspector
+- SceneView
 
 Each module is described in its respective section.
 
@@ -844,3 +847,9 @@ Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/createso.png)
+
+### SceneView <a name="sceneview"></a>
+
+Select a specific object that is under the cursor (default key: left control).
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/sceneview.png)
