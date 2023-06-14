@@ -19,40 +19,21 @@ namespace Toolbox.Editor.SceneView
         private Vector2 size;
         private Vector2 buttonSize;
         private GUIStyle buttonStyle;
-        private Color selectionColor = new Color(0.50f, 0.70f, 1.00f);
+        private static readonly Color selectionColor = new Color(0.50f, 0.70f, 1.00f);
 
-        private int shiftMinSelectionID = -1;
-        private int shiftMaxSelectionID = -1;
-        private int shiftLastID = -1;
-
-        private GameObject HighlightedObject
-        {
-            set
-            {
-                if (highlightedObject == value)
-                {
-                    return;
-                }
-
-                highlightedObject = value;
-                UnityEditor.SceneView.RepaintAll();
-
-                if (highlightedObject != null)
-                {
-                    EditorGUIUtility.PingObject(highlightedObject);
-                }
-            }
-        }
+        private int shiftMinSelectionId = -1;
+        private int shiftMaxSelectionId = -1;
+        private int shiftLastId = -1;
 
         public static void Show(List<GameObject> gameObjects, Vector2 position)
         {
-            Rect rect = new Rect(position, Vector2.one);
+            var rect = new Rect(position, Vector2.one);
 
-            ToolboxEditorSceneViewObjectSelector window = CreateInstance<ToolboxEditorSceneViewObjectSelector>();
+            var window = CreateInstance<ToolboxEditorSceneViewObjectSelector>();
             window.wantsMouseMove = true;
             window.wantsMouseEnterLeaveWindow = true;
             window.gameObjects = gameObjects;
-            window.InitializeGameobjectPaths();
+            window.InitializeGameObjectPaths();
             window.CalculateSize();
             window.ShowAsDropDown(rect, window.size);
         }
@@ -72,7 +53,7 @@ namespace Toolbox.Editor.SceneView
 
             size = Vector2.zero;
 
-            foreach (GameObject go in gameObjects)
+            foreach (var go in gameObjects)
             {
                 GUIContent content = EditorGUIUtility.ObjectContent(go, typeof(GameObject));
                 Vector2 currentSize = buttonStyle.CalcSize(content);
@@ -94,21 +75,21 @@ namespace Toolbox.Editor.SceneView
             return size;
         }
 
-        private void InitializeGameobjectPaths()
+        private void InitializeGameObjectPaths()
         {
             gameObjectPaths = new List<string>();
-            Stack<string> pathStack = new Stack<string>();
+            var pathStack = new Stack<string>();
 
             for (int i = 0; i < gameObjects.Count; i++)
             {
                 pathStack.Clear();
-                Transform transf = gameObjects[i].transform;
-                pathStack.Push(transf.gameObject.name);
+                Transform transform = gameObjects[i].transform;
+                pathStack.Push(transform.gameObject.name);
 
-                while (transf.parent != null)
+                while (transform.parent != null)
                 {
-                    transf = transf.parent;
-                    pathStack.Push(transf.gameObject.name);
+                    transform = transform.parent;
+                    pathStack.Push(transform.gameObject.name);
                 }
 
                 string path = string.Join("/", pathStack.ToArray());
@@ -128,29 +109,33 @@ namespace Toolbox.Editor.SceneView
                 return;
             }
 
-            //Debug.Log($"Event : {Event.current.type}");
-
-            if (Event.current.type == EventType.MouseMove)
+            switch (Event.current.type)
             {
-                OnGUI_MouseMove();
-            }
-            else if (Event.current.type == EventType.MouseLeaveWindow)
-            {
-                OnGUI_MouseLeave();
-            }
-            else
-            {
-                OnGUI_Normal();
+                case EventType.MouseMove:
+                {
+                    OnGUIMouseMove();
+                    break;
+                }
+                case EventType.MouseLeaveWindow: 
+                {
+                    OnGUIMouseLeave();
+                    break;
+                }
+                default:
+                {
+                    OnGUINormal();
+                    break;
+                }
             }
         }
 
-        private void OnGUI_Normal()
+        private void OnGUINormal()
         {
             Rect rect = new Rect(sizeXPadding, sizeYPadding, buttonSize.x, buttonSize.y);
 
             for (int i = 0; i < gameObjects.Count; i++)
             {
-                GameObject gameObject = gameObjects[i];
+                var gameObject = gameObjects[i];
 
                 if(gameObject == null)
                 {
@@ -158,7 +143,7 @@ namespace Toolbox.Editor.SceneView
                     continue;
                 }
 
-                GUIContent content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
+                var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
 
                 bool objectSelected = Selection.Contains(gameObject);
 
@@ -178,13 +163,13 @@ namespace Toolbox.Editor.SceneView
             }
         }
 
-        private void OnGUI_MouseMove()
+        private void OnGUIMouseMove()
         {
-            Rect rect = new Rect(sizeXPadding, sizeYPadding, buttonSize.x, buttonSize.y);
+            var rect = new Rect(sizeXPadding, sizeYPadding, buttonSize.x, buttonSize.y);
 
             for (int i = 0; i < gameObjects.Count; i++)
             {
-                GameObject gameObject = gameObjects[i];
+                var gameObject = gameObjects[i];
 
                 if (gameObject == null)
                 {
@@ -192,7 +177,7 @@ namespace Toolbox.Editor.SceneView
                     continue;
                 }
 
-                GUIContent content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
+                var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
 
                 GUI.Button(rect, content, buttonStyle);
 
@@ -219,53 +204,53 @@ namespace Toolbox.Editor.SceneView
 
         private void UpdateShiftSelectionIDs(int id)
         {
-            if(shiftLastID == -1)
+            if(shiftLastId == -1)
             {
-                shiftLastID = id;
+                shiftLastId = id;
             }
 
-            if(shiftMinSelectionID == -1)
+            if(shiftMinSelectionId == -1)
             {
-                shiftMinSelectionID = id;
+                shiftMinSelectionId = id;
             }
 
-            if (shiftMaxSelectionID == -1)
+            if (shiftMaxSelectionId == -1)
             {
-                shiftMaxSelectionID = id;
+                shiftMaxSelectionId = id;
             }
 
-            if(id < shiftMinSelectionID)
+            if(id < shiftMinSelectionId)
             {
-                shiftMinSelectionID = id;
+                shiftMinSelectionId = id;
             }
-            else if(id >= shiftMaxSelectionID)
+            else if(id >= shiftMaxSelectionId)
             {
-                shiftMaxSelectionID = id;
+                shiftMaxSelectionId = id;
             }
-            else if(id > shiftMinSelectionID)
+            else if(id > shiftMinSelectionId)
             {
                 //ID is between min and max.
-                if(shiftLastID < id)
+                if(shiftLastId < id)
                 {
-                    shiftMaxSelectionID = id;
+                    shiftMaxSelectionId = id;
                 }
                 else
                 {
-                    shiftMinSelectionID = id;
+                    shiftMinSelectionId = id;
                 }
             }
 
-            shiftLastID = id;
+            shiftLastId = id;
         }
 
         private void SelectObject(int id, bool control, bool shift)
         {
-            GameObject gameObject = gameObjects[id];
+            var gameObject = gameObjects[id];
 
             if (shift)
             {
                 UpdateShiftSelectionIDs(id);
-                SelectObjects(shiftMinSelectionID, shiftMaxSelectionID);
+                SelectObjects(shiftMinSelectionId, shiftMaxSelectionId);
             }
             else if (control)
             {
@@ -290,8 +275,8 @@ namespace Toolbox.Editor.SceneView
 
         private void SelectObjects(int minID, int maxID)
         {
-            int size = maxID - minID + 1;
-            Object[] newSelection = new Object[size];
+            var size = maxID - minID + 1;
+            var newSelection = new Object[size];
 
             int index = 0;
 
@@ -306,8 +291,8 @@ namespace Toolbox.Editor.SceneView
 
         private void AddObjectToSelection(GameObject gameObject)
         {
-            Object[] currentSelection = Selection.objects;
-            Object[] newSelection = new Object[currentSelection.Length + 1];
+            var currentSelection = Selection.objects;
+            var newSelection = new Object[currentSelection.Length + 1];
 
             currentSelection.CopyTo(newSelection, 0);
             newSelection[newSelection.Length - 1] = gameObject;
@@ -317,10 +302,10 @@ namespace Toolbox.Editor.SceneView
 
         private void RemoveObjectFromSelection(GameObject gameObject)
         {
-            Object[] currentSelection = Selection.objects;
-            Object[] newSelection = new Object[currentSelection.Length - 1];
+            var currentSelection = Selection.objects;
+            var newSelection = new Object[currentSelection.Length - 1];
 
-            int index = 0;
+            var index = 0;
 
             for (int i = 0; i < currentSelection.Length; i++)
             {
@@ -336,9 +321,29 @@ namespace Toolbox.Editor.SceneView
             Selection.objects = newSelection;
         }
 
-        private void OnGUI_MouseLeave()
+        private void OnGUIMouseLeave()
         {
             HighlightedObject = null;
         }
+
+        private GameObject HighlightedObject
+        {
+            set
+            {
+                if (highlightedObject == value)
+                {
+                    return;
+                }
+
+                highlightedObject = value;
+                UnityEditor.SceneView.RepaintAll();
+
+                if (highlightedObject != null)
+                {
+                    EditorGUIUtility.PingObject(highlightedObject);
+                }
+            }
+        }
+
     }
 }

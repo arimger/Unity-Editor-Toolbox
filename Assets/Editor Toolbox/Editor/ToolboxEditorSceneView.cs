@@ -38,28 +38,26 @@ namespace Toolbox.Editor
 
         private static void UpdateEventCallback()
         {
-            if (UseToolboxSceneView && !IsEventAttached)
+            UnityEditor.SceneView.duringSceneGui -= SceneViewDuringSceneGUI;
+
+            if (UseToolboxSceneView)
             {
-                UnityEditor.SceneView.duringSceneGui += SceneView_DuringSceneGUI;
-                IsEventAttached = true;
-            }
-            else if (!UseToolboxSceneView && IsEventAttached)
-            {
-                UnityEditor.SceneView.duringSceneGui -= SceneView_DuringSceneGUI;
-                IsEventAttached = false;
+                UnityEditor.SceneView.duringSceneGui += SceneViewDuringSceneGUI;
             }
         }
 
-        private static void SceneView_DuringSceneGUI(UnityEditor.SceneView sceneView)
+        private static void SceneViewDuringSceneGUI(UnityEditor.SceneView sceneView)
         {
-            if (Event.current.type == EventType.KeyDown
-                && Event.current.keyCode == SelectorKey)
+            if (Event.current.type != EventType.KeyDown
+                || Event.current.keyCode != SelectorKey)
             {
-                List<GameObject> objectsUnderCursor = GetObjectsUnderCursor();
-                if (objectsUnderCursor.Count > 0)
-                {
-                    ToolboxEditorSceneViewObjectSelector.Show(objectsUnderCursor, Event.current.mousePosition + sceneView.position.position);
-                }
+                return;
+            }
+
+            List<GameObject> objectsUnderCursor = GetObjectsUnderCursor();
+            if (objectsUnderCursor.Count > 0)
+            {
+                ToolboxEditorSceneViewObjectSelector.Show(objectsUnderCursor, Event.current.mousePosition + sceneView.position.position);
             }
         }
 
@@ -79,8 +77,6 @@ namespace Toolbox.Editor
             UpdateEventCallback();
         }
 
-        private static bool IsEventAttached { get; set; } = false;
-
         /// <summary>
         /// Should the scene view be used.
         /// </summary>
@@ -90,6 +86,5 @@ namespace Toolbox.Editor
         /// Which key should activate the scene view.
         /// </summary>
         private static KeyCode SelectorKey { get; set; } = KeyCode.LeftControl;
-
     }
 }
