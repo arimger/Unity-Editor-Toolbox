@@ -18,7 +18,6 @@ namespace Toolbox.Editor.SceneView
         private GameObject highlightedObject;
         private Vector2 size;
         private Vector2 buttonSize;
-        private GUIStyle buttonStyle;
         private static readonly Color selectionColor = new Color(0.50f, 0.70f, 1.00f);
 
         private int shiftMinSelectionId = -1;
@@ -38,25 +37,14 @@ namespace Toolbox.Editor.SceneView
             window.ShowAsDropDown(rect, window.size);
         }
 
-        private void InitializeStyle()
-        {
-            buttonStyle = new GUIStyle(GUI.skin.button);
-            buttonStyle.alignment = TextAnchor.MiddleLeft;
-        }
-
         private Vector2 CalculateSize()
         {
-            if (buttonStyle == null)
-            {
-                InitializeStyle();
-            }
-
             size = Vector2.zero;
 
             foreach (var go in gameObjects)
             {
                 GUIContent content = EditorGUIUtility.ObjectContent(go, typeof(GameObject));
-                Vector2 currentSize = buttonStyle.CalcSize(content);
+                Vector2 currentSize = Style.buttonStyle.CalcSize(content);
                 if (currentSize.x > size.x)
                 {
                     size.x = currentSize.x;
@@ -99,11 +87,6 @@ namespace Toolbox.Editor.SceneView
 
         private void OnGUI()
         {
-            if (buttonStyle == null)
-            {
-                InitializeStyle();
-            }
-
             if (Event.current.type == EventType.Layout)
             {
                 return;
@@ -152,7 +135,7 @@ namespace Toolbox.Editor.SceneView
                     GUI.backgroundColor = selectionColor;
                 }
 
-                if (GUI.Button(rect, content, buttonStyle))
+                if (GUI.Button(rect, content, Style.buttonStyle))
                 {
                     GameObjectButtonPress(i);
                 }
@@ -179,7 +162,7 @@ namespace Toolbox.Editor.SceneView
 
                 var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
 
-                GUI.Button(rect, content, buttonStyle);
+                GUI.Button(rect, content, Style.buttonStyle);
 
                 if (rect.Contains(Event.current.mousePosition))
                 {
@@ -345,5 +328,15 @@ namespace Toolbox.Editor.SceneView
             }
         }
 
+        private static class Style
+        {
+            internal static readonly GUIStyle buttonStyle;
+
+            static Style()
+            {
+                buttonStyle = new GUIStyle(GUI.skin.button);
+                buttonStyle.alignment = TextAnchor.MiddleLeft;
+            }
+        }
     }
 }
