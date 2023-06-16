@@ -16,15 +16,16 @@ namespace Toolbox.Editor
 
         private static List<GameObject> GetObjectsUnderCursor()
         {
-            List<GameObject> hitObjects = new List<GameObject>();
-            GameObject[] hitObjectsArray;
+            const int maxIterations = 50;
 
-            int maxIterations = 50;
-            for (int i = 0; i < maxIterations; i++)
+            var mousePosition = Event.current.mousePosition;
+            var hitObjects = new List<GameObject>();
+            GameObject[] hitObjectsArray;
+            for (var i = 0; i < maxIterations; i++)
             {
                 hitObjectsArray = hitObjects.ToArray();
 
-                GameObject go = HandleUtility.PickGameObject(Event.current.mousePosition, true, hitObjectsArray);
+                var go = HandleUtility.PickGameObject(mousePosition, true, hitObjectsArray);
                 if (go == null)
                 {
                     break;
@@ -48,13 +49,13 @@ namespace Toolbox.Editor
 
         private static void SceneViewDuringSceneGUI(UnityEditor.SceneView sceneView)
         {
-            if (Event.current.type != EventType.KeyDown
-                || Event.current.keyCode != SelectorKey)
+            if (Event.current.type != EventType.KeyDown ||
+                Event.current.keyCode != SelectorKey)
             {
                 return;
             }
 
-            List<GameObject> objectsUnderCursor = GetObjectsUnderCursor();
+            var objectsUnderCursor = GetObjectsUnderCursor();
             if (objectsUnderCursor.Count > 0)
             {
                 ToolboxEditorSceneViewObjectSelector.Show(objectsUnderCursor, Event.current.mousePosition + sceneView.position.position);
