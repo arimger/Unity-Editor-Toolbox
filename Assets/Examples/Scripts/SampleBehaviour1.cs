@@ -109,4 +109,9 @@ public class SampleBehaviour1 : MonoBehaviour
     public int bigNumber;
     [FormattedNumber("c")]
     public float currency;
+
+    [Label("Label Width", skinStyle: SkinStyle.Box)]
+
+    [LabelWidth(220.0f)]
+    public int veryVeryVeryVeryVeryLongName;
 }

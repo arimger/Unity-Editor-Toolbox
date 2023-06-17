@@ -231,6 +231,15 @@ public int bigNumber;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/formattednumber.png)
 
+#### LabelWidthAttribute
+
+```csharp
+[LabelWidth(220.0f)]
+public int veryVeryVeryVeryVeryLongName;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelwidth.png)
+
 ---
 
 ### Toolbox Drawers <a name="toolboxdrawers"></a>
