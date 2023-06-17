@@ -13,7 +13,7 @@ jobs:
         fetch-depth: 0
     - name: split upm branch
       run: |
-        git subtree split -P "$PKG_ROOT" -b upm
-        git push -u origin upm
+        git subtree split -P "$PKG_ROOT" -b upm-dev
+        git push -u origin upm-dev
       env:
         PKG_ROOT: 'Assets/Editor Toolbox'
