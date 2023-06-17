@@ -46,6 +46,8 @@ MonoBehaviour:
     largeIcon: {fileID: 2800000, guid: 6315862a85e61a44e947fbd4b1b23e11, type: 3}
     smallIcon: {fileID: 2800000, guid: e99d63b63394eba4aaf10385704d0ef3, type: 3}
     iconName: 
+  useToolboxSceneView: 1
+  selectorKey: 306
   useToolboxDrawers: 1
   forceDefaultLists: 0
   decoratorDrawerHandlers:

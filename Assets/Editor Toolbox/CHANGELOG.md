@@ -1,3 +1,15 @@
+## 0.12.3 [17.06.2023]
+
+### Changed:
+- Fix updating SerializedScene index after deleting Scene
+- Fix SerializedScene index calculation
+- Fix NRE when deleted Scene was still included in Build Settings
+- Fix compilation errors in Unity 2018.x
+
+### Added:
+- SceneView extension: better way to select raycasted objects in the Scene view
+- LabelWidthAttribute
+
 ## 0.12.1 [12.04.2023]
 
 ### Changed:

@@ -1,5 +1,9 @@
 ﻿using UnityEditor;
+#if UNITY_2020_2_OR_NEWER
 using UnityEditor.AssetImporters;
+#else
+using UnityEditor.Experimental.AssetImporters;
+#endif
 
 namespace Toolbox.Editor.Editors
 {
@@ -15,11 +19,12 @@ namespace Toolbox.Editor.Editors
         public virtual void DrawCustomInspector()
         {
             Drawer.DrawEditor(serializedObject);
+#if UNITY_2020_2_OR_NEWER
             if (extraDataType != null)
             {
                 Drawer.DrawEditor(extraDataSerializedObject);
             }
-
+#endif
             ApplyRevertGUI();
         }
 

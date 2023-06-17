@@ -12,13 +12,13 @@ namespace Toolbox.Editor
 
         private static Editor globalSettingsEditor;
 
-
         private static void ForceModulesUpdate()
         {
             //perform separated modules update
             ManageInspectorCore(Settings);
             ManageProjectCore(Settings);
             ManageHierarchyCore(Settings);
+            ManageSceneViewCore(Settings);
         }
 
         private static void ManageInspectorCore(IToolboxInspectorSettings settings)
@@ -82,6 +82,11 @@ namespace Toolbox.Editor
             ToolboxEditorHierarchy.RepaintHierarchyOverlay();
         }
 
+        private static void ManageSceneViewCore(IToolboxSceneViewSettings settings)
+        {
+            ToolboxEditorSceneView.UpdateSettings(settings);
+        }
+
 
         [InitializeOnLoadMethod]
         internal static bool InitializeSettings()
@@ -122,6 +127,7 @@ namespace Toolbox.Editor
                 Settings.OnHierarchySettingsChanged += ManageHierarchyCore;
                 Settings.OnProjectSettingsChanged += ManageProjectCore;
                 Settings.OnInspectorSettingsChanged += ManageInspectorCore;
+                Settings.OnSceneViewSettingsChanged += ManageSceneViewCore;
                 //initialize core functionalities
                 Settings.Validate();
                 return true;

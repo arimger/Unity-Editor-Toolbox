@@ -51,7 +51,7 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            var sceneData = SceneData.GetSceneData(sceneProperty);
+            var sceneData = SceneData.GetSceneDataFromIndex(property);
             var spacing = EditorGUIUtility.standardVerticalSpacing;
             position.y += EditorGUIUtility.singleLineHeight + spacing;
             if (sceneData.inBuild)
@@ -82,10 +82,21 @@ namespace Toolbox.Editor.Drawers
         {
             public int index;
             public bool enabled;
-            public GUID guid;
             public bool inBuild;
 
-            public static SceneData GetSceneData(SerializedProperty property)
+            public static SceneData GetSceneDataFromIndex(SerializedProperty property)
+            {
+                var indexProperty = property.FindPropertyRelative("buildIndex");
+                var index = indexProperty.intValue;
+                return new SceneData()
+                {
+                    index = index,
+                    enabled = index != -1,
+                    inBuild = index != -1
+                };
+            }
+
+            public static SceneData GetSceneDataFromScene(SerializedProperty property)
             {
                 var sceneData = new SceneData()
                 {
@@ -101,7 +112,7 @@ namespace Toolbox.Editor.Drawers
                 for (var i = 0; i < EditorBuildSettings.scenes.Length; i++)
                 {
                     var sceneSettings = EditorBuildSettings.scenes[i];
-                    var isEnabled = sceneSettings.enabled;
+                    var isEnabled = sceneSettings.enabled && !string.IsNullOrEmpty(sceneSettings.path);
                     if (isEnabled)
                     {
                         sceneIndex++;
@@ -112,7 +123,6 @@ namespace Toolbox.Editor.Drawers
                     {
                         sceneData.index = isEnabled ? sceneIndex : -1;
                         sceneData.enabled = isEnabled;
-                        sceneData.guid = guid;
                         sceneData.inBuild = true;
                         break;
                     }
