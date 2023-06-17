@@ -39,12 +39,14 @@ namespace Toolbox.Editor
 
         private static void UpdateEventCallback()
         {
+#if UNITY_2019_1_OR_NEWER
             UnityEditor.SceneView.duringSceneGui -= SceneViewDuringSceneGUI;
 
             if (UseToolboxSceneView)
             {
                 UnityEditor.SceneView.duringSceneGui += SceneViewDuringSceneGUI;
             }
+#endif
         }
 
         private static void SceneViewDuringSceneGUI(UnityEditor.SceneView sceneView)
