@@ -14,7 +14,10 @@ namespace UnityEngine
     [Conditional("UNITY_EDITOR")]
     public class ShowIfAttribute : ComparisonAttribute
     {
-        public ShowIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)
+        public ShowIfAttribute(string sourceHandle) : base(sourceHandle)
+        { }
+
+        public ShowIfAttribute(string sourceHandle, object valueToMatch = null) : base(sourceHandle, valueToMatch)
         { }
     }
 }

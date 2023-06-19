@@ -14,6 +14,9 @@ namespace UnityEngine
     [Conditional("UNITY_EDITOR")]
     public class HideIfAttribute : ComparisonAttribute
     {
+        public HideIfAttribute(string sourceHandle) : base(sourceHandle)
+        { }
+
         public HideIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)
         { }
     }
