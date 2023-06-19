@@ -17,7 +17,7 @@ namespace UnityEngine
         public ShowIfAttribute(string sourceHandle) : base(sourceHandle)
         { }
 
-        public ShowIfAttribute(string sourceHandle, object valueToMatch = null) : base(sourceHandle, valueToMatch)
+        public ShowIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)
         { }
     }
 }
