@@ -120,8 +120,13 @@ namespace Toolbox.Editor
             }
 
             var fieldType = treeParent.GetType();
-            var fieldInfo = fieldType.GetField(treeField,
-                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            var fieldInfo = fieldType.GetField(treeField, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            if (fieldInfo == null)
+            {
+                ToolboxEditorLog.LogError($"Cannot find field: '{treeField}'.");
+                return null;
+            }
+
             return fieldInfo.GetValue(treeParent);
         }
 

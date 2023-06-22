@@ -6,8 +6,7 @@ namespace Toolbox.Editor.SceneView
 {
     public class ToolboxEditorSceneViewObjectSelector : EditorWindow
     {
-        private List<GameObject> gameObjects;
-        private List<string> gameObjectPaths;
+        private static readonly Color selectionColor = new Color(0.50f, 0.70f, 1.00f);
 
         private const float sizeXPadding = 2f;
         private const float sizeYPadding = 2f;
@@ -15,10 +14,12 @@ namespace Toolbox.Editor.SceneView
         private const float buttonYSize = 20f;
         private const float sizeXOffset = -30f;
 
+        private List<GameObject> gameObjects;
+        private List<string> gameObjectPaths;
+
         private GameObject highlightedObject;
         private Vector2 size;
         private Vector2 buttonSize;
-        private static readonly Color selectionColor = new Color(0.50f, 0.70f, 1.00f);
 
         private int shiftMinSelectionId = -1;
         private int shiftMaxSelectionId = -1;
@@ -37,14 +38,92 @@ namespace Toolbox.Editor.SceneView
             window.ShowAsDropDown(rect, window.size);
         }
 
+        private void OnGUI()
+        {
+            if (Event.current.type == EventType.Layout)
+            {
+                return;
+            }
+
+            switch (Event.current.type)
+            {
+                case EventType.MouseMove:
+                    OnGuiMouseMove();
+                    break;
+                case EventType.MouseLeaveWindow:
+                    OnGuiMouseLeave();
+                    break;
+                default:
+                    OnGuiNormal();
+                    break;
+            }
+        }
+
+        private void OnGuiMouseLeave()
+        {
+            HighlightedObject = null;
+        }
+
+        private void OnGuiMouseMove()
+        {
+            var rect = new Rect(sizeXPadding, sizeYPadding, buttonSize.x, buttonSize.y);
+            for (var i = 0; i < gameObjects.Count; i++)
+            {
+                var gameObject = gameObjects[i];
+                if (gameObject == null)
+                {
+                    //Can happen when something removes the gameobject during the window display.
+                    continue;
+                }
+
+                var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
+                GUI.Button(rect, content, Style.buttonStyle);
+                if (rect.Contains(Event.current.mousePosition))
+                {
+                    HighlightedObject = gameObject;
+                }
+
+                rect.y += buttonYSize + buttonYSpacing;
+            }
+        }
+
+        private void OnGuiNormal()
+        {
+            var rect = new Rect(sizeXPadding, sizeYPadding, buttonSize.x, buttonSize.y);
+            for (var i = 0; i < gameObjects.Count; i++)
+            {
+                var gameObject = gameObjects[i];
+                if (gameObject == null)
+                {
+                    //Can happen when something removes the gameobject during the window display.
+                    continue;
+                }
+
+                var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
+                var objectSelected = Selection.Contains(gameObject);
+                if (objectSelected)
+                {
+                    GUI.backgroundColor = selectionColor;
+                }
+
+                if (GUI.Button(rect, content, Style.buttonStyle))
+                {
+                    GameObjectButtonPress(i);
+                }
+
+                GUI.backgroundColor = Color.white;
+                rect.y += buttonYSize + buttonYSpacing;
+            }
+        }
+
         private Vector2 CalculateSize()
         {
             size = Vector2.zero;
 
             foreach (var go in gameObjects)
             {
-                GUIContent content = EditorGUIUtility.ObjectContent(go, typeof(GameObject));
-                Vector2 currentSize = Style.buttonStyle.CalcSize(content);
+                var content = EditorGUIUtility.ObjectContent(go, typeof(GameObject));
+                var currentSize = Style.buttonStyle.CalcSize(content);
                 if (currentSize.x > size.x)
                 {
                     size.x = currentSize.x;
@@ -68,10 +147,10 @@ namespace Toolbox.Editor.SceneView
             gameObjectPaths = new List<string>();
             var pathStack = new Stack<string>();
 
-            for (int i = 0; i < gameObjects.Count; i++)
+            for (var i = 0; i < gameObjects.Count; i++)
             {
                 pathStack.Clear();
-                Transform transform = gameObjects[i].transform;
+                var transform = gameObjects[i].transform;
                 pathStack.Push(transform.gameObject.name);
 
                 while (transform.parent != null)
@@ -80,103 +159,14 @@ namespace Toolbox.Editor.SceneView
                     pathStack.Push(transform.gameObject.name);
                 }
 
-                string path = string.Join("/", pathStack.ToArray());
+                var path = string.Join("/", pathStack.ToArray());
                 gameObjectPaths.Add(path);
-            }
-        }
-
-        private void OnGUI()
-        {
-            if (Event.current.type == EventType.Layout)
-            {
-                return;
-            }
-
-            switch (Event.current.type)
-            {
-                case EventType.MouseMove:
-                {
-                    OnGUIMouseMove();
-                    break;
-                }
-                case EventType.MouseLeaveWindow: 
-                {
-                    OnGUIMouseLeave();
-                    break;
-                }
-                default:
-                {
-                    OnGUINormal();
-                    break;
-                }
-            }
-        }
-
-        private void OnGUINormal()
-        {
-            Rect rect = new Rect(sizeXPadding, sizeYPadding, buttonSize.x, buttonSize.y);
-
-            for (int i = 0; i < gameObjects.Count; i++)
-            {
-                var gameObject = gameObjects[i];
-
-                if(gameObject == null)
-                {
-                    //Can happen when something removes the gameobject during the window display.
-                    continue;
-                }
-
-                var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
-
-                bool objectSelected = Selection.Contains(gameObject);
-
-                if (objectSelected)
-                {
-                    GUI.backgroundColor = selectionColor;
-                }
-
-                if (GUI.Button(rect, content, Style.buttonStyle))
-                {
-                    GameObjectButtonPress(i);
-                }
-
-                GUI.backgroundColor = Color.white;
-
-                rect.y += buttonYSize + buttonYSpacing;
-            }
-        }
-
-        private void OnGUIMouseMove()
-        {
-            var rect = new Rect(sizeXPadding, sizeYPadding, buttonSize.x, buttonSize.y);
-
-            for (int i = 0; i < gameObjects.Count; i++)
-            {
-                var gameObject = gameObjects[i];
-
-                if (gameObject == null)
-                {
-                    //Can happen when something removes the gameobject during the window display.
-                    continue;
-                }
-
-                var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
-
-                GUI.Button(rect, content, Style.buttonStyle);
-
-                if (rect.Contains(Event.current.mousePosition))
-                {
-                    HighlightedObject = gameObject;
-                }
-
-                rect.y += buttonYSize + buttonYSpacing;
             }
         }
 
         private void GameObjectButtonPress(int id)
         {
             SelectObject(id, Event.current.control, Event.current.shift);
-
             if (Event.current.control || Event.current.shift)
             {
                 return;
@@ -187,12 +177,12 @@ namespace Toolbox.Editor.SceneView
 
         private void UpdateShiftSelectionIDs(int id)
         {
-            if(shiftLastId == -1)
+            if (shiftLastId == -1)
             {
                 shiftLastId = id;
             }
 
-            if(shiftMinSelectionId == -1)
+            if (shiftMinSelectionId == -1)
             {
                 shiftMinSelectionId = id;
             }
@@ -202,18 +192,18 @@ namespace Toolbox.Editor.SceneView
                 shiftMaxSelectionId = id;
             }
 
-            if(id < shiftMinSelectionId)
+            if (id < shiftMinSelectionId)
             {
                 shiftMinSelectionId = id;
             }
-            else if(id >= shiftMaxSelectionId)
+            else if (id >= shiftMaxSelectionId)
             {
                 shiftMaxSelectionId = id;
             }
-            else if(id > shiftMinSelectionId)
+            else if (id > shiftMinSelectionId)
             {
                 //ID is between min and max.
-                if(shiftLastId < id)
+                if (shiftLastId < id)
                 {
                     shiftMaxSelectionId = id;
                 }
@@ -238,16 +228,13 @@ namespace Toolbox.Editor.SceneView
             else if (control)
             {
                 UpdateShiftSelectionIDs(id);
-
                 if (Selection.Contains(gameObject))
                 {
-                    //Deselect
-                    RemoveObjectFromSelection(gameObject);
+                    RemoveSelectedObject(gameObject);
                 }
                 else
                 {
-                    //Select
-                    AddObjectToSelection(gameObject);
+                    AppendSelectedObject(gameObject);
                 }
             }
             else
@@ -256,14 +243,14 @@ namespace Toolbox.Editor.SceneView
             }
         }
 
-        private void SelectObjects(int minID, int maxID)
+        private void SelectObjects(int minId, int maxId)
         {
-            var size = maxID - minID + 1;
+            var size = maxId - minId + 1;
             var newSelection = new Object[size];
 
-            int index = 0;
+            var index = 0;
 
-            for (int i = minID; i <= maxID; i++)
+            for (var i = minId; i <= maxId; i++)
             {
                 newSelection[index] = gameObjects[i];
                 index++;
@@ -272,7 +259,7 @@ namespace Toolbox.Editor.SceneView
             Selection.objects = newSelection;
         }
 
-        private void AddObjectToSelection(GameObject gameObject)
+        private void AppendSelectedObject(GameObject gameObject)
         {
             var currentSelection = Selection.objects;
             var newSelection = new Object[currentSelection.Length + 1];
@@ -283,14 +270,14 @@ namespace Toolbox.Editor.SceneView
             Selection.objects = newSelection;
         }
 
-        private void RemoveObjectFromSelection(GameObject gameObject)
+        private void RemoveSelectedObject(GameObject gameObject)
         {
             var currentSelection = Selection.objects;
             var newSelection = new Object[currentSelection.Length - 1];
 
             var index = 0;
 
-            for (int i = 0; i < currentSelection.Length; i++)
+            for (var i = 0; i < currentSelection.Length; i++)
             {
                 if (currentSelection[i] == gameObject)
                 {
@@ -302,11 +289,6 @@ namespace Toolbox.Editor.SceneView
             }
 
             Selection.objects = newSelection;
-        }
-
-        private void OnGUIMouseLeave()
-        {
-            HighlightedObject = null;
         }
 
         private GameObject HighlightedObject
@@ -334,8 +316,10 @@ namespace Toolbox.Editor.SceneView
 
             static Style()
             {
-                buttonStyle = new GUIStyle(GUI.skin.button);
-                buttonStyle.alignment = TextAnchor.MiddleLeft;
+                buttonStyle = new GUIStyle(GUI.skin.button)
+                {
+                    alignment = TextAnchor.MiddleLeft
+                };
             }
         }
     }
