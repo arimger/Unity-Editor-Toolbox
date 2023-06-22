@@ -16,15 +16,16 @@ namespace Toolbox.Editor
 
         private static List<GameObject> GetObjectsUnderCursor()
         {
-            List<GameObject> hitObjects = new List<GameObject>();
-            GameObject[] hitObjectsArray;
+            const int maxIterations = 50;
 
-            int maxIterations = 50;
-            for (int i = 0; i < maxIterations; i++)
+            var mousePosition = Event.current.mousePosition;
+            var hitObjects = new List<GameObject>();
+            GameObject[] hitObjectsArray;
+            for (var i = 0; i < maxIterations; i++)
             {
                 hitObjectsArray = hitObjects.ToArray();
 
-                GameObject go = HandleUtility.PickGameObject(Event.current.mousePosition, false, hitObjectsArray);
+                var go = HandleUtility.PickGameObject(mousePosition, false, hitObjectsArray);
                 if (go == null)
                 {
                     break;
@@ -38,23 +39,25 @@ namespace Toolbox.Editor
 
         private static void UpdateEventCallback()
         {
+#if UNITY_2019_1_OR_NEWER
             UnityEditor.SceneView.duringSceneGui -= SceneViewDuringSceneGUI;
 
             if (UseToolboxSceneView)
             {
                 UnityEditor.SceneView.duringSceneGui += SceneViewDuringSceneGUI;
             }
+#endif
         }
 
         private static void SceneViewDuringSceneGUI(UnityEditor.SceneView sceneView)
         {
-            if (Event.current.type != EventType.KeyDown
-                || Event.current.keyCode != SelectorKey)
+            if (Event.current.type != EventType.KeyDown ||
+                Event.current.keyCode != SelectorKey)
             {
                 return;
             }
 
-            List<GameObject> objectsUnderCursor = GetObjectsUnderCursor();
+            var objectsUnderCursor = GetObjectsUnderCursor();
             if (objectsUnderCursor.Count > 0)
             {
                 ToolboxEditorSceneViewObjectSelector.Show(objectsUnderCursor, Event.current.mousePosition + sceneView.position.position);

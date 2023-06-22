@@ -27,7 +27,7 @@ namespace Toolbox.Serialization
             isInitialized = true;
         }
 
-        private static void ConfirmCache()
+        internal static void ConfirmCache()
         {
             //NOTE: refresh data only if the cache is empty,
             //it probably means that it's our first time when we are updating it
@@ -37,7 +37,7 @@ namespace Toolbox.Serialization
             }
         }
 
-        private static void RefreshCache()
+        internal static void RefreshCache()
         {
             cachedScenes.Clear();
             var buildIndex = -1;
@@ -47,25 +47,31 @@ namespace Toolbox.Serialization
                 {
                     continue;
                 }
-                
-                buildIndex++;
 
-                var sceneIndex = scene.enabled ? buildIndex : InvalidSceneIndex;
                 var sceneAsset = EditorGUIUtility.Load(scene.path) as SceneAsset;
-                if (sceneAsset != null)
+                if (sceneAsset == null)
                 {
-                    if (cachedScenes.ContainsKey(sceneAsset))
-                    {
-                        continue;
-                    }
-
-                    cachedScenes.Add(sceneAsset, new SceneData()
-                    {
-                        BuildIndex = buildIndex,
-                        SceneName = sceneAsset.name,
-                        ScenePath = scene.path
-                    });
+                    continue;
                 }
+
+                var sceneIndex = InvalidSceneIndex;
+                if (scene.enabled)
+                {
+                    buildIndex++;
+                    sceneIndex = buildIndex;
+                }
+
+                if (cachedScenes.ContainsKey(sceneAsset))
+                {
+                    continue;
+                }
+
+                cachedScenes.Add(sceneAsset, new SceneData()
+                {
+                    BuildIndex = sceneIndex,
+                    SceneName = sceneAsset.name,
+                    ScenePath = scene.path
+                });
             }
         }
 
