@@ -25,7 +25,7 @@ namespace Toolbox.Editor
             {
                 hitObjectsArray = hitObjects.ToArray();
 
-                var go = HandleUtility.PickGameObject(mousePosition, true, hitObjectsArray);
+                var go = HandleUtility.PickGameObject(mousePosition, false, hitObjectsArray);
                 if (go == null)
                 {
                     break;
