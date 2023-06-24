@@ -102,7 +102,8 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReferencePickerAttribute attribute)
         {
-            using (var propertyScope = new PropertyScope(property, label))
+            //NOTE: we want to close scope manually because ExitGUIException can interrupt drawing and SerializedProperties stack
+            using (var propertyScope = new PropertyScope(property, label, closeManually: true))
             {
                 UpdateContexts(attribute);
 
@@ -120,6 +121,7 @@ namespace Toolbox.Editor.Drawers
                 }
 
                 EditorGUI.indentLevel--;
+                propertyScope.Close();
             }
         }
 

@@ -12,11 +12,18 @@ namespace Toolbox.Editor.Internal
     internal class PropertyScope : IDisposable
     {
         private readonly SerializedProperty property;
+        private readonly bool closeManually;
+        private bool isClosed;
 
+        public PropertyScope(SerializedProperty property, GUIContent label) : this(property, label, false)
+        { }
 
-        public PropertyScope(SerializedProperty property, GUIContent label)
+        public PropertyScope(SerializedProperty property, GUIContent label, bool closeManually)
         {
             this.property = property;
+            this.closeManually = closeManually;
+            isClosed = false;
+
             ToolboxEditorGui.BeginProperty(property, ref label, out var rect);
             HandleEvents(rect);
             TryDrawLabel(rect, label);
@@ -50,9 +57,20 @@ namespace Toolbox.Editor.Internal
         }
 
 
-        public void Dispose()
+        public void Close()
         {
             ToolboxEditorGui.CloseProperty();
+            isClosed = true;
+        }
+
+        public void Dispose()
+        {
+            if (closeManually || isClosed)
+            {
+                return;
+            }
+
+            Close();
         }
 
 
