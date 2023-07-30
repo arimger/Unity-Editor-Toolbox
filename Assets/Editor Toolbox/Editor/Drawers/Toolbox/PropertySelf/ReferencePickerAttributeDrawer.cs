@@ -80,12 +80,16 @@ namespace Toolbox.Editor.Drawers
             property.serializedObject.ApplyModifiedProperties();
         }
 
-        private Rect PrepareTypePropertyPosition(in Rect labelPosition, in Rect inputPosition, bool isPropertyExpanded)
+        private Rect PrepareTypePropertyPosition(bool hasLabel, in Rect labelPosition, in Rect inputPosition, bool isPropertyExpanded)
         {
             var position = new Rect(inputPosition);
-            var baseLabelWidth = EditorGUIUtility.labelWidth + labelWidthOffset;
-            var realLabelWidth = labelPosition.width;
-            var labelWidth = Mathf.Max(baseLabelWidth, realLabelWidth);
+            if (!hasLabel)
+            {
+                position.xMin += EditorGUIUtility.standardVerticalSpacing;
+                return position;
+            }
+
+            //skip row only if label exists
             if (isPropertyExpanded)
             {
                 //property is expanded and we have place to move it to the next row
@@ -94,8 +98,10 @@ namespace Toolbox.Editor.Drawers
                 return position;
             }
 
+            var baseLabelWidth = EditorGUIUtility.labelWidth + labelWidthOffset;
+            var realLabelWidth = labelPosition.width;
             //adjust position to already rendered label
-            position.xMin += labelWidth;
+            position.xMin += Mathf.Max(baseLabelWidth, realLabelWidth);
             return position;
         }
 
@@ -111,7 +117,9 @@ namespace Toolbox.Editor.Drawers
                 EditorGUI.indentLevel++;
                 var labelRect = propertyScope.LabelRect;
                 var inputRect = propertyScope.InputRect;
-                var position = PrepareTypePropertyPosition(in labelRect, in inputRect, isPropertyExpanded);
+
+                var hasLabel = !string.IsNullOrEmpty(label.text);
+                var position = PrepareTypePropertyPosition(hasLabel, in labelRect, in inputRect, isPropertyExpanded);
 
                 var parentType = GetParentType(property, attribute);
                 CreateTypeProperty(position, property, parentType);
