@@ -1,3 +1,12 @@
+## 0.12.4 [31.07.2023]
+
+### Changed:
+- Fix SceneView selection tool behaviour when selecting nested prefabs
+- Fix InvalidOperationException when ExitGUIException is thrown inside PropertyScope
+- Minor SerializedScene index calculation performance improvements
+- Fix SearchablePopup styles initialization in Unity 2022+
+- Minor visual improvements on how ReferencePicker label is rendered 
+
 ## 0.12.3 [17.06.2023]
 
 ### Changed:

@@ -1,7 +1,7 @@
 {
   "name": "com.browar.editor-toolbox",
   "displayName": "Editor Toolbox",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "unity": "2018.1",
   "description": "Tools, custom attributes, drawers, hierarchy overlay, and other extensions for the Unity Editor.",
   "keywords": [
