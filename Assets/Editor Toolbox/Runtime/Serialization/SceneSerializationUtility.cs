@@ -3,6 +3,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using UnityEngine.SceneManagement;
 
 namespace Toolbox.Serialization
 {
@@ -40,25 +41,18 @@ namespace Toolbox.Serialization
         internal static void RefreshCache()
         {
             cachedScenes.Clear();
-            var buildIndex = -1;
             foreach (var scene in EditorBuildSettings.scenes)
             {
-                if (string.IsNullOrEmpty(scene.path))
+                var path = scene.path;
+                if (string.IsNullOrEmpty(path))
                 {
                     continue;
                 }
 
-                var sceneAsset = EditorGUIUtility.Load(scene.path) as SceneAsset;
+                var sceneAsset = EditorGUIUtility.Load(path) as SceneAsset;
                 if (sceneAsset == null)
                 {
                     continue;
-                }
-
-                var sceneIndex = InvalidSceneIndex;
-                if (scene.enabled)
-                {
-                    buildIndex++;
-                    sceneIndex = buildIndex;
                 }
 
                 if (cachedScenes.ContainsKey(sceneAsset))
@@ -68,9 +62,9 @@ namespace Toolbox.Serialization
 
                 cachedScenes.Add(sceneAsset, new SceneData()
                 {
-                    BuildIndex = sceneIndex,
+                    BuildIndex = SceneUtility.GetBuildIndexByScenePath(path),
                     SceneName = sceneAsset.name,
-                    ScenePath = scene.path
+                    ScenePath = path
                 });
             }
         }

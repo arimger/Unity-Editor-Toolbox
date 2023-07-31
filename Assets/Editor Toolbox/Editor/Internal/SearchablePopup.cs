@@ -316,9 +316,15 @@ namespace Toolbox.Editor.Internal
                 toolbarStyle = new GUIStyle(EditorStyles.toolbar);
                 scrollbarStyle = new GUIStyle(GUI.skin.verticalScrollbar);
                 selectionStyle = new GUIStyle("SelectionRect");
+#if UNITY_2022_1_OR_NEWER
+                searchBoxStyle = new GUIStyle("ToolbarSearchTextField");
+                showCancelButtonStyle = new GUIStyle("ToolbarSearchCancelButton");
+                hideCancelButtonStyle = new GUIStyle("ToolbarSearchCancelButtonEmpty");
+#else
                 searchBoxStyle = new GUIStyle("ToolbarSeachTextField");
                 showCancelButtonStyle = new GUIStyle("ToolbarSeachCancelButton");
                 hideCancelButtonStyle = new GUIStyle("ToolbarSeachCancelButtonEmpty");
+#endif
             }
         }
     }
