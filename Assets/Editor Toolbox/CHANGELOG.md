@@ -1,3 +1,11 @@
+## 0.12.5 [11.09.2023]
+
+### Changed:
+- Make ToolboxEditorHandler public
+
+### Added:
+- Add public OnCacheRefreshed event to the SceneSerializationUtility
+
 ## 0.12.4 [31.07.2023]
 
 ### Changed:
