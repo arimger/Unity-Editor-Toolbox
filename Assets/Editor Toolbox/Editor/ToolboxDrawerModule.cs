@@ -20,7 +20,7 @@ namespace Toolbox.Editor
         [InitializeOnLoadMethod]
         internal static void InitializeModule()
         {
-            InspectorUtility.OnEditorReload += ReloadDrawers;
+            ToolboxEditorHandler.OnEditorReload += ReloadDrawers;
         }
 
 
@@ -405,7 +405,7 @@ namespace Toolbox.Editor
         /// </summary>
         internal static ToolboxPropertyHandler GetPropertyHandler(SerializedProperty property)
         {
-            if (InspectorUtility.InToolboxEditor)
+            if (ToolboxEditorHandler.InToolboxEditor)
             {
                 //NOTE: maybe type-based key?
                 var propertyKey = property.GetPropertyHashKey();
