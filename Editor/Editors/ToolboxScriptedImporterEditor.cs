@@ -38,7 +38,6 @@ namespace Toolbox.Editor.Editors
             Drawer.IgnoreProperty(propertyPath);
         }
 
-
         Editor IToolboxEditor.ContextEditor => this;
         public IToolboxEditorDrawer Drawer { get; } = new ToolboxEditorDrawer();
     }
