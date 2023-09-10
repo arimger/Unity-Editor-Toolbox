@@ -13,8 +13,6 @@ namespace Toolbox.Serialization
         private static readonly Dictionary<SceneAsset, SceneData> cachedScenes = new Dictionary<SceneAsset, SceneData>();
         private static bool isInitialized;
 
-        public static event Action OnCacheRefreshed;
-
         [InitializeOnLoadMethod]
         private static void Initialize()
         {
@@ -84,6 +82,15 @@ namespace Toolbox.Serialization
             return true;
         }
 #endif
+        /// <summary>
+        /// Event fired each time Scenes cache is rebuilt. 
+        /// Potential triggers:
+        /// - Scene Build Settings changed
+        /// - Scene asset removed/added
+        /// 
+        /// You can use it to invalidate/SetDirty all assets that use <see cref="UnityEngine.SerializedScene"/> to validate serialized Scene indexes.
+        /// </summary>
+        public static event Action OnCacheRefreshed;
 
         internal static int InvalidSceneIndex => -1;
     }

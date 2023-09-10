@@ -1,5 +1,4 @@
 ﻿using System;
-
 using UnityEditor;
 
 namespace Toolbox.Editor
@@ -44,7 +43,6 @@ namespace Toolbox.Editor
         {
             Drawer.IgnoreProperty(propertyPath);
         }
-
 
         Editor IToolboxEditor.ContextEditor => this;
         /// <inheritdoc />

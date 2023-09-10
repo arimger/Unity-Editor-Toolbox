@@ -23,7 +23,7 @@ namespace Toolbox.Editor
             ToolboxEditorHandler.OnCloseToolboxEditor += OnCloseEditor;
 
             //we have to reset the current state between Editors to keep values independent
-            InspectorUtility.OnEditorReload += ResetCache;
+            ToolboxEditorHandler.OnEditorReload += ResetCache;
         }
 
 

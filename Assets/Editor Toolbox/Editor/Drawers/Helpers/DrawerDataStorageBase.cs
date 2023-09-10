@@ -6,7 +6,7 @@ namespace Toolbox.Editor.Drawers
     {
         static DrawerDataStorageBase()
         {
-            InspectorUtility.OnEditorReload += () =>
+            ToolboxEditorHandler.OnEditorReload += () =>
             {
                 for (var i = 0; i < storages.Count; i++)
                 {
