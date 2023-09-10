@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-
+﻿using System;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -7,12 +7,13 @@ using UnityEngine.SceneManagement;
 
 namespace Toolbox.Serialization
 {
-    internal static class SceneSerializationUtility
+    public static class SceneSerializationUtility
     {
 #if UNITY_EDITOR
         private static readonly Dictionary<SceneAsset, SceneData> cachedScenes = new Dictionary<SceneAsset, SceneData>();
         private static bool isInitialized;
 
+        public static event Action OnCacheRefreshed;
 
         [InitializeOnLoadMethod]
         private static void Initialize()
@@ -67,10 +68,11 @@ namespace Toolbox.Serialization
                     ScenePath = path
                 });
             }
+
+            OnCacheRefreshed?.Invoke();
         }
 
-
-        public static bool TryGetSceneData(SceneAsset sceneAsset, out SceneData data)
+        internal static bool TryGetSceneData(SceneAsset sceneAsset, out SceneData data)
         {
             ConfirmCache();
             if (!sceneAsset || !cachedScenes.TryGetValue(sceneAsset, out data))
@@ -83,7 +85,6 @@ namespace Toolbox.Serialization
         }
 #endif
 
-
-        public static int InvalidSceneIndex => -1;
+        internal static int InvalidSceneIndex => -1;
     }
 }
