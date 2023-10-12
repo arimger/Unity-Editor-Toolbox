@@ -1,9 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using Toolbox.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-
-using Toolbox.Editor;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [InitializeOnLoad]
 public static class SampleToolbar
@@ -13,7 +12,6 @@ public static class SampleToolbar
     /// </summary>
     private readonly static string mySampleSceneName = "SampleScene";
 
-
     static SampleToolbar()
     {
         EditorSceneManager.sceneOpened -= SceneOpenedCallback;
@@ -22,7 +20,6 @@ public static class SampleToolbar
         EditorApplication.update -= ValidateFirstScene;
         EditorApplication.update += ValidateFirstScene;
     }
-
 
     /// <summary>
     /// This method is used to validate first scene after Editor launch.
@@ -35,8 +32,8 @@ public static class SampleToolbar
         }
 
         EditorApplication.update -= ValidateFirstScene;
-
-        SceneOpenedCallback(SceneManager.GetActiveScene(), OpenSceneMode.Single);
+        var activeScene = SceneManager.GetActiveScene();
+        SceneOpenedCallback(activeScene, OpenSceneMode.Single);
     }
 
     /// <summary>
@@ -51,9 +48,9 @@ public static class SampleToolbar
         {
             return;
         }
+
         ToolboxEditorToolbar.OnToolbarGui += OnToolbarGui;
     }
-
 
     /// <summary>
     /// Layout-based GUI call.
@@ -65,20 +62,22 @@ public static class SampleToolbar
         {
             Debug.Log("1");
         }
+
         if (GUILayout.Button(Style.sampleContent1, Style.commandMidStyle))
         {
             Debug.Log("2");
         }
+
         if (GUILayout.Button(Style.sampleContent2, Style.commandMidStyle))
         {
             Debug.Log("3");
         }
+
         if (GUILayout.Button("4", Style.commandRightStyle))
         {
             Debug.Log("4");
         }
     }
-
 
     private static class Style
     {
