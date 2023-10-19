@@ -1,3 +1,9 @@
+## 0.12.6 [19.10.2023]
+
+### Changed:
+- Fix ToolboxEditorToolbar in Unity 2021.1+
+- Minor API changes in the SearchablePopup class
+
 ## 0.12.5 [11.09.2023]
 
 ### Changed:
