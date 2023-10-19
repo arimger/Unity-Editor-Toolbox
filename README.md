@@ -731,6 +731,10 @@ public SerializedScene scene;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenedetails.png)
 
+Keep in mind that SerializedScene stores Scene's index, name and path. These properties are updated each time scenes collection in the Build Settings is updated or any SceneAsset is created/removed/reimported. 
+Unfortunately, you need to handle associated objects reserialization by yourself, otherwise e.g. updated indexes won't be saved. I prepared for you a static event `SceneSerializationUtility.OnCacheRefreshed` that can be used to validate SerializedScenes in your project. 
+You can link SerializedScene in a ScriptableObject and trigger reserialization (`EditorUtility.SetDirty()`) if needed, it's really convinient approach.
+
 #### SerializedDictionary<TK, TV>
 
 Allows to serialize and use Dictionaries. The presented class implements the IDictionary interface, so it can be easily used like the standard version.
