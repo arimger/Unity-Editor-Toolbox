@@ -17,7 +17,9 @@ public class SampleBehaviour1 : MonoBehaviour
     [Label("MinMax Slider", skinStyle: SkinStyle.Box)]
 
     [MinMaxSlider(10.0f, 100.0f)]
-    public Vector2 var2;
+    public Vector2 minMaxVector;
+    [MinMaxSlider(1, 8)]
+    public Vector2Int minMaxVectorInt;
 
     [Label("Asset Preview", skinStyle: SkinStyle.Box)]
 
