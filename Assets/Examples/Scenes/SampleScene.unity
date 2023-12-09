@@ -1008,9 +1008,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTag: Untagged
-  progressBar: 25.4
-  minMaxVector: {x: 0, y: 0}
-  minMaxVectorInt: {x: 0, y: 0}
+  progressBar1: 9.159664
+  progressBar2: 25.4
+  minMaxVector: {x: 10, y: 73.893524}
+  minMaxVectorInt: {x: 2, y: 7}
   var8: {fileID: 977748987}
   preview: {fileID: 5059060190599569102, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
   var10: 2.16
