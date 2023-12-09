@@ -6,6 +6,61 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(ProgressBarAttribute))]
     public class ProgressBarAttributeDrawer : PropertyDrawerBase
     {
+        private static readonly int drawerHash = nameof(ProgressBarAttributeDrawer).GetHashCode();
+
+        private void HandleGuiEvents(SerializedProperty property, Rect progressBarRect)
+        {
+            var mousePosition = Event.current.mousePosition;
+            var id = GUIUtility.GetControlID(drawerHash, FocusType.Passive, progressBarRect);
+            switch (Event.current.GetTypeForControl(id))
+            {
+                case EventType.MouseDown:
+                    if (progressBarRect.Contains(mousePosition))
+                    {
+                        GUIUtility.hotControl = id;
+                        SetProgressValue(property, progressBarRect, mousePosition.x);
+                        Event.current.Use();
+                    }
+                    break;
+                case EventType.MouseDrag:
+                    if (GUIUtility.hotControl == id)
+                    {
+                        SetProgressValue(property, progressBarRect, mousePosition.x);
+                        Event.current.Use();
+                    }
+                    break;
+                case EventType.MouseUp:
+                    if (GUIUtility.hotControl == id)
+                    {
+                        GUIUtility.hotControl = 0;
+                        Event.current.Use();
+                    }
+                    break;
+            }
+        }
+
+        private void SetProgressValue(SerializedProperty property, Rect progressBarRect, float xPosition)
+        {
+            var minValue = Attribute.MinValue;
+            var maxValue = Attribute.MaxValue;
+
+            var range = progressBarRect.xMax - progressBarRect.xMin;
+            xPosition = Mathf.Clamp(xPosition - progressBarRect.xMin, 0, range);
+
+            var fill = Mathf.Clamp01(xPosition / range);
+            var newValue = (maxValue - minValue) * fill + minValue;
+
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.Integer:
+                    property.intValue = Mathf.RoundToInt(newValue);
+                    break;
+                case SerializedPropertyType.Float:
+                    property.floatValue = newValue;
+                    break;
+            }
+        }
+
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             return Style.barHeight;
@@ -51,8 +106,14 @@ namespace Toolbox.Editor.Drawers
             position.y -= Style.textOffset;
             //finally draw the progress bar label
             EditorGUI.DropShadowLabel(position, labelText);
-        }
 
+            if (!attribute.IsInteractable)
+            {
+                return;
+            }
+
+            HandleGuiEvents(property, position);
+        }
 
         public override bool IsPropertyValid(SerializedProperty property)
         {
@@ -60,9 +121,7 @@ namespace Toolbox.Editor.Drawers
                    property.propertyType == SerializedPropertyType.Integer;
         }
 
-
         private ProgressBarAttribute Attribute => attribute as ProgressBarAttribute;
-
 
         private static class Style
         {
