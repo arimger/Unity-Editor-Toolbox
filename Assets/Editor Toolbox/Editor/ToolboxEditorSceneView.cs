@@ -40,16 +40,16 @@ namespace Toolbox.Editor
         private static void UpdateEventCallback()
         {
 #if UNITY_2019_1_OR_NEWER
-            UnityEditor.SceneView.duringSceneGui -= SceneViewDuringSceneGUI;
+            UnityEditor.SceneView.duringSceneGui -= SceneViewDuringSceneGui;
 
             if (UseToolboxSceneView)
             {
-                UnityEditor.SceneView.duringSceneGui += SceneViewDuringSceneGUI;
+                UnityEditor.SceneView.duringSceneGui += SceneViewDuringSceneGui;
             }
 #endif
         }
 
-        private static void SceneViewDuringSceneGUI(UnityEditor.SceneView sceneView)
+        private static void SceneViewDuringSceneGui(UnityEditor.SceneView sceneView)
         {
             if (Event.current.type != EventType.KeyDown ||
                 Event.current.keyCode != SelectorKey)

@@ -34,5 +34,7 @@ namespace UnityEngine
         }
 
         public string HexColor { get; set; }
+
+        public bool IsInteractable { get; set; }
     }
 }

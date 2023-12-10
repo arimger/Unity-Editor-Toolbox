@@ -85,6 +85,8 @@ Regular drawers have priority over Toolbox drawers and they cannot be mixed.
 
 #### TagSelectorAttribute
 
+Supported types: **string**.
+
 ```csharp
 [TagSelector]
 public string var1;
@@ -94,8 +96,10 @@ public string var1;
 
 #### ProgressBarAttribute
 
+Supported types: **int**, **float**, **double**.
+
 ```csharp
-[ProgressBar("Name", minValue: 0.0f, maxValue: 100.0f, HexColor = "#EB7D34")]
+[ProgressBar("Name", minValue: 0.0f, maxValue: 100.0f, HexColor = "#EB7D34", IsInteractable = true)]
 public float var1 = 80.0f;
 ```
 
@@ -103,6 +107,8 @@ public float var1 = 80.0f;
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/progressbar2.png)
 
 #### MinMaxSliderAttribute
+
+Supported types: **Vector2, Vector2Int**.
 
 ```csharp
 [MinMaxSlider(0.5f, 71.7f)]
@@ -112,6 +118,8 @@ public Vector2 var1;
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/minmaxslider.png)
 
 #### AssetPreviewAttribute
+
+Supported types: UnityEngine.**Object**.
 
 ```csharp
 [AssetPreview]
@@ -124,10 +132,14 @@ public Component var2;
 
 #### SuffixAttribute
 
+Supported types: **all**.
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/suffix.png)
 
 
 #### EnumTogglesAttribute
+
+Supported types: **Enums**.
 
 ```csharp
 [System.Flags]
@@ -154,22 +166,31 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExampl
 
 #### NotNullAttribute
 
+Supported types: UnityEngine.**Object**.
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull2.png)
 
 
 #### DirectoryAttribute
 
+Supported types: **string**.
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory2.png)
 
 #### SceneNameAttribute
+
+Supported types: **string**.
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename2.png)
 
 #### PresetAttribute
 
+Supported types: **all**.
+
+Remark: can be used only within classes, structs are not supported.
 ```csharp
 private readonly int[] presetValues = new[] { 1, 2, 3, 4, 5 };
 
@@ -189,6 +210,8 @@ public int presetTarget;
 
 #### SearchableEnumAttribute
 
+Supported types: **Enums**.
+
 ```csharp
 [SearchableEnum]
 public KeyCode enumSearch;
@@ -198,12 +221,16 @@ public KeyCode enumSearch;
 
 #### ClampAttribute
 
+Supported types: **int, float, double**.
+
 ```csharp
 [Clamp(minValue = 1.5f, maxValue = 11.3f)]
 public double var1;
 ```
 
 #### PasswordAttribute
+
+Supported types: **string**.
 
 ```csharp
 [Password]
@@ -214,15 +241,25 @@ public string password;
 
 #### ChildObjectOnlyAttribute
 
+Supported types: **GameObject, Component**.
+
 #### SceneObjectOnlyAttribute
+
+Supported types: **GameObject, Component**.
 
 #### PrefabObjectOnlyAttribute
 
+Supported types: **GameObject, Component**.
+
 #### LeftToggleAttribute
+
+Supported types: **bool**.
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/lefttoggle.png)
 
 #### FormattedNumberAttribute
+
+Supported types: **int, float, double**.
 
 ```csharp
 [FormattedNumber]
@@ -233,12 +270,23 @@ public int bigNumber;
 
 #### LabelWidthAttribute
 
+Supported types: **all**.
+
 ```csharp
 [LabelWidth(220.0f)]
 public int veryVeryVeryVeryVeryLongName;
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelwidth.png)
+
+#### LayerAttribute
+
+Supported types: **int**.
+
+```csharp
+[Layer]
+public int var1;
+```
 
 ---
 

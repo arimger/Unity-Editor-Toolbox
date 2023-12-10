@@ -11,13 +11,17 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("Progress Bar", skinStyle: SkinStyle.Box)]
 
-    [ProgressBar(minValue: -10.0f, maxValue: 50.0f, HexColor = "#234DEA")]
-    public float progressBar = 25.4f;
+    [ProgressBar(minValue: -10.0f, maxValue: 50.0f, HexColor = "#234DEA", IsInteractable = true)]
+    public float progressBar1 = 25.4f;
+    [ProgressBar(minValue: -10.0f, maxValue: 50.0f, HexColor = "#32A852", IsInteractable = false)]
+    public float progressBar2 = 25.4f;
 
     [Label("MinMax Slider", skinStyle: SkinStyle.Box)]
 
     [MinMaxSlider(10.0f, 100.0f)]
-    public Vector2 var2;
+    public Vector2 minMaxVector;
+    [MinMaxSlider(1, 8)]
+    public Vector2Int minMaxVectorInt;
 
     [Label("Asset Preview", skinStyle: SkinStyle.Box)]
 
