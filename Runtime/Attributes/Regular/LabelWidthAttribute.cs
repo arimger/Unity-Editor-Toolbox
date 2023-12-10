@@ -4,8 +4,9 @@ using System.Diagnostics;
 namespace UnityEngine
 {
     /// <summary>
-    /// Change field label width.
-    /// <para>Label width</para>
+    /// Change field's label width.
+    /// 
+    /// <para>Supported types: all.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     [Conditional("UNITY_EDITOR")]
