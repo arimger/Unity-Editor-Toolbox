@@ -1,3 +1,12 @@
+## 0.12.7 [10.12.2023]
+
+### Changed:
+- Possibility to interact with ProgressBarDrawer (added IsInteractable property to the ProgressBarAttribute)
+- MinMaxAttribute now supports Vector2Int
+
+### Added:
+- 'Revert Prefab Name' option for prefabs in the GameObject/Prefabs context menu
+
 ## 0.12.6 [19.10.2023]
 
 ### Changed:
