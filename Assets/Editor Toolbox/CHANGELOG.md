@@ -1,3 +1,9 @@
+## 0.12.8 [29.12.2023]
+
+### Changed:
+- Fix calling the ScriptAttributeUtility.GetDrawerTypeForType method in Unity 2033.3+
+- Fix getting and setting scripting defines in Unity 2023+
+
 ## 0.12.7 [10.12.2023]
 
 ### Changed:
