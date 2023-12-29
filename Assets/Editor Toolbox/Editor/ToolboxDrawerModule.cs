@@ -261,7 +261,11 @@ namespace Toolbox.Editor
         /// </summary>
         internal static bool HasNativeTypeDrawer(Type type)
         {
+#if UNITY_2023_3_OR_NEWER
+            var parameters = new object[] { type, null, false };
+#else
             var parameters = new object[] { type };
+#endif
             var result = getDrawerTypeForTypeMethod.Invoke(null, parameters) as Type;
             return result != null && typeof(PropertyDrawer).IsAssignableFrom(result);
         }
