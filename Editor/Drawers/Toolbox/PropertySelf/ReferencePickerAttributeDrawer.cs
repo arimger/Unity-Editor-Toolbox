@@ -1,5 +1,6 @@
 ﻿#if UNITY_2019_3_OR_NEWER
 using System;
+using System.Runtime.Serialization;
 
 using UnityEditor;
 using UnityEngine;
@@ -74,7 +75,7 @@ namespace Toolbox.Editor.Drawers
 
         private void UpdateTypeProperty(SerializedProperty property, Type referenceType)
         {
-            var obj = referenceType != null ? Activator.CreateInstance(referenceType) : null;
+            var obj = referenceType != null ? FormatterServices.GetUninitializedObject(referenceType) : null;
             property.serializedObject.Update();
             property.managedReferenceValue = obj;
             property.serializedObject.ApplyModifiedProperties();
