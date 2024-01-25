@@ -1,6 +1,5 @@
 ﻿#if UNITY_2019_3_OR_NEWER
 using System;
-using System.Runtime.Serialization;
 
 using UnityEditor;
 using UnityEngine;
@@ -17,13 +16,12 @@ namespace Toolbox.Editor.Drawers
         private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
         private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
 
-
         private void UpdateContexts(ReferencePickerAttribute attribute)
         {
             sharedAppearance.TypeGrouping = attribute.TypeGrouping;
         }
 
-        private Type GetParentType(SerializedProperty property, ReferencePickerAttribute attribute)
+        private Type GetParentType(ReferencePickerAttribute attribute, SerializedProperty property)
         {
             var fieldInfo = property.GetFieldInfo(out _);
             var fieldType = property.GetProperType(fieldInfo);
@@ -42,7 +40,7 @@ namespace Toolbox.Editor.Drawers
             return fieldType;
         }
 
-        private void CreateTypeProperty(Rect position, SerializedProperty property, Type parentType)
+        private void CreateTypeProperty(SerializedProperty property, Type parentType, ReferencePickerAttribute attribute, Rect position)
         {
             TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
             typeField.OnGui(position, true, (type) =>
@@ -51,7 +49,7 @@ namespace Toolbox.Editor.Drawers
                 {
                     if (!property.serializedObject.isEditingMultipleObjects)
                     {
-                        UpdateTypeProperty(property, type);
+                        UpdateTypeProperty(property, type, attribute);
                     }
                     else
                     {
@@ -61,7 +59,7 @@ namespace Toolbox.Editor.Drawers
                             using (var so = new SerializedObject(target))
                             {
                                 SerializedProperty sp = so.FindProperty(property.propertyPath);
-                                UpdateTypeProperty(sp, type);
+                                UpdateTypeProperty(sp, type, attribute);
                             }
                         }
                     }
@@ -73,9 +71,10 @@ namespace Toolbox.Editor.Drawers
             }, currentType, parentType);
         }
 
-        private void UpdateTypeProperty(SerializedProperty property, Type referenceType)
+        private void UpdateTypeProperty(SerializedProperty property, Type targetType, ReferencePickerAttribute attribute)
         {
-            var obj = referenceType != null ? FormatterServices.GetUninitializedObject(referenceType) : null;
+            var forceUninitializedInstance = attribute.ForceUninitializedInstance;
+            var obj = ReflectionUtility.CreateInstance(targetType, forceUninitializedInstance);
             property.serializedObject.Update();
             property.managedReferenceValue = obj;
             property.serializedObject.ApplyModifiedProperties();
@@ -106,7 +105,6 @@ namespace Toolbox.Editor.Drawers
             return position;
         }
 
-
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReferencePickerAttribute attribute)
         {
             //NOTE: we want to close scope manually because ExitGUIException can interrupt drawing and SerializedProperties stack
@@ -122,8 +120,8 @@ namespace Toolbox.Editor.Drawers
                 var hasLabel = !string.IsNullOrEmpty(label.text);
                 var position = PrepareTypePropertyPosition(hasLabel, in labelRect, in inputRect, isPropertyExpanded);
 
-                var parentType = GetParentType(property, attribute);
-                CreateTypeProperty(position, property, parentType);
+                var parentType = GetParentType(attribute, property);
+                CreateTypeProperty(property, parentType, attribute, position);
                 if (isPropertyExpanded)
                 {
                     ToolboxEditorGui.DrawPropertyChildren(property);
@@ -133,7 +131,6 @@ namespace Toolbox.Editor.Drawers
                 propertyScope.Close();
             }
         }
-
 
         public override bool IsPropertyValid(SerializedProperty property)
         {
