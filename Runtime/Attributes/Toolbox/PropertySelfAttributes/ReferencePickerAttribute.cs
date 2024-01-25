@@ -31,6 +31,8 @@ namespace UnityEngine
         /// Defaults to <see cref="TypeGrouping.None"/> unless explicitly specified.
         /// </summary>
         public TypeGrouping TypeGrouping { get; set; } = TypeGrouping.None;
+
+        public bool ForceUninitializedInstance { get; set; }
     }
 }
 #endif
