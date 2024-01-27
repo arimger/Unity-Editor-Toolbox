@@ -9,7 +9,7 @@ public class SampleBehaviour6 : MonoBehaviour
 #if UNITY_2019_3_OR_NEWER
     [SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.ByFlatName)]
     public Interface1 var1;
-    [SerializeReference, ReferencePicker]
+    [SerializeReference, ReferencePicker(ForceUninitializedInstance = true)]
     public ClassWithInterfaceBase var2;
     [SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2))]
     public ClassWithInterfaceBase var3;
@@ -25,6 +25,12 @@ public class SampleBehaviour6 : MonoBehaviour
     {
         public bool var1;
         public bool var2;
+
+        public Struct(bool var1, bool var2)
+        {
+            this.var1 = var1;
+            this.var2 = var2;
+        }
     }
 
     public abstract class ClassWithInterfaceBase : Interface1
@@ -54,6 +60,11 @@ public class SampleBehaviour6 : MonoBehaviour
     public class ClassWithInterface3 : ClassWithInterfaceBase
     {
         public int var1;
+
+        public ClassWithInterface3(int var1)
+        {
+            this.var1 = var1;
+        }
     }
 
     [Serializable]

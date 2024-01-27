@@ -9,6 +9,7 @@ using Object = UnityEngine.Object;
 namespace Toolbox.Editor.Wizards
 {
     using Toolbox.Editor.Internal;
+    using Editor = UnityEditor.Editor;
 
     /// <summary>
     /// Utility window responsible for creation of <see cref="ScriptableObject"/>s.
@@ -34,7 +35,7 @@ namespace Toolbox.Editor.Wizards
         {
             private bool IsDefaultObjectValid()
             {
-                return DefaultObject != null && DefaultObject.GetType() == InstanceType;
+                return BlueprintObject != null && BlueprintObject.GetType() == InstanceType;
             }
 
             public void Validate()
@@ -47,7 +48,7 @@ namespace Toolbox.Editor.Wizards
                 InstancesCount = Mathf.Max(InstancesCount, 1);
                 if (!IsDefaultObjectValid())
                 {
-                    DefaultObject = null;
+                    BlueprintObject = null;
                 }
             }
 
@@ -59,7 +60,7 @@ namespace Toolbox.Editor.Wizards
             public int InstancesCount { get; set; } = 1;
             [field: SerializeField, InLineEditor]
             [field: Tooltip("Will be used as a blueprint for all created ScriptableObjects.")]
-            public Object DefaultObject { get; set; }
+            public Object BlueprintObject { get; set; }
         }
 
         private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintScriptableObject();
@@ -69,7 +70,13 @@ namespace Toolbox.Editor.Wizards
         private readonly CreationData data = new CreationData();
 
         private bool inspectDefaultObject;
-        private bool useSearchField = true;
+        private Editor blueprintObjectEditor;
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            DestroyImmediate(blueprintObjectEditor);
+        }
 
         [MenuItem("Assets/Create/Editor Toolbox/Wizards/ScriptableObject Creation Wizard", priority = 5)]
         internal static void Initialize()
@@ -83,10 +90,8 @@ namespace Toolbox.Editor.Wizards
         {
             EditorGUILayout.LabelField("Settings", EditorStyles.boldLabel);
 
-            useSearchField = EditorGUILayout.ToggleLeft("Use Search Field", useSearchField);
-
             var rect = EditorGUILayout.GetControlRect(true);
-            typeField.OnGui(rect, useSearchField, OnTypeSelected, data.InstanceType);
+            typeField.OnGui(rect, true, OnTypeSelected, data.InstanceType);
             if (data.InstanceType == null)
             {
                 return;
@@ -97,7 +102,15 @@ namespace Toolbox.Editor.Wizards
             EditorGUI.BeginChangeCheck();
             data.InstanceName = EditorGUILayout.TextField(Style.nameContent, data.InstanceName);
             data.InstancesCount = EditorGUILayout.IntField(Style.countContent, data.InstancesCount);
-            var assignedInstance = EditorGUILayout.ObjectField(Style.objectContent, data.DefaultObject, data.InstanceType, false);
+
+            EditorGUI.BeginChangeCheck();
+            var assignedInstance = EditorGUILayout.ObjectField(Style.objectContent, data.BlueprintObject, data.InstanceType, false);
+            data.BlueprintObject = assignedInstance;
+            if (EditorGUI.EndChangeCheck())
+            {
+                UpdateBlueprintObjectEditor();
+            }
+
             if (assignedInstance != null)
             {
                 inspectDefaultObject = GUILayout.Toggle(inspectDefaultObject,
@@ -112,11 +125,11 @@ namespace Toolbox.Editor.Wizards
             {
                 using (new EditorGUILayout.VerticalScope(Style.backgroundStyle))
                 {
-                    ToolboxEditorGui.DrawObjectProperties(assignedInstance);
+                    blueprintObjectEditor.OnInspectorGUI();
                 }
             }
 
-            data.DefaultObject = assignedInstance;
+
             if (EditorGUI.EndChangeCheck())
             {
                 OnWizardUpdate();
@@ -147,7 +160,7 @@ namespace Toolbox.Editor.Wizards
             var instancesCount = data.InstancesCount;
             for (var i = 0; i < instancesCount; i++)
             {
-                var instance = CreateObject(data.InstanceType, data.DefaultObject);
+                var instance = CreateObject(data.InstanceType, data.BlueprintObject);
                 CreateAsset(instance, data.InstanceName, assetPath, i);
             }
 
@@ -178,6 +191,25 @@ namespace Toolbox.Editor.Wizards
             else
             {
                 data.InstanceName = string.Empty;
+            }
+        }
+
+        private void UpdateBlueprintObjectEditor()
+        {
+            DestroyImmediate(blueprintObjectEditor);
+            blueprintObjectEditor = null;
+
+            var targetObject = data.BlueprintObject;
+            if (targetObject == null)
+            {
+                return;
+            }
+
+            blueprintObjectEditor = Editor.CreateEditor(targetObject);
+            blueprintObjectEditor.hideFlags = HideFlags.HideAndDontSave;
+            if (blueprintObjectEditor is ToolboxEditor toolboxEditor)
+            {
+                toolboxEditor.IgnoreProperty(PropertyUtility.Defaults.scriptPropertyName);
             }
         }
 
@@ -219,8 +251,8 @@ namespace Toolbox.Editor.Wizards
             internal static readonly GUIStyle foldoutStyle;
 
             internal static readonly GUIContent nameContent = new GUIContent("Instance Name");
-            internal static readonly GUIContent countContent = new GUIContent("Instances To Create", "Indicates how many instances will be created.");
-            internal static readonly GUIContent objectContent = new GUIContent("Default Object", "Will be used as a blueprint for all created ScriptableObjects.");
+            internal static readonly GUIContent countContent = new GUIContent("Instances Count", "Indicates how many instances will be created.");
+            internal static readonly GUIContent objectContent = new GUIContent("Blueprint Object", "Will be used as a blueprint for all created ScriptableObjects.");
             internal static readonly GUIContent foldoutContent = new GUIContent("Inspect", "Show/Hide Properties");
 
             internal static readonly GUILayoutOption[] foldoutOptions = new GUILayoutOption[]
