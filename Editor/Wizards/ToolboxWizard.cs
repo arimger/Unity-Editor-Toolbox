@@ -11,7 +11,7 @@ namespace Toolbox.Editor.Wizards
 
         private Vector2 scrollPosition;
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             if (targetEditor != null)
             {
@@ -19,7 +19,7 @@ namespace Toolbox.Editor.Wizards
             }
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             DestroyImmediate(targetEditor);
         }
