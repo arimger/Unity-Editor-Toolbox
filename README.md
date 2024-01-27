@@ -631,13 +631,20 @@ public int var1;
 #### SerializeReference (ReferencePicker) <a name="toolboxreference"></a>
 
 You can draw properties marked with the **[SerializeReference]** attribute with an additional type picker that allows you to manipulate what managed type will be serialized.
-
+Depending on the picked type we have different object creation strategies:
+- `Activator.CreateInstance(targetType)` (default constructor will be called and all readonly members will be initialized)
+	- Target type has default constructor
+	- Target type is a value type
+- `FormatterServices.GetUninitializedObject(targetType)` (object will be uninitialized)
+	- Target type has one or more constructors with arguments
+	- `ForceUninitializedInstance` property is set to true
+	
 To prevent issues after renaming types use `UnityEngine.Scripting.APIUpdating.MovedFromAttribute`.
 
 ```csharp
 [SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.ByFlatName)]
 public Interface1 var1;
-[SerializeReference, ReferencePicker]
+[SerializeReference, ReferencePicker(ForceUninitializedInstance = true)]
 public Interface1 var1;
 [SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2)]
 public ClassWithInterfaceBase var2;
