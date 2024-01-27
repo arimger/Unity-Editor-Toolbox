@@ -1,3 +1,10 @@
+## 0.12.9 [27.01.2024]
+
+### Changed:
+- Fix rare invalid SerializedProperty iterator when editing child properties
+- Extend objects creation behaviour while using the ReferencePickerAttribute (possibility to create uninitialized objects)
+- Minor UX improvements in the ScriptableObjectCreationWizard
+
 ## 0.12.8 [29.12.2023]
 
 ### Changed:
