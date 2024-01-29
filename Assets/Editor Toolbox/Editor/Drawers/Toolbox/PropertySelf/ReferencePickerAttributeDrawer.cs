@@ -43,7 +43,7 @@ namespace Toolbox.Editor.Drawers
         private void CreateTypeProperty(SerializedProperty property, Type parentType, ReferencePickerAttribute attribute, Rect position)
         {
             TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
-            typeField.OnGui(position, true, (type) =>
+            typeField.OnGui(position, attribute.AddTextSearchField, (type) =>
             {
                 try
                 {
