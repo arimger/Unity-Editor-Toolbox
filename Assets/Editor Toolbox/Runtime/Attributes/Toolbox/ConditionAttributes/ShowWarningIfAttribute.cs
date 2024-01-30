@@ -14,6 +14,11 @@ namespace UnityEngine
     [Conditional("UNITY_EDITOR")]
     public class ShowWarningIfAttribute : ComparisonAttribute
     {
+        public ShowWarningIfAttribute(string sourceHandle, string message) : base(sourceHandle)
+        {
+            Message = message;
+        }
+
         public ShowWarningIfAttribute(string sourceHandle, object valueToMatch, string message) : base(sourceHandle, valueToMatch)
         {
             Message = message;

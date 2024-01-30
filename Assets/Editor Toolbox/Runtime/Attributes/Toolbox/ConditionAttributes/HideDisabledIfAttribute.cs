@@ -14,6 +14,9 @@ namespace UnityEngine
     [Conditional("UNITY_EDITOR")]
     public class HideDisabledIfAttribute : ComparisonAttribute
     {
+        public HideDisabledIfAttribute(string sourceHandle) : base(sourceHandle)
+        { }
+
         public HideDisabledIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)
         { }
     }

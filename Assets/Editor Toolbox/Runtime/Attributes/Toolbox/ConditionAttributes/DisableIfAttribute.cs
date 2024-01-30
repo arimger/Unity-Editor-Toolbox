@@ -14,6 +14,9 @@ namespace UnityEngine
     [Conditional("UNITY_EDITOR")]
     public class DisableIfAttribute : ComparisonAttribute
     {
+        public DisableIfAttribute(string sourceHandle) : base(sourceHandle)
+        { }
+
         public DisableIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)
         { }
     }
