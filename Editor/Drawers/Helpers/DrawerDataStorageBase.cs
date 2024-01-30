@@ -1,34 +1,16 @@
-﻿using System.Collections.Generic;
-
-namespace Toolbox.Editor.Drawers
+﻿namespace Toolbox.Editor.Drawers
 {
     public abstract class DrawerDataStorageBase
     {
-        static DrawerDataStorageBase()
-        {
-            ToolboxEditorHandler.OnEditorReload += () =>
-            {
-                for (var i = 0; i < storages.Count; i++)
-                {
-                    storages[i].ClearItems();
-                }
-            };
-        }
-
-
         protected DrawerDataStorageBase()
         {
-            storages.Add(this);
+            DrawerStorageManager.AppendStorage(this);
         }
 
         ~DrawerDataStorageBase()
         {
-            storages.Remove(this);
+            DrawerStorageManager.RemoveStorage(this);
         }
-
-
-        private static readonly List<DrawerDataStorageBase> storages = new List<DrawerDataStorageBase>();
-
 
         /// <summary>
         /// Called each time Editor is completely destroyed.
