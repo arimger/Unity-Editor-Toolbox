@@ -93,7 +93,7 @@ namespace Toolbox.Editor
         private bool useToolboxSceneView = true;
 
         [SerializeField]
-        private KeyCode selectorKey = KeyCode.LeftControl;
+        private KeyCode selectorKey = KeyCode.Tab;
 
         [SerializeField, Tooltip("Set to false if you don't want to use Toolbox attributes and related features.")]
         private bool useToolboxDrawers = true;
