@@ -16,5 +16,9 @@ namespace UnityEngine
     {
         public HideIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)
         { }
+                
+        public HideIfAttribute(string[] sourceHandles, object[] valueToMatches, bool logicAnd = true) 
+            : base(sourceHandles, valueToMatches, !logicAnd)
+        { }
     }
 }

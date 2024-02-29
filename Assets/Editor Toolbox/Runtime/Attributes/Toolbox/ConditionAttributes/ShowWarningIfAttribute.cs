@@ -19,6 +19,12 @@ namespace UnityEngine
             Message = message;
         }
 
+        public ShowWarningIfAttribute(string[] sourceHandles, object[] valueToMatches, string message, bool logicAnd = true) 
+            : base(sourceHandles, valueToMatches, logicAnd)
+        {
+            Message = message;
+        }
+
         public string Message { get; private set; }
 
         /// <summary>

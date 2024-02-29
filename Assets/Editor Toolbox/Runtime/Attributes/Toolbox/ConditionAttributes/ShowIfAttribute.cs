@@ -16,5 +16,9 @@ namespace UnityEngine
     {
         public ShowIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)
         { }
+        
+        public ShowIfAttribute(string[] sourceHandles, object[] valueToMatches, bool logicAnd = true) 
+            : base(sourceHandles, valueToMatches, logicAnd)
+        { }
     }
 }

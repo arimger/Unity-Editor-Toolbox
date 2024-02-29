@@ -16,5 +16,9 @@ namespace UnityEngine
     {
         public ShowDisabledIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)
         { }
+                
+        public ShowDisabledIfAttribute(string[] sourceHandles, object[] valueToMatches, bool logicAnd = true) 
+            : base(sourceHandles, valueToMatches, logicAnd)
+        { }
     }
 }
