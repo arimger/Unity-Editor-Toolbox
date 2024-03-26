@@ -11,7 +11,7 @@ namespace Toolbox.Editor.Drawers
         {
             storage = new PropertyDataStorage<ReorderableListBase, ReorderableListAttribute>(false, (p, a) =>
             {
-                return ToolboxEditorGui.CreateList(p,
+                var list = ToolboxEditorGui.CreateList(p,
                     a.ListStyle,
                     a.ElementLabel,
                     a.FixedSize,
@@ -19,11 +19,11 @@ namespace Toolbox.Editor.Drawers
                     a.HasHeader,
                     a.HasLabels,
                     a.Foldable);
+                return list;
             });
         }
 
         private static readonly PropertyDataStorage<ReorderableListBase, ReorderableListAttribute> storage;
-
 
         /// <summary>
         /// Draws a <see cref="ReorderableList"/> if given property was previously cached or creates completely new instance.
