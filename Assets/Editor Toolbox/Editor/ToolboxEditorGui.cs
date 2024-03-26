@@ -25,9 +25,9 @@ namespace Toolbox.Editor
         /// Draws horizontal line.
         /// Uses built-in layouting system.
         /// </summary>
-        public static void DrawLine(float thickness = 0.75f, float padding = 6.0f)
+        public static void DrawLine(float thickness = 0.75f, float padding = 6.0f, bool horizontal = true)
         {
-            DrawLine(thickness, padding, new Color(0.3f, 0.3f, 0.3f));
+            DrawLine(thickness, padding, new Color(0.3f, 0.3f, 0.3f), horizontal);
         }
 
         /// <summary>
