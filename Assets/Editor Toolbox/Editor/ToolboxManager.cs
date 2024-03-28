@@ -120,7 +120,7 @@ namespace Toolbox.Editor
             }
 
             EditorCoroutineUtility.StartCoroutineOwnerless(InitializeSettingsAsync());
-            static IEnumerator InitializeSettingsAsync()
+            IEnumerator InitializeSettingsAsync()
             {
                 yield return null;
                 yield return new WaitWhile(() => EditorApplication.isUpdating);
