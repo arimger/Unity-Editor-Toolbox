@@ -1,3 +1,13 @@
+## 0.12.0 [28.03.2024]
+
+### Changed:
+- Fix fetching and initializing Toolbox features when assets are updating
+- Display ReorderableList element handle at the top of available space
+- Display "Collection is Empty" label for empty ReorderableLists
+- New visual appearance for the SerializedDictionary properties
+- Fix using Toolbox drawers in the SerializedDictionary properties
+- Change the default SceneView selector key to `Tab`
+
 ## 0.12.9 [27.01.2024]
 
 ### Changed:
