@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections;
+using System.IO;
+using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -87,35 +89,62 @@ namespace Toolbox.Editor
             ToolboxEditorSceneView.UpdateSettings(settings);
         }
 
-
-        [InitializeOnLoadMethod]
-        internal static bool InitializeSettings()
+        private static string GetSettingsFileGuid()
         {
             var guids = AssetDatabase.FindAssets("t:" + settingsType);
+            string targetGuid = null;
             //try to find a settings file in a non-package directory
-            foreach (var guid in guids)
+            for (var i = guids.Length - 1; i >= 0; i--)
             {
+                var guid = guids[i];
                 var path = AssetDatabase.GUIDToAssetPath(guid);
+                targetGuid = guid;
                 if (path.StartsWith("Assets"))
                 {
-                    guids[0] = guid;
                     break;
                 }
             }
 
-            if (InitializeSettings(guids.Length > 0 ? guids[0] : null))
+            return targetGuid;
+        }
+
+        [InitializeOnLoadMethod]
+        internal static void InitializeToolbox()
+        {
+            IsInitializing = true;
+            if (TryInitializeSettings())
             {
+                IsInitializing = false;
                 IsInitialized = true;
-                return true;
+                return;
             }
-            else
+
+            EditorCoroutineUtility.StartCoroutineOwnerless(InitializeSettingsAsync());
+            static IEnumerator InitializeSettingsAsync()
             {
-                ToolboxEditorLog.KitInitializationMessage();
-                return false;
+                yield return null;
+                yield return new WaitWhile(() => EditorApplication.isUpdating);
+                if (TryInitializeSettings())
+                {
+                    IsInitialized = true;
+                }
+                else
+                {
+                    IsInitialized = false;
+                    ToolboxEditorLog.KitInitializationMessage();
+                }
+
+                IsInitializing = false;
             }
         }
 
-        internal static bool InitializeSettings(string settingsGuid)
+        internal static bool TryInitializeSettings()
+        {
+            var settingsGuid = GetSettingsFileGuid();
+            return TryInitializeSettings(settingsGuid);
+        }
+
+        internal static bool TryInitializeSettings(string settingsGuid)
         {
             SettingsGuid = settingsGuid;
             SettingsPath = AssetDatabase.GUIDToAssetPath(settingsGuid);
@@ -152,7 +181,6 @@ namespace Toolbox.Editor
             AssetDatabase.ImportAsset(path);
         }
 
-
         [SettingsProvider]
         internal static SettingsProvider SettingsProvider()
         {
@@ -160,7 +188,7 @@ namespace Toolbox.Editor
 
             void ReintializeProvider()
             {
-                InitializeSettings();
+                InitializeToolbox();
 
                 //rebuild the settings provider right after initialization
                 provider.OnDeactivate();
@@ -226,11 +254,9 @@ namespace Toolbox.Editor
             return provider;
         }
 
-
         internal static bool IsInitialized { get; private set; }
-
+        internal static bool IsInitializing { get; private set; }
         internal static ToolboxEditorSettings Settings { get; private set; }
-
         internal static string SettingsPath { get; private set; }
         internal static string SettingsGuid { get; private set; }
     }
