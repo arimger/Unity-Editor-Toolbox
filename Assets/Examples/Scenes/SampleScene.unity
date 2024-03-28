@@ -1304,7 +1304,7 @@ MonoBehaviour:
     buildIndex: 0
   dictionary:
     pairs:
-    - key: 0
+    - key: 2
       value: {fileID: 977748987}
     - key: 1
       value: {fileID: 2037155952}
