@@ -46,20 +46,19 @@ namespace Toolbox.Editor.Drawers
                 list.drawElementCallback += (rect, index, isActive, isFocused) =>
                 {
                     var element = pairsProperty.GetArrayElementAtIndex(index);
+                    var kProperty = element.FindPropertyRelative("key");
+                    var vProperty = element.FindPropertyRelative("value");
+
                     var content = list.GetElementContent(element, index);
-
-                    using (var propertyScope = new PropertyScope(element, content))
+                    using (new EditorGUILayout.HorizontalScope())
                     {
-                        if (!propertyScope.IsVisible)
-                        {
-                            return;
-                        }
+                        var kOption = GUILayout.Width(Style.kGroupWidth);
+                        DrawDictionaryProperty(kProperty, Style.kLabel, Style.kLabelWidth, kOption);
 
-                        //draw key/value children and use new, shortened labels
-                        EditorGUI.indentLevel++;
-                        EditorGUILayout.PropertyField(element.FindPropertyRelative("key"), new GUIContent("K"));
-                        EditorGUILayout.PropertyField(element.FindPropertyRelative("value"), new GUIContent("V"));
-                        EditorGUI.indentLevel--;
+                        var vLabel = vProperty.hasVisibleChildren
+                            ? Style.vLabel
+                            : GUIContent.none;
+                        DrawDictionaryProperty(vProperty, vLabel, Style.vLabelWidth);
                     }
                 };
                 return list;
@@ -68,6 +67,19 @@ namespace Toolbox.Editor.Drawers
 
         private static readonly PropertyDataStorage<ReorderableListBase, CreationArgs> storage;
 
+        private static void DrawDictionaryProperty(SerializedProperty property, GUIContent label, float labelWidth, params GUILayoutOption[] options)
+        {
+            using (new EditorGUILayout.VerticalScope(Style.propertyGroupStyle, options))
+            {
+                var indent = property.hasVisibleChildren ? 1 : 0;
+                using (new ChangeIndentScope(indent))
+                {
+                    EditorGUIUtility.labelWidth = labelWidth;
+                    ToolboxEditorGui.DrawToolboxProperty(property, label);
+                    EditorGUIUtility.labelWidth = -1;
+                }
+            }
+        }
 
         public override void OnGui(SerializedProperty property, GUIContent label)
         {
@@ -92,11 +104,19 @@ namespace Toolbox.Editor.Drawers
             return false;
         }
 
-
         private static class Style
         {
+            internal static readonly float kLabelWidth = 40.0f;
+            internal static readonly float kGroupWidth = 200.0f;
+            internal static readonly float vLabelWidth = 150.0f;
+
             internal static readonly float warningIconOffset = 25.0f;
             internal static readonly string warningMessage = "keys are not unique, it will break deserialization";
+
+            internal static readonly GUIContent kLabel = new GUIContent("Key");
+            internal static readonly GUIContent vLabel = new GUIContent("Value");
+
+            internal static readonly GUIStyle propertyGroupStyle = new GUIStyle(EditorStyles.helpBox);
         }
 
         private struct CreationArgs

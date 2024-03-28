@@ -43,7 +43,7 @@ namespace Toolbox.Editor.Drawers
         private void CreateTypeProperty(SerializedProperty property, Type parentType, ReferencePickerAttribute attribute, Rect position)
         {
             TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
-            typeField.OnGui(position, true, (type) =>
+            typeField.OnGui(position, attribute.AddTextSearchField, (type) =>
             {
                 try
                 {
@@ -78,6 +78,11 @@ namespace Toolbox.Editor.Drawers
             property.serializedObject.Update();
             property.managedReferenceValue = obj;
             property.serializedObject.ApplyModifiedProperties();
+
+            //NOTE: fix for invalid cached properties, e.g. changing parent's managed reference can change available children
+            // since we cannot check if cached property is "valid" we need to clear the whole cache
+            //TODO: reverse it and provide dedicated event when a managed property is changed through a dedicated handler
+            DrawerStorageManager.ClearStorages();
         }
 
         private Rect PrepareTypePropertyPosition(bool hasLabel, in Rect labelPosition, in Rect inputPosition, bool isPropertyExpanded)

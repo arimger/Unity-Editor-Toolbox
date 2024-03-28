@@ -20,7 +20,6 @@ namespace Toolbox.Editor.Internal
         private Rect middleRect;
         private Rect headerRect;
 
-
         public ToolboxEditorList(SerializedProperty list)
             : base(list)
         { }
@@ -41,7 +40,6 @@ namespace Toolbox.Editor.Internal
             : base(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels, foldable)
         { }
 
-
         private void ValidateElementsRects(int arraySize)
         {
             if (elementsRects == null)
@@ -57,12 +55,23 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-        private void DrawEmptyList()
+        private void DrawEmptyList(Rect middleRect, bool showEmptyLabel)
         {
             using (var emptyListGroup = new EditorGUILayout.VerticalScope(Style.contentGroupStyle))
             {
-                var rect = EditorGUILayout.GetControlRect(GUILayout.Height(Style.minEmptyHeight));
-                drawEmptyCallback?.Invoke(rect);
+                if (drawEmptyCallback != null)
+                {
+                    drawEmptyCallback.Invoke(middleRect);
+                }
+                else
+                {
+                    var height = Style.minEmptyHeight;
+                    EditorGUILayout.GetControlRect(GUILayout.Height(height));
+                    if (showEmptyLabel)
+                    {
+                        EditorGUILayout.LabelField(Style.emptyOrInvalidListContent);
+                    }
+                }
             }
         }
 
@@ -198,7 +207,6 @@ namespace Toolbox.Editor.Internal
             EditorGUI.DrawRect(rect, Style.selectionColor);
         }
 
-
         protected override void DoListMiddle()
         {
             using (var middleGroup = new EditorGUILayout.VerticalScope())
@@ -228,9 +236,15 @@ namespace Toolbox.Editor.Internal
             //make sure rects array is valid
             ValidateElementsRects(arraySize);
             //handle empty or invalid array 
-            if (!IsPropertyValid || !IsExpanded || IsEmpty)
+            if (!IsPropertyValid || !IsExpanded)
             {
-                DrawEmptyList();
+                DrawEmptyList(middleRect, false);
+                return;
+            }
+
+            if (IsEmpty)
+            {
+                DrawEmptyList(middleRect, true);
                 return;
             }
 
@@ -340,7 +354,6 @@ namespace Toolbox.Editor.Internal
             DraggingUtility.DoDragAndDropForProperty(rect, List);
         }
 
-
         /// <inheritdoc/>
         public override void DoList(GUIContent label)
         {
@@ -351,7 +364,6 @@ namespace Toolbox.Editor.Internal
                 base.DoList(label);
             }
         }
-
 
         /// <inheritdoc/>
         public override float ElementSpacing { get; set; } = 1.0f;

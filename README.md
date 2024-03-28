@@ -918,6 +918,6 @@ Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
 
 ### SceneView <a name="sceneview"></a>
 
-Select a specific object that is under the cursor (default key: left control).
+Select a specific object that is under the cursor (default key: tab).
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/sceneview.png)

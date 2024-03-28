@@ -11,9 +11,9 @@ public class SampleBehaviour6 : MonoBehaviour
     public Interface1 var1;
     [SerializeReference, ReferencePicker(ForceUninitializedInstance = true)]
     public ClassWithInterfaceBase var2;
-    [SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2))]
+    [SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2), AddTextSearchField = false)]
     public ClassWithInterfaceBase var3;
-    [SerializeReference, ReferencePicker]
+    [SerializeReference, ReferencePicker, ReorderableList]
     public Interface1[] vars;
 #endif
 

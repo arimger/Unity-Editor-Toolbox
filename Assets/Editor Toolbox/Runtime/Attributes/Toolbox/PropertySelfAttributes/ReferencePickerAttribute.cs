@@ -26,13 +26,22 @@ namespace UnityEngine
         }
 
         public Type ParentType { get; set; }
+
+        /// <summary>
+        /// Indicates if created instance should be uninitialized.
+        /// </summary>
+        public bool ForceUninitializedInstance { get; set; }
+
         /// <summary>
         /// Gets or sets grouping of selectable classes.
         /// Defaults to <see cref="TypeGrouping.None"/> unless explicitly specified.
         /// </summary>
         public TypeGrouping TypeGrouping { get; set; } = TypeGrouping.None;
 
-        public bool ForceUninitializedInstance { get; set; }
+        /// <summary>
+        /// Indicates if created popup menu should have an additional search field.
+        /// </summary>
+        public bool AddTextSearchField { get; set; } = true;
     }
 }
 #endif
