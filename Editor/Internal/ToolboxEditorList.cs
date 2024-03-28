@@ -55,7 +55,7 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-        private void DrawEmptyList(Rect middleRect)
+        private void DrawEmptyList(Rect middleRect, bool showEmptyLabel)
         {
             using (var emptyListGroup = new EditorGUILayout.VerticalScope(Style.contentGroupStyle))
             {
@@ -65,9 +65,12 @@ namespace Toolbox.Editor.Internal
                 }
                 else
                 {
-                    var height = EditorGUIUtility.singleLineHeight;
-                    var rect = EditorGUILayout.GetControlRect(GUILayout.Height(height));
-                    EditorGUI.LabelField(rect, Style.emptyOrInvalidListContent);
+                    var height = Style.minEmptyHeight;
+                    EditorGUILayout.GetControlRect(GUILayout.Height(height));
+                    if (showEmptyLabel)
+                    {
+                        EditorGUILayout.LabelField(Style.emptyOrInvalidListContent);
+                    }
                 }
             }
         }
@@ -233,9 +236,15 @@ namespace Toolbox.Editor.Internal
             //make sure rects array is valid
             ValidateElementsRects(arraySize);
             //handle empty or invalid array 
-            if (!IsPropertyValid || !IsExpanded || IsEmpty)
+            if (!IsPropertyValid || !IsExpanded)
             {
-                DrawEmptyList(middleRect);
+                DrawEmptyList(middleRect, false);
+                return;
+            }
+
+            if (IsEmpty)
+            {
+                DrawEmptyList(middleRect, true);
                 return;
             }
 
