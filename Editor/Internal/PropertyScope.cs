@@ -29,7 +29,6 @@ namespace Toolbox.Editor.Internal
             TryDrawLabel(rect, label);
         }
 
-
         private void HandleEvents(Rect rect)
         {
             if (property.isArray)
@@ -56,7 +55,6 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-
         public void Close()
         {
             ToolboxEditorGui.CloseProperty();
@@ -72,7 +70,6 @@ namespace Toolbox.Editor.Internal
 
             Close();
         }
-
 
         public bool IsVisible => property.isExpanded;
         public Rect LabelRect { get; private set; }

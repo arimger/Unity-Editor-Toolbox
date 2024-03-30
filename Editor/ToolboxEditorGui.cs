@@ -20,7 +20,6 @@ namespace Toolbox.Editor
                 : new Rect(rect.x + padding / 2, rect.y, thickness, rect.height);
         }
 
-
         /// <summary>
         /// Draws horizontal line.
         /// Uses built-in layouting system.
@@ -248,7 +247,6 @@ namespace Toolbox.Editor
     {
         private static EditorWindow lastTargetedWindow;
 
-
         /// <summary>
         /// Checks if user is still focusing the proper (searchable) window.
         /// </summary>
@@ -275,7 +273,6 @@ namespace Toolbox.Editor
                 }
             }
         }
-
 
         public static void DrawSearchablePopup(Rect rect, GUIContent label, int currentIndex, string[] options, Action<int> onSelect)
         {
