@@ -20,10 +20,10 @@ namespace UnityEngine
             ElementLabel = elementLabel;
         }
 
-        public bool Draggable { get; private set; }
-        public bool FixedSize { get; private set; }
-        public ListStyle ListStyle { get; private set; }
-        public string ElementLabel { get; private set; }
+        public bool Draggable { get; set; }
+        public bool FixedSize { get; set; }
+        public ListStyle ListStyle { get; set; }
+        public string ElementLabel { get; set; }
 
         /// <summary>
         /// Indicates whether list should be allowed to fold in and out.
