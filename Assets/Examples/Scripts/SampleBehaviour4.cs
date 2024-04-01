@@ -72,7 +72,7 @@ public class SampleBehaviour4 : MonoBehaviour
 
     [Label("Horizontal Layout", skinStyle: SkinStyle.Box)]
 
-    [BeginHorizontal(labelToWidthRatio: 0.1f)]
+    [BeginHorizontal(ControlFieldWidth = true, ElementsInLayout = 3)]
     public int var29;
     public int var30;
     [EndHorizontal]
@@ -80,7 +80,7 @@ public class SampleBehaviour4 : MonoBehaviour
 
     [Label("Horizontal Layout (Group)", skinStyle: SkinStyle.Box)]
 
-    [BeginHorizontalGroup(label: "Horizontal Group")]
+    [BeginHorizontalGroup(Label = "Horizontal Group", ControlFieldWidth = true, ElementsInLayout = 2)]
     [ReorderableList(Foldable = true), InLineEditor]
     public GameObject[] gameObjects;
     [SpaceArea]

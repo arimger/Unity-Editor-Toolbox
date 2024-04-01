@@ -18,6 +18,7 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         private static readonly ControlDataStorage<Vector2> storage;
 
+        private static float lastFetchedWidth = 0.0f;
 
         private void HandleScrollView(float fixedHeight)
         {
@@ -29,13 +30,12 @@ namespace Toolbox.Editor.Drawers
             storage.AppendItem(controlId, newScroll);
         }
 
-
         protected override void OnGuiBeginSafe(BeginHorizontalGroupAttribute attribute)
         {
-            var fixedWidth = EditorGUIUtility.currentViewWidth;
-            var fixedHeight = attribute.Height;
-            EditorGUIUtility.labelWidth = fixedWidth * attribute.LabelToWidthRatio;
-            EditorGUIUtility.fieldWidth = fixedWidth * attribute.FieldToWidthRatio;
+            if (GuiLayoutUtility.TryGetLayoutWidth(out var layoutWidth))
+            {
+                lastFetchedWidth = layoutWidth;
+            }
 
             ToolboxLayoutHandler.BeginVertical(Style.groupBackgroundStyle);
             if (attribute.HasLabel)
@@ -43,10 +43,19 @@ namespace Toolbox.Editor.Drawers
                 GUILayout.Label(attribute.Label, EditorStyles.boldLabel);
             }
 
-            HandleScrollView(fixedHeight);
+            EditorGUIUtility.labelWidth = attribute.LabelWidth;
+            if (attribute.ControlFieldWidth && attribute.ElementsInLayout > 0)
+            {
+                var width = lastFetchedWidth;
+                width -= attribute.WidthOffset;
+                width -= (attribute.LabelWidth + attribute.WidthOffsetPerElement + EditorGUIUtility.standardVerticalSpacing * 4) * attribute.ElementsInLayout;
+                width /= attribute.ElementsInLayout;
+                EditorGUIUtility.fieldWidth = width;
+            }
+
+            HandleScrollView(attribute.Height);
             ToolboxLayoutHandler.BeginHorizontal();
         }
-
 
         private static class Style
         {
