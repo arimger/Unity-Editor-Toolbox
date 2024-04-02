@@ -88,37 +88,36 @@ namespace Toolbox.Editor.Wizards
 
         private void DrawSettingsPanel()
         {
-            EditorGUILayout.LabelField("Settings", EditorStyles.boldLabel);
-
             var rect = EditorGUILayout.GetControlRect(true);
+            rect = EditorGUI.PrefixLabel(rect, Style.typeContent);
             typeField.OnGui(rect, true, OnTypeSelected, data.InstanceType);
             if (data.InstanceType == null)
             {
                 return;
             }
 
-            ToolboxEditorGui.DrawLine();
-
             EditorGUI.BeginChangeCheck();
             data.InstanceName = EditorGUILayout.TextField(Style.nameContent, data.InstanceName);
             data.InstancesCount = EditorGUILayout.IntField(Style.countContent, data.InstancesCount);
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUI.BeginChangeCheck();
+                var assignedInstance = EditorGUILayout.ObjectField(Style.objectContent, data.BlueprintObject, data.InstanceType, false);
+                data.BlueprintObject = assignedInstance;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    UpdateBlueprintObjectEditor();
+                }
 
-            EditorGUI.BeginChangeCheck();
-            var assignedInstance = EditorGUILayout.ObjectField(Style.objectContent, data.BlueprintObject, data.InstanceType, false);
-            data.BlueprintObject = assignedInstance;
-            if (EditorGUI.EndChangeCheck())
-            {
-                UpdateBlueprintObjectEditor();
-            }
-
-            if (assignedInstance != null)
-            {
-                inspectDefaultObject = GUILayout.Toggle(inspectDefaultObject,
-                    Style.foldoutContent, Style.foldoutStyle, Style.foldoutOptions);
-            }
-            else
-            {
-                inspectDefaultObject = false;
+                if (assignedInstance != null)
+                {
+                    inspectDefaultObject = GUILayout.Toggle(inspectDefaultObject,
+                        Style.foldoutContent, Style.foldoutStyle, Style.foldoutOptions);
+                }
+                else
+                {
+                    inspectDefaultObject = false;
+                }
             }
 
             if (inspectDefaultObject)
@@ -128,7 +127,6 @@ namespace Toolbox.Editor.Wizards
                     blueprintObjectEditor.OnInspectorGUI();
                 }
             }
-
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -237,7 +235,7 @@ namespace Toolbox.Editor.Wizards
         protected override void OnWizardGui()
         {
             base.OnWizardGui();
-            using (new EditorGUILayout.VerticalScope(Style.backgroundStyle))
+            using (new EditorGUILayout.VerticalScope())
             {
                 DrawSettingsPanel();
             }
@@ -250,6 +248,7 @@ namespace Toolbox.Editor.Wizards
             internal static readonly GUIStyle backgroundStyle;
             internal static readonly GUIStyle foldoutStyle;
 
+            internal static readonly GUIContent typeContent = new GUIContent("Instance Type");
             internal static readonly GUIContent nameContent = new GUIContent("Instance Name");
             internal static readonly GUIContent countContent = new GUIContent("Instances Count", "Indicates how many instances will be created.");
             internal static readonly GUIContent objectContent = new GUIContent("Blueprint Object", "Will be used as a blueprint for all created ScriptableObjects.");
