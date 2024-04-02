@@ -72,7 +72,7 @@ public class SampleBehaviour4 : MonoBehaviour
 
     [Label("Horizontal Layout", skinStyle: SkinStyle.Box)]
 
-    [BeginHorizontal(ControlFieldWidth = true, ElementsInLayout = 3)]
+    [BeginHorizontal(LabelWidth = 50.0f)]
     public int var29;
     public int var30;
     [EndHorizontal]
