@@ -315,13 +315,13 @@ public int var3;
 public int var4;
 ```
 ```csharp
-[BeginHorizontal(labelToWidthRatio: 0.1f)]
+[BeginHorizontal(LabelWidth = 50.0f)]
 public int var1;
 public int var2;
 [EndHorizontal]
 public int var3;
 
-[BeginHorizontalGroup(label: "Horizontal Group")]
+[BeginHorizontalGroup(Label = "Horizontal Group", ControlFieldWidth = true, ElementsInLayout = 2)]
 public GameObject gameObject;
 [SpaceArea]
 [EndHorizontalGroup]
@@ -800,14 +800,14 @@ Requires at least Unity 2020.1.x because of generic serialization and has to be 
 
 ```csharp
 #if UNITY_2020_1_OR_NEWER
-public SerializedDictionary<int, GameObject> dictionary;
+public SerializedDictionary<int, GameObject> serializedDictionary;
 
 public void Usage()
 {
-	dictionary.Add(3, new GameObject("TestObject"));
-	dictionary.ContainsKey(2);
+	serializedDictionary.Add(3, new GameObject("TestObject"));
+	serializedDictionary.ContainsKey(2);
 	//etc. like standard System.Collections.Generic.Dictionary<>
-	var nativeDictionary = dictionary.BuildNativeDictionary();
+	System.Collections.Generic.Dictionary<int, GameObject> dictionary = serializedDictionary;
 }
 #endif
 ```
