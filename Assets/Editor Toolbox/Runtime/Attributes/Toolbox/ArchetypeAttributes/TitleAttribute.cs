@@ -19,7 +19,6 @@ namespace UnityEngine
             Label = label;
         }
 
-
         public override ToolboxAttribute[] Process()
         {
             return new ToolboxAttribute[]
@@ -41,7 +40,6 @@ namespace UnityEngine
                 }
             };
         }
-
 
         public string Label { get; private set; }
 
