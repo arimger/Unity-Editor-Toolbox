@@ -23,7 +23,6 @@ namespace Toolbox.Editor
             ToolboxEditorHandler.OnEditorReload += ReloadDrawers;
         }
 
-
         private static readonly Type decoratorDrawerBase = typeof(ToolboxDecoratorDrawer<>);
         private static readonly Type conditionDrawerBase = typeof(ToolboxConditionDrawer<>);
         private static readonly Type selfPropertyDrawerBase = typeof(ToolboxSelfPropertyDrawer<>);
@@ -261,11 +260,25 @@ namespace Toolbox.Editor
         /// </summary>
         internal static bool HasNativeTypeDrawer(Type type)
         {
-#if UNITY_2023_3_OR_NEWER
-            var parameters = new object[] { type, null, false };
-#else
-            var parameters = new object[] { type };
-#endif
+            object[] parameters;
+            var parameterInfos = getDrawerTypeForTypeMethod.GetParameters();
+            var parametersCount = parameterInfos.Length;
+            switch (parametersCount)
+            {
+                default:
+                case 1:
+                    parameters = new object[] { type };
+                    break;
+                //NOTE: Unity 2022.3.23 or above
+                case 2:
+                    parameters = new object[] { type, false };
+                    break;
+                //NOTE: Unity 2023.3.x or above
+                case 3:
+                    parameters = new object[] { type, null, false };
+                    break;
+            }
+
             var result = getDrawerTypeForTypeMethod.Invoke(null, parameters) as Type;
             return result != null && typeof(PropertyDrawer).IsAssignableFrom(result);
         }
