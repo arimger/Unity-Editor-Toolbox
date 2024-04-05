@@ -13,7 +13,7 @@ namespace UnityEngine
         public BeginHorizontalAttribute()
         { }
 
-        [Obsolete("Ratios are no longer valid, use ControlFieldWidth and linked properties to specify width of layout elements.")]
+        [Obsolete("Ratios are no longer valid, use default constructor, ControlFieldWidth and linked properties to specify width of layout elements.")]
         public BeginHorizontalAttribute(float labelToWidthRatio = 0.0f, float fieldToWidthRatio = 0.0f)
         {
             LabelToWidthRatio = labelToWidthRatio;

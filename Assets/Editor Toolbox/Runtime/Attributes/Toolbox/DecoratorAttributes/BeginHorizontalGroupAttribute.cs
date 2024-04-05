@@ -17,7 +17,7 @@ namespace UnityEngine
             WidthOffset = 32.0f;
         }
 
-        [Obsolete("Ratios are no longer valid, use ControlFieldWidth and linked properties to specify width of layout elements.")]
+        [Obsolete("Ratios are no longer valid, use default constructor, ControlFieldWidth and linked properties to specify width of layout elements.")]
         public BeginHorizontalGroupAttribute(float labelToWidthRatio = 0.0f, float fieldToWidthRatio = 0.0f, string label = null) : base(labelToWidthRatio, fieldToWidthRatio)
         {
             Label = label;
