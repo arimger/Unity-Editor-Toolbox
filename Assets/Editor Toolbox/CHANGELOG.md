@@ -1,4 +1,11 @@
-## 0.12.0 [28.03.2024]
+## 0.12.11 [05.04.2024]
+
+### Changed:
+- Fix handling the HasNativeTypeDrawer method in Unity 2022.3.23
+- Ignore `m_SerializedDataModeController` in Toolbox wizards
+- Change [Begin/EndHorizontal] behaviour (more customization options to handle available space)
+
+## 0.12.10 [28.03.2024]
 
 ### Changed:
 - Fix fetching and initializing Toolbox features when assets are updating

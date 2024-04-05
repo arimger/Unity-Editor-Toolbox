@@ -7,6 +7,7 @@ namespace UnityEngine
 {
     /// <summary>
     /// Overlay for the <see cref="Dictionary{TKey, TValue}"/> to allow serialization of the key/value pairs.
+    /// Highly suggested to cast it to a <see cref="Dictionary{TKey, TValue}"/> when used in runtime.
     /// </summary>
     [Serializable]
     public sealed class SerializedDictionary<TK, TV> : IDictionary<TK, TV>, ISerializationCallbackReceiver
@@ -38,7 +39,6 @@ namespace UnityEngine
             }
         }
 
-
         [SerializeField]
         private List<KeyValuePair> pairs = new List<KeyValuePair>();
 
@@ -48,6 +48,16 @@ namespace UnityEngine
         [SerializeField, HideInInspector]
         private bool error;
 
+        public SerializedDictionary()
+        { }
+
+        public SerializedDictionary(IDictionary<TK, TV> source)
+        {
+            foreach (var pair in source)
+            {
+                Add(pair.Key, pair.Value);
+            }
+        }
 
         private void UpdateIndexes(int removedIndex)
         {
@@ -58,8 +68,8 @@ namespace UnityEngine
             }
         }
 
-
-        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
+        { }
 
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
@@ -122,6 +132,9 @@ namespace UnityEngine
             indexByKey.Clear();
         }
 
+        /// <summary>
+        /// Creates a new instance of <see cref="Dictionary{TKey, TValue}"/> using the internally serialized data.
+        /// </summary>
         public Dictionary<TK, TV> BuildNativeDictionary()
         {
             return new Dictionary<TK, TV>(dictionary);
@@ -174,7 +187,6 @@ namespace UnityEngine
             return dictionary.GetEnumerator();
         }
 
-
         /// <summary>
         /// Indicates if there is a key collision in serialized pairs.
         /// Duplicated keys (pairs) won't be added to the final dictionary.
@@ -186,8 +198,6 @@ namespace UnityEngine
         }
 
         public int Count => dictionary.Count;
-
-        public bool IsReadOnly => false;
 
         public ICollection<TK> Keys => dictionary.Keys;
 
@@ -210,6 +220,18 @@ namespace UnityEngine
                     indexByKey.Add(key, pairs.Count - 1);
                 }
             }
+        }
+
+        public bool IsReadOnly => false;
+
+        public static implicit operator Dictionary<TK, TV>(SerializedDictionary<TK, TV> serializedDictionary)
+        {
+            return serializedDictionary.dictionary;
+        }
+
+        public static implicit operator SerializedDictionary<TK, TV>(Dictionary<TK, TV> dictionary)
+        {
+            return new SerializedDictionary<TK, TV>(dictionary);
         }
     }
 }

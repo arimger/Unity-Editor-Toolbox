@@ -397,7 +397,6 @@ namespace Toolbox.Editor
             }
         }
 
-
         /// <summary>
         /// Draw property using built-in layout system and cached <see cref="ToolboxAttributeDrawer"/>s.
         /// </summary>

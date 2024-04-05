@@ -1517,8 +1517,11 @@ MonoBehaviour:
   var31: 0
   gameObjects:
   - {fileID: 0}
-  - {fileID: 0}
-  floats: []
+  floats:
+  - 0
+  - 0
+  - 0
+  - 0
   var2: 0
   var3: 0
   var4: 0
@@ -1555,7 +1558,7 @@ GameObject:
   m_Layer: 0
   m_Name: Special&Others[Sample]
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1571,6 +1574,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c48a231d0fb97494d948757fb057b3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gos1:
+  - {fileID: 0}
+  gos2:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  go1: {fileID: 1670253091}
+  go2: {fileID: 0}
+  go3: 0
+  go4: 0
   var1: 25.4
   var2: {fileID: 977748988}
   var3: 0

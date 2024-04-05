@@ -16,7 +16,6 @@ namespace Toolbox.Editor
 
         private static readonly Dictionary<string, Texture2D> loadedTextures = new Dictionary<string, Texture2D>();
 
-
         public static Texture2D CreateColorTexture()
         {
             return CreateColorTexture(Color.clear);
@@ -99,7 +98,6 @@ namespace Toolbox.Editor
 
             return null;
         }
-
 
         public static float FoldoutSize { get; internal set; } = 15.0f;
         public static float SpacingSize => EditorGUIUtility.standardVerticalSpacing;

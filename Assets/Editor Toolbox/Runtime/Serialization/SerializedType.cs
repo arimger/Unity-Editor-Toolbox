@@ -15,7 +15,6 @@ namespace UnityEngine
 
         private Type type;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializedType"/> class.
         /// </summary>
@@ -44,7 +43,6 @@ namespace UnityEngine
         {
             Type = type;
         }
-
 
         public static string GetReferenceValue(Type type)
         {
@@ -86,7 +84,6 @@ namespace UnityEngine
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         { }
 
-
         /// <summary>
         /// Gets or sets type of class reference.
         /// </summary>
@@ -107,7 +104,6 @@ namespace UnityEngine
                 typeReference = GetReferenceValue(value);
             }
         }
-
 
         public static implicit operator string(SerializedType typeReference) => typeReference.typeReference;
 

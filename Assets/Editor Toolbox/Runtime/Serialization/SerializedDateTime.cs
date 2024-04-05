@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace UnityEngine
 {
@@ -13,7 +13,6 @@ namespace UnityEngine
 
         private DateTime dateTime;
 
-
         public SerializedDateTime() : this(0)
         { }
 
@@ -24,7 +23,6 @@ namespace UnityEngine
         {
             DateTime = dateTime;
         }
-
 
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
@@ -44,7 +42,6 @@ namespace UnityEngine
                 ticks = dateTime.Ticks;
             }
         }
-
 
         public static implicit operator DateTime(SerializedDateTime sdt)
         {

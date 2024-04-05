@@ -12,12 +12,18 @@ namespace UnityEngine
     [Conditional("UNITY_EDITOR")]
     public class BeginHorizontalGroupAttribute : BeginHorizontalAttribute
     {
+        public BeginHorizontalGroupAttribute() : base() 
+        {
+            WidthOffset = 32.0f;
+        }
+
+        [Obsolete("Ratios are no longer valid, use default constructor, ControlFieldWidth and linked properties to specify width of layout elements.")]
         public BeginHorizontalGroupAttribute(float labelToWidthRatio = 0.0f, float fieldToWidthRatio = 0.0f, string label = null) : base(labelToWidthRatio, fieldToWidthRatio)
         {
             Label = label;
         }
 
-        public string Label { get; private set; }
+        public string Label { get; set; }
 
         public bool HasLabel => !string.IsNullOrEmpty(Label);
 
