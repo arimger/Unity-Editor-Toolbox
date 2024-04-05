@@ -74,6 +74,7 @@ public class SampleBehaviour4 : MonoBehaviour
 
     [BeginHorizontal(LabelWidth = 50.0f)]
     public int var29;
+    [SpaceArea(10)]
     public int var30;
     [EndHorizontal]
     public int var31;

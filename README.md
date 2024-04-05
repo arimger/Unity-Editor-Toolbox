@@ -315,6 +315,7 @@ public int var3;
 public int var4;
 ```
 ```csharp
+//NOTE: you can use [SpaceArea] to adjust positions between layout elements
 [BeginHorizontal(LabelWidth = 50.0f)]
 public int var1;
 public int var2;
