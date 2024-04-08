@@ -16,5 +16,9 @@ namespace UnityEngine
     {
         public DisableIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)
         { }
+                
+        public DisableIfAttribute(string[] sourceHandles, object[] valueToMatches, bool logicAnd = true) 
+            : base(sourceHandles, valueToMatches, !logicAnd)
+        { }
     }
 }
