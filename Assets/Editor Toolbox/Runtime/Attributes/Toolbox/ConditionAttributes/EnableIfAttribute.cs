@@ -14,6 +14,9 @@ namespace UnityEngine
     [Conditional("UNITY_EDITOR")]
     public class EnableIfAttribute : ComparisonAttribute
     {
+        public EnableIfAttribute(string sourceHandle) : base(sourceHandle)
+        { }
+
         public EnableIfAttribute(string sourceHandle, object valueToMatch) : base(sourceHandle, valueToMatch)
         { }
     }
