@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-using Toolbox.Attributes;
+using Toolbox.Attributes.Property;
 
 namespace UnityEngine
 {
