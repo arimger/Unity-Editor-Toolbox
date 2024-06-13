@@ -16,8 +16,18 @@ namespace UnityEngine
             Order = 1000;
         }
 
-        public string Label { get; private set; }
-
+        /// <summary>
+        /// Optional label (header) that can be displayed at the group's top.
+        /// </summary>
+        public string Label { get; set; }
         public bool HasLabel => !string.IsNullOrEmpty(Label);
+        /// <summary>
+        /// Indicates what style should be used to render the group.
+        /// </summary>
+#if UNITY_2019_3_OR_NEWER
+        public GroupStyle Style { get; set; } = GroupStyle.Round;
+#else
+        public GroupStyle Style { get; set; } = GroupStyle.Boxed;
+#endif
     }
 }

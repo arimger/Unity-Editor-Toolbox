@@ -30,6 +30,18 @@ namespace Toolbox.Editor.Drawers
             storage.AppendItem(controlId, newScroll);
         }
 
+        private GUIStyle GetStyle(GroupStyle style)
+        {
+            switch (style)
+            {
+                default:
+                case GroupStyle.Round:
+                    return Style.roundGroupBackgroundStyle;
+                case GroupStyle.Boxed:
+                    return Style.boxedGroupBackgroundStyle;
+            }
+        }
+
         protected override void OnGuiBeginSafe(BeginHorizontalGroupAttribute attribute)
         {
             if (GuiLayoutUtility.TryGetLayoutWidth(out var layoutWidth))
@@ -37,7 +49,8 @@ namespace Toolbox.Editor.Drawers
                 lastFetchedWidth = layoutWidth;
             }
 
-            ToolboxLayoutHandler.BeginVertical(Style.groupBackgroundStyle);
+            var style = GetStyle(attribute.Style);
+            ToolboxLayoutHandler.BeginVertical(style);
             if (attribute.HasLabel)
             {
                 GUILayout.Label(attribute.Label, EditorStyles.boldLabel);
@@ -59,16 +72,17 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal static readonly GUIStyle groupBackgroundStyle;
+            internal static readonly GUIStyle roundGroupBackgroundStyle;
+            internal static readonly GUIStyle boxedGroupBackgroundStyle;
             internal static readonly GUIStyle scrollViewGroupStyle;
 
             static Style()
             {
-#if UNITY_2019_3_OR_NEWER
-                groupBackgroundStyle = new GUIStyle("helpBox")
-#else
-                groupBackgroundStyle = new GUIStyle("box")
-#endif
+                roundGroupBackgroundStyle = new GUIStyle("helpBox")
+                {
+                    padding = new RectOffset(13, 12, 5, 5)
+                };
+                boxedGroupBackgroundStyle = new GUIStyle("box")
                 {
                     padding = new RectOffset(13, 12, 5, 5)
                 };
