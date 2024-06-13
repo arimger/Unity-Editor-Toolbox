@@ -63,7 +63,6 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             return SceneExists(property.stringValue)
@@ -88,12 +87,10 @@ namespace Toolbox.Editor.Drawers
             HandleTargetPicker(position, property);
         }
 
-
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.String;
         }
-
 
         private static class Style
         {
