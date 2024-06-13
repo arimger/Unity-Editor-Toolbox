@@ -268,17 +268,6 @@ public int bigNumber;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/formattednumber.png)
 
-#### LabelWidthAttribute
-
-Supported types: **all**.
-
-```csharp
-[LabelWidth(220.0f)]
-public int veryVeryVeryVeryVeryLongName;
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelwidth.png)
-
 #### LayerAttribute
 
 Supported types: **int**.
@@ -349,6 +338,15 @@ public int var1;
 public int var1;
 ```
 ```csharp
+[Highlight(0, 1, 0)]
+public int var1;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/horizontal.png)
+
+```csharp
 [EditorButton(nameof(MyMethod), "<b>My</b> Custom Label", activityType: ButtonActivityType.OnPlayMode, ValidateMethodName = nameof(ValidationMethod))]
 public int var1;
 
@@ -362,10 +360,9 @@ private bool ValidationMethod()
 	return var1 == 0;
 }
 ```
-```csharp
-[Highlight(0, 1, 0)]
-public int var1;
-```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/button.png)
+
 ```csharp
 [Help("Help information", UnityMessageType.Warning, Order = -1)]
 public int var1;
@@ -374,19 +371,23 @@ public int var2;
 
 public string Message => "Dynamic Message";
 ```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/helpbox.png)
+
 ```csharp
 [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 150.0f)]
 public int var1;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/horizontal.png)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/imagearea.png)
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/helpbox.png)
+```csharp
+[LabelWidth(220.0f)]
+public int veryVeryVeryVeryVeryLongName;
+```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/button.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelwidth.png)
+
 
 #### Toolbox Condition Attributes <a name="toolboxcondition"></a>
 
