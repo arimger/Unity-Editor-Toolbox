@@ -916,7 +916,7 @@ Copy and paste all components from/to particular GameObject.
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/utils.png)
 
 Create multiple ScriptableObjects at once.
-Wizard will allow only ScritpableObjects marked with **[Toolbox.Attributes.CreateInWizard]** and **[UnityEngine.CreateAssetMenu]** attributes.
+Wizard will allow only ScritpableObjects marked with **[Toolbox.Attributes.CreateInWizard]** attribute.
 
 ```
 Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
