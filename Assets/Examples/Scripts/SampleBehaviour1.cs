@@ -106,6 +106,8 @@ public class SampleBehaviour1 : MonoBehaviour
     public GameObject childReference;
     [PrefabObjectOnly]
     public GameObject prefabReference;
+    [NotPrefabObjectOnly(AllowInstancedPrefabs = false)]
+    public GameObject notPrefabReference;
 
     [Label("Formatted Number", skinStyle: SkinStyle.Box)]
 

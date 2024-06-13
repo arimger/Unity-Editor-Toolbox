@@ -251,6 +251,10 @@ Supported types: **GameObject, Component**.
 
 Supported types: **GameObject, Component**.
 
+#### NotPrefabObjectOnlyAttribute
+
+Supported types: **GameObject, Component**.
+
 #### LeftToggleAttribute
 
 Supported types: **bool**.

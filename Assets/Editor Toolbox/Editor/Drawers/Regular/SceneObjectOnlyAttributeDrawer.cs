@@ -19,7 +19,6 @@ namespace Toolbox.Editor.Drawers
             return null;
         }
 
-
         protected override string GetWarningMessage()
         {
             return "Assigned object has to be instantiated in the Scene.";
@@ -28,7 +27,7 @@ namespace Toolbox.Editor.Drawers
         protected override bool IsObjectValid(Object objectValue, SerializedProperty property)
         {
             var gameObject = GetGameObject(objectValue);
-            return gameObject && !string.IsNullOrEmpty(gameObject.scene.name);
+            return gameObject != null && !string.IsNullOrEmpty(gameObject.scene.name);
         }
     }
 }
