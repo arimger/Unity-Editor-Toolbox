@@ -15,7 +15,7 @@ MonoBehaviour:
   useToolboxHierarchy: 1
   drawHorizontalLines: 1
   showSelectionsCount: 1
-  rowDataTypes: 0000000001000000020000000300000004000000
+  rowDataTypes: 0000000001000000
   useToolboxFolders: 1
   largeIconScale: 0.8
   smallIconScale: 0.7
@@ -69,6 +69,7 @@ MonoBehaviour:
   - typeReference: Toolbox.Editor.Drawers.ImageAreaAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.IndentAreaAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.LabelAttributeDrawer, Toolbox.Editor
+  - typeReference: Toolbox.Editor.Drawers.LabelWidthAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.LineAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox.Editor
   conditionDrawerHandlers:
