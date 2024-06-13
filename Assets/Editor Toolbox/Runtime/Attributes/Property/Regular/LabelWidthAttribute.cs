@@ -10,7 +10,7 @@ namespace UnityEngine
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     [Conditional("UNITY_EDITOR")]
-    public class LabelWidthAttribute : PropertyAttribute
+    public class LabelWidthAttribute : ToolboxDecoratorAttribute
     {
         public LabelWidthAttribute(float width = 120)
         {

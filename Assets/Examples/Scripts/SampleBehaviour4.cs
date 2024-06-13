@@ -121,6 +121,11 @@ public class SampleBehaviour4 : MonoBehaviour
     [GuiColor(1, 0, 0)]
     public int var56;
 
+    [Label("Label Width", skinStyle: SkinStyle.Box)]
+
+    [LabelWidth(220.0f)]
+    public int veryVeryVeryVeryVeryLongName;
+
     [Label("Title", skinStyle: SkinStyle.Box)]
 
     [Title("Standard Title")]
