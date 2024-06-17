@@ -3,8 +3,8 @@
 ### Changed:
 - LabelWidthAttribute is now part of the Toolbox decorator attributes (can be mixed with other attributes)
 - Hierarchy: Script, Tag, and Layer columns are now excluded from the default settings
-- Possibility to change style for groups (BeginGroup and BeginHorizontalGroup attributes)
-- ScriptableObject Creation Wizard now accepts only ScriptableObjects marked with the CreateInWizardAttribute
+- Possibility to change style for groups ([BeginGroup] and [BeginHorizontalGroup] attributes)
+- ScriptableObject Creation Wizard now accepts only ScriptableObjects marked with the [CreateInWizard] or [CreateAssetMenu] attributes
 
 ### Added:
 - NotPrefabObjectOnlyAttribute

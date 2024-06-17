@@ -300,7 +300,7 @@ Unfortunately, standard decorators won't always work with ToolboxDrawers so try 
 Each **ToolboxDecoratorAttribute** has two basic properties **Order** (indicates the drawing order) and **ApplyCondition** (determines if decorator will be disabled/hidden along with associated property).
 
 ```csharp
-[BeginGroup("Group1")]
+[BeginGroup("Group1", Style = GroupStyle.Round)]
 public int var1;
 public int var2;
 public int var3;
@@ -916,7 +916,7 @@ Copy and paste all components from/to particular GameObject.
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/utils.png)
 
 Create multiple ScriptableObjects at once.
-Wizard will allow only ScritpableObjects marked with **[Toolbox.Attributes.CreateInWizard]** attribute.
+Wizard will allow only ScritpableObjects marked with **[Toolbox.Attributes.CreateInWizard]** or **[UnityEngine.CreateAssetMenu]** attributes.
 
 ```
 Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
