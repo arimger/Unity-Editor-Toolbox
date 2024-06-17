@@ -43,7 +43,6 @@ namespace Toolbox.Editor
         /// </summary>
         private static readonly Dictionary<string, ToolboxPropertyHandler> propertyHandlers = new Dictionary<string, ToolboxPropertyHandler>();
 
-
         /// <summary>
         /// Settings provided to handle custom drawers.
         /// </summary>
@@ -54,7 +53,6 @@ namespace Toolbox.Editor
         /// </summary>
         private static bool validationEnabled = true;
 
-
         /// <summary>
         /// Creates all possible attribute-based drawers and add them to proper collections.
         /// </summary>
@@ -62,7 +60,7 @@ namespace Toolbox.Editor
         {
             void AddAttributeDrawer<T>(Type drawerType, Type attributeType, Dictionary<Type, T> drawersCollection) where T : ToolboxAttributeDrawer
             {
-                if (drawerType == null)
+                if (drawerType == null || attributeType == null)
                 {
                     return;
                 }
