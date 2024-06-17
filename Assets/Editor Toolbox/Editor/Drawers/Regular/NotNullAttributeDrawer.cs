@@ -41,15 +41,12 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.ObjectReference;
         }
 
-
         private NotNullAttribute Attribute => attribute as NotNullAttribute;
-
 
         private static class Style
         {

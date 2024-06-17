@@ -49,7 +49,7 @@ public class SampleBehaviour4 : MonoBehaviour
 
     [BeginGroup("Parent group")]
     public int y;
-    [BeginGroup("Nested group")]
+    [BeginGroup("Nested group", Style = GroupStyle.Boxed)]
     public int var14;
     [Line]
     public int var15;
@@ -81,7 +81,7 @@ public class SampleBehaviour4 : MonoBehaviour
 
     [Label("Horizontal Layout (Group)", skinStyle: SkinStyle.Box)]
 
-    [BeginHorizontalGroup(Label = "Horizontal Group", ControlFieldWidth = true, ElementsInLayout = 2)]
+    [BeginHorizontalGroup(Label = "Horizontal Group", ControlFieldWidth = true, ElementsInLayout = 2, Style = GroupStyle.Round)]
     [ReorderableList(Foldable = true), InLineEditor]
     public GameObject[] gameObjects;
     [SpaceArea]
@@ -120,6 +120,11 @@ public class SampleBehaviour4 : MonoBehaviour
 
     [GuiColor(1, 0, 0)]
     public int var56;
+
+    [Label("Label Width", skinStyle: SkinStyle.Box)]
+
+    [LabelWidth(220.0f)]
+    public int veryVeryVeryVeryVeryLongName;
 
     [Label("Title", skinStyle: SkinStyle.Box)]
 

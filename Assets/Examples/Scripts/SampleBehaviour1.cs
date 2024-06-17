@@ -106,6 +106,8 @@ public class SampleBehaviour1 : MonoBehaviour
     public GameObject childReference;
     [PrefabObjectOnly]
     public GameObject prefabReference;
+    [NotPrefabObjectOnly(AllowInstancedPrefabs = false)]
+    public GameObject notPrefabReference;
 
     [Label("Formatted Number", skinStyle: SkinStyle.Box)]
 
@@ -113,9 +115,4 @@ public class SampleBehaviour1 : MonoBehaviour
     public int bigNumber;
     [FormattedNumber("c")]
     public float currency;
-
-    [Label("Label Width", skinStyle: SkinStyle.Box)]
-
-    [LabelWidth(220.0f)]
-    public int veryVeryVeryVeryVeryLongName;
 }

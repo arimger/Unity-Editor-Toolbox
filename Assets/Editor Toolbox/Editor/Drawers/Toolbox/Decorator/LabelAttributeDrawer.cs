@@ -7,28 +7,13 @@ namespace Toolbox.Editor.Drawers
 {
     public class LabelAttributeDrawer : ToolboxDecoratorDrawer<LabelAttribute>
     {
-        protected override void OnGuiBeginSafe(LabelAttribute attribute)
-        {
-            //prepare proper styles for the scope and text
-            var scopeStyle = GetScopeStyle(attribute.SkinStyle);
-            var labelStyle = GetLabelStyle(attribute.FontStyle);
-
-            GUILayout.Space(attribute.SpaceBefore);
-            //create (optionally) the vertical scope group
-            using (CreateScopeIfNeeded(scopeStyle))
-            {
-                labelStyle.alignment = attribute.Alignment;
-                labelStyle.fontStyle = attribute.FontStyle;
-                EditorGUILayout.LabelField(GetContent(attribute), labelStyle);
-            }
-
-            GUILayout.Space(attribute.SpaceAfter);
-        }
-
-
         private static GUIStyle GetLabelStyle(FontStyle style)
         {
-            return Style.labelStyle;
+            switch (style)
+            {
+                default:
+                    return Style.labelStyle;
+            }
         }
 
         private static GUIStyle GetScopeStyle(SkinStyle style)
@@ -41,9 +26,9 @@ namespace Toolbox.Editor.Drawers
                     return Style.boxedScopeStyle;
                 case SkinStyle.Round:
                     return Style.roundScopeStyle;
+                default:
+                    return Style.labelScopeStyle;
             }
-
-            return Style.labelScopeStyle;
         }
 
         private static GUIContent GetContent(LabelAttribute attribute)
@@ -72,6 +57,23 @@ namespace Toolbox.Editor.Drawers
             return style != null ? new EditorGUILayout.VerticalScope(style) : null;
         }
 
+        protected override void OnGuiBeginSafe(LabelAttribute attribute)
+        {
+            //prepare proper styles for the scope and text
+            var scopeStyle = GetScopeStyle(attribute.SkinStyle);
+            var labelStyle = GetLabelStyle(attribute.FontStyle);
+
+            GUILayout.Space(attribute.SpaceBefore);
+            //create (optionally) the vertical scope group
+            using (CreateScopeIfNeeded(scopeStyle))
+            {
+                labelStyle.alignment = attribute.Alignment;
+                labelStyle.fontStyle = attribute.FontStyle;
+                EditorGUILayout.LabelField(GetContent(attribute), labelStyle);
+            }
+
+            GUILayout.Space(attribute.SpaceAfter);
+        }
 
         private static class Style
         {

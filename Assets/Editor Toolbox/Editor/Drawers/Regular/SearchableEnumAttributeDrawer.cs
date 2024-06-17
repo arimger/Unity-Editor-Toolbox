@@ -34,7 +34,6 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.EndProperty();
         }
 
-
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.Enum;

@@ -34,7 +34,6 @@ namespace Toolbox.Editor.Drawers
 
         protected abstract bool IsObjectValid(Object objectValue, SerializedProperty property);
 
-
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.ObjectReference;

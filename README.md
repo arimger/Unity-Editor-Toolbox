@@ -251,6 +251,10 @@ Supported types: **GameObject, Component**.
 
 Supported types: **GameObject, Component**.
 
+#### NotPrefabObjectOnlyAttribute
+
+Supported types: **GameObject, Component**.
+
 #### LeftToggleAttribute
 
 Supported types: **bool**.
@@ -267,17 +271,6 @@ public int bigNumber;
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/formattednumber.png)
-
-#### LabelWidthAttribute
-
-Supported types: **all**.
-
-```csharp
-[LabelWidth(220.0f)]
-public int veryVeryVeryVeryVeryLongName;
-```
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelwidth.png)
 
 #### LayerAttribute
 
@@ -307,7 +300,7 @@ Unfortunately, standard decorators won't always work with ToolboxDrawers so try 
 Each **ToolboxDecoratorAttribute** has two basic properties **Order** (indicates the drawing order) and **ApplyCondition** (determines if decorator will be disabled/hidden along with associated property).
 
 ```csharp
-[BeginGroup("Group1")]
+[BeginGroup("Group1", Style = GroupStyle.Round)]
 public int var1;
 public int var2;
 public int var3;
@@ -349,6 +342,15 @@ public int var1;
 public int var1;
 ```
 ```csharp
+[Highlight(0, 1, 0)]
+public int var1;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/horizontal.png)
+
+```csharp
 [EditorButton(nameof(MyMethod), "<b>My</b> Custom Label", activityType: ButtonActivityType.OnPlayMode, ValidateMethodName = nameof(ValidationMethod))]
 public int var1;
 
@@ -362,10 +364,9 @@ private bool ValidationMethod()
 	return var1 == 0;
 }
 ```
-```csharp
-[Highlight(0, 1, 0)]
-public int var1;
-```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/button.png)
+
 ```csharp
 [Help("Help information", UnityMessageType.Warning, Order = -1)]
 public int var1;
@@ -374,19 +375,23 @@ public int var2;
 
 public string Message => "Dynamic Message";
 ```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/helpbox.png)
+
 ```csharp
 [ImageArea("https://img.itch.zone/aW1nLzE5Mjc3NzUucG5n/original/Viawjm.png", 150.0f)]
 public int var1;
 ```
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/decorators.png)
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/horizontal.png)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/imagearea.png)
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/helpbox.png)
+```csharp
+[LabelWidth(220.0f)]
+public int veryVeryVeryVeryVeryLongName;
+```
 
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/button.png)
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelwidth.png)
+
 
 #### Toolbox Condition Attributes <a name="toolboxcondition"></a>
 
@@ -911,6 +916,8 @@ Copy and paste all components from/to particular GameObject.
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/utils.png)
 
 Create multiple ScriptableObjects at once.
+Wizard will allow only ScritpableObjects marked with **[Toolbox.Attributes.CreateInWizard]** or **[UnityEngine.CreateAssetMenu]** attributes.
+
 ```
 Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
 ```

@@ -38,11 +38,4 @@ namespace UnityEngine
         /// </summary>
         public bool HasLabels { get; set; } = true;
     }
-
-    public enum ListStyle
-    {
-        Round,
-        Boxed,
-        Lined
-    }
 }
