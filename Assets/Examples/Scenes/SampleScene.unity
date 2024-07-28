@@ -1027,9 +1027,9 @@ MonoBehaviour:
   sceneReference: {fileID: 0}
   childReference: {fileID: 0}
   prefabReference: {fileID: 0}
+  notPrefabReference: {fileID: 0}
   bigNumber: 12345678
   currency: 20.41
-  veryVeryVeryVeryVeryLongName: 0
 --- !u!4 &959025299
 Transform:
   m_ObjectHideFlags: 2
@@ -1530,6 +1530,7 @@ MonoBehaviour:
   var39: 18
   var55: 0
   var56: 0
+  veryVeryVeryVeryVeryLongName: 0
   var57: 0
 --- !u!4 &1438743619
 Transform:
@@ -1574,23 +1575,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c48a231d0fb97494d948757fb057b3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gos1:
-  - {fileID: 0}
-  gos2:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  go1: {fileID: 1670253091}
-  go2: {fileID: 0}
-  go3: 0
-  go4: 0
   var1: 25.4
   var2: {fileID: 977748988}
   var3: 0
@@ -1701,16 +1685,17 @@ MonoBehaviour:
   stringValue: sho
   var33: 0
   objectValue: {fileID: 0}
-  var36: 0
+  var34: 0
   floatValue: 0.46
-  var37: 0
-  enumValue: 97
   var35: 0
-  var41: 00000000000000000000000000000000
+  enumValue: 97
+  var36: 0
+  var37: 
+  var38: 0
   var39: 0
   var40: 2
+  var41: 0
   var42: 0
-  var43: 0
 --- !u!1 &1972418676
 GameObject:
   m_ObjectHideFlags: 0
