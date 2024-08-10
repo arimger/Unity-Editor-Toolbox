@@ -407,19 +407,19 @@ namespace Toolbox.Editor.Hierarchy
                         if (GetParentChildCount(target) == (siblingIndex + 1))
                         {
                             renderedLastLevelGameobject = true;
-                            EditorGUI.LabelField(rect, "└", Style.centreAlignTreeLineStyle);
+                            EditorGUI.LabelField(rect, Style.elementLast, Style.centreAlignTreeLineStyle);
                         }
                         else
                         {
                             renderedLastLevelGameobject = false;
-                            EditorGUI.LabelField(rect, "├", Style.centreAlignTreeLineStyle);
+                            EditorGUI.LabelField(rect, Style.elementCross, Style.centreAlignTreeLineStyle);
                         }
                     }
                     else
                     {
                         if (!renderedLastLevelGameobject)
                         {
-                            EditorGUI.LabelField(rect, "│", Style.centreAlignTreeLineStyle);
+                            EditorGUI.LabelField(rect, Style.elementPass, Style.centreAlignTreeLineStyle);
                         }
                     }
                 }
@@ -463,8 +463,16 @@ namespace Toolbox.Editor.Hierarchy
             internal static readonly GUIStyle rightAlignTextStyle;
             internal static readonly GUIStyle centreAlignTreeLineStyle;
 
+            internal static readonly GUIContent elementLast;
+            internal static readonly GUIContent elementCross;
+            internal static readonly GUIContent elementPass;
+
             static Style()
             {
+                elementLast = new GUIContent("└");
+                elementCross = new GUIContent("├");
+                elementPass = new GUIContent("│");
+
                 defaultAlignTextStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
 #if UNITY_2019_3_OR_NEWER
