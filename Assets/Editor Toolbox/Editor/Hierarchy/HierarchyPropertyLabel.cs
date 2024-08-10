@@ -70,7 +70,7 @@ namespace Toolbox.Editor.Hierarchy
                 case HierarchyItemDataType.Script:
                     return new HierarchyScriptLabel();
                 case HierarchyItemDataType.TreeLines:
-                    return new HierarchyTreeLinesLabel(); 
+                    return new HierarchyTreeLinesLabel();
             }
 
             return null;
@@ -295,14 +295,13 @@ namespace Toolbox.Editor.Hierarchy
 
         private class HierarchyTreeLinesLabel : HierarchyPropertyLabel
         {
-            private List<TreeLineLevelRenderer> levelRenderers = new List<TreeLineLevelRenderer>();
-
-            private int itemRenderCount = 0;
-
             private const float firstElementWidthOffset = 4.0f;
             private const float firstElementXOffset = -45.0f;
             private const float startXPosition = 30.0f;
             private const float columnSize = 14.0f;
+
+            private List<TreeLineLevelRenderer> levelRenderers = new List<TreeLineLevelRenderer>();
+            private int itemRenderCount = 0;
 
             public override sealed bool UsesWholeItemRect => true;
 
@@ -310,7 +309,7 @@ namespace Toolbox.Editor.Hierarchy
 
             private bool IsFirstRenderedElement => itemRenderCount == 0;
 
-            public HierarchyTreeLinesLabel() 
+            public HierarchyTreeLinesLabel()
             {
                 EditorApplication.update += ResetItemRenderCount;
             }
@@ -334,7 +333,7 @@ namespace Toolbox.Editor.Hierarchy
 
                 int levels = (int)((rect.x + firstElementXOffset) / columnSize);
 
-                if(levels <= 0)
+                if (levels <= 0)
                 {
                     return;
                 }
@@ -343,6 +342,8 @@ namespace Toolbox.Editor.Hierarchy
                 {
                     levelRenderers.Clear();
                 }
+
+                itemRenderCount++;
 
                 rect.x = startXPosition;
                 rect.width = columnSize + firstElementWidthOffset;
@@ -372,7 +373,6 @@ namespace Toolbox.Editor.Hierarchy
 
                 GUI.color = Color.gray;
 
-                itemRenderCount++;
                 int i = 0;
                 for (; i < (levels - 1); i++)
                 {
@@ -441,7 +441,7 @@ namespace Toolbox.Editor.Hierarchy
                 private int GetParentChildCount(GameObject target)
                 {
                     var parent = target.transform.parent;
-                    if(parent != null)
+                    if (parent != null)
                     {
                         return parent.childCount;
                     }
