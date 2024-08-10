@@ -465,7 +465,8 @@ namespace Toolbox.Editor
                 HierarchyItemDataType.Toggle,
                 HierarchyItemDataType.Tag,
                 HierarchyItemDataType.Layer,
-                HierarchyItemDataType.Script
+                HierarchyItemDataType.Script,
+                HierarchyItemDataType.TreeLines
             };
         }
     }
