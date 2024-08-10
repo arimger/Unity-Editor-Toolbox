@@ -15,6 +15,15 @@ namespace Toolbox.Editor.Hierarchy
     {
         protected GameObject target;
 
+        /// <summary>
+        /// Does this label draw over the whole item?
+        /// </summary>
+        public virtual bool UsesWholeItemRect { get; } = false;
+
+        /// <summary>
+        /// Should this label draw for headers too?
+        /// </summary>
+        public virtual bool DrawForHeaders { get; } = false;
 
         public virtual bool Prepare(GameObject target, Rect availableRect)
         {
@@ -60,6 +69,8 @@ namespace Toolbox.Editor.Hierarchy
                     return new HierarchyLayerLabel();
                 case HierarchyItemDataType.Script:
                     return new HierarchyScriptLabel();
+                case HierarchyItemDataType.TreeLines:
+                    return new HierarchyTreeLinesLabel(); 
             }
 
             return null;
@@ -282,6 +293,164 @@ namespace Toolbox.Editor.Hierarchy
             }
         }
 
+        private class HierarchyTreeLinesLabel : HierarchyPropertyLabel
+        {
+            private List<TreeLineLevelRenderer> levelRenderers = new List<TreeLineLevelRenderer>();
+
+            private int itemRenderCount = 0;
+
+            private const float firstElementWidthOffset = 4.0f;
+            private const float firstElementXOffset = -45.0f;
+            private const float startXPosition = 30.0f;
+            private const float columnSize = 14.0f;
+
+            public override sealed bool UsesWholeItemRect => true;
+
+            public override sealed bool DrawForHeaders => true;
+
+            private bool IsFirstRenderedElement => itemRenderCount == 0;
+
+            public HierarchyTreeLinesLabel() 
+            {
+                EditorApplication.update += ResetItemRenderCount;
+            }
+
+            ~HierarchyTreeLinesLabel()
+            {
+                EditorApplication.update -= ResetItemRenderCount;
+            }
+
+            private void ResetItemRenderCount()
+            {
+                itemRenderCount = 0;
+            }
+
+            public override sealed void OnGui(Rect rect)
+            {
+                if (Event.current.type != EventType.Repaint)
+                {
+                    return;
+                }
+
+                int levels = (int)((rect.x + firstElementXOffset) / columnSize);
+
+                if(levels <= 0)
+                {
+                    return;
+                }
+
+                if (IsFirstRenderedElement)
+                {
+                    levelRenderers.Clear();
+                }
+
+                rect.x = startXPosition;
+                rect.width = columnSize + firstElementWidthOffset;
+
+                int siblingIndex = target.transform.GetSiblingIndex();
+
+                if (levels > levelRenderers.Count)
+                {
+                    //Initialize missing tree line level render
+                    int startIndex = levelRenderers.Count;
+                    int x;
+                    for (x = startIndex; x < levels; x++)
+                    {
+                        var levelRenderer = new TreeLineLevelRenderer(x + 1);
+                        levelRenderers.Add(levelRenderer);
+                    }
+
+                    x--;
+                    Transform transf = target.transform;
+
+                    for (; x >= startIndex; x--)
+                    {
+                        levelRenderers[x].Initialize(transf);
+                        transf = transf.parent;
+                    }
+                }
+
+                GUI.color = Color.gray;
+
+                itemRenderCount++;
+                int i = 0;
+                for (; i < (levels - 1); i++)
+                {
+                    levelRenderers[i].OnGUI(rect, target, siblingIndex, false);
+                    rect.x += columnSize;
+                }
+                levelRenderers[i].OnGUI(rect, target, siblingIndex, true);
+
+                GUI.color = Color.white;
+            }
+
+            private class TreeLineLevelRenderer
+            {
+                private bool renderedLastLevelGameobject = false;
+                private int level;
+
+                public TreeLineLevelRenderer(int level)
+                {
+                    this.level = level;
+                }
+
+                public void Initialize(Transform transf)
+                {
+                    int siblingIndex = transf.GetSiblingIndex();
+                    renderedLastLevelGameobject = GetParentChildCount(transf) == (siblingIndex + 1);
+                }
+
+                public void OnGUI(Rect rect, GameObject target, int siblingIndex, bool isCurrentLevel)
+                {
+                    if (isCurrentLevel)
+                    {
+                        if (GetParentChildCount(target) == (siblingIndex + 1))
+                        {
+                            renderedLastLevelGameobject = true;
+                            EditorGUI.LabelField(rect, "└", Style.centreAlignTreeLineStyle);
+                        }
+                        else
+                        {
+                            renderedLastLevelGameobject = false;
+                            EditorGUI.LabelField(rect, "├", Style.centreAlignTreeLineStyle);
+                        }
+                    }
+                    else
+                    {
+                        if (!renderedLastLevelGameobject)
+                        {
+                            EditorGUI.LabelField(rect, "│", Style.centreAlignTreeLineStyle);
+                        }
+                    }
+                }
+
+                private int GetParentChildCount(Transform target)
+                {
+                    if (level == 1)
+                    {
+                        var scene = target.gameObject.scene;
+                        return scene.rootCount;
+                    }
+                    else
+                    {
+                        var parent = target.parent;
+                        return parent.childCount;
+                    }
+                }
+
+                private int GetParentChildCount(GameObject target)
+                {
+                    var parent = target.transform.parent;
+                    if(parent != null)
+                    {
+                        return parent.childCount;
+                    }
+
+                    var scene = target.scene;
+                    return scene.rootCount;
+                }
+            }
+        }
         #endregion
 
         protected static class Style
@@ -292,6 +461,7 @@ namespace Toolbox.Editor.Hierarchy
             internal static readonly GUIStyle defaultAlignTextStyle;
             internal static readonly GUIStyle centreAlignTextStyle;
             internal static readonly GUIStyle rightAlignTextStyle;
+            internal static readonly GUIStyle centreAlignTreeLineStyle;
 
             static Style()
             {
@@ -307,12 +477,9 @@ namespace Toolbox.Editor.Hierarchy
                 {
 #if UNITY_2019_3_OR_NEWER
                     fontSize = 9,
-#else
-                    fontSize = 8,
-#endif
-#if UNITY_2019_3_OR_NEWER
                     alignment = TextAnchor.MiddleCenter
 #else
+                    fontSize = 8,
                     alignment = TextAnchor.UpperCenter
 #endif
                 };
@@ -320,14 +487,15 @@ namespace Toolbox.Editor.Hierarchy
                 {
 #if UNITY_2019_3_OR_NEWER
                     fontSize = 9,
-#else
-                    fontSize = 8,
-#endif
-#if UNITY_2019_3_OR_NEWER
                     alignment = TextAnchor.MiddleRight
 #else
+                    fontSize = 8,
                     alignment = TextAnchor.UpperRight
 #endif
+                };
+                centreAlignTreeLineStyle = new GUIStyle(EditorStyles.miniLabel)
+                {
+                    fontSize = 18,
                 };
             }
         }

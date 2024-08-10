@@ -192,7 +192,7 @@ namespace Toolbox.Editor
         private void OnValidate()
         {
             //determine if any section was changed within the Editor
-            var settingsDirty = hierarchySettingsDirty || projectSettingsDirty || inspectorSettingsDirty;
+            var settingsDirty = hierarchySettingsDirty || projectSettingsDirty || inspectorSettingsDirty || sceneViewSettingsDirty;
             if (settingsDirty)
             {
                 //check exactly what settings are changed and apply them
@@ -229,6 +229,7 @@ namespace Toolbox.Editor
             hierarchySettingsDirty = false;
             projectSettingsDirty = false;
             inspectorSettingsDirty = false;
+            sceneViewSettingsDirty = false;
         }
 
         #endregion

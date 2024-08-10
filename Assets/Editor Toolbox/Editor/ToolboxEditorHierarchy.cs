@@ -124,6 +124,23 @@ namespace Toolbox.Editor
             var itemContent = new GUIContent(label, iconContent.image);
 
             EditorGUI.LabelField(rect, itemContent, Style.headerLabelStyle);
+
+            var contentRect = rect;
+            var labelsCount = propertyLabels.Count;
+            var availableRect = contentRect;
+
+            for (var i = 0; i < labelsCount; i++)
+            {
+                if (!propertyLabels[i].DrawForHeaders)
+                {
+                    continue;
+                }
+
+                contentRect = AppendPropertyLabel(propertyLabels[i], gameObject, availableRect);
+                availableRect.xMax -= contentRect.width;
+
+                EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
+            }
         }
 
         /// <summary>
@@ -167,6 +184,16 @@ namespace Toolbox.Editor
 
         private static Rect AppendPropertyLabel(HierarchyPropertyLabel propertyLabel, GameObject target, Rect availableRect)
         {
+            if (propertyLabel.UsesWholeItemRect)
+            {
+                if(propertyLabel.Prepare(target, availableRect))
+                {
+                    propertyLabel.OnGui(availableRect);
+                }
+
+                return availableRect;
+            }
+
             //prepare currently used property label
             if (propertyLabel.Prepare(target, availableRect, out var width))
             {
