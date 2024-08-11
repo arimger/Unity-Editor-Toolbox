@@ -1,3 +1,9 @@
+## 0.12.13 [WIP]
+
+### Changed:
+- Hierarchy: Added Tree List renderer, which improves visual identification of parent and child gameobjects
+- Fix SceneView settings change events firing when they shouldn't
+
 ## 0.12.12 [17.06.2024]
 
 ### Changed:
