@@ -186,7 +186,7 @@ namespace Toolbox.Editor
         {
             if (propertyLabel.UsesWholeItemRect)
             {
-                if(propertyLabel.Prepare(target, availableRect))
+                if (propertyLabel.Prepare(target, availableRect))
                 {
                     propertyLabel.OnGui(availableRect);
                 }
@@ -302,6 +302,14 @@ namespace Toolbox.Editor
 
         internal static void RemoveAllowedHierarchyContentCallbacks()
         {
+            for (int i = 0; i < propertyLabels.Count; i++)
+            {
+                if (propertyLabels[i] is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
+
             propertyLabels.Clear();
         }
 
