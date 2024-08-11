@@ -331,7 +331,7 @@ namespace Toolbox.Editor.Hierarchy
                     return;
                 }
 
-                int levels = (int)((rect.x + firstElementXOffset) / columnSize);
+                var levels = (int)((rect.x + firstElementXOffset) / columnSize);
 
                 if (levels <= 0)
                 {
@@ -348,26 +348,27 @@ namespace Toolbox.Editor.Hierarchy
                 rect.x = startXPosition;
                 rect.width = columnSize + firstElementWidthOffset;
 
-                int siblingIndex = target.transform.GetSiblingIndex();
+                var transf = target.transform;
+                var siblingIndex = transf.GetSiblingIndex();
 
                 if (levels > levelRenderers.Count)
                 {
                     //Initialize missing tree line level render
-                    int startIndex = levelRenderers.Count;
+                    var startIndex = levelRenderers.Count;
                     int x;
                     for (x = startIndex; x < levels; x++)
                     {
-                        var levelRenderer = new TreeLineLevelRenderer(x + 1);
+                        var levelRenderer = new TreeLineLevelRenderer();
                         levelRenderers.Add(levelRenderer);
                     }
 
                     x--;
-                    Transform transf = target.transform;
 
+                    Transform transfBuf = transf;
                     for (; x >= startIndex; x--)
                     {
-                        levelRenderers[x].Initialize(transf);
-                        transf = transf.parent;
+                        levelRenderers[x].Initialize(transfBuf);
+                        transfBuf = transfBuf.parent;
                     }
                 }
 
@@ -387,16 +388,10 @@ namespace Toolbox.Editor.Hierarchy
             private class TreeLineLevelRenderer
             {
                 private bool renderedLastLevelGameobject = false;
-                private int level;
-
-                public TreeLineLevelRenderer(int level)
-                {
-                    this.level = level;
-                }
 
                 public void Initialize(Transform transf)
                 {
-                    int siblingIndex = transf.GetSiblingIndex();
+                    var siblingIndex = transf.GetSiblingIndex();
                     renderedLastLevelGameobject = GetParentChildCount(transf) == (siblingIndex + 1);
                 }
 
@@ -426,16 +421,14 @@ namespace Toolbox.Editor.Hierarchy
 
                 private int GetParentChildCount(Transform target)
                 {
-                    if (level == 1)
+                    var parent = target.parent;
+                    if (parent != null)
                     {
-                        var scene = target.gameObject.scene;
-                        return scene.rootCount;
-                    }
-                    else
-                    {
-                        var parent = target.parent;
                         return parent.childCount;
                     }
+
+                    var scene = target.gameObject.scene;
+                    return scene.rootCount;
                 }
 
                 private int GetParentChildCount(GameObject target)
