@@ -30,12 +30,10 @@ namespace Toolbox.Editor
             EditorApplication.hierarchyWindowItemOnGUI += OnItemCallback;
         }
 
-
         /// <summary>
         /// All valid and prepared label drawers for each item.
         /// </summary>
         private static readonly List<HierarchyPropertyLabel> propertyLabels = new List<HierarchyPropertyLabel>();
-
 
         /// <summary>
         /// Tries to display item label in the Hierarchy Window.
@@ -71,7 +69,6 @@ namespace Toolbox.Editor
                 DrawSceneHeaderLabel(rect);
             }
         }
-
 
         /// <summary>
         /// Creates optional information about selected objects using the internal <see cref="Selection"/> class.
@@ -159,9 +156,13 @@ namespace Toolbox.Editor
                 {
                     //each property label has to be created in validated (adjusted) area 
                     //depending on previously occupied rect we have to adjust current rect
-                    contentRect = AppendPropertyLabel(propertyLabels[i], gameObject, availableRect);
-                    availableRect.xMax -= contentRect.width;
-
+                    var propertyLabel = propertyLabels[i];
+                    contentRect = AppendPropertyLabel(propertyLabel, gameObject, availableRect);
+                    if (!propertyLabel.UsesWholeItemRect)
+                    {
+                        availableRect.xMax -= contentRect.width;
+                    }
+      
                     EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
                 }
 
@@ -180,7 +181,6 @@ namespace Toolbox.Editor
                 EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - Style.lineWidth, rect.width, Style.lineWidth), Style.lineColor);
             }
         }
-
 
         private static Rect AppendPropertyLabel(HierarchyPropertyLabel propertyLabel, GameObject target, Rect availableRect)
         {
@@ -315,7 +315,6 @@ namespace Toolbox.Editor
 
         internal static void RepaintHierarchyOverlay() => EditorApplication.RepaintHierarchyWindow();
 
-
         /// <summary>
         /// Determines if <see cref="ToolboxEditorHierarchy"/> can create an additional overlay on the Hierarchy Window.
         /// </summary>
@@ -324,7 +323,6 @@ namespace Toolbox.Editor
         internal static bool DrawHorizontalLines { get; set; } = true;
         internal static bool ShowSelectionsCount { get; set; } = true;
         internal static bool DrawSeparationLines { get; set; } = true;
-
 
         private static class Style
         {
