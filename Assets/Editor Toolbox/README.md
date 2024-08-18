@@ -842,6 +842,7 @@ Each row can contain:
 - Tag
 - Toggle to enable/disable GameObject
 - Icon
+- Tree Lines
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/hierarchy.png)
 
@@ -928,4 +929,5 @@ Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
 
 Select a specific object that is under the cursor (default key: tab).
 
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/sceneview.png)
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/sceneview.png)

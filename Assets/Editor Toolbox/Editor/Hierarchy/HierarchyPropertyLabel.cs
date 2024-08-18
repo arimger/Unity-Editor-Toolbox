@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Hierarchy
 {
-    //TODO: refactor
+    //TODO: refactor: replace labels with drawers (similar approach to the Inspector), possibility to define drawers and implement them using a dedicated base class
 
     /// <summary>
     /// Base class for all custom, Hierarchy-related labels based on targeted <see cref="GameObject"/>.
@@ -15,16 +15,6 @@ namespace Toolbox.Editor.Hierarchy
     public abstract class HierarchyPropertyLabel
     {
         protected GameObject target;
-
-        /// <summary>
-        /// Does this label draw over the whole item?
-        /// </summary>
-        public virtual bool UsesWholeItemRect { get; } = false;
-
-        /// <summary>
-        /// Should this label draw for headers too?
-        /// </summary>
-        public virtual bool DrawForHeaders { get; } = false;
 
         public virtual bool Prepare(GameObject target, Rect availableRect)
         {
@@ -52,7 +42,6 @@ namespace Toolbox.Editor.Hierarchy
 
         public abstract void OnGui(Rect rect);
 
-
         /// <summary>
         /// Returns built-in label class associated to provided <see cref="HierarchyItemDataType"/>.
         /// </summary>
@@ -77,6 +66,16 @@ namespace Toolbox.Editor.Hierarchy
             return null;
         }
 
+        /// <summary>
+        /// Does this label draw over the whole item?
+        /// </summary>
+        public virtual bool UsesWholeItemRect { get; } = false;
+
+        /// <summary>
+        /// Should this label draw for headers too?
+        /// </summary>
+        public virtual bool DrawForHeaders { get; } = false;
+
         #region Classes: Internal
 
         private class HierarchyIconLabel : HierarchyPropertyLabel
@@ -84,24 +83,27 @@ namespace Toolbox.Editor.Hierarchy
             public override void OnGui(Rect rect)
             {
                 var content = EditorGuiUtility.GetObjectContent(target, typeof(GameObject));
-                if (content.image)
+                if (content.image == null)
                 {
-                    GUI.Label(rect, content.image);
+                    return;
                 }
+
+                GUI.Label(rect, content.image);
             }
         }
 
         private class HierarchyToggleLabel : HierarchyPropertyLabel
         {
+            private readonly GUIContent label = new GUIContent(string.Empty, "Enable/disable GameObject");
+
             public override void OnGui(Rect rect)
             {
-                var content = new GUIContent(string.Empty, "Enable/disable GameObject");
                 //NOTE: using EditorGUI.Toggle will cause bug and deselect all hierarchy toggles when you will pick a multi-selected property in the Inspector
                 var result = GUI.Toggle(new Rect(rect.x + EditorGUIUtility.standardVerticalSpacing,
                         rect.y,
                         rect.width,
                         rect.height),
-                    target.activeSelf, content);
+                    target.activeSelf, label);
 
                 if (rect.Contains(Event.current.mousePosition))
                 {
@@ -116,6 +118,8 @@ namespace Toolbox.Editor.Hierarchy
 
         private class HierarchyTagLabel : HierarchyPropertyLabel
         {
+            private const string untaggedTag = "Untagged";
+
             public override float GetWidth()
             {
                 return Style.maxWidth;
@@ -123,7 +127,7 @@ namespace Toolbox.Editor.Hierarchy
 
             public override void OnGui(Rect rect)
             {
-                var content = new GUIContent(target.CompareTag("Untagged") ? string.Empty : target.tag, target.tag);
+                var content = new GUIContent(target.CompareTag(untaggedTag) ? string.Empty : target.tag, target.tag);
                 EditorGUI.LabelField(rect, content, Style.defaultAlignTextStyle);
             }
         }
@@ -165,7 +169,6 @@ namespace Toolbox.Editor.Hierarchy
             /// </summary>
             private List<Component> cachedComponents;
 
-
             private void CacheComponents(GameObject target)
             {
                 var components = target.GetComponents<Component>();
@@ -173,10 +176,12 @@ namespace Toolbox.Editor.Hierarchy
                 //cache only valid (non-null) components
                 foreach (var component in components)
                 {
-                    if (component)
+                    if (component == null)
                     {
-                        cachedComponents.Add(component);
+                        continue;
                     }
+
+                    cachedComponents.Add(component);
                 }
             }
 
@@ -211,7 +216,6 @@ namespace Toolbox.Editor.Hierarchy
 
                 return content;
             }
-
 
             public override bool Prepare(GameObject target, Rect availableRect)
             {
@@ -302,11 +306,12 @@ namespace Toolbox.Editor.Hierarchy
             private const float columnSize = 14.0f;
 
             private readonly List<TreeLineLevelRenderer> levelRenderers = new List<TreeLineLevelRenderer>();
+
             private int itemRenderCount = 0;
 
             public HierarchyTreeLinesLabel()
             {
-                EditorApplication.update += ResetItemRenderCount; 
+                EditorApplication.update += ResetItemRenderCount;
             }
 
             public void Dispose()
@@ -314,7 +319,7 @@ namespace Toolbox.Editor.Hierarchy
                 EditorApplication.update -= ResetItemRenderCount;
             }
 
-            public override sealed void OnGui(Rect rect)
+            public sealed override void OnGui(Rect rect)
             {
                 if (Event.current.type != EventType.Repaint)
                 {
@@ -322,7 +327,6 @@ namespace Toolbox.Editor.Hierarchy
                 }
 
                 var levels = (int)((rect.x + firstElementXOffset) / columnSize);
-
                 if (levels <= 0)
                 {
                     return;
@@ -354,7 +358,7 @@ namespace Toolbox.Editor.Hierarchy
 
                     x--;
 
-                    Transform transformBuffer = targetTransform;
+                    var transformBuffer = targetTransform;
                     for (; x >= startIndex; x--)
                     {
                         levelRenderers[x].Initialize(transformBuffer);
@@ -362,10 +366,10 @@ namespace Toolbox.Editor.Hierarchy
                     }
                 }
 
-                Color colorCache = GUI.color;
+                var colorCache = GUI.color;
                 GUI.color = Color.gray;
 
-                int i = 0;
+                var i = 0;
                 for (; i < (levels - 1); i++)
                 {
                     levelRenderers[i].OnGUI(rect, target, siblingIndex, false);
@@ -382,9 +386,9 @@ namespace Toolbox.Editor.Hierarchy
                 itemRenderCount = 0;
             }
 
-            public override sealed bool UsesWholeItemRect => true;
+            public sealed override bool UsesWholeItemRect => true;
 
-            public override sealed bool DrawForHeaders => true;
+            public sealed override bool DrawForHeaders => true;
 
             private bool IsFirstRenderedElement => itemRenderCount == 0;
 
@@ -463,6 +467,8 @@ namespace Toolbox.Editor.Hierarchy
             internal static readonly GUIContent elementCross;
             internal static readonly GUIContent elementPass;
 
+            internal static readonly Color characterColor;
+
             static Style()
             {
                 elementLast = new GUIContent("└");
@@ -501,6 +507,11 @@ namespace Toolbox.Editor.Hierarchy
                 {
                     fontSize = 18,
                 };
+
+                if (!EditorGUIUtility.isProSkin)
+                {
+                    centreAlignTreeLineStyle.normal.textColor = Color.white;
+                }
             }
         }
     }

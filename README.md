@@ -843,6 +843,7 @@ Each row can contain:
 - Toggle to enable/disable GameObject
 - Icon
 - Tree Lines
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/hierarchy.png)
 
 ### Project <a name="project"></a>

@@ -1,8 +1,12 @@
-## 0.12.13 [WIP]
+## 0.12.13 [19.08.2024]
 
 ### Changed:
 - Hierarchy: Added Tree List renderer, which improves visual identification of parent and child gameobjects
 - Fix SceneView settings change events firing when they shouldn't
+- Fix issue when trying to find private fields/properties from parent classes (e.g. while using conditional attributes)
+
+### Added:
+- DisableInEditModeAttribute
 
 ## 0.12.12 [17.06.2024]
 
