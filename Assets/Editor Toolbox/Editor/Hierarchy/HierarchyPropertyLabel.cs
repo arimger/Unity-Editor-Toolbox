@@ -139,6 +139,10 @@ namespace Toolbox.Editor.Hierarchy
                 var layerMask = target.layer;
                 var layerName = LayerMask.LayerToName(layerMask);
 
+                var contentText = GetContentText();
+                var content = new GUIContent(contentText, $"{layerName} layer");
+                EditorGUI.LabelField(rect, content, Style.centreAlignTextStyle);
+
                 string GetContentText()
                 {
                     switch (layerMask)
@@ -148,9 +152,6 @@ namespace Toolbox.Editor.Hierarchy
                         default: return layerMask.ToString();
                     }
                 }
-
-                var content = new GUIContent(GetContentText(), layerName + " layer");
-                EditorGUI.LabelField(rect, content, Style.centreAlignTextStyle);
             }
         }
 
@@ -159,43 +160,31 @@ namespace Toolbox.Editor.Hierarchy
             private static Texture componentIcon;
             private static Texture transformIcon;
 
-            private float baseWidth;
-            private float summWidth;
-
-            private bool isHighlighted;
-
             /// <summary>
             /// Cached components of the last prepared <see cref="target"/>.
             /// </summary>
-            private List<Component> cachedComponents;
+            private Component[] components;
+            private float baseWidth;
+            private float summWidth;
+            private bool isHighlighted;
 
-            private void CacheComponents(GameObject target)
+            private GUIContent GetTooltipContent()
             {
-                var components = target.GetComponents<Component>();
-                cachedComponents = new List<Component>(components.Length);
-                //cache only valid (non-null) components
-                foreach (var component in components)
-                {
-                    if (component == null)
-                    {
-                        continue;
-                    }
-
-                    cachedComponents.Add(component);
-                }
-            }
-
-            private GUIContent GetTooltip(Rect rect)
-            {
-                var componentsCount = cachedComponents.Count;
+                var componentsCount = components.Length;
                 var tooltipBuilder = new StringBuilder();
                 var tooltipContent = new GUIContent();
 
                 tooltipBuilder.Append("Components:\n");
                 for (var i = 1; i < componentsCount; i++)
                 {
+                    var component = components[i];
+                    if (component == null)
+                    {
+                        continue;
+                    }
+
                     tooltipBuilder.Append("- ");
-                    tooltipBuilder.Append(cachedComponents[i].GetType().Name);
+                    tooltipBuilder.Append(component.GetType().Name);
                     if (componentsCount - 1 != i)
                     {
                         tooltipBuilder.Append("\n");
@@ -209,6 +198,7 @@ namespace Toolbox.Editor.Hierarchy
             private GUIContent GetContent(Component component)
             {
                 var content = EditorGUIUtility.ObjectContent(component, component.GetType());
+                content.text = string.Empty;
                 if (content.image == null)
                 {
                     content.image = componentIcon;
@@ -220,31 +210,23 @@ namespace Toolbox.Editor.Hierarchy
             public override bool Prepare(GameObject target, Rect availableRect)
             {
                 var isValid = base.Prepare(target, availableRect);
-                if (isValid)
+                if (!isValid)
                 {
-                    baseWidth = Style.minWidth;
-                    var rect = availableRect;
-                    rect.xMin = rect.xMax - baseWidth;
-                    if (rect.Contains(Event.current.mousePosition))
-                    {
-                        isHighlighted = true;
-                        CacheComponents(target);
-                        summWidth = cachedComponents.Count > 1
-                            ? (cachedComponents.Count - 1) * baseWidth
-                            : baseWidth;
-                    }
-                    else
-                    {
-                        isHighlighted = false;
-                        summWidth = baseWidth;
-                    }
-
-                    componentIcon = componentIcon ?? EditorGUIUtility.IconContent("cs Script Icon").image;
-                    transformIcon = transformIcon ?? EditorGUIUtility.IconContent("Transform Icon").image;
-                    return true;
+                    return false;
                 }
 
-                return false;
+                baseWidth = Style.minWidth;
+                components = target.GetComponents<Component>();
+                var componentsCount = components.Length;
+                summWidth = componentsCount > 1
+                    ? (componentsCount - 1) * baseWidth
+                    : baseWidth;
+
+                isHighlighted = availableRect.Contains(Event.current.mousePosition);
+
+                componentIcon = componentIcon != null ? componentIcon : EditorGUIUtility.IconContent("cs Script Icon").image;
+                transformIcon = transformIcon != null ? transformIcon : EditorGUIUtility.IconContent("Transform Icon").image;
+                return true;
             }
 
             public override float GetWidth()
@@ -254,47 +236,43 @@ namespace Toolbox.Editor.Hierarchy
 
             public override void OnGui(Rect rect)
             {
-                var tooltip = string.Empty;
-                var texture = componentIcon;
-
+                var fullRect = rect;
                 rect.xMin = rect.xMax - baseWidth;
+
+                var componentsCount = components.Length;
+                if (componentsCount <= 1)
+                {
+                    GUI.Label(fullRect, new GUIContent(transformIcon, "There is no additional component"));
+                    return;
+                }
+
+                rect.xMin -= baseWidth * (componentsCount - 2);
+
+                var iconRect = rect;
+                iconRect.xMin = rect.xMin;
+                iconRect.xMax = rect.xMin + baseWidth;
+
+                //draw all icons associated to cached components (except transform)
+                for (var i = 1; i < components.Length; i++)
+                {
+                    var component = components[i];
+                    if (component == null)
+                    {
+                        continue;
+                    }
+
+                    var content = GetContent(component);
+                    //draw icon for the current component
+                    GUI.Label(iconRect, content);
+                    //adjust rect for the next script icon
+                    iconRect.x += baseWidth;
+                }
 
                 if (isHighlighted)
                 {
-                    var componentsCount = cachedComponents.Count;
-                    if (componentsCount > 1)
-                    {
-                        //draw tooltip based on all available components
-                        GUI.Label(rect, GetTooltip(rect));
-
-                        rect.xMin -= baseWidth * (componentsCount - 2);
-
-                        var iconRect = rect;
-                        iconRect.xMin = rect.xMin;
-                        iconRect.xMax = rect.xMin + baseWidth;
-
-                        //draw all icons associated to cached components (except transform)
-                        for (var i = 1; i < cachedComponents.Count; i++)
-                        {
-                            var component = cachedComponents[i];
-                            var content = GetContent(component);
-
-                            //draw icon for the current component
-                            GUI.Label(iconRect, new GUIContent(content.image));
-                            //adjust rect for the next script icon
-                            iconRect.x += baseWidth;
-                        }
-
-                        return;
-                    }
-                    else
-                    {
-                        texture = transformIcon;
-                        tooltip = "There is no additional component";
-                    }
+                    var tooltipContent = GetTooltipContent();
+                    GUI.Label(fullRect, tooltipContent);
                 }
-
-                GUI.Label(rect, new GUIContent(texture, tooltip));
             }
         }
 
@@ -409,19 +387,19 @@ namespace Toolbox.Editor.Hierarchy
                         if (GetParentChildCount(target) == (siblingIndex + 1))
                         {
                             renderedLastLevelGameobject = true;
-                            EditorGUI.LabelField(rect, Style.elementLast, Style.centreAlignTreeLineStyle);
+                            EditorGUI.LabelField(rect, Style.treeElementLast, Style.treeElementStyle);
                         }
                         else
                         {
                             renderedLastLevelGameobject = false;
-                            EditorGUI.LabelField(rect, Style.elementCross, Style.centreAlignTreeLineStyle);
+                            EditorGUI.LabelField(rect, Style.treeElementCross, Style.treeElementStyle);
                         }
                     }
                     else
                     {
                         if (!renderedLastLevelGameobject)
                         {
-                            EditorGUI.LabelField(rect, Style.elementPass, Style.centreAlignTreeLineStyle);
+                            EditorGUI.LabelField(rect, Style.treeElementPass, Style.treeElementStyle);
                         }
                     }
                 }
@@ -461,19 +439,19 @@ namespace Toolbox.Editor.Hierarchy
             internal static readonly GUIStyle defaultAlignTextStyle;
             internal static readonly GUIStyle centreAlignTextStyle;
             internal static readonly GUIStyle rightAlignTextStyle;
-            internal static readonly GUIStyle centreAlignTreeLineStyle;
+            internal static readonly GUIStyle treeElementStyle;
 
-            internal static readonly GUIContent elementLast;
-            internal static readonly GUIContent elementCross;
-            internal static readonly GUIContent elementPass;
+            internal static readonly GUIContent treeElementLast;
+            internal static readonly GUIContent treeElementCross;
+            internal static readonly GUIContent treeElementPass;
 
             internal static readonly Color characterColor;
 
             static Style()
             {
-                elementLast = new GUIContent("└");
-                elementCross = new GUIContent("├");
-                elementPass = new GUIContent("│");
+                treeElementLast = new GUIContent("└");
+                treeElementCross = new GUIContent("├");
+                treeElementPass = new GUIContent("│");
 
                 defaultAlignTextStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
@@ -503,14 +481,14 @@ namespace Toolbox.Editor.Hierarchy
                     alignment = TextAnchor.UpperRight
 #endif
                 };
-                centreAlignTreeLineStyle = new GUIStyle(EditorStyles.miniLabel)
+                treeElementStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
-                    fontSize = 18,
+                    fontSize = 16,
                 };
 
                 if (!EditorGUIUtility.isProSkin)
                 {
-                    centreAlignTreeLineStyle.normal.textColor = Color.white;
+                    treeElementStyle.normal.textColor = Color.white;
                 }
             }
         }
