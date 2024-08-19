@@ -158,11 +158,12 @@ namespace Toolbox.Editor
                     //depending on previously occupied rect we have to adjust current rect
                     var propertyLabel = propertyLabels[i];
                     contentRect = AppendPropertyLabel(propertyLabel, gameObject, availableRect);
-                    if (!propertyLabel.UsesWholeItemRect)
+                    if (propertyLabel.UsesWholeItemRect)
                     {
-                        availableRect.xMax -= contentRect.width;
+                        continue;
                     }
-      
+
+                    availableRect.xMax -= contentRect.width;
                     EditorGUI.DrawRect(new Rect(contentRect.xMin, rect.y, Style.lineWidth, rect.height), Style.lineColor);
                 }
 
