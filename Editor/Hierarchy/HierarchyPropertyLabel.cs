@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Hierarchy
 {
-    //TODO: refactor: replace labels with drawers (similar approach to the Inspector), possibility to define drawers and implement them using a dedicated base class
+    //TODO: refactor: replace labels with drawers (similar approach to the Inspector), possibility to define drawers and implement them using a dedicated base class & SerializeReference approach
 
     /// <summary>
     /// Base class for all custom, Hierarchy-related labels based on targeted <see cref="GameObject"/>.
@@ -134,24 +134,46 @@ namespace Toolbox.Editor.Hierarchy
 
         private class HierarchyLayerLabel : HierarchyPropertyLabel
         {
+            private GUIContent content;
+
+            //NOTE: after replacing with SerializeReference-based implementation we should allow to pick if layer should be simplied (just number) or fully displayed
+            private string GetContentText(LayerMask layerMask)
+            {
+                var layerName = LayerMask.LayerToName(layerMask);
+                switch (layerMask)
+                {
+                    case 00: return string.Empty;
+                    default: return layerName;
+                }
+            }
+
+            public override bool Prepare(GameObject target, Rect availableRect)
+            {
+                if (!base.Prepare(target, availableRect))
+                {
+                    return false;
+                }
+
+                var layerMask = target.layer;
+                var layerName = GetContentText(layerMask);
+                content = new GUIContent(layerName);
+                return true;
+            }
+
             public override void OnGui(Rect rect)
             {
-                var layerMask = target.layer;
-                var layerName = LayerMask.LayerToName(layerMask);
-
-                var contentText = GetContentText();
-                var content = new GUIContent(contentText, $"{layerName} layer");
                 EditorGUI.LabelField(rect, content, Style.centreAlignTextStyle);
+            }
 
-                string GetContentText()
+            public override float GetWidth()
+            {
+                if (string.IsNullOrEmpty(content.text))
                 {
-                    switch (layerMask)
-                    {
-                        case 00: return string.Empty;
-                        case 05: return layerName;
-                        default: return layerMask.ToString();
-                    }
+                    return base.GetWidth();
                 }
+
+                var size = Style.centreAlignTextStyle.CalcSize(content);
+                return size.x + EditorGUIUtility.standardVerticalSpacing * 2;
             }
         }
 
@@ -159,6 +181,7 @@ namespace Toolbox.Editor.Hierarchy
         {
             private static Texture componentIcon;
             private static Texture transformIcon;
+            private static Texture warningIcon;
 
             /// <summary>
             /// Cached components of the last prepared <see cref="target"/>.
@@ -178,13 +201,8 @@ namespace Toolbox.Editor.Hierarchy
                 for (var i = 1; i < componentsCount; i++)
                 {
                     var component = components[i];
-                    if (component == null)
-                    {
-                        continue;
-                    }
-
                     tooltipBuilder.Append("- ");
-                    tooltipBuilder.Append(component.GetType().Name);
+                    tooltipBuilder.Append(component != null ? component.GetType().Name : "<null>");
                     if (componentsCount - 1 != i)
                     {
                         tooltipBuilder.Append("\n");
@@ -197,6 +215,11 @@ namespace Toolbox.Editor.Hierarchy
 
             private GUIContent GetContent(Component component)
             {
+                if (component == null)
+                {
+                    return new GUIContent(image: warningIcon);
+                }
+
                 var content = EditorGUIUtility.ObjectContent(component, component.GetType());
                 content.text = string.Empty;
                 if (content.image == null)
@@ -205,6 +228,13 @@ namespace Toolbox.Editor.Hierarchy
                 }
 
                 return content;
+            }
+
+            private void CachePredefinedIcons()
+            {
+                componentIcon = componentIcon != null ? componentIcon : EditorGUIUtility.IconContent("cs Script Icon").image;
+                transformIcon = transformIcon != null ? transformIcon : EditorGUIUtility.IconContent("Transform Icon").image;
+                warningIcon = warningIcon != null ? warningIcon : EditorGUIUtility.IconContent("console.warnicon.sml").image;
             }
 
             public override bool Prepare(GameObject target, Rect availableRect)
@@ -224,8 +254,7 @@ namespace Toolbox.Editor.Hierarchy
 
                 isHighlighted = availableRect.Contains(Event.current.mousePosition);
 
-                componentIcon = componentIcon != null ? componentIcon : EditorGUIUtility.IconContent("cs Script Icon").image;
-                transformIcon = transformIcon != null ? transformIcon : EditorGUIUtility.IconContent("Transform Icon").image;
+                CachePredefinedIcons();
                 return true;
             }
 
@@ -256,11 +285,6 @@ namespace Toolbox.Editor.Hierarchy
                 for (var i = 1; i < components.Length; i++)
                 {
                     var component = components[i];
-                    if (component == null)
-                    {
-                        continue;
-                    }
-
                     var content = GetContent(component);
                     //draw icon for the current component
                     GUI.Label(iconRect, content);
@@ -279,8 +303,14 @@ namespace Toolbox.Editor.Hierarchy
         private class HierarchyTreeLinesLabel : HierarchyPropertyLabel, IDisposable
         {
             private const float firstElementWidthOffset = 4.0f;
+
+#if UNITY_2019_1_OR_NEWER
             private const float firstElementXOffset = -45.0f;
             private const float startXPosition = 30.0f;
+#else
+            private const float firstElementXOffset = -15.0f;
+            private const float startXPosition = 0.0f;
+#endif
             private const float columnSize = 14.0f;
 
             private readonly List<TreeLineLevelRenderer> levelRenderers = new List<TreeLineLevelRenderer>();
@@ -318,14 +348,15 @@ namespace Toolbox.Editor.Hierarchy
                 itemRenderCount++;
 
                 rect.x = startXPosition;
-                rect.width = columnSize + firstElementWidthOffset;
+                //we need 2x column size for full-line cases when object has no children and there is no foldout
+                rect.width = 2 * columnSize + firstElementWidthOffset;
 
                 var targetTransform = target.transform;
                 var siblingIndex = targetTransform.GetSiblingIndex();
 
                 if (levels > levelRenderers.Count)
                 {
-                    //Initialize missing tree line level render
+                    //initialize missing tree line level render
                     var startIndex = levelRenderers.Count;
                     int x;
                     for (x = startIndex; x < levels; x++)
@@ -382,26 +413,40 @@ namespace Toolbox.Editor.Hierarchy
 
                 public void OnGUI(Rect rect, GameObject target, int siblingIndex, bool isCurrentLevel)
                 {
+                    //NOTE: currently we are using labels and predefined chars to display tree lines, this is not optimal solution
+                    // since we can't really control width, tickiness and other potential useful properties. Using few chars allow us
+                    // to display dashed lines very easily but replacing it with standard line would a bit harder.
+                    // For now this is ok solution but probably should be replaced with drawing lines using the EditorGUI.DrawRect API,
+                    // in the same way we draw lines in the Inspector
+
                     if (isCurrentLevel)
                     {
+                        var hasChildren = target.transform.childCount > 0;
+                        GUIContent label;
                         if (GetParentChildCount(target) == (siblingIndex + 1))
                         {
                             renderedLastLevelGameobject = true;
-                            EditorGUI.LabelField(rect, Style.treeElementLast, Style.treeElementStyle);
+                            label = hasChildren ? Style.treeElementLastHalf : Style.treeElementLast;
                         }
                         else
                         {
                             renderedLastLevelGameobject = false;
-                            EditorGUI.LabelField(rect, Style.treeElementCross, Style.treeElementStyle);
+                            label = hasChildren ? Style.treeElementCrossHalf : Style.treeElementCross;
                         }
+
+                        EditorGUI.LabelField(rect, label, Style.treeElementStyle);
+                        return;
                     }
-                    else
+
+                    if (!renderedLastLevelGameobject)
                     {
-                        if (!renderedLastLevelGameobject)
-                        {
-                            EditorGUI.LabelField(rect, Style.treeElementPass, Style.treeElementStyle);
-                        }
+                        EditorGUI.LabelField(rect, Style.treeElementPass, Style.treeElementStyle);
                     }
+                }
+
+                private int GetParentChildCount(GameObject gameObject)
+                {
+                    return GetParentChildCount(gameObject.transform);
                 }
 
                 private int GetParentChildCount(Transform transform)
@@ -415,21 +460,9 @@ namespace Toolbox.Editor.Hierarchy
                     var scene = transform.gameObject.scene;
                     return scene.rootCount;
                 }
-
-                private int GetParentChildCount(GameObject gameObject)
-                {
-                    var parent = gameObject.transform.parent;
-                    if (parent != null)
-                    {
-                        return parent.childCount;
-                    }
-
-                    var scene = gameObject.scene;
-                    return scene.rootCount;
-                }
             }
         }
-        #endregion
+#endregion
 
         protected static class Style
         {
@@ -442,15 +475,19 @@ namespace Toolbox.Editor.Hierarchy
             internal static readonly GUIStyle treeElementStyle;
 
             internal static readonly GUIContent treeElementLast;
+            internal static readonly GUIContent treeElementLastHalf;
             internal static readonly GUIContent treeElementCross;
+            internal static readonly GUIContent treeElementCrossHalf;
             internal static readonly GUIContent treeElementPass;
 
             internal static readonly Color characterColor;
 
             static Style()
             {
-                treeElementLast = new GUIContent("└");
-                treeElementCross = new GUIContent("├");
+                treeElementLast = new GUIContent("└--");
+                treeElementLastHalf = new GUIContent("└-");
+                treeElementCross = new GUIContent("├--");
+                treeElementCrossHalf = new GUIContent("├-");
                 treeElementPass = new GUIContent("│");
 
                 defaultAlignTextStyle = new GUIStyle(EditorStyles.miniLabel)
@@ -481,9 +518,10 @@ namespace Toolbox.Editor.Hierarchy
                     alignment = TextAnchor.UpperRight
 #endif
                 };
-                treeElementStyle = new GUIStyle(EditorStyles.miniLabel)
+                treeElementStyle = new GUIStyle(EditorStyles.label)
                 {
-                    fontSize = 16,
+                    padding = new RectOffset(4, 0, 0, 0),
+                    fontSize = 12,
                 };
 
                 if (!EditorGUIUtility.isProSkin)
