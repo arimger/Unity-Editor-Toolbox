@@ -287,7 +287,7 @@ namespace Toolbox.Editor
 
         #endregion
 
-        internal static void CreateAllowedHierarchyContentCallbacks(params HierarchyItemDataType[] items)
+        internal static void CreatePropertyLabels(params HierarchyItemDataType[] items)
         {
             foreach (var item in items)
             {
@@ -301,7 +301,7 @@ namespace Toolbox.Editor
             }
         }
 
-        internal static void RemoveAllowedHierarchyContentCallbacks()
+        internal static void RemovePropertyLabels()
         {
             for (int i = 0; i < propertyLabels.Count; i++)
             {

@@ -73,12 +73,12 @@ namespace Toolbox.Editor
             ToolboxEditorHierarchy.ShowSelectionsCount = settings.ShowSelectionsCount;
             ToolboxEditorHierarchy.DrawSeparationLines = true;
 
-            ToolboxEditorHierarchy.RemoveAllowedHierarchyContentCallbacks();
+            ToolboxEditorHierarchy.RemovePropertyLabels();
 
             //create custom drawers using stored data
             for (var i = 0; i < settings.RowDataTypes.Count; i++)
             {
-                ToolboxEditorHierarchy.CreateAllowedHierarchyContentCallbacks(settings.RowDataTypes[i]);
+                ToolboxEditorHierarchy.CreatePropertyLabels(settings.RowDataTypes[i]);
             }
 
             ToolboxEditorHierarchy.RepaintHierarchyOverlay();
