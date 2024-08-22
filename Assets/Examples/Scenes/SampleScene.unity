@@ -1852,7 +1852,7 @@ GameObject:
   m_Layer: 5
   m_Name: Test Canvas
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: 902de9e125722044e9e8771af5c1b865, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
