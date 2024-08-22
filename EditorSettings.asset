@@ -15,7 +15,7 @@ MonoBehaviour:
   useToolboxHierarchy: 1
   drawHorizontalLines: 1
   showSelectionsCount: 1
-  rowDataTypes: 00000000010000000500000004000000
+  rowDataTypes: 050000000000000001000000020000000300000004000000
   useToolboxFolders: 1
   largeIconScale: 0.8
   smallIconScale: 0.7
@@ -93,7 +93,8 @@ MonoBehaviour:
   - typeReference: Toolbox.Editor.Drawers.RegexValueAttributeDrawer, Toolbox.Editor
   listPropertyDrawerHandlers:
   - typeReference: Toolbox.Editor.Drawers.ReorderableListAttributeDrawer, Toolbox.Editor
-  - typeReference: Toolbox.Editor.Drawers.ReorderableListExposedAttributeDrawer, Toolbox.Editor
+  - typeReference: Toolbox.Editor.Drawers.ReorderableListExposedAttributeDrawer,
+      Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.ScrollableItemsAttributeDrawer, Toolbox.Editor
   targetTypeDrawerHandlers:
   - typeReference: Toolbox.Editor.Drawers.SerializedDictionaryDrawer, Toolbox.Editor
