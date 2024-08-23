@@ -930,4 +930,3 @@ Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
 Select a specific object that is under the cursor (default key: tab).
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/sceneview.png)
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/sceneview.png)
