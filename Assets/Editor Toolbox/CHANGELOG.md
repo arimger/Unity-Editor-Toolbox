@@ -1,3 +1,15 @@
+## 0.12.13 [22.08.2024]
+
+### Changed:
+- Hierarchy: Added Tree List renderer, which improves visual identification of parent and child gameobjects
+- Hierarchy: For now 'Script' label will display all available components linked to a GameObject/Prefabs
+- Hierarchy: For now 'Layer' label will display full layer name instead of the layer mask value
+- Fix SceneView settings change events firing when they shouldn't
+- Fix issue when trying to find private fields/properties from parent classes (e.g. while using conditional attributes)
+
+### Added:
+- DisableInEditModeAttribute
+
 ## 0.12.12 [17.06.2024]
 
 ### Changed:

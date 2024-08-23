@@ -95,6 +95,11 @@ namespace Toolbox.Editor
                 {
                     var treeField = members[i];
                     reference = GetTreePathReference(treeField, reference);
+                    if (reference == null)
+                    {
+                        continue;
+                    }
+
                     if (ignoreArrays && IsSerializableArrayType(reference))
                     {
                         continue;
@@ -119,8 +124,22 @@ namespace Toolbox.Editor
                 ToolboxEditorLog.LogError("Cannot parse array element properly.");
             }
 
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+
             var fieldType = treeParent.GetType();
-            var fieldInfo = fieldType.GetField(treeField, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            FieldInfo fieldInfo = null;
+            //NOTE: make sure to check in the base classes since there can be a private field/property
+            while (fieldType != null)
+            {
+                fieldInfo = fieldType.GetField(treeField, flags);
+                if (fieldInfo != null)
+                {
+                    break;
+                }
+
+                fieldType = fieldType.BaseType;
+            }
+
             if (fieldInfo == null)
             {
                 ToolboxEditorLog.LogError($"Cannot find field: '{treeField}'.");
@@ -421,7 +440,6 @@ namespace Toolbox.Editor
             }
         }
 
-
         internal static class Defaults
         {
             internal static readonly string scriptPropertyName = "m_Script";
@@ -472,7 +490,6 @@ namespace Toolbox.Editor
             return array.FindPropertyRelative("Array.size");
         }
 
-
         public static T GetAttribute<T>(SerializedProperty property) where T : Attribute
         {
             return GetAttribute<T>(property, GetFieldInfo(property, out _));
@@ -492,7 +509,6 @@ namespace Toolbox.Editor
         {
             return (T[])fieldInfo.GetCustomAttributes(typeof(T), true);
         }
-
 
         internal static void EnsureReflectionSafeness(SerializedProperty property)
         {

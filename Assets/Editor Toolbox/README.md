@@ -842,6 +842,7 @@ Each row can contain:
 - Tag
 - Toggle to enable/disable GameObject
 - Icon
+- Tree Lines
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/hierarchy.png)
 
