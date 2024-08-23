@@ -124,6 +124,9 @@ Supported types: UnityEngine.**Object**.
 ```csharp
 [AssetPreview]
 public GameObject var1;
+```
+
+```csharp
 [AssetPreview(useLabel: false)]
 public Component var2;
 ```
@@ -302,19 +305,17 @@ Each **ToolboxDecoratorAttribute** has two basic properties **Order** (indicates
 ```csharp
 [BeginGroup("Group1", Style = GroupStyle.Round)]
 public int var1;
-public int var2;
-public int var3;
 [EndGroup]
-public int var4;
+public int var2;
 ```
 ```csharp
 //NOTE: you can use [SpaceArea] to adjust positions between layout elements
 [BeginHorizontal(LabelWidth = 50.0f)]
 public int var1;
-public int var2;
 [EndHorizontal]
-public int var3;
-
+public int var2;
+```
+```csharp
 [BeginHorizontalGroup(Label = "Horizontal Group", ControlFieldWidth = true, ElementsInLayout = 2)]
 public GameObject gameObject;
 [SpaceArea]
@@ -325,13 +326,12 @@ public int[] ints;
 ```csharp
 [BeginIndent]
 public int var1;
-public int var2;
-public int var3;
 [EndIndent]
-public int var4;
-
+public int var2;
+```
+```csharp
 [IndentArea(4)]
-public int var5;
+public int var1;
 ```
 ```csharp
 [SpaceArea(spaceBefore = 10.0f, spaceAfter = 5.0f, Order = 1)]
@@ -370,6 +370,8 @@ private bool ValidationMethod()
 ```csharp
 [Help("Help information", UnityMessageType.Warning, Order = -1)]
 public int var1;
+```
+```csharp
 [DynamicHelp(nameof(Message), UnityMessageType.Error)]
 public int var2;
 
@@ -403,7 +405,8 @@ You are able to pass values from fields, properties, and methods.
 public string StringValue => "Sho";
 [ShowIf(nameof(StringValue), "show")]
 public int var1;
-
+```
+```csharp
 public GameObject objectValue;
 [HideIf(nameof(objectValue), false)]
 public int var2;
@@ -413,7 +416,8 @@ public int var2;
 public KeyCode enumValue = KeyCode.A;
 [EnableIf(nameof(enumValue), KeyCode.A)]
 public int var1;
-
+```
+```csharp
 [DisableIf(nameof(GetFloatValue), 2.0f, Comparison = UnityComparisonMethod.GreaterEqual)]
 public int var2;
 
@@ -422,22 +426,24 @@ public float GetFloatValue()
 	return 1.6f;
 }
 ```
-
 ```csharp
 [DisableInPlayMode]
 public int var1;
 ```
-
+```csharp
+[DisableInEditMode]
+public int var1;
+```
 ```csharp
 public int var1;
-
 [ShowDisabledIf(nameof(var1), 3, Comparison = UnityComparisonMethod.LessEqual)]
 public int var2;
-
-[HideDisabledIf(nameof(var1), 3, Comparison = UnityComparisonMethod.GreaterEqual)]
-public int var3;
 ```
-
+```csharp
+public int var1;
+[HideDisabledIf(nameof(var1), 3, Comparison = UnityComparisonMethod.GreaterEqual)]
+public int var2;
+```
 ```csharp
 public bool boolValue = true;
 [ShowWarningIf(nameof(boolValue), false, "Message", DisableField = true)]
