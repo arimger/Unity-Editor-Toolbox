@@ -152,13 +152,15 @@ namespace Toolbox.Editor
             //try to get proper settings asset from the provided guid
             if (Settings = AssetDatabase.LoadAssetAtPath<ToolboxEditorSettings>(SettingsPath))
             {
+                //TODO: instead of relying on validation events let's prepare appropriate initialize/deinitialize process for all sub-systems
+
                 //subscribe to all related events
                 Settings.OnHierarchySettingsChanged += ManageHierarchyCore;
                 Settings.OnProjectSettingsChanged += ManageProjectCore;
                 Settings.OnInspectorSettingsChanged += ManageInspectorCore;
                 Settings.OnSceneViewSettingsChanged += ManageSceneViewCore;
                 //initialize core functionalities
-                Settings.Validate();
+                Settings.Validate(true);
                 return true;
             }
             else
