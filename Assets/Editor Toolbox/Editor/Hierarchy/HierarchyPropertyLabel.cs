@@ -302,6 +302,11 @@ namespace Toolbox.Editor.Hierarchy
 
         private class HierarchyTreeLinesLabel : HierarchyPropertyLabel, IDisposable
         {
+            //TODO: properties to expose when switching to SerializedReference-based implementation:
+            // - color
+            // - isDashed
+            // - tickness
+
             private const float firstElementWidthOffset = 4.0f;
 
 #if UNITY_2019_1_OR_NEWER
@@ -312,6 +317,7 @@ namespace Toolbox.Editor.Hierarchy
             private const float startXPosition = 0.0f;
 #endif
             private const float columnSize = 14.0f;
+            private const bool isDashed = true;
 
             private readonly List<TreeLineLevelRenderer> levelRenderers = new List<TreeLineLevelRenderer>();
 
@@ -348,15 +354,14 @@ namespace Toolbox.Editor.Hierarchy
                 itemRenderCount++;
 
                 rect.x = startXPosition;
-                //we need 2x column size for full-line cases when object has no children and there is no foldout
-                rect.width = 2 * columnSize + firstElementWidthOffset;
+                rect.width = columnSize + firstElementWidthOffset;
 
                 var targetTransform = target.transform;
                 var siblingIndex = targetTransform.GetSiblingIndex();
 
                 if (levels > levelRenderers.Count)
                 {
-                    //initialize missing tree line level render
+                    //initialize missing tree line level renderer
                     var startIndex = levelRenderers.Count;
                     int x;
                     for (x = startIndex; x < levels; x++)
@@ -413,34 +418,33 @@ namespace Toolbox.Editor.Hierarchy
 
                 public void OnGUI(Rect rect, GameObject target, int siblingIndex, bool isCurrentLevel)
                 {
-                    //NOTE: currently we are using labels and predefined chars to display tree lines, this is not optimal solution
-                    // since we can't really control width, tickiness and other potential useful properties. Using few chars allow us
-                    // to display dashed lines very easily but replacing it with standard line would a bit harder.
-                    // For now this is ok solution but probably should be replaced with drawing lines using the EditorGUI.DrawRect API,
-                    // in the same way we draw lines in the Inspector
+                    var offset = new Vector2()
+                    {
+                        x = EditorGUIUtility.standardVerticalSpacing
+                    };
 
                     if (isCurrentLevel)
                     {
-                        var hasChildren = target.transform.childCount > 0;
-                        GUIContent label;
+                        //NOTE: extend if there is no foldout button
+                        var isLineExtended = target.transform.childCount == 0;
+                        var horizontalSizeOffset = isLineExtended ? rect.width / 2 : 0.0f;
                         if (GetParentChildCount(target) == (siblingIndex + 1))
                         {
                             renderedLastLevelGameobject = true;
-                            label = hasChildren ? Style.treeElementLastHalf : Style.treeElementLast;
+                            HierarchyTreeUtility.DrawCornerLine(rect, isDashed, Style.treeLineTickness, Style.treeLineColor, offset, horizontalSizeOffset);
                         }
                         else
                         {
                             renderedLastLevelGameobject = false;
-                            label = hasChildren ? Style.treeElementCrossHalf : Style.treeElementCross;
+                            HierarchyTreeUtility.DrawCrossLine(rect, isDashed, Style.treeLineTickness, Style.treeLineColor, offset, horizontalSizeOffset);
                         }
 
-                        EditorGUI.LabelField(rect, label, Style.treeElementStyle);
                         return;
                     }
 
                     if (!renderedLastLevelGameobject)
                     {
-                        EditorGUI.LabelField(rect, Style.treeElementPass, Style.treeElementStyle);
+                        HierarchyTreeUtility.DrawPassingLine(rect, isDashed, Style.treeLineTickness, Style.treeLineColor, offset);
                     }
                 }
 
@@ -462,34 +466,22 @@ namespace Toolbox.Editor.Hierarchy
                 }
             }
         }
-#endregion
+        #endregion
 
         protected static class Style
         {
             internal static readonly float minWidth = 17.0f;
             internal static readonly float maxWidth = 60.0f;
+            internal static readonly float treeLineTickness = 0.75f;
 
             internal static readonly GUIStyle defaultAlignTextStyle;
             internal static readonly GUIStyle centreAlignTextStyle;
             internal static readonly GUIStyle rightAlignTextStyle;
-            internal static readonly GUIStyle treeElementStyle;
 
-            internal static readonly GUIContent treeElementLast;
-            internal static readonly GUIContent treeElementLastHalf;
-            internal static readonly GUIContent treeElementCross;
-            internal static readonly GUIContent treeElementCrossHalf;
-            internal static readonly GUIContent treeElementPass;
-
-            internal static readonly Color characterColor;
+            internal static readonly Color treeLineColor = Color.white;
 
             static Style()
             {
-                treeElementLast = new GUIContent("└--");
-                treeElementLastHalf = new GUIContent("└-");
-                treeElementCross = new GUIContent("├--");
-                treeElementCrossHalf = new GUIContent("├-");
-                treeElementPass = new GUIContent("│");
-
                 defaultAlignTextStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
 #if UNITY_2019_3_OR_NEWER
@@ -518,16 +510,6 @@ namespace Toolbox.Editor.Hierarchy
                     alignment = TextAnchor.UpperRight
 #endif
                 };
-                treeElementStyle = new GUIStyle(EditorStyles.label)
-                {
-                    padding = new RectOffset(4, 0, 0, 0),
-                    fontSize = 12,
-                };
-
-                if (!EditorGUIUtility.isProSkin)
-                {
-                    treeElementStyle.normal.textColor = Color.white;
-                }
             }
         }
     }
