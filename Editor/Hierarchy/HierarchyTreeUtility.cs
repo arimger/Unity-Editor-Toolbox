@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Hierarchy
 {
+    /// <summary>
+    /// Dedicates utility class used to draw horizontal/vertical lines when rendering tree connection lines within the Hierarchy window.
+    /// </summary>
     internal static class HierarchyTreeUtility
     {
         private const float dashLength = 4.0f;
@@ -15,12 +18,12 @@ namespace Toolbox.Editor.Hierarchy
                 : new Rect(rect.x + padding / 2, rect.y, thickness, rect.height);
         }
 
-        private static void DrawVerticalLine(Rect rect, bool isDashed, float tickness, Color color)
+        public static void DrawVerticalLine(Rect rect, bool isDashed, float tickness, Color color)
         {
             DrawVerticalLine(rect, isDashed, tickness, color, 0.0f);
         }
 
-        private static void DrawVerticalLine(Rect rect, bool isDashed, float tickness, Color color, float paddingOffset)
+        public static void DrawVerticalLine(Rect rect, bool isDashed, float tickness, Color color, float paddingOffset)
         {
             rect = GetLineRect(rect, tickness, rect.width - paddingOffset, false);
             if (!isDashed)
@@ -44,12 +47,12 @@ namespace Toolbox.Editor.Hierarchy
             }
         }
 
-        private static void DrawHorizontalLine(Rect rect, bool isDashed, float tickness, Color color)
+        public static void DrawHorizontalLine(Rect rect, bool isDashed, float tickness, Color color)
         {
             DrawHorizontalLine(rect, isDashed, tickness, color, 0.0f);
         }
 
-        private static void DrawHorizontalLine(Rect rect, bool isDashed, float tickness, Color color, float paddingOffset)
+        public static void DrawHorizontalLine(Rect rect, bool isDashed, float tickness, Color color, float paddingOffset)
         {
             rect = GetLineRect(rect, tickness, rect.height - paddingOffset, true);
             if (!isDashed)
@@ -73,9 +76,19 @@ namespace Toolbox.Editor.Hierarchy
             }
         }
 
+        public static void DrawPassingLine(Rect rect, bool isDashed, float tickness, Color color)
+        {
+            DrawPassingLine(rect, isDashed, tickness, color, Vector2.zero);
+        }
+
         public static void DrawPassingLine(Rect rect, bool isDashed, float tickness, Color color, Vector2 paddingOffset)
         {
             DrawVerticalLine(rect, isDashed, tickness, color, paddingOffset.x);
+        }
+
+        public static void DrawCornerLine(Rect rect, bool isDashed, float tickness, Color color)
+        {
+            DrawCornerLine(rect, isDashed, tickness, color, Vector2.zero, 0.0f);
         }
 
         public static void DrawCornerLine(Rect rect, bool isDashed, float tickness, Color color, Vector2 paddingOffset, float horizontalSizeOffset)
@@ -89,6 +102,11 @@ namespace Toolbox.Editor.Hierarchy
             horizontalRect.xMin += horizontalRect.width / 2;
             horizontalRect.xMax += horizontalSizeOffset;
             DrawHorizontalLine(horizontalRect, isDashed, tickness, color, paddingOffset.y);
+        }
+
+        public static void DrawCrossLine(Rect rect, bool isDashed, float tickness, Color color)
+        {
+            DrawCrossLine(rect, isDashed, tickness, color, Vector2.zero, 0.0f);
         }
 
         public static void DrawCrossLine(Rect rect, bool isDashed, float tickness, Color color, Vector2 paddingOffset, float horizontalSizeOffset)
