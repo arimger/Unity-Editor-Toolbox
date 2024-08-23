@@ -117,6 +117,7 @@ namespace Toolbox.Editor
         private bool projectSettingsDirty;
         private bool inspectorSettingsDirty;
         private bool sceneViewSettingsDirty;
+        private int lastValidationFrame;
 
         internal event Action<IToolboxHierarchySettings> OnHierarchySettingsChanged;
         internal event Action<IToolboxProjectSettings> OnProjectSettingsChanged;
@@ -179,12 +180,24 @@ namespace Toolbox.Editor
 
         internal void Validate()
         {
+            Validate(false);
+        }
+
+        internal void Validate(bool force)
+        {
+            //NOTE: additional check to prevent multiple validations in the same frame, e.g. typical case:
+            // - after recompilation we are initializing toolbox and we want to validate settings, in the same time Unity validates all SOs
+            if (lastValidationFrame == Time.frameCount && !force)
+            {
+                return;
+            }
+
             ValidateHierarchySettings();
             ValidateProjectSettings();
             ValidateInspectorSettings();
             ValidateSceneViewSettings();
+            lastValidationFrame = Time.frameCount;
         }
-
 
         /// <summary>
         /// Called internally by the Editor after any value change or the Undo/Redo operation.
@@ -333,7 +346,6 @@ namespace Toolbox.Editor
             smallIconPadding = new Vector2(Defaults.smallFolderIconXPaddingDefault,
                 Defaults.smallFolderIconYPaddingDefault);
         }
-
 
         public bool UseToolboxHierarchy
         {
