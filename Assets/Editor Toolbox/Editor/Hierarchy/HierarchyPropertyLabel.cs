@@ -179,6 +179,14 @@ namespace Toolbox.Editor.Hierarchy
 
         private class HierarchyScriptLabel : HierarchyPropertyLabel
         {
+            //TODO: properties to expose when switching to SerializedReference-based implementation:
+            // - max components
+            // - how to render standard scripts without custom icons
+
+            private const int maxComponents = 5;
+
+            private static readonly GUIContent moreLabelContent = new GUIContent("...");
+
             private static Texture componentIcon;
             private static Texture transformIcon;
             private static Texture warningIcon;
@@ -248,8 +256,15 @@ namespace Toolbox.Editor.Hierarchy
                 baseWidth = Style.minWidth;
                 components = target.GetComponents<Component>();
                 var componentsCount = components.Length;
+                //NOTE: ignore transform for >1 components
+                var componentsToDisplay = componentsCount - 1;
+                if (componentsToDisplay > maxComponents)
+                {
+                    componentsToDisplay = maxComponents + 1;
+                }
+
                 summWidth = componentsCount > 1
-                    ? (componentsCount - 1) * baseWidth
+                    ? componentsToDisplay * baseWidth
                     : baseWidth;
 
                 isHighlighted = availableRect.Contains(Event.current.mousePosition);
@@ -275,20 +290,32 @@ namespace Toolbox.Editor.Hierarchy
                     return;
                 }
 
-                rect.xMin -= baseWidth * (componentsCount - 2);
+                //NOTE: we are already in appropriate position for the first component, let's move it depending on the count
+                var componentsToDisplay = componentsCount - 1;
+                if (componentsToDisplay > maxComponents)
+                {
+                    //NOTE: one additional place for "more"
+                    componentsToDisplay = maxComponents + 1;
+                }
+
+                rect.xMin -= baseWidth * (componentsToDisplay - 1);
 
                 var iconRect = rect;
                 iconRect.xMin = rect.xMin;
                 iconRect.xMax = rect.xMin + baseWidth;
 
-                //draw all icons associated to cached components (except transform)
-                for (var i = 1; i < components.Length; i++)
+                //NOTE: draw all icons associated to cached components (except transform)
+                for (var i = 1; i < componentsCount; i++)
                 {
+                    if (i > maxComponents)
+                    {
+                        GUI.Label(iconRect, moreLabelContent);
+                        break;
+                    }
+
                     var component = components[i];
                     var content = GetContent(component);
-                    //draw icon for the current component
                     GUI.Label(iconRect, content);
-                    //adjust rect for the next script icon
                     iconRect.x += baseWidth;
                 }
 
