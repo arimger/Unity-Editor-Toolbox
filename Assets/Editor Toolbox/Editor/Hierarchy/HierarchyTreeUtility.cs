@@ -8,6 +8,7 @@ namespace Toolbox.Editor.Hierarchy
     /// </summary>
     internal static class HierarchyTreeUtility
     {
+        //NOTE: consider caching pre-created texturess for dashed lines and use them to optimize each call
         private const float dashLength = 4.0f;
         private const float spaceLength = 1.0f;
 
