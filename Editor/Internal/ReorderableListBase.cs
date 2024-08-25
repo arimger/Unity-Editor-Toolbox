@@ -22,7 +22,6 @@ namespace Toolbox.Editor.Internal
 
         public delegate object OverrideNewElementDelegate(int index);
 
-
         public DrawRectCallbackDelegate drawHeaderCallback;
         public DrawRectCallbackDelegate drawEmptyCallback;
         public DrawRectCallbackDelegate drawFooterCallback;
@@ -50,7 +49,6 @@ namespace Toolbox.Editor.Internal
 
         public OverrideNewElementDelegate overrideNewElementCallback;
 
-
         protected const string defaultLabelFormat = "{0} {1}";
         protected const string defaultElementName = "Element";
 
@@ -60,7 +58,6 @@ namespace Toolbox.Editor.Internal
         protected readonly int id = -1;
 
         protected float draggedY;
-
 
         public ReorderableListBase(SerializedProperty list)
             : this(list, null, true, true, false)
@@ -102,7 +99,6 @@ namespace Toolbox.Editor.Internal
 
             Index = -1;
         }
-
 
         private void DoDraggingAndSelection()
         {
@@ -264,11 +260,9 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-
         protected abstract void DoListMiddle();
 
         protected abstract void DoListMiddle(Rect middleRect);
-
 
         protected virtual bool DoListHeader()
         {
@@ -405,7 +399,6 @@ namespace Toolbox.Editor.Internal
 
         protected abstract int GetCoveredElementIndex(Vector2 mousePosition);
 
-
         public string GetElementDefaultName(int index)
         {
             return string.Format(defaultLabelFormat, defaultElementName, index);
@@ -491,7 +484,6 @@ namespace Toolbox.Editor.Internal
             }
         }
 
-
         /// <summary>
         /// Draws whole list at once.
         /// </summary>
@@ -517,7 +509,6 @@ namespace Toolbox.Editor.Internal
 
             DoDraggingAndSelection();
         }
-
 
         #region Methods: Default interaction/draw calls/controls
 
@@ -693,9 +684,7 @@ namespace Toolbox.Editor.Internal
                 rect.xMin += xDiff / 2;
                 rect.xMax -= xDiff / 2;
 
-                var yDiff = rect.height - Style.handleHeight;
-                rect.yMin += yDiff / 2;
-                rect.yMax -= yDiff / 2;
+                rect.y += Style.handleHeight + Style.spacing / 2;
 #if UNITY_2019_3_OR_NEWER
                 rect.y += Style.spacing;
 #endif
@@ -732,7 +721,6 @@ namespace Toolbox.Editor.Internal
         }
 
         #endregion
-
 
         /// <summary>
         /// Index of the currently active (hovered) element.
@@ -864,7 +852,6 @@ namespace Toolbox.Editor.Internal
             get => List.serializedObject;
         }
 
-
         /// <summary>
         /// Static representation of the standard list styling.
         /// Provides all needed <see cref="GUIStyle"/>s, paddings, widths, heights, etc.
@@ -923,7 +910,7 @@ namespace Toolbox.Editor.Internal
                 iconToolbarAddContent = EditorGUIUtility.TrIconContent("Toolbar Plus", "Add to list");
                 iconToolbarDropContent = EditorGUIUtility.TrIconContent("Toolbar Plus More", "Choose to add to list");
                 iconToolbarRemoveContent = EditorGUIUtility.TrIconContent("Toolbar Minus", "Remove selection from list");
-                emptyOrInvalidListContent = EditorGUIUtility.TrTextContent("List is Empty");
+                emptyOrInvalidListContent = EditorGUIUtility.TrTextContent("Collection is Empty");
 
                 namePropertyStyle = new GUIStyle(EditorStyles.label)
                 {

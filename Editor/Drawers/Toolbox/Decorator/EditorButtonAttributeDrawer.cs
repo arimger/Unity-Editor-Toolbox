@@ -123,7 +123,7 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGuiCloseSafe(EditorButtonAttribute attribute)
         {
-            var targetObjects = InspectorUtility.CurrentTargetObjects;
+            var targetObjects = ToolboxEditorHandler.CurrentTargetObjects;
             if (targetObjects == null || targetObjects.Length == 0)
             {
                 //NOTE: something went really wrong, internal bug or OnGuiBeginSafe was called out of the Toolbox scope

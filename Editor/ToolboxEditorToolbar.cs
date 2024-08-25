@@ -29,7 +29,6 @@ namespace Toolbox.Editor
             EditorCoroutineUtility.StartCoroutineOwnerless(Initialize());
         }
 
-
         private static readonly Type containterType = typeof(IMGUIContainer);
         private static readonly Type toolbarType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.Toolbar");
         private static readonly Type guiViewType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.GUIView");
@@ -49,12 +48,10 @@ namespace Toolbox.Editor
 
         private static Object toolbar;
 
-
         private static IEnumerator Initialize()
         {
-            while (toolbar == null)
+            while (ToolboxEditorToolbar.toolbar == null)
             {
-                //try to find aldready created Toolbar object
                 var toolbars = Resources.FindObjectsOfTypeAll(toolbarType);
                 if (toolbars == null || toolbars.Length == 0)
                 {
@@ -63,9 +60,31 @@ namespace Toolbox.Editor
                 }
                 else
                 {
-                    toolbar = toolbars[0];
+                    ToolboxEditorToolbar.toolbar = toolbars[0];
                 }
             }
+
+#if UNITY_2021_1_OR_NEWER
+            var rootField = ToolboxEditorToolbar.toolbar.GetType().GetField("m_Root", BindingFlags.NonPublic | BindingFlags.Instance);
+            var root = rootField.GetValue(ToolboxEditorToolbar.toolbar) as VisualElement;
+            var toolbar = root.Q("ToolbarZoneLeftAlign");
+
+            var element = new VisualElement()
+            {
+                style =
+                {
+                    flexGrow = 1,
+                    flexDirection = FlexDirection.Row,
+                }
+            };
+
+            var container = new IMGUIContainer();
+            container.style.flexGrow = 1;
+            container.onGUIHandler += OnGui;
+
+            element.Add(container);
+            toolbar.Add(element);
+#else
 #if UNITY_2020_1_OR_NEWER
             var backend = guiBackend.GetValue(toolbar);
             var elements = visualTree.GetValue(backend, null) as VisualElement;
@@ -78,11 +97,11 @@ namespace Toolbox.Editor
 #else
             var container = elements[0] as IMGUIContainer;
 #endif
-            //create additional gui handler for new elements
             var handler = onGuiHandler.GetValue(container) as Action;
             handler -= OnGui;
             handler += OnGui;
             onGuiHandler.SetValue(container, handler);
+#endif
         }
 
         private static void OnGui()
@@ -92,12 +111,17 @@ namespace Toolbox.Editor
                 return;
             }
 
+#if UNITY_2021_1_OR_NEWER
+            using (new GUILayout.HorizontalScope())
+            {
+                OnToolbarGui.Invoke();
+            }
+#else
             var screenWidth = EditorGUIUtility.currentViewWidth;
             var toolbarRect = new Rect(0, 0, screenWidth, Style.rowHeight);
             //calculations known from UnityCsReference
             toolbarRect.xMin += FromToolsOffset;
             toolbarRect.xMax = (screenWidth - FromStripOffset) / 2;
-            //additional rect styling
             toolbarRect.xMin += Style.spacing;
             toolbarRect.xMax -= Style.spacing;
             toolbarRect.yMin += Style.topPadding;
@@ -108,7 +132,6 @@ namespace Toolbox.Editor
                 return;
             }
 
-            //begin drawing in calculated area
             using (new GUILayout.AreaScope(toolbarRect))
             {
                 using (new GUILayout.HorizontalScope())
@@ -116,6 +139,7 @@ namespace Toolbox.Editor
                     OnToolbarGui?.Invoke();
                 }
             }
+#endif
         }
 
 
@@ -124,9 +148,7 @@ namespace Toolbox.Editor
         public static float FromToolsOffset { get; set; } = 400.0f;
         public static float FromStripOffset { get; set; } = 150.0f;
 
-
         public static event Action OnToolbarGui;
-
 
         private static class Style
         {

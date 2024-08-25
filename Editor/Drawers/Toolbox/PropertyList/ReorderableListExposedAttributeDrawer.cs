@@ -31,7 +31,6 @@ namespace Toolbox.Editor.Drawers
 
         private static readonly PropertyDataStorage<ReorderableListBase, ReorderableListExposedAttribute> storage;
 
-
         private static void ConnectCallbacks(ReorderableListBase list, ReorderableListExposedAttribute attribute)
         {
             var listTarget = list.SerializedObject;
@@ -79,7 +78,6 @@ namespace Toolbox.Editor.Drawers
 
             return methodInfo;
         }
-
 
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ReorderableListExposedAttribute attribute)
         {

@@ -14,7 +14,6 @@ namespace Toolbox.Editor.Internal
 
         public ElementHeightCallbackDelegate elementHeightCallback;
 
-
         /// <summary>
         /// Offset between a dragging handle and the real mouse position.
         /// </summary>
@@ -23,7 +22,6 @@ namespace Toolbox.Editor.Internal
         private List<int> nonDragTargetIndices;
 
         private Rect middleRect;
-
 
         public ReorderableList(SerializedProperty list)
             : base(list)
@@ -44,7 +42,6 @@ namespace Toolbox.Editor.Internal
         public ReorderableList(SerializedProperty list, string elementLabel, bool draggable, bool hasHeader, bool fixedSize, bool hasLabels, bool foldable)
             : base(list, elementLabel, draggable, hasHeader, fixedSize, hasLabels, foldable)
         { }
-
 
         protected override void DoListMiddle()
         {
@@ -354,7 +351,6 @@ namespace Toolbox.Editor.Internal
             return middleRect.Contains(mousePosition) ? GetCoveredElementIndex(mousePosition.y) : -1;
         }
 
-
         private float GetRowHeight(int index)
         {
             return GetElementHeight(index) + ElementSpacing;
@@ -396,7 +392,6 @@ namespace Toolbox.Editor.Internal
             return new Rect(listRect.x, listRect.y + GetElementYOffset(index), listRect.width, GetElementHeight(index));
         }
 
-
         public void DoList(Rect rect)
         {
             var headerRect = new Rect(rect.x, rect.y, rect.width, HeaderHeight);
@@ -410,7 +405,6 @@ namespace Toolbox.Editor.Internal
                 DoListFooter(footerRect);
             }
         }
-
 
         public float MiddleHeight
         {

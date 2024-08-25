@@ -22,7 +22,7 @@ namespace UnityEngine
         private string sceneName;
         [SerializeField, HideInInspector]
         private string scenePath;
-        [SerializeField, HideInInspector]
+        [SerializeField]
         private int buildIndex;
 
 
@@ -37,7 +37,7 @@ namespace UnityEngine
 
         private void UpdateProperties()
         {
-#if UNITY_EDITOR       
+#if UNITY_EDITOR
             if (SceneSerializationUtility.TryGetSceneData(sceneReference, out var sceneData))
             {
                 SceneName = sceneData.SceneName;

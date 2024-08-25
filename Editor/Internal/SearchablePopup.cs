@@ -17,11 +17,10 @@ namespace Toolbox.Editor.Internal
         /// <summary>
         /// Creates searchable popup using given properties.
         /// </summary>
-        public static void Show(Rect activatorRect, int current, string[] options, Action<int> onSelect)
+        public static void Show(Rect activatorRect, int current, IReadOnlyList<string> options, Action<int> onSelect)
         {
             PopupWindow.Show(activatorRect, new SearchablePopup(activatorRect, current, options, onSelect));
         }
-
 
         private readonly Action<int> onSelect;
 
@@ -35,12 +34,11 @@ namespace Toolbox.Editor.Internal
         private Rect activatorRect;
         private Rect toolbarRect;
         private Rect contentRect;
-        
 
         /// <summary>
-        /// Constructor should be called only internally by the <see cref="Show(Rect, int, string[], Action{int})"/> method.
+        /// Constructor should be called only internally by the <see cref="Show(Rect, int, IReadOnlyList{String}, Action{int})"/> method.
         /// </summary>
-        private SearchablePopup(Rect activatorRect, int startIndex, string[] options, Action<int> onSelect)
+        private SearchablePopup(Rect activatorRect, int startIndex, IReadOnlyList<string> options, Action<int> onSelect)
         {
             this.activatorRect = activatorRect;
 
@@ -56,7 +54,6 @@ namespace Toolbox.Editor.Internal
                 editorWindow.Close();
             };
         }
-
 
         private void SelectItem(int index)
         {
@@ -228,7 +225,6 @@ namespace Toolbox.Editor.Internal
             GUI.enabled = false;
         }
 
-
         private class SearchArray
         {
             public struct Item
@@ -243,18 +239,15 @@ namespace Toolbox.Editor.Internal
                 }
             }
 
-
             private readonly List<Item> items;
-            private readonly string[] options;
+            private readonly IReadOnlyList<string> options;
 
-
-            public SearchArray(string[] options)
+            public SearchArray(IReadOnlyList<string> options)
             {
                 this.options = options;
                 items = new List<Item>();
                 Search(string.Empty);
             }
-
 
             public bool Search(string filter)
             {
@@ -265,7 +258,8 @@ namespace Toolbox.Editor.Internal
 
                 items.Clear();
                 var simplifiedFilter = filter.ToLower();
-                for (var i = 0; i < options.Length; i++)
+                var optionsCount = options.Count;
+                for (var i = 0; i < optionsCount; i++)
                 {
                     var option = options[i];
                     if (string.IsNullOrEmpty(filter) || option.ToLower().Contains(simplifiedFilter))
@@ -291,7 +285,6 @@ namespace Toolbox.Editor.Internal
                 return items[index];
             }
 
-
             public int ItemsCount => items.Count;
 
             public string Filter { get; private set; }
@@ -316,9 +309,15 @@ namespace Toolbox.Editor.Internal
                 toolbarStyle = new GUIStyle(EditorStyles.toolbar);
                 scrollbarStyle = new GUIStyle(GUI.skin.verticalScrollbar);
                 selectionStyle = new GUIStyle("SelectionRect");
+#if UNITY_2022_1_OR_NEWER
+                searchBoxStyle = new GUIStyle("ToolbarSearchTextField");
+                showCancelButtonStyle = new GUIStyle("ToolbarSearchCancelButton");
+                hideCancelButtonStyle = new GUIStyle("ToolbarSearchCancelButtonEmpty");
+#else
                 searchBoxStyle = new GUIStyle("ToolbarSeachTextField");
                 showCancelButtonStyle = new GUIStyle("ToolbarSeachCancelButton");
                 hideCancelButtonStyle = new GUIStyle("ToolbarSeachCancelButtonEmpty");
+#endif
             }
         }
     }

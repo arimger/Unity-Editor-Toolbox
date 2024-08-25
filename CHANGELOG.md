@@ -1,3 +1,116 @@
+## 0.12.13 [22.08.2024]
+
+### Changed:
+- Hierarchy: Added Tree List renderer, which improves visual identification of parent and child gameobjects
+- Hierarchy: For now 'Script' label will display all available components linked to a GameObject/Prefabs
+- Hierarchy: For now 'Layer' label will display full layer name instead of the layer mask value
+- Fix SceneView settings change events firing when they shouldn't
+- Fix issue when trying to find private fields/properties from parent classes (e.g. while using conditional attributes)
+
+### Added:
+- DisableInEditModeAttribute
+
+## 0.12.12 [17.06.2024]
+
+### Changed:
+- LabelWidthAttribute is now part of the Toolbox decorator attributes (can be mixed with other attributes)
+- Hierarchy: Script, Tag, and Layer columns are now excluded from the default settings
+- Possibility to change style for groups ([BeginGroup] and [BeginHorizontalGroup] attributes)
+- ScriptableObject Creation Wizard now accepts only ScriptableObjects marked with the [CreateInWizard] or [CreateAssetMenu] attributes
+
+### Added:
+- NotPrefabObjectOnlyAttribute
+
+## 0.12.11 [05.04.2024]
+
+### Changed:
+- Fix handling the HasNativeTypeDrawer method in Unity 2022.3.23
+- Ignore `m_SerializedDataModeController` in Toolbox wizards
+- Change [Begin/EndHorizontal] behaviour (more customization options to handle available space)
+
+## 0.12.10 [28.03.2024]
+
+### Changed:
+- Fix fetching and initializing Toolbox features when assets are updating
+- Display ReorderableList element handle at the top of available space
+- Display "Collection is Empty" label for empty ReorderableLists
+- New visual appearance for the SerializedDictionary properties
+- Fix using Toolbox drawers in the SerializedDictionary properties
+- Change the default SceneView selector key to `Tab`
+
+## 0.12.9 [27.01.2024]
+
+### Changed:
+- Fix rare invalid SerializedProperty iterator when editing child properties
+- Extend objects creation behaviour while using the ReferencePickerAttribute (possibility to create uninitialized objects)
+- Minor UX improvements in the ScriptableObjectCreationWizard
+
+## 0.12.8 [29.12.2023]
+
+### Changed:
+- Fix calling the ScriptAttributeUtility.GetDrawerTypeForType method in Unity 2033.3+
+- Fix getting and setting scripting defines in Unity 2023+
+
+## 0.12.7 [10.12.2023]
+
+### Changed:
+- Possibility to interact with ProgressBarDrawer (added IsInteractable property to the ProgressBarAttribute)
+- MinMaxAttribute now supports Vector2Int
+
+### Added:
+- 'Revert Prefab Name' option for prefabs in the GameObject/Prefabs context menu
+
+## 0.12.6 [19.10.2023]
+
+### Changed:
+- Fix ToolboxEditorToolbar in Unity 2021.1+
+- Minor API changes in the SearchablePopup class
+
+## 0.12.5 [11.09.2023]
+
+### Changed:
+- Make ToolboxEditorHandler public
+
+### Added:
+- Add public OnCacheRefreshed event to the SceneSerializationUtility
+
+## 0.12.4 [31.07.2023]
+
+### Changed:
+- Fix SceneView selection tool behaviour when selecting nested prefabs
+- Fix InvalidOperationException when ExitGUIException is thrown inside PropertyScope
+- Minor SerializedScene index calculation performance improvements
+- Fix SearchablePopup styles initialization in Unity 2022+
+- Minor visual improvements on how ReferencePicker label is rendered 
+
+## 0.12.3 [17.06.2023]
+
+### Changed:
+- Fix updating SerializedScene index after deleting Scene
+- Fix SerializedScene index calculation
+- Fix NRE when deleted Scene was still included in Build Settings
+- Fix compilation errors in Unity 2018.x
+
+### Added:
+- SceneView extension: better way to select raycasted objects in the Scene view
+- LabelWidthAttribute
+
+## 0.12.1 [12.04.2023]
+
+### Changed:
+- Fix LabelByChild usage within lists
+- Possibility to foldout/in dictionaries
+
+## 0.12.0 [10.12.2022]
+
+### Changed:
+- UX improvements for the ScriptableObjectCreationWizard
+- New API for drawing custom Editors (check HOWTO.md for more details)
+- Fix label drawing while using the [ReferencePickerAttribute]
+- Fix searching for private methods in base classes while using the [EditorButtonAttribute]
+- Fix minor issues while using conditional drawers during multi-selection
+- Fix minor issues while using the [TitleAttribute] in groups
+
 ## 0.11.9 [22.10.2022]
 
 ### Added:

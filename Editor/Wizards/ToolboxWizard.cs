@@ -7,11 +7,17 @@ namespace Toolbox.Editor.Wizards
 
     public class ToolboxWizard : EditorWindow
     {
+        private static readonly string[] propertiesToIgnore = new string[]
+        {
+            PropertyUtility.Defaults.scriptPropertyName,
+            "m_SerializedDataModeController"
+        };
+
         private Editor targetEditor;
 
         private Vector2 scrollPosition;
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             if (targetEditor != null)
             {
@@ -19,7 +25,7 @@ namespace Toolbox.Editor.Wizards
             }
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             DestroyImmediate(targetEditor);
         }
@@ -84,7 +90,10 @@ namespace Toolbox.Editor.Wizards
             editor.hideFlags = HideFlags.HideAndDontSave;
             if (editor is ToolboxEditor toolboxEditor)
             {
-                toolboxEditor.IgnoreProperty(PropertyUtility.Defaults.scriptPropertyName);
+                foreach (var property in propertiesToIgnore)
+                {
+                    toolboxEditor.IgnoreProperty(property);
+                }
             }
         }
 
