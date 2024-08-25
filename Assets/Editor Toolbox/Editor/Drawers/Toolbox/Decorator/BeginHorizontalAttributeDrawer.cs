@@ -5,14 +5,25 @@ namespace Toolbox.Editor.Drawers
 {
     public class BeginHorizontalAttributeDrawer : ToolboxDecoratorDrawer<BeginHorizontalAttribute>
     {
+        private static float lastFetchedWidth = 0.0f;
+
         protected override void OnGuiBeginSafe(BeginHorizontalAttribute attribute)
         {
-            var width = EditorGUIUtility.currentViewWidth;
-            //set a new width value for label/field controls
-            EditorGUIUtility.labelWidth = width * attribute.LabelToWidthRatio;
-            EditorGUIUtility.fieldWidth = width * attribute.FieldToWidthRatio;
+            if (GuiLayoutUtility.TryGetLayoutWidth(out var layoutWidth))
+            {
+                lastFetchedWidth = layoutWidth;
+            }
 
-            //begin horizontal group using internal utility
+            EditorGUIUtility.labelWidth = attribute.LabelWidth;
+            if (attribute.ControlFieldWidth && attribute.ElementsInLayout > 0)
+            {
+                var width = lastFetchedWidth;
+                width -= attribute.WidthOffset;
+                width -= (attribute.LabelWidth + attribute.WidthOffsetPerElement + EditorGUIUtility.standardVerticalSpacing * 4) * attribute.ElementsInLayout;
+                width /= attribute.ElementsInLayout;
+                EditorGUIUtility.fieldWidth = width;
+            }
+
             ToolboxLayoutHandler.BeginHorizontal();
         }
     }

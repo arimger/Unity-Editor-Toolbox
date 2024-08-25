@@ -7,8 +7,8 @@ using UnityEngine.Serialization;
 namespace Toolbox.Editor
 {
     using Toolbox.Editor.Drawers;
-    using Toolbox.Editor.Hierarchy;
     using Toolbox.Editor.Folders;
+    using Toolbox.Editor.Hierarchy;
 
     internal interface IToolboxGeneralSettings
     { }
@@ -52,8 +52,15 @@ namespace Toolbox.Editor
         List<SerializedType> TargetTypeDrawerHandlers { get; }
     }
 
+    internal interface IToolboxSceneViewSettings
+    {
+        bool UseToolboxSceneView { get; }
+
+        KeyCode SelectorKey { get; }
+    }
+
     [CreateAssetMenu(fileName = "Editor Toolbox Settings", menuName = "Editor Toolbox/Settings")]
-    internal class ToolboxEditorSettings : ScriptableObject, IToolboxGeneralSettings, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxInspectorSettings
+    internal class ToolboxEditorSettings : ScriptableObject, IToolboxGeneralSettings, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxInspectorSettings, IToolboxSceneViewSettings
     {
         [SerializeField]
         private bool useToolboxHierarchy = true;
@@ -82,6 +89,12 @@ namespace Toolbox.Editor
         [SerializeField, ReorderableList(ListStyle.Boxed)]
         private List<FolderData> customFolders = new List<FolderData>();
 
+        [SerializeField]
+        private bool useToolboxSceneView = true;
+
+        [SerializeField]
+        private KeyCode selectorKey = KeyCode.Tab;
+
         [SerializeField, Tooltip("Set to false if you don't want to use Toolbox attributes and related features.")]
         private bool useToolboxDrawers = true;
         [SerializeField, Tooltip("By default, Inspectors will use the built-in version of the list instead of the Toolbox-based one. " +
@@ -103,11 +116,13 @@ namespace Toolbox.Editor
         private bool hierarchySettingsDirty;
         private bool projectSettingsDirty;
         private bool inspectorSettingsDirty;
+        private bool sceneViewSettingsDirty;
+        private int lastValidationFrame;
 
         internal event Action<IToolboxHierarchySettings> OnHierarchySettingsChanged;
         internal event Action<IToolboxProjectSettings> OnProjectSettingsChanged;
         internal event Action<IToolboxInspectorSettings> OnInspectorSettingsChanged;
-
+        internal event Action<IToolboxSceneViewSettings> OnSceneViewSettingsChanged;
 
         #region Methods: Internal/data validation
 
@@ -135,6 +150,13 @@ namespace Toolbox.Editor
             inspectorSettingsDirty = true;
         }
 
+        /// <summary>
+        /// Forces Scene settings validation in the next <see cref="OnValidate"/> call.
+        /// </summary>
+        internal void SetSceneViewSettingsDirty()
+        {
+            sceneViewSettingsDirty = true;
+        }
 
         internal void ValidateHierarchySettings()
         {
@@ -151,13 +173,31 @@ namespace Toolbox.Editor
             OnInspectorSettingsChanged?.Invoke(this);
         }
 
+        internal void ValidateSceneViewSettings()
+        {
+            OnSceneViewSettingsChanged?.Invoke(this);
+        }
+
         internal void Validate()
         {
+            Validate(false);
+        }
+
+        internal void Validate(bool force)
+        {
+            //NOTE: additional check to prevent multiple validations in the same frame, e.g. typical case:
+            // - after recompilation we are initializing toolbox and we want to validate settings, in the same time Unity validates all SOs
+            if (lastValidationFrame == Time.frameCount && !force)
+            {
+                return;
+            }
+
             ValidateHierarchySettings();
             ValidateProjectSettings();
             ValidateInspectorSettings();
+            ValidateSceneViewSettings();
+            lastValidationFrame = Time.frameCount;
         }
-
 
         /// <summary>
         /// Called internally by the Editor after any value change or the Undo/Redo operation.
@@ -165,7 +205,7 @@ namespace Toolbox.Editor
         private void OnValidate()
         {
             //determine if any section was changed within the Editor
-            var settingsDirty = hierarchySettingsDirty || projectSettingsDirty || inspectorSettingsDirty;
+            var settingsDirty = hierarchySettingsDirty || projectSettingsDirty || inspectorSettingsDirty || sceneViewSettingsDirty;
             if (settingsDirty)
             {
                 //check exactly what settings are changed and apply them
@@ -183,6 +223,11 @@ namespace Toolbox.Editor
                 {
                     ValidateInspectorSettings();
                 }
+
+                if (sceneViewSettingsDirty)
+                {
+                    ValidateSceneViewSettings();
+                }
             }
             else
             {
@@ -197,10 +242,49 @@ namespace Toolbox.Editor
             hierarchySettingsDirty = false;
             projectSettingsDirty = false;
             inspectorSettingsDirty = false;
+            sceneViewSettingsDirty = false;
         }
 
         #endregion
 
+        public void Reset()
+        {
+            ResetHierarchySettings();
+            ResetProjectSettings();
+            ResetInspectorSettings();
+            ResetSceneSettings();
+        }
+
+        public void ResetHierarchySettings()
+        {
+            UseToolboxHierarchy = true;
+            RowDataTypes = Defaults.rowDataTypes;
+            DrawHorizontalLines = true;
+            ShowSelectionsCount = true;
+        }
+
+        public void ResetProjectSettings()
+        {
+            UseToolboxProject = true;
+            ResetIconRectProperties();
+            CustomFolders = new List<FolderData>();
+        }
+
+        public void ResetInspectorSettings()
+        {
+            UseToolboxDrawers = true;
+            SetAllPossibleDecoratorDrawers();
+            SetAllPossibleConditionDrawers();
+            SetAllPossibleSelfPropertyDrawers();
+            SetAllPossibleListPropertyDrawers();
+            SetAllPossibleTargetTypeDrawers();
+        }
+
+        public void ResetSceneSettings()
+        {
+            UseToolboxSceneView = true;
+            SelectorKey = KeyCode.LeftControl;
+        }
 
         public void SetAllPossibleDecoratorDrawers()
         {
@@ -252,7 +336,6 @@ namespace Toolbox.Editor
             }
         }
 
-
         public void ResetIconRectProperties()
         {
             largeIconScale = Defaults.largeFolderIconScaleDefault;
@@ -263,7 +346,6 @@ namespace Toolbox.Editor
             smallIconPadding = new Vector2(Defaults.smallFolderIconXPaddingDefault,
                 Defaults.smallFolderIconYPaddingDefault);
         }
-
 
         public bool UseToolboxHierarchy
         {
@@ -325,16 +407,28 @@ namespace Toolbox.Editor
             set => customFolders = value;
         }
 
+        public bool UseToolboxSceneView
+        {
+            get => useToolboxSceneView;
+            set => useToolboxSceneView = value;
+        }
+
+        public KeyCode SelectorKey
+        {
+            get => selectorKey;
+            set => selectorKey = value;
+        }
+
         public bool UseToolboxDrawers
         {
             get => useToolboxDrawers;
             set => useToolboxDrawers = value;
         }
 
-        public bool ForceDefaultLists 
-        { 
-            get => forceDefaultLists; 
-            set => forceDefaultLists = value; 
+        public bool ForceDefaultLists
+        {
+            get => forceDefaultLists;
+            set => forceDefaultLists = value;
         }
 
         public List<SerializedType> DecoratorDrawerHandlers
@@ -383,7 +477,8 @@ namespace Toolbox.Editor
                 HierarchyItemDataType.Toggle,
                 HierarchyItemDataType.Tag,
                 HierarchyItemDataType.Layer,
-                HierarchyItemDataType.Script
+                HierarchyItemDataType.Script,
+                HierarchyItemDataType.TreeLines
             };
         }
     }

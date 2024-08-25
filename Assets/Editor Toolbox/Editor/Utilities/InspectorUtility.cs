@@ -11,57 +11,8 @@ namespace Toolbox.Editor
     using Editor = UnityEditor.Editor;
     using Object = UnityEngine.Object;
 
-    [InitializeOnLoad]
     internal static partial class InspectorUtility
     {
-        static InspectorUtility()
-        {
-            //we can use each new Editor to check if 'OnEditorReload' should be called
-            ToolboxEditorHandler.OnBeginToolboxEditor += CheckReloads;
-
-            //we can use 'OnBeginToolboxEditor' and 'OnCloseToolboxEditor' to cache 
-            //processed Editors and determine the real context of the serialization
-            ToolboxEditorHandler.OnBeginToolboxEditor += OnBeginEditor;
-            ToolboxEditorHandler.OnBreakToolboxEditor += OnBreakEditor;
-            ToolboxEditorHandler.OnCloseToolboxEditor += OnCloseEditor;
-        }
-
-
-        private static int lastCachedEditorId;
-        private static Editor lastCachedEditor;
-        private static readonly Stack<Editor> cachedEditors = new Stack<Editor>();
-
-
-        private static void OnBeginEditor(Editor editor)
-        {
-            cachedEditors.Push(editor);
-        }
-
-        private static void OnBreakEditor(Editor editor)
-        {
-            cachedEditors.Clear();
-        }
-
-        private static void OnCloseEditor(Editor editor)
-        {
-            if (InToolboxEditor)
-            {
-                cachedEditors.Pop();
-            }
-        }
-
-        private static void CheckReloads(Editor editor)
-        {
-            //NOTE: it means that last Editor was null or disposed, anyway we probably want to reload drawers-related cache
-            if (lastCachedEditor == null || lastCachedEditorId != lastCachedEditor.GetInstanceID())
-            {
-                lastCachedEditor = editor;
-                lastCachedEditorId = editor.GetInstanceID();
-                OnEditorReload?.Invoke();
-            }
-        }
-
-
         /// <summary>
         /// Forces available Inspector Windows to repaint. 
         /// </summary>
@@ -84,7 +35,7 @@ namespace Toolbox.Editor
                 }
             }
 
-            //NOTE: none reflection way
+            //NOTE: none reflection way but slower
             //UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
         }
 
@@ -131,26 +82,6 @@ namespace Toolbox.Editor
             {
                 methodInfo.Invoke(target, null);
             }
-        }
-
-
-        /// <summary>
-        /// Event fired every time when <see cref="ToolboxEditor"/>s were re-created.
-        /// </summary>
-        internal static event Action OnEditorReload;
-
-
-        /// <summary>
-        /// Last cached targetObjects from the currently processed <see cref="ToolboxEditor"/>.
-        /// </summary>
-        internal static Object[] CurrentTargetObjects
-        {
-            get => cachedEditors.Count > 0 ? cachedEditors.Peek().targets : new Object[0];
-        }
-
-        internal static bool InToolboxEditor
-        {
-            get => cachedEditors.Count > 0;
         }
     }
 

@@ -19,7 +19,6 @@ namespace Toolbox.Editor.Drawers
             new MethodValueExtractor()
         };
 
-
         public static bool TryGetValue(string source, object declaringObject, out object value)
         {
             for (var i = 0; i < extractors.Count; i++)
@@ -73,7 +72,8 @@ namespace Toolbox.Editor.Drawers
             var parentObjects = new object[targetObjects.Length];
             for (var i = 0; i < targetObjects.Length; i++)
             {
-                parentObjects[i] = causer.GetDeclaringObject(targetObjects[i]);
+                var targetObject = targetObjects[i];
+                parentObjects[i] = causer.GetDeclaringObject(targetObject);
             }
 
             return TryGetValue(source, parentObjects, out value, out hasMixedValues, nextValuesComparer);

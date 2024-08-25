@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
-
+﻿using System;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using UnityEngine.SceneManagement;
 
 namespace Toolbox.Serialization
 {
-    internal static class SceneSerializationUtility
+    public static class SceneSerializationUtility
     {
 #if UNITY_EDITOR
         private static readonly Dictionary<SceneAsset, SceneData> cachedScenes = new Dictionary<SceneAsset, SceneData>();
         private static bool isInitialized;
-
 
         [InitializeOnLoadMethod]
         private static void Initialize()
@@ -27,7 +27,7 @@ namespace Toolbox.Serialization
             isInitialized = true;
         }
 
-        private static void ConfirmCache()
+        internal static void ConfirmCache()
         {
             //NOTE: refresh data only if the cache is empty,
             //it probably means that it's our first time when we are updating it
@@ -37,34 +37,40 @@ namespace Toolbox.Serialization
             }
         }
 
-        private static void RefreshCache()
+        internal static void RefreshCache()
         {
             cachedScenes.Clear();
-            var buildIndex = -1;
             foreach (var scene in EditorBuildSettings.scenes)
             {
-                buildIndex++;
-                var sceneIndex = scene.enabled ? buildIndex : InvalidSceneIndex;
-                var sceneAsset = EditorGUIUtility.Load(scene.path) as SceneAsset;
-                if (sceneAsset != null)
+                var path = scene.path;
+                if (string.IsNullOrEmpty(path))
                 {
-                    if (cachedScenes.ContainsKey(sceneAsset))
-                    {
-                        continue;
-                    }
-
-                    cachedScenes.Add(sceneAsset, new SceneData()
-                    {
-                        BuildIndex = buildIndex,
-                        SceneName = sceneAsset.name,
-                        ScenePath = scene.path
-                    });
+                    continue;
                 }
+
+                var sceneAsset = EditorGUIUtility.Load(path) as SceneAsset;
+                if (sceneAsset == null)
+                {
+                    continue;
+                }
+
+                if (cachedScenes.ContainsKey(sceneAsset))
+                {
+                    continue;
+                }
+
+                cachedScenes.Add(sceneAsset, new SceneData()
+                {
+                    BuildIndex = SceneUtility.GetBuildIndexByScenePath(path),
+                    SceneName = sceneAsset.name,
+                    ScenePath = path
+                });
             }
+
+            OnCacheRefreshed?.Invoke();
         }
 
-
-        public static bool TryGetSceneData(SceneAsset sceneAsset, out SceneData data)
+        internal static bool TryGetSceneData(SceneAsset sceneAsset, out SceneData data)
         {
             ConfirmCache();
             if (!sceneAsset || !cachedScenes.TryGetValue(sceneAsset, out data))
@@ -76,8 +82,16 @@ namespace Toolbox.Serialization
             return true;
         }
 #endif
+        /// <summary>
+        /// Event fired each time Scenes cache is rebuilt. 
+        /// Potential triggers:
+        /// - Scene Build Settings changed
+        /// - Scene asset removed/added
+        /// 
+        /// You can use it to invalidate/SetDirty all assets that use <see cref="UnityEngine.SerializedScene"/> to validate serialized Scene indexes.
+        /// </summary>
+        public static event Action OnCacheRefreshed;
 
-
-        public static int InvalidSceneIndex => -1;
+        internal static int InvalidSceneIndex => -1;
     }
 }

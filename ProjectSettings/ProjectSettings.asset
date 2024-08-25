@@ -153,7 +153,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Standalone: com.BroWarCollective.EditorToolbox
+    Standalone: com.BroWar-Collective.Editor-Toolbox
   buildNumber:
     Standalone: 0
     iPhone: 0

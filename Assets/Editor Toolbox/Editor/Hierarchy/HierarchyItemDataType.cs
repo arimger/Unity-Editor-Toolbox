@@ -6,6 +6,7 @@
         Toggle,
         Tag,
         Layer,
-        Script
+        Script,
+        TreeLines
     }
 }

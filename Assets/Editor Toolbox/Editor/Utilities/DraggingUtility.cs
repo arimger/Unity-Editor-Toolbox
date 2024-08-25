@@ -18,12 +18,10 @@ namespace Toolbox.Editor
                 BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
-
         private static readonly MethodInfo validateAssignmentMethod;
         private static readonly MethodInfo appendFoldoutValueMethod;
 
         private static readonly int dragAndDropHash = "customDragAndDrop".GetHashCode();
-
 
         public static Object ValidateAssignment(Object[] references, SerializedProperty property, Type type, bool exactType)
         {

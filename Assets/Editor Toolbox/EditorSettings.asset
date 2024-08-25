@@ -15,7 +15,7 @@ MonoBehaviour:
   useToolboxHierarchy: 1
   drawHorizontalLines: 1
   showSelectionsCount: 1
-  rowDataTypes: 0000000001000000020000000300000004000000
+  rowDataTypes: 05000000000000000100000004000000
   useToolboxFolders: 1
   largeIconScale: 0.8
   smallIconScale: 0.7
@@ -46,6 +46,8 @@ MonoBehaviour:
     largeIcon: {fileID: 2800000, guid: 6315862a85e61a44e947fbd4b1b23e11, type: 3}
     smallIcon: {fileID: 2800000, guid: e99d63b63394eba4aaf10385704d0ef3, type: 3}
     iconName: 
+  useToolboxSceneView: 1
+  selectorKey: 9
   useToolboxDrawers: 1
   forceDefaultLists: 0
   decoratorDrawerHandlers:
@@ -67,11 +69,13 @@ MonoBehaviour:
   - typeReference: Toolbox.Editor.Drawers.ImageAreaAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.IndentAreaAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.LabelAttributeDrawer, Toolbox.Editor
+  - typeReference: Toolbox.Editor.Drawers.LabelWidthAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.LineAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.SpaceAreaAttributeDrawer, Toolbox.Editor
   conditionDrawerHandlers:
   - typeReference: Toolbox.Editor.Drawers.DisableAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.DisableIfAttributeDrawer, Toolbox.Editor
+  - typeReference: Toolbox.Editor.Drawers.DisableInEditModeAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.DisableInPlayModeAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.EnableIfAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.HideAttributeDrawer, Toolbox.Editor

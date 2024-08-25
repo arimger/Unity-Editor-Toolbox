@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "Sample Scriptable Object")]
+using Toolbox.Attributes;
+
+[CreateInWizard]
 public class SampleScriptableObject : ScriptableObject
 {
     public bool var1;

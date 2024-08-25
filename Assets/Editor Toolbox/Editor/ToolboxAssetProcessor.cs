@@ -10,7 +10,7 @@ namespace Toolbox.Editor
             if (ToolboxManager.Settings &&
                 ToolboxManager.SettingsGuid == AssetDatabase.AssetPathToGUID(assetPath))
             {
-                ToolboxManager.InitializeSettings(null);
+                ToolboxManager.TryInitializeSettings(null);
             }
 
             return AssetDeleteResult.DidNotDelete;

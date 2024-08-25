@@ -1,0 +1,19 @@
+name: Update UPM branch (develop)
+on:
+  push:
+    branches:
+    - develop
+jobs:
+  split-upm:
+    name: split upm branch
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: split upm branch
+      run: |
+        git subtree split -P "$PKG_ROOT" -b upm-dev
+        git push -u origin upm-dev
+      env:
+        PKG_ROOT: 'Assets/Editor Toolbox'

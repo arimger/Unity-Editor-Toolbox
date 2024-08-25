@@ -18,6 +18,7 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         private static readonly ControlDataStorage<Vector2> storage;
 
+        private static float lastFetchedWidth = 0.0f;
 
         private void HandleScrollView(float fixedHeight)
         {
@@ -29,37 +30,59 @@ namespace Toolbox.Editor.Drawers
             storage.AppendItem(controlId, newScroll);
         }
 
+        private GUIStyle GetStyle(GroupStyle style)
+        {
+            switch (style)
+            {
+                default:
+                case GroupStyle.Round:
+                    return Style.roundGroupBackgroundStyle;
+                case GroupStyle.Boxed:
+                    return Style.boxedGroupBackgroundStyle;
+            }
+        }
 
         protected override void OnGuiBeginSafe(BeginHorizontalGroupAttribute attribute)
         {
-            var fixedWidth = EditorGUIUtility.currentViewWidth;
-            var fixedHeight = attribute.Height;
-            EditorGUIUtility.labelWidth = fixedWidth * attribute.LabelToWidthRatio;
-            EditorGUIUtility.fieldWidth = fixedWidth * attribute.FieldToWidthRatio;
+            if (GuiLayoutUtility.TryGetLayoutWidth(out var layoutWidth))
+            {
+                lastFetchedWidth = layoutWidth;
+            }
 
-            ToolboxLayoutHandler.BeginVertical(Style.groupBackgroundStyle);
+            var style = GetStyle(attribute.Style);
+            ToolboxLayoutHandler.BeginVertical(style);
             if (attribute.HasLabel)
             {
                 GUILayout.Label(attribute.Label, EditorStyles.boldLabel);
             }
 
-            HandleScrollView(fixedHeight);
+            EditorGUIUtility.labelWidth = attribute.LabelWidth;
+            if (attribute.ControlFieldWidth && attribute.ElementsInLayout > 0)
+            {
+                var width = lastFetchedWidth;
+                width -= attribute.WidthOffset;
+                width -= (attribute.LabelWidth + attribute.WidthOffsetPerElement + EditorGUIUtility.standardVerticalSpacing * 4) * attribute.ElementsInLayout;
+                width /= attribute.ElementsInLayout;
+                EditorGUIUtility.fieldWidth = width;
+            }
+
+            HandleScrollView(attribute.Height);
             ToolboxLayoutHandler.BeginHorizontal();
         }
 
-
         private static class Style
         {
-            internal static readonly GUIStyle groupBackgroundStyle;
+            internal static readonly GUIStyle roundGroupBackgroundStyle;
+            internal static readonly GUIStyle boxedGroupBackgroundStyle;
             internal static readonly GUIStyle scrollViewGroupStyle;
 
             static Style()
             {
-#if UNITY_2019_3_OR_NEWER
-                groupBackgroundStyle = new GUIStyle("helpBox")
-#else
-                groupBackgroundStyle = new GUIStyle("box")
-#endif
+                roundGroupBackgroundStyle = new GUIStyle("helpBox")
+                {
+                    padding = new RectOffset(13, 12, 5, 5)
+                };
+                boxedGroupBackgroundStyle = new GUIStyle("box")
                 {
                     padding = new RectOffset(13, 12, 5, 5)
                 };

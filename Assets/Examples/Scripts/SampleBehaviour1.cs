@@ -11,13 +11,17 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("Progress Bar", skinStyle: SkinStyle.Box)]
 
-    [ProgressBar(minValue: -10.0f, maxValue: 50.0f, HexColor = "#234DEA")]
-    public float progressBar = 25.4f;
+    [ProgressBar(minValue: -10.0f, maxValue: 50.0f, HexColor = "#234DEA", IsInteractable = true)]
+    public float progressBar1 = 25.4f;
+    [ProgressBar(minValue: -10.0f, maxValue: 50.0f, HexColor = "#32A852", IsInteractable = false)]
+    public float progressBar2 = 25.4f;
 
     [Label("MinMax Slider", skinStyle: SkinStyle.Box)]
 
     [MinMaxSlider(10.0f, 100.0f)]
-    public Vector2 var2;
+    public Vector2 minMaxVector;
+    [MinMaxSlider(1, 8)]
+    public Vector2Int minMaxVectorInt;
 
     [Label("Asset Preview", skinStyle: SkinStyle.Box)]
 
@@ -102,28 +106,8 @@ public class SampleBehaviour1 : MonoBehaviour
     public GameObject childReference;
     [PrefabObjectOnly]
     public GameObject prefabReference;
-
-    [Label("Label By Child", skinStyle: SkinStyle.Box)]
-
-    [LabelByChild("var3.var2")]
-    public SampleClass1 sampleField;
-    [LabelByChild("var2")]
-    public SampleClass1[] sampleFields;
-
-    [System.Serializable]
-    public class SampleClass1
-    {
-        public Material var1;
-        public KeyCode var2;
-        public SampleClass2 var3;
-    }
-
-    [System.Serializable]
-    public class SampleClass2
-    {
-        public int var1;
-        public string var2;
-    }
+    [NotPrefabObjectOnly(AllowInstancedPrefabs = false)]
+    public GameObject notPrefabReference;
 
     [Label("Formatted Number", skinStyle: SkinStyle.Box)]
 

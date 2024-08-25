@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-
+using System.Runtime.Serialization;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
@@ -8,11 +8,10 @@ namespace Toolbox.Editor
 {
     internal static class ReflectionUtility
     {
-        private readonly static Assembly editorAssembly = typeof(UnityEditor.Editor).Assembly;
+        private static readonly Assembly editorAssembly = typeof(UnityEditor.Editor).Assembly;
 
         public const BindingFlags allBindings = BindingFlags.Instance |
             BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
-
 
         /// <summary>
         /// Returns <see cref="MethodInfo"/> of the searched method within the Editor <see cref="Assembly"/>.
@@ -95,6 +94,32 @@ namespace Toolbox.Editor
             }
 
             return true;
+        }
+
+        internal static object CreateInstance(Type targetType, bool forceUninitializedInstance)
+        {
+            if (targetType == null)
+            {
+                return null;
+            }
+
+            if (forceUninitializedInstance)
+            {
+                return FormatterServices.GetUninitializedObject(targetType);
+            }
+
+            if (targetType.IsValueType)
+            {
+                return Activator.CreateInstance(targetType);
+            }
+
+            var defaultConstructor = targetType.GetConstructor(Type.EmptyTypes);
+            if (defaultConstructor != null)
+            {
+                return Activator.CreateInstance(targetType);
+            }
+
+            return FormatterServices.GetUninitializedObject(targetType);
         }
     }
 }

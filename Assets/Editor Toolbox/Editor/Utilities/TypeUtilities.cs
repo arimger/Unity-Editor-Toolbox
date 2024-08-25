@@ -15,14 +15,12 @@ namespace Toolbox.Editor
         internal static readonly Dictionary<int, TypesEditorCollection> editorCollections = new Dictionary<int, TypesEditorCollection>();
         internal static readonly Dictionary<string, Type> referenceTypesByNames = new Dictionary<string, Type>();
 
-
         internal static void ClearCache()
         {
             cachedCollections.Clear();
             editorCollections.Clear();
             referenceTypesByNames.Clear();
         }
-
 
         public static TypesCachedCollection GetCollection(Type parentType)
         {

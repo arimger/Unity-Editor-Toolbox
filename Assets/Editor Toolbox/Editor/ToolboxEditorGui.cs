@@ -20,14 +20,13 @@ namespace Toolbox.Editor
                 : new Rect(rect.x + padding / 2, rect.y, thickness, rect.height);
         }
 
-
         /// <summary>
         /// Draws horizontal line.
         /// Uses built-in layouting system.
         /// </summary>
-        public static void DrawLine(float thickness = 0.75f, float padding = 6.0f)
+        public static void DrawLine(float thickness = 0.75f, float padding = 6.0f, bool horizontal = true)
         {
-            DrawLine(thickness, padding, new Color(0.3f, 0.3f, 0.3f));
+            DrawLine(thickness, padding, new Color(0.3f, 0.3f, 0.3f), horizontal);
         }
 
         /// <summary>
@@ -199,21 +198,14 @@ namespace Toolbox.Editor
             GUI.DrawTexture(rect, texture, scaleMode, alphaBlend);
         }
 
-        public static void DrawMinMaxSlider(Rect rect, string label, ref float xValue, ref float yValue, float minValue, float maxValue)
+        public static void DrawMinMaxSlider(Rect rect, ref float xValue, ref float yValue, float minValue, float maxValue)
         {
-            DrawMinMaxSlider(rect, new GUIContent(label), ref xValue, ref yValue, minValue, maxValue);
-        }
-
-        public static void DrawMinMaxSlider(Rect rect, GUIContent label, ref float xValue, ref float yValue, float minValue, float maxValue)
-        {
-            rect = EditorGUI.PrefixLabel(rect, label);
-
             var fieldWidth = EditorGUIUtility.fieldWidth;
             var minFieldRect = new Rect(rect.xMin, rect.y, fieldWidth, rect.height);
             var maxFieldRect = new Rect(rect.xMax - fieldWidth, rect.y, fieldWidth, rect.height);
 
             //set slider rect between min and max fields + additional padding
-            var spacing = 8.0f;
+            const float spacing = 8.0f;
             var sliderRect = Rect.MinMaxRect(minFieldRect.xMax + spacing,
                                              rect.yMin,
                                              maxFieldRect.xMin - spacing,
@@ -227,6 +219,17 @@ namespace Toolbox.Editor
             //values validation (xValue can't be higher than yValue etc.)
             xValue = Mathf.Clamp(xValue, minValue, Mathf.Min(maxValue, yValue));
             yValue = Mathf.Clamp(yValue, Mathf.Max(minValue, xValue), maxValue);
+        }
+
+        public static void DrawMinMaxSlider(Rect rect, string label, ref float xValue, ref float yValue, float minValue, float maxValue)
+        {
+            DrawMinMaxSlider(rect, new GUIContent(label), ref xValue, ref yValue, minValue, maxValue);
+        }
+
+        public static void DrawMinMaxSlider(Rect rect, GUIContent label, ref float xValue, ref float yValue, float minValue, float maxValue)
+        {
+            rect = EditorGUI.PrefixLabel(rect, label);
+            DrawMinMaxSlider(rect, ref xValue, ref yValue, minValue, maxValue);
         }
 
         public static void BoldLabel(Rect rect, string label)
@@ -243,7 +246,6 @@ namespace Toolbox.Editor
     public static partial class ToolboxEditorGui
     {
         private static EditorWindow lastTargetedWindow;
-
 
         /// <summary>
         /// Checks if user is still focusing the proper (searchable) window.
@@ -271,7 +273,6 @@ namespace Toolbox.Editor
                 }
             }
         }
-
 
         public static void DrawSearchablePopup(Rect rect, GUIContent label, int currentIndex, string[] options, Action<int> onSelect)
         {
@@ -527,7 +528,12 @@ namespace Toolbox.Editor
                 enterChildren = false;
                 var childProperty = targetProperty.Copy();
                 //handle current property using Toolbox features
+                EditorGUI.BeginChangeCheck();
                 drawElementAction(childProperty);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    break;
+                }
             }
         }
 
