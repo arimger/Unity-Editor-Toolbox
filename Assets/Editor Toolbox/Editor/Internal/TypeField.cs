@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using UnityEditor;
 using UnityEngine;
 
@@ -14,7 +13,6 @@ namespace Toolbox.Editor.Internal
         private TypeConstraintContext constraintContext;
         private TypeAppearanceContext appearanceContext;
 
-
         public TypeField() : this(null, null)
         { }
 
@@ -27,7 +25,6 @@ namespace Toolbox.Editor.Internal
             this.appearanceContext = appearanceContext ?? new TypeAppearanceContext(this.constraintContext, TypeGrouping.None, true);
         }
 
-
         private Type RetriveSelectedType(IReadOnlyList<Type> types, int selectedIndex, bool includeEmptyValue)
         {
             if (includeEmptyValue)
@@ -38,6 +35,18 @@ namespace Toolbox.Editor.Internal
             return selectedIndex >= 0 ? types[selectedIndex] : null;
         }
 
+        private void DrawTypeConflictWarning(Rect position)
+        {
+            const float warningSpace = 18.0f;
+
+            var warningPosition = position;
+            warningPosition.xMax = position.xMin;
+            warningPosition.xMin -= warningSpace;
+            var warningIcon = EditorGuiUtility.GetHelpIcon(MessageType.Warning);
+            var warningLabel = new GUIContent(warningIcon, "Currently active type is not available from the selection. " +
+                "It may be caused by a conflict between the type filter and cached data.");
+            GUI.Label(warningPosition, warningLabel);
+        }
 
         public void OnGui(Rect position, bool addSearchField, Action<Type> onSelect)
         {
@@ -46,12 +55,19 @@ namespace Toolbox.Editor.Internal
 
         public void OnGui(Rect position, bool addSearchField, Action<Type> onSelect, Type activeType)
         {
+            var addEmptyValue = AppearanceContext.AddEmptyValue;
+
             var collection = TypeUtilities.GetCollection(AppearanceContext);
             var values = collection.Values;
             var labels = collection.Labels;
             var index = collection.IndexOf(activeType);
 
-            var addEmptyValue = AppearanceContext.AddEmptyValue;
+            var selectedType = RetriveSelectedType(values, index, addEmptyValue);
+            if (activeType != selectedType)
+            {
+                DrawTypeConflictWarning(position);
+            }
+
             if (addSearchField)
             {
                 var buttonLabel = new GUIContent(labels[index]);
@@ -81,7 +97,6 @@ namespace Toolbox.Editor.Internal
             ConstraintContext.ApplyTarget(parentType);
             OnGui(position, addSearchField, onSelect, activeType);
         }
-
 
         public TypeConstraintContext ConstraintContext
         {
