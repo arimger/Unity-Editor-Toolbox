@@ -7,6 +7,12 @@ namespace Toolbox.Editor.ContextMenu.Operations
     {
         internal static CopySerializedRererenceCache Cache { get; private set; }
 
+        [InitializeOnLoadMethod]
+        private static void Initialize()
+        {
+            Cache = null;
+        }
+
         public bool IsVisible(SerializedProperty property)
         {
 #if UNITY_2021_3_OR_NEWER
@@ -38,11 +44,5 @@ namespace Toolbox.Editor.ContextMenu.Operations
         }
 
         public GUIContent Label => new GUIContent("Copy Serialize Reference");
-
-        [InitializeOnLoadMethod]
-        private static void Initialize()
-        {
-            Cache = null;
-        }
     }
 }

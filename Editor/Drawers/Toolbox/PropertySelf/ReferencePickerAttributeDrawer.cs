@@ -58,7 +58,7 @@ namespace Toolbox.Editor.Drawers
                         {
                             using (var so = new SerializedObject(target))
                             {
-                                SerializedProperty sp = so.FindProperty(property.propertyPath);
+                                var sp = so.FindProperty(property.propertyPath);
                                 UpdateTypeProperty(sp, type, attribute);
                             }
                         }

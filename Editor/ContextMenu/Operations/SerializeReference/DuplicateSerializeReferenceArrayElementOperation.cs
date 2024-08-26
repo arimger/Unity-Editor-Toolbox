@@ -5,8 +5,6 @@ namespace Toolbox.Editor.ContextMenu.Operations
 {
     internal class DuplicateSerializeReferenceArrayElementOperation : IContextMenuOperation
     {
-        public GUIContent Label => new GUIContent("Duplicate Serialize Reference Array Element");
-
         public bool IsVisible(SerializedProperty property)
         {
 #if UNITY_2021_3_OR_NEWER
@@ -24,6 +22,7 @@ namespace Toolbox.Editor.ContextMenu.Operations
 
         public void Perform(SerializedProperty property)
         {
+#if UNITY_2021_3_OR_NEWER
             var sourceProperty = property.Copy();
             sourceProperty.serializedObject.Update();
             var sourceValue = sourceProperty.managedReferenceValue;
@@ -41,6 +40,9 @@ namespace Toolbox.Editor.ContextMenu.Operations
             }
 
             sourceProperty.serializedObject.ApplyModifiedProperties();
+#endif
         }
+
+        public GUIContent Label => new GUIContent("Duplicate Serialize Reference Array Element");
     }
 }
