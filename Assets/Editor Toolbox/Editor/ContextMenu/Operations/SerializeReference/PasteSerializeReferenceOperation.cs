@@ -38,6 +38,7 @@ namespace Toolbox.Editor.ContextMenu.Operations
 
         public void Perform(SerializedProperty property)
         {
+#if UNITY_2019_3_OR_NEWER
             var targetProperty = property.Copy();
             try
             {
@@ -47,6 +48,7 @@ namespace Toolbox.Editor.ContextMenu.Operations
             }
             catch (Exception)
             { }
+#endif
         }
 
         public GUIContent Label => new GUIContent("Paste Serialize Reference");
