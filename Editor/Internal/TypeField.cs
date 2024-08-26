@@ -37,11 +37,12 @@ namespace Toolbox.Editor.Internal
 
         private void DrawTypeConflictWarning(Rect position)
         {
-            const float warningSpace = 18.0f;
+            const float warningSpace = 20.0f;
 
             var warningPosition = position;
             warningPosition.xMax = position.xMin;
             warningPosition.xMin -= warningSpace;
+            warningPosition.y += EditorGUIUtility.standardVerticalSpacing;
             var warningIcon = EditorGuiUtility.GetHelpIcon(MessageType.Warning);
             var warningLabel = new GUIContent(warningIcon, "Currently active type is not available from the selection. " +
                 "It may be caused by a conflict between the type filter and cached data.");

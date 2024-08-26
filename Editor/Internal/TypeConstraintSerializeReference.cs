@@ -5,11 +5,13 @@ using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor.Internal
 {
-    public class TypeConstraintReference : TypeConstraintContext
+    /// <summary>
+    /// Dedicated <see cref="TypeConstraintContext"/> for SerializeReference-based types.
+    /// </summary>
+    public class TypeConstraintSerializeReference : TypeConstraintContext
     {
-        public TypeConstraintReference(Type targetType) : base(targetType)
+        public TypeConstraintSerializeReference(Type targetType) : base(targetType)
         { }
-
 
         public override bool IsSatisfied(Type type)
         {
@@ -25,7 +27,7 @@ namespace Toolbox.Editor.Internal
 
         public override bool Equals(object other)
         {
-            return other is TypeConstraintReference constraint &&
+            return other is TypeConstraintSerializeReference constraint &&
                    base.Equals(other) &&
                    EqualityComparer<Type>.Default.Equals(targetType, constraint.targetType);
         }
