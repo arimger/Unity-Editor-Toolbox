@@ -7,6 +7,10 @@ namespace Toolbox.Editor.Tests
     {
         public int var1;
         public TestNestedObject1 var2;
+#if UNITY_2019_3_OR_NEWER
+        [SerializeReference]
+        public ITestInterface var3;
+#endif
 
         public bool BoolValue
         {
@@ -22,6 +26,9 @@ namespace Toolbox.Editor.Tests
         {
             return arg + 2.0005;
         }
+
+        public interface ITestInterface
+        { }
 
         [Serializable]
         public class TestNestedObject1
@@ -49,6 +56,12 @@ namespace Toolbox.Editor.Tests
 
             public void DoSomething()
             { }
+        }
+
+        [Serializable]
+        public class TestNestedObject3 : ITestInterface
+        {
+            public float var1;
         }
     }
 }
