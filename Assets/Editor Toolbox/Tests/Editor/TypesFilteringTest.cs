@@ -139,7 +139,7 @@ namespace Toolbox.Editor.Tests
         [Test]
         public void TestReferenceConstraintPass1()
         {
-            var constraint = new TypeConstraintReference(typeof(Component));
+            var constraint = new TypeConstraintSerializeReference(typeof(Component));
             var collection = TypeUtilities.GetCollection(constraint);
             Assert.AreEqual(0, collection.Values.Count);
         }
@@ -147,7 +147,7 @@ namespace Toolbox.Editor.Tests
         [Test]
         public void TestReferenceConstraintPass2()
         {
-            var constraint = new TypeConstraintReference(typeof(ClassBase));
+            var constraint = new TypeConstraintSerializeReference(typeof(ClassBase));
             var collection = TypeUtilities.GetCollection(constraint);
             Assert.IsTrue(collection.Contains(typeof(ClassWithInterface1)));
 #pragma warning disable CS0612
@@ -161,7 +161,7 @@ namespace Toolbox.Editor.Tests
         [Test]
         public void TestReferenceConstraintPass3()
         {
-            var constraint = new TypeConstraintReference(typeof(Interface1));
+            var constraint = new TypeConstraintSerializeReference(typeof(Interface1));
             var collection = TypeUtilities.GetCollection(constraint);
             Assert.IsTrue(collection.Contains(typeof(ClassWithInterface1)));
 #pragma warning disable CS0612

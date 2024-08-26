@@ -12,7 +12,7 @@ namespace Toolbox.Editor.Drawers
     {
         private const float labelWidthOffset = -80.0f;
 
-        private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintReference(null);
+        private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintSerializeReference(null);
         private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
         private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
 

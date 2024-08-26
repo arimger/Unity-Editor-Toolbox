@@ -7,12 +7,10 @@ namespace Toolbox.Editor.Internal
     {
         protected Type targetType;
 
-
         public TypeConstraintContext(Type targetType)
         {
             this.targetType = targetType;
         }
-
 
         public virtual bool IsSatisfied(Type type)
         {
@@ -44,7 +42,6 @@ namespace Toolbox.Editor.Internal
             hashCode = hashCode * -1521134295 + IsOrdered.GetHashCode();
             return hashCode;
         }
-
 
         public Type TargetType => targetType;
         public Comparison<Type> Comparer { get; set; } = (t1, t2) => t1.Name.CompareTo(t2.Name);
