@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -15,13 +16,38 @@ namespace UnityEngine
         [SerializeField, Disable]
         private string path;
 
+        internal static bool IsAssetValid(DefaultAsset asset, out string path)
+        {
+            path = asset != null ? AssetDatabase.GetAssetPath(asset) : null;
+            if (path == null)
+            {
+                return true;
+            }
+
+            //NOTE: assume that directory can't have any extension
+            var extension = System.IO.Path.GetExtension(path);
+            if (string.IsNullOrEmpty(extension))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         { }
 
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
 #if UNITY_EDITOR
-            path = directoryAsset ? AssetDatabase.GetAssetPath(directoryAsset) : null;
+            if (IsAssetValid(directoryAsset, out var assetPath))
+            {
+                DirectoryPath = assetPath;
+                return;
+            }
+
+            DirectoryAsset = null;
+            DirectoryPath = null;
 #endif
         }
 
@@ -32,6 +58,13 @@ namespace UnityEngine
             set => directoryAsset = value;
         }
 #endif
+        public string DirectoryPath
+        {
+            get => path;
+            set => path = value;
+        }
+
+        [Obsolete("Use " + nameof(DirectoryPath) + " instead.")]
         public string Path
         {
             get => path;

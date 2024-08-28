@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+
 using UnityEditor;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Toolbox.Editor.Drawers
             label = EditorGUI.BeginProperty(position, label, property);
             var fieldPosition = EditorGUI.PrefixLabel(position, label);
             var ticksProperty = property.FindPropertyRelative("ticks");
-            DateTime dateTime = new DateTime(ticksProperty.longValue);
+            var dateTime = new DateTime(ticksProperty.longValue);
             EditorGUI.BeginChangeCheck();
             var dateTimeString = EditorGUI.DelayedTextField(fieldPosition, dateTime.ToString());
             if (EditorGUI.EndChangeCheck())

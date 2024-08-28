@@ -7,7 +7,6 @@ namespace Toolbox.Editor.Drawers
     {
         private readonly string tooltip;
 
-
         public MaterialCompactTextureDrawer() : this(string.Empty)
         { }
 
@@ -15,7 +14,6 @@ namespace Toolbox.Editor.Drawers
         {
             this.tooltip = tooltip;
         }
-
 
         protected override float GetPropertyHeightSafe(MaterialProperty prop, string label, MaterialEditor editor)
         {

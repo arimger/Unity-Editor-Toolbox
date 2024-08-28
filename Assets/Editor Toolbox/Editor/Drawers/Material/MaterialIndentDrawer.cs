@@ -7,7 +7,6 @@ namespace Toolbox.Editor.Drawers
     {
         private readonly int indent;
 
-
         public MaterialIndentDrawer() : this(1)
         { }
 
@@ -15,7 +14,6 @@ namespace Toolbox.Editor.Drawers
         {
             this.indent = (int)indent;
         }
-
 
         protected override float GetPropertyHeightSafe(MaterialProperty prop, string label, MaterialEditor editor)
         {
