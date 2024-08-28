@@ -7,12 +7,13 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     using Toolbox.Editor.Internal;
+    using Toolbox.Editor.Internal.Types;
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
         private const float labelWidthOffset = -80.0f;
 
-        private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintReference(null);
+        private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintSerializeReference(null);
         private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
         private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
 
@@ -42,7 +43,7 @@ namespace Toolbox.Editor.Drawers
 
         private void CreateTypeProperty(SerializedProperty property, Type parentType, ReferencePickerAttribute attribute, Rect position)
         {
-            TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
+            TypeUtility.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
             typeField.OnGui(position, attribute.AddTextSearchField, (type) =>
             {
                 try
@@ -58,7 +59,7 @@ namespace Toolbox.Editor.Drawers
                         {
                             using (var so = new SerializedObject(target))
                             {
-                                SerializedProperty sp = so.FindProperty(property.propertyPath);
+                                var sp = so.FindProperty(property.propertyPath);
                                 UpdateTypeProperty(sp, type, attribute);
                             }
                         }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    using Toolbox.Editor.Internal;
+    using Toolbox.Editor.Internal.Types;
 
     [CustomPropertyDrawer(typeof(TypeConstraintAttribute), true)]
     [CustomPropertyDrawer(typeof(SerializedType))]
@@ -14,7 +14,6 @@ namespace Toolbox.Editor.Drawers
         private static readonly TypeConstraintContext sharedConstraint = new TypeConstraintStandard();
         private static readonly TypeAppearanceContext sharedAppearance = new TypeAppearanceContext(sharedConstraint, TypeGrouping.None, true);
         private static readonly TypeField typeField = new TypeField(sharedConstraint, sharedAppearance);
-
 
         private bool IsDefaultField(TypeConstraintAttribute attribute)
         {
@@ -65,7 +64,6 @@ namespace Toolbox.Editor.Drawers
             sharedAppearance.TypeGrouping = attribute.TypeGrouping;
         }
 
-
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             return EditorStyles.popup.CalcHeight(GUIContent.none, 0);
@@ -100,7 +98,6 @@ namespace Toolbox.Editor.Drawers
 
             EditorGUI.EndProperty();
         }
-
 
         ///<inheritdoc/>
         public override bool IsPropertyValid(SerializedProperty property)

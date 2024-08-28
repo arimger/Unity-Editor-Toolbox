@@ -13,7 +13,6 @@ namespace Toolbox.Editor.Tests
 
         private ToolboxEditorList list;
 
-
         [OneTimeSetUp]
         public void SetUp()
         {

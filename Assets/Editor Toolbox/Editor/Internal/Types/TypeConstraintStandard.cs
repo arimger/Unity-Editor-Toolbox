@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace Toolbox.Editor.Internal
+namespace Toolbox.Editor.Internal.Types
 {
     public class TypeConstraintStandard : TypeConstraintContext
     {

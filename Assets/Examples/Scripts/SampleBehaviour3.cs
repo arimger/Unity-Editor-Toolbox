@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [ExecuteAlways]
-[AddComponentMenu("Editor Toolbox/Cheat Sheet 3 (Condition)")]
+[AddComponentMenu("Editor Toolbox/Cheat Sheet 3 (Toolbox Conditions)")]
 public class SampleBehaviour3 : MonoBehaviour
 {
     [Label("Show If", skinStyle: SkinStyle.Box)]
