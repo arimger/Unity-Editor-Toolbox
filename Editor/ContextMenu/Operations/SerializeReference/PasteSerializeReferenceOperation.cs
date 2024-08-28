@@ -5,9 +5,29 @@ using UnityEngine;
 
 namespace Toolbox.Editor.ContextMenu.Operations
 {
-
     internal class PasteSerializeReferenceOperation : IContextMenuOperation
     {
+        private bool IsAssignmentValid(SerializedProperty property, object newValue)
+        {
+            if (newValue == null)
+            {
+                return true;
+            }
+
+            if (!TypeUtility.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFieldTypename, out var referenceType))
+            {
+                return true;
+            }
+
+            var newValueType = newValue.GetType();
+            if (TypeUtility.IsTypeAssignableFrom(referenceType, newValueType))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private object GetCachedManagedReferenceValue()
         {
             var cachedData = CopySerializeReferenceOperation.Cache;
@@ -42,8 +62,15 @@ namespace Toolbox.Editor.ContextMenu.Operations
             var targetProperty = property.Copy();
             try
             {
+                var newValue = GetCachedManagedReferenceValue();
+                if (!IsAssignmentValid(targetProperty, newValue))
+                {
+                    ToolboxEditorLog.LogWarning("Cannot perform paste operation, types are mismatched.");
+                    return;
+                }
+
                 targetProperty.serializedObject.Update();
-                targetProperty.managedReferenceValue = GetCachedManagedReferenceValue();
+                targetProperty.managedReferenceValue = newValue;
                 targetProperty.serializedObject.ApplyModifiedProperties();
             }
             catch (Exception)

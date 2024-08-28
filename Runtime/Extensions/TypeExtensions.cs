@@ -6,16 +6,16 @@ namespace Toolbox
     public static class TypeExtensions
     {
         /// <summary>
-        /// Generic equivalent of the <see cref="Type.IsSubclassOf(Type)"/>.
+        /// Generic definition equivalent of the <see cref="Type.IsSubclassOf(Type)"/>.
         /// </summary>
-        public static bool IsSubclassOfGeneric(this Type toCheck, Type generic)
+        public static bool IsSubclassOfGenericDefinition(this Type toCheck, Type genericDefinition)
         {
             while (toCheck != null && toCheck != typeof(object))
             {
                 var current = toCheck.IsGenericType
                     ? toCheck.GetGenericTypeDefinition()
                     : toCheck;
-                if (generic == current)
+                if (genericDefinition == current)
                 {
                     return true;
                 }
@@ -27,18 +27,33 @@ namespace Toolbox
         }
 
         /// <summary>
-        /// Generic equivalent of the <see cref="Type.IsAssignableFrom(Type)"/>.
+        /// Generic definition equivalent of the <see cref="Type.IsAssignableFrom(Type)"/>.
         /// </summary>
-        public static bool IsAssignableFromGeneric(this Type generic, Type toCheck)
+        public static bool IsAssignableFromGenericDefinition(this Type genericDefinition, Type toCheck)
         {
             while (toCheck != null && toCheck != typeof(object))
             {
                 var current = toCheck.IsGenericType
-                    ? toCheck.GetGenericTypeDefinition()
-                    : toCheck;
-                if (generic == current)
+                   ? toCheck.GetGenericTypeDefinition()
+                   : toCheck;
+
+                if (genericDefinition == current)
                 {
                     return true;
+                }
+
+                var interfaces = toCheck.GetInterfaces();
+                foreach (var interfaceType in interfaces)
+                {
+                    if (!interfaceType.IsGenericType)
+                    {
+                        continue;
+                    }
+
+                    if (genericDefinition == interfaceType.GetGenericTypeDefinition())
+                    {
+                        return true;
+                    }
                 }
 
                 toCheck = toCheck.BaseType;
@@ -57,7 +72,7 @@ namespace Toolbox
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var isSubclass = baseType.IsGenericType
                 ? (Func<Type, bool>)
-                  ((type) => type.IsSubclassOfGeneric(baseType))
+                  ((type) => type.IsSubclassOfGenericDefinition(baseType))
                 : ((type) => type.IsSubclassOf(baseType));
 
             foreach (var assembly in assemblies)
@@ -83,7 +98,7 @@ namespace Toolbox
         public static Type GetEnumeratedType(this Type type)
         {
             var elementType = type.GetElementType();
-            if (null != elementType)
+            if (elementType != null)
             {
                 return elementType;
             }
