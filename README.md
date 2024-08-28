@@ -694,6 +694,41 @@ public class ClassWithInterface3 : ClassWithInterfaceBase
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/referencepicker.png)
 
+##### SerializeReference generics support
+
+```csharp
+[SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.None)]
+public IGenericInterface<string> genericString;
+[SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.None)]
+public IGenericInterface<int> genericInt;
+[SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.None)]
+public IGenericInterface<bool> genericBool;
+
+public interface IGenericInterface<TValue>
+{
+	TValue Value { get; }
+}
+
+public class GenericInterfaceImplementation<TValue> : IGenericInterface<TValue>
+{
+	[SerializeField]
+	private TValue value;
+
+	public TValue Value => value;
+}
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializereferencegenerics.png)
+
+##### SerializeReference context menu operations
+
+You can use few custom context menu operations for the SerializeReference-based fields:
+- Copy Serialize Reference: creates deep copy of linked reference
+- Paste Serialize Reference: allows to paste preserved copy to a fields
+- Duplicate Serialize Reference: allows to duplicate linked reference (works only on collection elements)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializereferenceoperations.png)
+
 #### Custom Editors <a name="toolboxeditors"></a>
 
 If you want to create a custom **UnityEditor.Editor** for your components and still use Toolbox-related features be sure to inherit from the **Toolbox.Editor.ToolboxEditor** class.
