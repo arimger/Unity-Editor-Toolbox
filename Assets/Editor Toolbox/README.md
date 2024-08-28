@@ -979,7 +979,14 @@ Copy and paste all components from/to particular GameObject.
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/utils.png)
 
-#### ScriptableObject Creation Wizard
+#### Wizards
+
+If you want to create custom wizards and still utilize Toolbox-related features then feel free to use the **ToolboxWizard** class.
+Works in similar way to Unity's ScriptableWizard.
+
+> Editor Toolbox/Editor/Wizards/ToolboxWizard.cs
+
+##### ScriptableObject Creation Wizard
 
 Create multiple ScriptableObjects at once.
 Wizard will allow only ScritpableObjects marked with **[Toolbox.Attributes.CreateInWizard]** or **[UnityEngine.CreateAssetMenu]** attributes.
