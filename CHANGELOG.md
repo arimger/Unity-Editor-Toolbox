@@ -5,6 +5,7 @@
 - Context menu operations for [SerializeReference] properties (Copy, Paste, Duplicate), all operations are based on a deep copy of the source reference
 - Basic support for generic references while using [SerializeReference] & [ReferencePicker], can be utilized in Unity 2023+
 - More unit tests (PropertyUtility, filtering generic types)
+- Validation of assigned assets in the SerializedDirectory class
 
 ### Changed:
 - Fix duplicated initialization process forced by the OnValidate call
