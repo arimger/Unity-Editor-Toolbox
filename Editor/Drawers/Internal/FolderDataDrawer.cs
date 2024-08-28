@@ -11,7 +11,6 @@ namespace Toolbox.Editor.Drawers
         private const int largeIconPickedId = 1001;
         private const int smallIconPickedId = 1002;
 
-
         private void DrawFolderByNameIcon(Rect rect)
         {
             var diff = rect.height - Style.dataByNameLabelStyle.fixedHeight;
@@ -66,7 +65,6 @@ namespace Toolbox.Editor.Drawers
         {
             return property.propertyPath.GetHashCode() + property.serializedObject.GetHashCode();
         }
-
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -154,14 +152,11 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.indentLevel++;
 
             var rawPropertyHeight = propertyPosition.height + Style.spacing;
-            var summaryFieldHeight = rawPropertyHeight;
 
             propertyPosition.y += rawPropertyHeight;
-            summaryFieldHeight += rawPropertyHeight;
             //draw the folder data type property
             EditorGUI.PropertyField(propertyPosition, dataTypeProperty, new GUIContent("Type"), false);
             propertyPosition.y += rawPropertyHeight;
-            summaryFieldHeight += rawPropertyHeight;
 
             //decide what property should be drawn depending on the folder data type
             if (isPathBased)
@@ -169,20 +164,17 @@ namespace Toolbox.Editor.Drawers
                 propertyPosition.height = EditorGUI.GetPropertyHeight(pathProperty);
                 EditorGUI.PropertyField(propertyPosition, pathProperty, false);
                 propertyPosition.y += propertyPosition.height + Style.spacing;
-                summaryFieldHeight += propertyPosition.height + Style.spacing;
                 propertyPosition.height = Style.height;
             }
             else
             {
                 EditorGUI.PropertyField(propertyPosition, nameProperty, false);
                 propertyPosition.y += rawPropertyHeight;
-                summaryFieldHeight += rawPropertyHeight;
             }
 
             propertyPosition.height = EditorGUI.GetPropertyHeight(tooltipProperty);
             EditorGUI.PropertyField(propertyPosition, tooltipProperty, false);
             propertyPosition.y += propertyPosition.height + Style.spacing;
-            summaryFieldHeight += propertyPosition.height + Style.spacing;
             propertyPosition.height = Style.height;
 
             //adjust rect for folder icons + button strip
@@ -243,7 +235,6 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.indentLevel--;
             EditorGUI.EndProperty();
         }
-
 
         private static class Style
         {

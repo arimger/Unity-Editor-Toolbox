@@ -29,15 +29,14 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.LabelField(position, content);
         }
 
-
-        public override sealed float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        public sealed override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
             return IsPropertyValid(prop)
                 ? GetPropertyHeightSafe(prop, label, editor)
                 : base.GetPropertyHeight(prop, label, editor);
         }
 
-        public override sealed void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
+        public sealed override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
         {
             if (IsPropertyValid(prop))
             {
