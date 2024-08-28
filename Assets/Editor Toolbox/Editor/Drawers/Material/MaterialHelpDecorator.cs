@@ -8,7 +8,6 @@ namespace Toolbox.Editor.Drawers
         private readonly string message;
         private readonly MessageType type;
 
-
         public MaterialHelpDecorator(string message) : this(message, 1)
         {
             this.message = message;
@@ -19,7 +18,6 @@ namespace Toolbox.Editor.Drawers
             this.message = message;
             this.type = (MessageType)type;
         }
-
 
         protected override float GetPropertyHeightSafe(MaterialProperty prop, string label, MaterialEditor editor)
         {
@@ -32,7 +30,6 @@ namespace Toolbox.Editor.Drawers
         {
             EditorGUI.HelpBox(position, message, type);
         }
-
 
         private static class Style
         {

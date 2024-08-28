@@ -1816,7 +1816,11 @@ MonoBehaviour:
     scenePath: Assets/Examples/Scenes/SampleScene.unity
     buildIndex: 0
   dictionary:
-    pairs: []
+    pairs:
+    - key: 0
+      value: {fileID: 2037155952}
+    - key: 1
+      value: {fileID: 1972418676}
     error: 0
   date:
     ticks: 637820719200000000

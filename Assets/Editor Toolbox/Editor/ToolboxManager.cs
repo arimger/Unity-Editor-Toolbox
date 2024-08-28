@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.IO;
+
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -91,7 +92,7 @@ namespace Toolbox.Editor
 
         private static string GetSettingsFileGuid()
         {
-            var guids = AssetDatabase.FindAssets("t:" + settingsType);
+            var guids = AssetDatabase.FindAssets($"t:{settingsType}");
             string targetGuid = null;
             //try to find a settings file in a non-package directory
             for (var i = guids.Length - 1; i >= 0; i--)
@@ -99,13 +100,18 @@ namespace Toolbox.Editor
                 var guid = guids[i];
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 targetGuid = guid;
-                if (path.StartsWith("Assets"))
+                if (!IsDefaultSettingsPath(path))
                 {
                     break;
                 }
             }
 
             return targetGuid;
+        }
+
+        private static bool IsDefaultSettingsPath(string path)
+        {
+            return path.StartsWith("Packages");
         }
 
         [InitializeOnLoadMethod]
@@ -223,7 +229,7 @@ namespace Toolbox.Editor
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
 
-                        ToolboxEditorLog.LogInfo("Created a settings file at - " + relativePath);
+                        ToolboxEditorLog.LogInfo($"Created a settings file at - {relativePath}");
 
                         ReintializeProvider();
                     }
@@ -232,7 +238,13 @@ namespace Toolbox.Editor
                 }
 
                 EditorGUILayout.Space();
-                EditorGUILayout.LabelField("Settings file location - " + SettingsPath);
+                EditorGUILayout.LabelField($"Settings file location - {SettingsPath}");
+                if (IsDefaultSettingsPath(SettingsPath))
+                {
+                    EditorGUILayout.HelpBox("The currently displayed settings file is the default one, located in the packages directory. " +
+                        "This means all changes can be easily lost. Create a new file for better maintainability.", MessageType.Info);
+                }
+
                 EditorGUILayout.Space();
 
                 globalSettingsEditor.OnInspectorGUI();

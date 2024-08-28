@@ -7,12 +7,10 @@ namespace Toolbox.Editor.Drawers
     {
         protected readonly string togglePropertyName;
 
-
         protected MaterialConditionalDrawer(string togglePropertyName)
         {
             this.togglePropertyName = togglePropertyName;
         }
-
 
         protected override float GetPropertyHeightSafe(MaterialProperty prop, string label, MaterialEditor editor)
         {

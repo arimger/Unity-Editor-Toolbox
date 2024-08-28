@@ -8,7 +8,6 @@ namespace Toolbox.Editor.Drawers
         private readonly GUIContent header;
         private readonly float spacing;
 
-
         public MaterialTitleDecorator(string header) : this(header, 4.0f)
         { }
 
@@ -17,7 +16,6 @@ namespace Toolbox.Editor.Drawers
             this.header = new GUIContent(header);
             this.spacing = spacing;
         }
-
 
         protected override float GetPropertyHeightSafe(MaterialProperty prop, string label, MaterialEditor editor)
         {
