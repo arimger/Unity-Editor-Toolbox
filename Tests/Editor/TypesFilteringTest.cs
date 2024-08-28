@@ -1,13 +1,14 @@
 ﻿#pragma warning disable CS0612
 
 using NUnit.Framework;
+
 using System;
+
 using UnityEngine;
 
 namespace Toolbox.Editor.Tests
 {
     using Toolbox.Editor.Internal.Types;
-    using static Toolbox.Editor.Tests.TypesFilteringTest;
 
     public class TypesFilteringTest
     {
@@ -29,7 +30,7 @@ namespace Toolbox.Editor.Tests
         public class ClassWithInterface3 : ClassBase { }
         public class ClassWithInterface4<T> : ClassBase, Interface4<T> { }
         public class ClassWithInterface5 : ClassWithInterface4<int> { }
-        public class ClassWithInterface6: ClassWithInterface4<string> { }
+        public class ClassWithInterface6 : ClassWithInterface4<string> { }
         public class ClassWithInterface7<T> : ClassWithInterface4<T> { }
 
         [TestCase(typeof(ClassBase), 3)]
@@ -194,12 +195,17 @@ namespace Toolbox.Editor.Tests
             Assert.IsFalse(collection.Contains(typeof(Interface5)));
             Assert.IsFalse(collection.Contains(typeof(Interface6)));
             Assert.IsFalse(collection.Contains(typeof(Interface7<int>)));
-            Assert.IsTrue(collection.Contains(typeof(ClassWithInterface4<int>)));
             Assert.IsFalse(collection.Contains(typeof(ClassWithInterface4<string>)));
             Assert.IsTrue(collection.Contains(typeof(ClassWithInterface5)));
             Assert.IsFalse(collection.Contains(typeof(ClassWithInterface6)));
-            Assert.IsTrue(collection.Contains(typeof(ClassWithInterface7<int>)));
             Assert.IsFalse(collection.Contains(typeof(ClassWithInterface7<string>)));
+#if UNITY_2023_2_OR_NEWER
+            Assert.IsTrue(collection.Contains(typeof(ClassWithInterface7<int>)));
+            Assert.IsTrue(collection.Contains(typeof(ClassWithInterface4<int>)));
+#else
+            Assert.IsFalse(collection.Contains(typeof(ClassWithInterface7<int>)));
+            Assert.IsFalse(collection.Contains(typeof(ClassWithInterface4<int>)));
+#endif
         }
     }
 }
