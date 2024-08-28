@@ -810,11 +810,11 @@ Allows to serialize Types and pick them through a dedicated picker.
 
 ```csharp
 [TypeConstraint(typeof(Collider), AllowAbstract = false, AllowObsolete = false, TypeSettings = TypeSettings.Class, TypeGrouping = TypeGrouping.None)]
-public SerializedType var1;
+public SerializedType serializedType;
 
 public void Usage()
 {
-	var type = var1.Type;
+	System.Type type = serializedType.Type;
 }
 ```
 
@@ -825,11 +825,11 @@ public void Usage()
 Allows to serialize SceneAssets and use them in Runtime.
 
 ```csharp
-public SerializedScene scene;
+public SerializedScene serializedScene;
 
 public void Usage()
 {
-	UnityEngine.SceneManagement.SceneManager.LoadScene(scene.BuildIndex);
+	UnityEngine.SceneManagement.SceneManager.LoadScene(serializedScene.BuildIndex);
 }
 ```
 
@@ -837,7 +837,7 @@ public void Usage()
 
 ```csharp
 [SceneDetails]
-public SerializedScene scene;
+public SerializedScene serializedScene;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenedetails.png)
 
@@ -875,11 +875,29 @@ public void Usage()
 
 Allows to serialize DateTime.
 
+```csharp
+public SerializedDateTime serializedDateTime;
+
+public void Usage()
+{
+	System.DateTime dateTime = serializedDateTime;
+}
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializeddate.png)
 
 #### SerializedDirectory
 
 Allows to serialize folders in form of assets and retrieve direct paths in runtime.
+
+```csharp
+public SerializedDirectory serializeDirectory;
+
+public void Usage()
+{
+	string path = serializeDirectory.DirectoryPath;
+}
+```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializeddirectory.png)
 
