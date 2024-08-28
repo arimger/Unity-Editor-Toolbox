@@ -7,6 +7,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     using Toolbox.Editor.Internal;
+    using Toolbox.Editor.Internal.Types;
 
     public class ReferencePickerAttributeDrawer : ToolboxSelfPropertyDrawer<ReferencePickerAttribute>
     {
@@ -42,7 +43,7 @@ namespace Toolbox.Editor.Drawers
 
         private void CreateTypeProperty(SerializedProperty property, Type parentType, ReferencePickerAttribute attribute, Rect position)
         {
-            TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
+            TypeUtility.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
             typeField.OnGui(position, attribute.AddTextSearchField, (type) =>
             {
                 try

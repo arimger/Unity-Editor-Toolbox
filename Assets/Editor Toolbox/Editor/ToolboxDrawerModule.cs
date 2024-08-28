@@ -440,10 +440,9 @@ namespace Toolbox.Editor
             }
         }
 
-
         internal static bool ToolboxDrawersAllowed { get; set; }
 
-        //TODO:
+        //TODO: move to utilities
         //NOTE: unfortunately there is no valid, non-reflection way to check if property has a custom native drawer
         private static readonly MethodInfo getDrawerTypeForTypeMethod =
             ReflectionUtility.GetEditorMethod("UnityEditor.ScriptAttributeUtility", "GetDrawerTypeForType",

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Toolbox.Editor.Internal
+namespace Toolbox.Editor.Internal.Types
 {
     public class TypeConstraintContext
     {
@@ -14,13 +14,7 @@ namespace Toolbox.Editor.Internal
 
         public virtual bool IsSatisfied(Type type)
         {
-#if UNITY_2019_2_OR_NEWER
             return type.IsVisible;
-#else
-            return type.IsVisible && (targetType.IsGenericType
-                ? targetType.IsAssignableFromGeneric(type)
-                : targetType.IsAssignableFrom(type));
-#endif
         }
 
         public virtual void ApplyTarget(Type type)

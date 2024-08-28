@@ -2,12 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Toolbox.Editor.Internal
+namespace Toolbox.Editor.Internal.Types
 {
     public class TypesCachedCollection : IEnumerable<Type>
     {
         private readonly List<Type> values;
-
 
         public TypesCachedCollection() : this(new List<Type>())
         { }
@@ -16,7 +15,6 @@ namespace Toolbox.Editor.Internal
         {
             this.values = values;
         }
-
 
         public virtual int IndexOf(Type type)
         {
@@ -37,7 +35,6 @@ namespace Toolbox.Editor.Internal
         {
             return values.GetEnumerator();
         }
-
 
         public IReadOnlyList<Type> Values => values;
 

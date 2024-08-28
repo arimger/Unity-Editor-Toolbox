@@ -9,8 +9,7 @@ using Object = UnityEngine.Object;
 namespace Toolbox.Editor.Wizards
 {
     using Toolbox.Attributes;
-    using Toolbox.Editor.Internal;
-
+    using Toolbox.Editor.Internal.Types;
     using Editor = UnityEditor.Editor;
 
     /// <summary>
@@ -28,7 +27,7 @@ namespace Toolbox.Editor.Wizards
 
             public override bool IsSatisfied(Type type)
             {
-                return AssemblyUtilities.IsProjectAssembly(type.Assembly) &&
+                return AssemblyUttility.IsProjectAssembly(type.Assembly) &&
                     (Attribute.IsDefined(type, typeof(CreateInWizardAttribute)) || Attribute.IsDefined(type, typeof(CreateAssetMenuAttribute))) &&
                     base.IsSatisfied(type);
             }

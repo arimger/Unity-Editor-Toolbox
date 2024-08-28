@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using UnityEditor;
 using UnityEngine;
 
-namespace Toolbox.Editor.Internal
+namespace Toolbox.Editor.Internal.Types
 {
     /// <summary>
     /// Out-of-the-box field that can be used as a <see cref="Type"/> picker.
@@ -58,7 +59,7 @@ namespace Toolbox.Editor.Internal
         {
             var addEmptyValue = AppearanceContext.AddEmptyValue;
 
-            var collection = TypeUtilities.GetCollection(AppearanceContext);
+            var collection = TypeUtility.GetCollection(AppearanceContext);
             var values = collection.Values;
             var labels = collection.Labels;
             var index = collection.IndexOf(activeType);

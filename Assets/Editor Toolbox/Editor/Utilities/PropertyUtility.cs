@@ -340,7 +340,7 @@ namespace Toolbox.Editor
                         var parent = property.GetParent();
                         if (parent != null && parent.propertyType == SerializedPropertyType.ManagedReference)
                         {
-                            TypeUtilities.TryGetTypeFromManagedReferenceFullTypeName(parent.managedReferenceFullTypename, out var parentType);
+                            TypeUtility.TryGetTypeFromManagedReferenceFullTypeName(parent.managedReferenceFullTypename, out var parentType);
                             foundField = parentType.GetField(member, fieldFlags);
                         }
                     }
