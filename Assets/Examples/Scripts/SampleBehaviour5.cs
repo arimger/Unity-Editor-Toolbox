@@ -17,7 +17,7 @@ public class SampleBehaviour5 : MonoBehaviour
     public SerializedType type4;
     [TypeConstraint(typeof(Collider), AllowAbstract = true, AllowObsolete = false, TypeSettings = TypeSettings.Class, TypeGrouping = TypeGrouping.ByFlatName)]
     public SerializedType type5;
-    [TypeConstraint(typeof(ISampleGenericInterface<>), AllowAbstract = false, AllowObsolete = false, TypeSettings = TypeSettings.Class, TypeGrouping = TypeGrouping.ByFlatName)]
+    [TypeConstraint(typeof(ISampleGenericInterface<int>), AllowAbstract = false, AllowObsolete = false, TypeSettings = TypeSettings.Class, TypeGrouping = TypeGrouping.ByFlatName)]
     public SerializedType type6;
 
     public interface ISampleGenericInterface<T> { }

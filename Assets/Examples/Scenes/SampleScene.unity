@@ -1048,93 +1048,56 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   var1:
-    rid: 0
+    rid: 7033609514626056197
   var2:
-    rid: 7033609465735938071
+    rid: 7033609514626056196
   var3:
-    rid: 7033609465735938065
+    rid: 7033609514626056198
   var4:
-    rid: 7033609465735938072
+    rid: 7033609514626056199
   vars:
-  - rid: 3
-  - rid: 4
-  - rid: 5
-  - rid: 6
-  - rid: 7033609465735938087
+  - rid: 7033609514626056193
+  - rid: 7033609514626056204
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 0
-      type: {class: SampleBehaviour6/ClassWithInterface1, ns: , asm: Assembly-CSharp}
-      data:
-        go: {fileID: 977748987}
-        var1:
-          rid: 7
-    - rid: 3
+    - rid: 7033609514626056193
       type: {class: SampleBehaviour6/ClassWithInterface1, ns: , asm: Assembly-CSharp}
       data:
         go: {fileID: 0}
         var1:
-          rid: 7033609465735938082
-    - rid: 4
+          rid: 7033609514626056194
+    - rid: 7033609514626056194
+      type: {class: SampleBehaviour6/SampleStruct, ns: , asm: Assembly-CSharp}
+      data:
+        var1: 0
+        var2: 0
+    - rid: 7033609514626056196
+      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
+      data:
+        var1: 1
+        mat: {fileID: 0}
+        var33: 11
+    - rid: 7033609514626056197
+      type: {class: SampleBehaviour6/SampleStruct, ns: , asm: Assembly-CSharp}
+      data:
+        var1: 1
+        var2: 1
+    - rid: 7033609514626056198
       type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
       data:
         var1: 0
         mat: {fileID: 0}
-    - rid: 5
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
+    - rid: 7033609514626056199
+      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
       data:
         var1: 0
-        mat: {fileID: 0}
-        var33: 0
-    - rid: 6
-      type: {class: SampleBehaviour6/Struct, ns: , asm: Assembly-CSharp}
+        mat: {fileID: 2100000, guid: 26a618e7877b8c94f967effc172108f2, type: 2}
+    - rid: 7033609514626056204
+      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
       data:
         var1: 1
-        var2: 0
-    - rid: 7
-      type: {class: SampleBehaviour6/ClassWithInterface1, ns: , asm: Assembly-CSharp}
-      data:
-        go: {fileID: 0}
-        var1:
-          rid: -2
-    - rid: 7033609465735938065
-      type: {class: SampleBehaviour6/ClassWithInterface1, ns: , asm: Assembly-CSharp}
-      data:
-        go: {fileID: 1972418676}
-        var1:
-          rid: 7033609465735938066
-    - rid: 7033609465735938066
-      type: {class: SampleBehaviour6/ClassWithInterface1, ns: , asm: Assembly-CSharp}
-      data:
-        go: {fileID: 0}
-        var1:
-          rid: -2
-    - rid: 7033609465735938071
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-        var33: 0
-    - rid: 7033609465735938072
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-        var33: 0
-    - rid: 7033609465735938082
-      type: {class: SampleBehaviour6/Struct, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        var2: 0
-    - rid: 7033609465735938087
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-        var33: 0
+        mat: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
 --- !u!4 &752799893
 Transform:
   m_ObjectHideFlags: 2
@@ -1334,14 +1297,14 @@ MonoBehaviour:
   presetTarget: 4
   enumSearch: 8
   password: password
-  var13: {fileID: 0}
-  clampedValue: 4.699999809265137
-  sceneReference: {fileID: 0}
-  childReference: {fileID: 0}
-  prefabReference: {fileID: 0}
-  notPrefabReference: {fileID: 0}
   bigNumber: 12345678
   currency: 20.41
+  clampedValue: 4.699999809265137
+  notNullReference: {fileID: 0}
+  childReference: {fileID: 0}
+  sceneReference: {fileID: 0}
+  prefabReference: {fileID: 0}
+  notPrefabReference: {fileID: 0}
 --- !u!4 &959025299
 Transform:
   m_ObjectHideFlags: 2
@@ -1839,6 +1802,8 @@ MonoBehaviour:
     typeReference: UnityEngine.BoxCollider, UnityEngine.PhysicsModule
   type5:
     typeReference: UnityEngine.TerrainCollider, UnityEngine.TerrainPhysicsModule
+  type6:
+    typeReference: SampleBehaviour5+ClassWithInterface2`1, Assembly-CSharp
   scene1:
     sceneReference: {fileID: 102900000, guid: f11034f4657f51a47aac14f26410c500, type: 3}
     sceneName: SampleScene
@@ -1850,11 +1815,7 @@ MonoBehaviour:
     scenePath: Assets/Examples/Scenes/SampleScene.unity
     buildIndex: 0
   dictionary:
-    pairs:
-    - key: 0
-      value: {fileID: 2037155952}
-    - key: 1
-      value: {fileID: 1972418676}
+    pairs: []
     error: 0
   date:
     ticks: 637820719200000000

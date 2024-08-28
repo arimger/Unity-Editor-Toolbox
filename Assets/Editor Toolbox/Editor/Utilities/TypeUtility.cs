@@ -86,6 +86,20 @@ namespace Toolbox.Editor
             return typesList;
         }
 
+        internal static List<Type> GetDerivedTypes(Type parentType, Func<Type, Type> typeProcessor)
+        {
+#if UNITY_2019_2_OR_NEWER
+            return GetDerivedTypesUsingTypesCache(parentType, typeProcessor);
+#else
+            return GetDerviedTypesUsingAssemblies(parentType, typeProcessor);
+#endif
+        }
+
+        internal static bool CanBeSourceForGenericTypes(Type type)
+        {
+            return type.IsGenericType && !type.IsGenericTypeDefinition;
+        }
+
         public static TypesCachedCollection GetCollection(Type parentType)
         {
             return GetCollection(new TypeConstraintContext(parentType));
@@ -131,7 +145,7 @@ namespace Toolbox.Editor
 
             const int typeFormatParts = 2;
 
-            var parts = managedReferenceFullTypeName.Split(' ', typeFormatParts, StringSplitOptions.None);
+            var parts = managedReferenceFullTypeName.Split(new char[] { ' ' }, typeFormatParts, StringSplitOptions.None);
             managedReferenceInstanceType = parts.Length == typeFormatParts
                 ? Type.GetType($"{parts[1]}, {parts[0]}") : null;
             if (managedReferenceInstanceType != null)
@@ -157,33 +171,34 @@ namespace Toolbox.Editor
                 var parentGenericArgs = parentGenericType.GetGenericArguments();
                 typesList = GetDerivedTypes(parentGenericType, (sourceType) =>
                 {
-                    //NOTE: type is a standard type implementation (even if generic), it means we can check the standard way
-                    if (!sourceType.IsGenericTypeDefinition)
+                    var targetType = sourceType;
+                    //NOTE: type is a generic definition, it means we can check if constraints are matched
+                    if (sourceType.IsGenericTypeDefinition)
                     {
-                        if (!IsTypeAssignableFrom(parentType, sourceType))
+                        var foundGenericArgs = sourceType.GetGenericArguments();
+                        if (foundGenericArgs.Length != parentGenericArgs.Length)
                         {
                             return null;
                         }
 
-                        return constraint.IsSatisfied(sourceType) ? sourceType : null;
+                        try
+                        {
+                            targetType = sourceType.MakeGenericType(parentType.GenericTypeArguments);
+                        }
+                        catch (ArgumentException)
+                        {
+                            //NOTE: that's the easiest way to check if all generic constraints are ok
+                            return null;
+                        }
                     }
 
-                    var foundGenericArgs = sourceType.GetGenericArguments();
-                    if (foundGenericArgs.Length != parentGenericArgs.Length)
+                    //NOTE: we need to check inheritance since all processed types are derived from the generic type definition
+                    if (!IsTypeAssignableFrom(parentType, targetType))
                     {
                         return null;
                     }
 
-                    try
-                    {
-                        var genericType = sourceType.MakeGenericType(parentType.GenericTypeArguments);
-                        return constraint.IsSatisfied(genericType) ? genericType : null;
-                    }
-                    catch (ArgumentException)
-                    {
-                        //NOTE: that's the easiest way to check if all generic constraints are ok
-                        return null;
-                    }
+                    return constraint.IsSatisfied(targetType) ? targetType : null;
                 });
             }
             else
@@ -206,20 +221,6 @@ namespace Toolbox.Editor
             }
 
             return typesList;
-
-            static bool CanBeSourceForGenericTypes(Type type)
-            {
-                return type.IsGenericType && !type.IsGenericTypeDefinition;
-            }
-
-            static List<Type> GetDerivedTypes(Type parentType, Func<Type, Type> typeProcessor)
-            {
-#if UNITY_2019_2_OR_NEWER
-                return GetDerivedTypesUsingTypesCache(parentType, typeProcessor);
-#else
-                return GetDerviedTypesUsingAssemblies(parentType, typeProcessor);
-#endif
-            }
         }
 
         public static List<Type> FindTypes(TypeConstraintContext constraint, Assembly assembly)

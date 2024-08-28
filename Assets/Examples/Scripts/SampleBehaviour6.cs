@@ -32,7 +32,10 @@ public class SampleBehaviour6 : MonoBehaviour
     public interface ISampleInterface
     { }
 
-    [Serializable, MovedFrom(false, null, null, "SampleBehaviour6/Struct")]
+    [Serializable]
+#if UNITY_2019_3_OR_NEWER
+    [MovedFrom(false, null, null, "SampleBehaviour6/Struct")]
+#endif
     public struct SampleStruct : ISampleInterface
     {
         public bool var1;
@@ -85,7 +88,7 @@ public class SampleBehaviour6 : MonoBehaviour
         public int var33;
     }
 
-    #endregion
+#endregion
 
     #region Generic Types
 

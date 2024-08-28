@@ -9,6 +9,7 @@ namespace Toolbox.Editor.ContextMenu.Operations
     {
         private bool IsAssignmentValid(SerializedProperty property, object newValue)
         {
+#if UNITY_2021_3_OR_NEWER
             if (newValue == null)
             {
                 return true;
@@ -24,7 +25,7 @@ namespace Toolbox.Editor.ContextMenu.Operations
             {
                 return true;
             }
-
+#endif
             return false;
         }
 
