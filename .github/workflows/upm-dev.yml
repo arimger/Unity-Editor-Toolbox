@@ -13,6 +13,7 @@ jobs:
         fetch-depth: 0
     - name: split upm branch
       run: |
+        git pull
         git subtree split -P "$PKG_ROOT" -b upm-dev
         git push -u origin upm-dev
       env:
