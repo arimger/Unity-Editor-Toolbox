@@ -56,8 +56,8 @@ Unity 2018.x or newer
 	- [Hierarchy](#hierarchy)
 	- [Project](#project)
 	- [Toolbar](#toolbar)
-	- [Utilities](#utilities)
 	- [SceneView](#sceneview)
+	- [Utilities](#utilities)
 
 ## Settings
 
@@ -655,22 +655,22 @@ To prevent issues after renaming types use `UnityEngine.Scripting.APIUpdating.Mo
 
 ```csharp
 [SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.ByFlatName)]
-public Interface1 var1;
+public ISampleInterface var1;
 [SerializeReference, ReferencePicker(ForceUninitializedInstance = true)]
-public Interface1 var1;
+public ISampleInterface var1;
 [SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2)]
 public ClassWithInterfaceBase var2;
 
-public interface Interface1 { }
+public interface ISampleInterface { }
 
 [Serializable]
-public struct Struct : Interface1
+public struct Struct : ISampleInterface
 {
 	public bool var1;
 	public bool var2;
 }
 
-public abstract class ClassWithInterfaceBase : Interface1 { }
+public abstract class ClassWithInterfaceBase : ISampleInterface { }
 
 [Serializable]
 public class ClassWithInterface1 : ClassWithInterfaceBase
@@ -696,7 +696,12 @@ public class ClassWithInterface3 : ClassWithInterfaceBase
 
 ##### SerializeReference generics support
 
+Unity 2023.x introduced support for serializing generic references.
+In this case you can serialize generic types or use generics as a base class for your references.
+**ReferencePicker** will automatically create all available generic types if the generic definition satisfies the constraints.
+
 ```csharp
+#if UNITY_2023_2_OR_NEWER
 [SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.None)]
 public IGenericInterface<string> genericString;
 [SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.None)]
@@ -716,6 +721,7 @@ public class GenericInterfaceImplementation<TValue> : IGenericInterface<TValue>
 
 	public TValue Value => value;
 }
+#endif
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializereferencegenerics.png)
@@ -723,9 +729,9 @@ public class GenericInterfaceImplementation<TValue> : IGenericInterface<TValue>
 ##### SerializeReference context menu operations
 
 You can use few custom context menu operations for the SerializeReference-based fields:
-- Copy Serialize Reference: creates deep copy of linked reference
-- Paste Serialize Reference: allows to paste preserved copy to a fields
-- Duplicate Serialize Reference: allows to duplicate linked reference (works only on collection elements)
+- **Copy Serialize Reference**: creates a deep copy of the linked reference
+- **Paste Serialize Reference**: allows to paste preserved copy to a field
+- **Duplicate Serialize Reference**: allows to duplicate the linked reference (works only on collection elements)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializereferenceoperations.png)
 
@@ -762,9 +768,9 @@ public class SampleEditor : ToolboxEditor
 }
 ```
 
-##### Custom Editor Implementation
-- **Toolbox.Editor.ToolboxEditor** - default class, override it if you want to implement a custom Editor for your components and ScriptableObjects
-- **Toolbox.Editor.ToolboxScriptedImporterEditor** - override it if you want to implement a custom Editor for your custom importers
+##### Custom Editor Implementations
+- **Toolbox.Editor.ToolboxEditor**: default class, override it if you want to implement a custom Editor for your components and ScriptableObjects
+- **Toolbox.Editor.ToolboxScriptedImporterEditor**: override it if you want to implement a custom Editor for your custom importers
 
 ### Material Drawers <a name="materialdrawers"></a>
 
@@ -867,9 +873,13 @@ public void Usage()
 
 Allows to serialize DateTime.
 
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializeddate.png)
+
 #### SerializedDirectory
 
 Allows to serialize folders in form of assets and retrieve direct paths in runtime.
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializeddirectory.png)
 
 ## Editor Extensions
 
@@ -951,11 +961,23 @@ public static class MyEditorUtility
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/toolbar.png)
 
+### SceneView <a name="sceneview"></a>
+
+Select a specific object that is under the cursor (default key: tab).
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/sceneview.png)
+
 ### Utilities <a name="utilities"></a>
+
+In this section you will find various extensions that don't fit into a specific category.
+
+#### Context Menu operations
 
 Copy and paste all components from/to particular GameObject.
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/utils.png)
+
+#### ScriptableObject Creation Wizard
 
 Create multiple ScriptableObjects at once.
 Wizard will allow only ScritpableObjects marked with **[Toolbox.Attributes.CreateInWizard]** or **[UnityEngine.CreateAssetMenu]** attributes.
@@ -965,9 +987,3 @@ Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/createso.png)
-
-### SceneView <a name="sceneview"></a>
-
-Select a specific object that is under the cursor (default key: tab).
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/sceneview.png)

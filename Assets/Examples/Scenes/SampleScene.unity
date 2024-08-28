@@ -1819,6 +1819,9 @@ MonoBehaviour:
     error: 0
   date:
     ticks: 637820719200000000
+  directory:
+    directoryAsset: {fileID: 102900000, guid: 6c5a542f2ff6e87499c1a85957eafd9e, type: 3}
+    path: Assets/Editor Toolbox
 --- !u!1 &1221313406
 GameObject:
   m_ObjectHideFlags: 0
