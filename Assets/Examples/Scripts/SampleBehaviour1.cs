@@ -96,6 +96,11 @@ public class SampleBehaviour1 : MonoBehaviour
     [FormattedNumber("c")]
     public float currency;
 
+    [Label("Layer", skinStyle: SkinStyle.Box)]
+
+    [Layer]
+    public int layer;
+
     [BeginGroup(Order = -2)]
 
     [Help("NotNullAttribute, ClampAttribute, SceneObjectOnlyAttribute, ChildObjectOnlyAttribute, PrefabObjectOnlyAttribute " +

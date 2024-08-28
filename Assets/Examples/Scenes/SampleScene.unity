@@ -1299,7 +1299,8 @@ MonoBehaviour:
   password: password
   bigNumber: 12345678
   currency: 20.41
-  clampedValue: 4.699999809265137
+  layer: 5
+  clampedValue: 6
   notNullReference: {fileID: 0}
   childReference: {fileID: 0}
   sceneReference: {fileID: 0}

@@ -242,22 +242,6 @@ public string password;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/password.png)
 
-#### ChildObjectOnlyAttribute
-
-Supported types: **GameObject, Component**.
-
-#### SceneObjectOnlyAttribute
-
-Supported types: **GameObject, Component**.
-
-#### PrefabObjectOnlyAttribute
-
-Supported types: **GameObject, Component**.
-
-#### NotPrefabObjectOnlyAttribute
-
-Supported types: **GameObject, Component**.
-
 #### LeftToggleAttribute
 
 Supported types: **bool**.
@@ -281,8 +265,26 @@ Supported types: **int**.
 
 ```csharp
 [Layer]
-public int var1;
+public int layer;
 ```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/layer.png)
+
+#### ChildObjectOnlyAttribute
+
+Supported types: **GameObject, Component**.
+
+#### SceneObjectOnlyAttribute
+
+Supported types: **GameObject, Component**.
+
+#### PrefabObjectOnlyAttribute
+
+Supported types: **GameObject, Component**.
+
+#### NotPrefabObjectOnlyAttribute
+
+Supported types: **GameObject, Component**.
 
 ---
 
@@ -728,7 +730,7 @@ public class GenericInterfaceImplementation<TValue> : IGenericInterface<TValue>
 
 ##### SerializeReference context menu operations
 
-You can use few custom context menu operations for the SerializeReference-based fields:
+You can use few custom context menu operations for the **[SerializeReference]** fields:
 - **Copy Serialize Reference**: creates a deep copy of the linked reference
 - **Paste Serialize Reference**: allows to paste preserved copy to a field
 - **Duplicate Serialize Reference**: allows to duplicate the linked reference (works only on collection elements)
