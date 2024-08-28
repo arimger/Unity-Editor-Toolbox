@@ -164,14 +164,14 @@ namespace Toolbox.Editor
         {
             List<Type> typesList;
             var parentType = constraint.TargetType;
-            //NOTE: if parent type is generic and has non-generic arguments then we can try to create derived generic types with the same generic constraints
+            //NOTE: if parent type is generic and has non-generic arguments then we can try to create derived generic types with the same constraints
             if (CanBeSourceForGenericTypes(parentType))
             {
                 var parentGenericType = parentType.GetGenericTypeDefinition();
                 var parentGenericArgs = parentGenericType.GetGenericArguments();
                 typesList = GetDerivedTypes(parentGenericType, (sourceType) =>
                 {
-                    var targetType = sourceType;
+                    Type targetType;
                     //NOTE: type is a generic definition, it means we can check if constraints are matched
                     if (sourceType.IsGenericTypeDefinition)
                     {
@@ -187,9 +187,13 @@ namespace Toolbox.Editor
                         }
                         catch (ArgumentException)
                         {
-                            //NOTE: that's the easiest way to check if all generic constraints are ok
+                            //NOTE: unfortunately, this is the easiest way to check if all generic constraints are ok
                             return null;
                         }
+                    }
+                    else
+                    {
+                        targetType = sourceType;
                     }
 
                     //NOTE: we need to check inheritance since all processed types are derived from the generic type definition
