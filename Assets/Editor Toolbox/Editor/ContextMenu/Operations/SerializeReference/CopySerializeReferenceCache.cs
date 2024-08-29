@@ -2,9 +2,9 @@
 
 namespace Toolbox.Editor.ContextMenu.Operations
 {
-    internal class CopySerializedRererenceCache
+    internal class CopySerializeReferenceCache
     {
-        public CopySerializedRererenceCache(Type referenceType, string data)
+        public CopySerializeReferenceCache(Type referenceType, string data)
         {
             ReferenceType = referenceType;
             Data = data;

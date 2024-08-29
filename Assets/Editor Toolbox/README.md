@@ -38,6 +38,10 @@ Unity 2018.x or newer
 	- Enable/disable Toolbox drawers or/and assign custom drawers
 	- Enable/disable Toolbox Scene View and assign hotkeys
 	
+---
+> [!IMPORTANT]  
+> This package is fully IMGUI-based, which means it may conflict with pure UI Toolkit features in your project. Additionally, Toolbox overwrites the 'base' custom Editor for all `UnityEngine.Objects`, it's a common solution but means that you can't combine other Inspector extensions/plugins.
+
 ## Table Of Contents
 
 - [Attributes & Drawers](#drawers)
@@ -75,6 +79,10 @@ If you want to keep your custom settings between UET versions, create your own s
 ```
 Create/Editor Toolbox/Settings
 ```
+
+---
+> [!IMPORTANT]  
+> If you are getting warnings related to the current settings state, it most likely means that some features are not present in your Unity version. I suggest creating your own settings file and adjusting potential issues. Generally, it's always better to use a custom settings file rather than the default one. I'm planning to replace the ScriptableObject-based solution in the future, so it won't be a problem anymore.
 
 ## Attributes & Drawers <a name="drawers"></a>
 
