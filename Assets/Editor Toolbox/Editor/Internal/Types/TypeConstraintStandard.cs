@@ -16,7 +16,6 @@ namespace Toolbox.Editor.Internal.Types
             AllowObsolete = allowObsolete;
         }
 
-
         public override bool IsSatisfied(Type type)
         {
             return base.IsSatisfied(type) &&
@@ -45,7 +44,6 @@ namespace Toolbox.Editor.Internal.Types
             hashCode = hashCode * -1521134295 + AllowObsolete.GetHashCode();
             return hashCode;
         }
-
 
         public TypeSettings Settings { get; set; }
         public bool AllowAbstract { get; set; }

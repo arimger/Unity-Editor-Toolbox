@@ -5,7 +5,7 @@ namespace Toolbox.Editor.ContextMenu.Operations
 {
     internal class CopySerializeReferenceOperation : IContextMenuOperation
     {
-        internal static CopySerializedRererenceCache Cache { get; private set; }
+        internal static CopySerializeReferenceCache Cache { get; private set; }
 
         [InitializeOnLoadMethod]
         private static void Initialize()
@@ -35,11 +35,11 @@ namespace Toolbox.Editor.ContextMenu.Operations
             {
                 var referenceType = value.GetType();
                 var data = JsonUtility.ToJson(value);
-                Cache = new CopySerializedRererenceCache(referenceType, data);
+                Cache = new CopySerializeReferenceCache(referenceType, data);
                 return;
             }
 
-            Cache = new CopySerializedRererenceCache(null, null);
+            Cache = new CopySerializeReferenceCache(null, null);
 #endif
         }
 

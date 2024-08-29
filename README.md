@@ -38,6 +38,10 @@ Unity 2018.x or newer
 	- Enable/disable Toolbox drawers or/and assign custom drawers
 	- Enable/disable Toolbox Scene View and assign hotkeys
 	
+---
+> [!IMPORTANT]  
+> This package is fully IMGUI-based, which means it may conflict with pure UI Toolkit features in your project. Additionally, Toolbox overwrites the 'base' custom Editor for all `UnityEngine.Objects`, it's a common solution but means that you can't combine other Inspector extensions/plugins.
+
 ## Table Of Contents
 
 - [Attributes & Drawers](#drawers)
@@ -75,6 +79,10 @@ If you want to keep your custom settings between UET versions, create your own s
 ```
 Create/Editor Toolbox/Settings
 ```
+
+---
+> [!IMPORTANT]  
+> If you are getting warnings related to the current settings state, it most likely means that some features are not present in your Unity version. I suggest creating your own settings file and adjusting potential issues. Generally, it's always better to use a custom settings file rather than the default one. I'm planning to replace the ScriptableObject-based solution in the future, so it won't be a problem anymore.
 
 ## Attributes & Drawers <a name="drawers"></a>
 
@@ -810,11 +818,11 @@ Allows to serialize Types and pick them through a dedicated picker.
 
 ```csharp
 [TypeConstraint(typeof(Collider), AllowAbstract = false, AllowObsolete = false, TypeSettings = TypeSettings.Class, TypeGrouping = TypeGrouping.None)]
-public SerializedType var1;
+public SerializedType serializedType;
 
 public void Usage()
 {
-	var type = var1.Type;
+	System.Type type = serializedType.Type;
 }
 ```
 
@@ -825,11 +833,11 @@ public void Usage()
 Allows to serialize SceneAssets and use them in Runtime.
 
 ```csharp
-public SerializedScene scene;
+public SerializedScene serializedScene;
 
 public void Usage()
 {
-	UnityEngine.SceneManagement.SceneManager.LoadScene(scene.BuildIndex);
+	UnityEngine.SceneManagement.SceneManager.LoadScene(serializedScene.BuildIndex);
 }
 ```
 
@@ -837,7 +845,7 @@ public void Usage()
 
 ```csharp
 [SceneDetails]
-public SerializedScene scene;
+public SerializedScene serializedScene;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenedetails.png)
 
@@ -875,11 +883,29 @@ public void Usage()
 
 Allows to serialize DateTime.
 
+```csharp
+public SerializedDateTime serializedDateTime;
+
+public void Usage()
+{
+	System.DateTime dateTime = serializedDateTime;
+}
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializeddate.png)
 
 #### SerializedDirectory
 
 Allows to serialize folders in form of assets and retrieve direct paths in runtime.
+
+```csharp
+public SerializedDirectory serializeDirectory;
+
+public void Usage()
+{
+	string path = serializeDirectory.DirectoryPath;
+}
+```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializeddirectory.png)
 

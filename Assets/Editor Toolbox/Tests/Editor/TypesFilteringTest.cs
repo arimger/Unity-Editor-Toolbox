@@ -1,9 +1,7 @@
 ﻿#pragma warning disable CS0612
 
-using NUnit.Framework;
-
 using System;
-
+using NUnit.Framework;
 using UnityEngine;
 
 namespace Toolbox.Editor.Tests
@@ -21,6 +19,8 @@ namespace Toolbox.Editor.Tests
         public interface Interface5 : Interface4<int> { }
         public interface Interface6 : Interface4<string> { }
         public interface Interface7<T> : Interface4<T> { }
+        public interface Interface8<T1, T2> : Interface4<T1> { }
+        public interface Interface9 : Interface8<int, int> { }
 
         public abstract class ClassBase : Interface1 { }
 
@@ -32,6 +32,8 @@ namespace Toolbox.Editor.Tests
         public class ClassWithInterface5 : ClassWithInterface4<int> { }
         public class ClassWithInterface6 : ClassWithInterface4<string> { }
         public class ClassWithInterface7<T> : ClassWithInterface4<T> { }
+        public class ClassWithInterface8<T1, T2> : ClassWithInterface4<T1> { }
+        public class ClassWithInterface9 : ClassWithInterface8<int, int> { }
 
         [TestCase(typeof(ClassBase), 3)]
         [TestCase(typeof(Interface1), 6)]
@@ -148,6 +150,12 @@ namespace Toolbox.Editor.Tests
             Assert.IsTrue(collection.Contains(typeof(Interface5)));
             Assert.IsFalse(collection.Contains(typeof(Interface6)));
             Assert.IsTrue(collection.Contains(typeof(Interface7<int>)));
+            Assert.IsFalse(collection.Contains(typeof(Interface8<string, string>)));
+            Assert.IsTrue(collection.Contains(typeof(Interface9)));
+
+            //NOTE: not supported since the 2nd argument should be "picked", we don't want to generate all available options
+            Assert.IsFalse(collection.Contains(typeof(Interface8<int, int>)));
+            Assert.IsFalse(collection.Contains(typeof(Interface8<int, string>)));
         }
 
         [Test]
@@ -199,13 +207,17 @@ namespace Toolbox.Editor.Tests
             Assert.IsTrue(collection.Contains(typeof(ClassWithInterface5)));
             Assert.IsFalse(collection.Contains(typeof(ClassWithInterface6)));
             Assert.IsFalse(collection.Contains(typeof(ClassWithInterface7<string>)));
+            Assert.IsTrue(collection.Contains(typeof(ClassWithInterface9)));
 #if UNITY_2023_2_OR_NEWER
-            Assert.IsTrue(collection.Contains(typeof(ClassWithInterface7<int>)));
             Assert.IsTrue(collection.Contains(typeof(ClassWithInterface4<int>)));
+            Assert.IsTrue(collection.Contains(typeof(ClassWithInterface7<int>)));
 #else
-            Assert.IsFalse(collection.Contains(typeof(ClassWithInterface7<int>)));
             Assert.IsFalse(collection.Contains(typeof(ClassWithInterface4<int>)));
+            Assert.IsFalse(collection.Contains(typeof(ClassWithInterface7<int>)));
 #endif
+
+            //NOTE: not supported since the 2nd argument should be "picked", we don't want to generate all available options
+            Assert.IsFalse(collection.Contains(typeof(ClassWithInterface8<int, int>)));
         }
     }
 }

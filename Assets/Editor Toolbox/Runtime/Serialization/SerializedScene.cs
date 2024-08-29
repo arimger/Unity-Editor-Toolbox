@@ -25,7 +25,6 @@ namespace UnityEngine
         [SerializeField]
         private int buildIndex;
 
-
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
             UpdateProperties();
