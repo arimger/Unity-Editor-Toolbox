@@ -3,12 +3,13 @@
 ### Added:
 - Warning information if currently serialized type in TypeField-based drawers (SerializedType, [ReferencerPicker]) is not available in the filtered types collection
 - Context menu operations for [SerializeReference] properties (Copy, Paste, Duplicate), all operations are based on a deep copy of the source reference
-- Basic support for generic references while using [SerializeReference] & [ReferencePicker], can be utilized in Unity 2023+
+- Basic support for generic references while using [SerializeReference] & [ReferencePicker], can be utilized in Unity 2023.2.x+
 - More unit tests (PropertyUtility, filtering generic types)
 - Validation of assigned assets in the SerializedDirectory class
 
 ### Changed:
 - Fix duplicated initialization process forced by the OnValidate call
+- Better support for generic types for the SerializedType & associated drawer
 - Hierarchy: For now 'Script' label displays maximum 5 scripts
 - Improved types label generation for TypeField-based drawers (SerializedType, [ReferencerPicker])
 
