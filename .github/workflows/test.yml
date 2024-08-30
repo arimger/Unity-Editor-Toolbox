@@ -9,8 +9,17 @@ env:
 
 jobs:
   testRunner:
-    name: Test all modes 📝
+    name: Test ${{ matrix.testMode }} 📝
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        projectPath:
+          - test-project
+        testMode:
+          - playmode
+          - editmode
+          - standalone
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -43,12 +52,12 @@ jobs:
       - uses: game-ci/unity-test-runner@v4
         id: testRunner
         with:
-          testMode:
-            - playmode
-            - editmode
-            - standalone
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: ${{ matrix.testMode }}-artifacts
+          checkName: ${{ matrix.testMode }} Test Results
 
-      - uses: actions/upload-artifact@v3
+     - uses: actions/upload-artifact@v3
+        if: always()
         with:
-          name: Test results (all modes)
-          path: ${{ steps.testRunner.outputs.artifactsPath }}
+          name: Test results for ${{ matrix.testMode }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
