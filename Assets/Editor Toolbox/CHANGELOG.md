@@ -1,3 +1,8 @@
+## 0.13.1 [30.08.2024]
+
+### Changed:
+- Fix runtime compilation error caused by the SerializedDirectory
+
 ## 0.13.0 [28.08.2024]
 
 ### Added:
