@@ -9,15 +9,15 @@ env:
 
 jobs:
   testRunner:
-    name: Test 📝
+    name: Test
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
-      matrix:
-        testMode:
-          - playmode
-          - editmode
-          - standalone
+        fail-fast: false
+        matrix:
+            testMode:
+                - playmode
+                - editmode
+                - standalone
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
