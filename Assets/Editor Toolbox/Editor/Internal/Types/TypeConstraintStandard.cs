@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace Toolbox.Editor.Internal
+namespace Toolbox.Editor.Internal.Types
 {
     public class TypeConstraintStandard : TypeConstraintContext
     {
@@ -15,7 +15,6 @@ namespace Toolbox.Editor.Internal
             AllowAbstract = allowAbstract;
             AllowObsolete = allowObsolete;
         }
-
 
         public override bool IsSatisfied(Type type)
         {
@@ -45,7 +44,6 @@ namespace Toolbox.Editor.Internal
             hashCode = hashCode * -1521134295 + AllowObsolete.GetHashCode();
             return hashCode;
         }
-
 
         public TypeSettings Settings { get; set; }
         public bool AllowAbstract { get; set; }

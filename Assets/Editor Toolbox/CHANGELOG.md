@@ -1,4 +1,22 @@
+## 0.13.0 [28.08.2024]
+
+### Added:
+- Warning information if currently serialized type in TypeField-based drawers (SerializedType, [ReferencerPicker]) is not available in the filtered types collection
+- Context menu operations for [SerializeReference] properties (Copy, Paste, Duplicate), all operations are based on a deep copy of the source reference
+- Basic support for generic references while using [SerializeReference] & [ReferencePicker], can be utilized in Unity 2023.2.x+
+- More unit tests (PropertyUtility, filtering generic types)
+- Validation of assigned assets in the SerializedDirectory class
+
+### Changed:
+- Fix duplicated initialization process forced by the OnValidate call
+- Better support for generic types for the SerializedType & associated drawer
+- Hierarchy: For now 'Script' label displays maximum 5 scripts
+- Improved types label generation for TypeField-based drawers (SerializedType, [ReferencerPicker])
+
 ## 0.12.13 [22.08.2024]
+
+### Added:
+- DisableInEditModeAttribute
 
 ### Changed:
 - Hierarchy: Added Tree List renderer, which improves visual identification of parent and child gameobjects
@@ -7,19 +25,16 @@
 - Fix SceneView settings change events firing when they shouldn't
 - Fix issue when trying to find private fields/properties from parent classes (e.g. while using conditional attributes)
 
-### Added:
-- DisableInEditModeAttribute
-
 ## 0.12.12 [17.06.2024]
+
+### Added:
+- NotPrefabObjectOnlyAttribute
 
 ### Changed:
 - LabelWidthAttribute is now part of the Toolbox decorator attributes (can be mixed with other attributes)
 - Hierarchy: Script, Tag, and Layer columns are now excluded from the default settings
 - Possibility to change style for groups ([BeginGroup] and [BeginHorizontalGroup] attributes)
 - ScriptableObject Creation Wizard now accepts only ScriptableObjects marked with the [CreateInWizard] or [CreateAssetMenu] attributes
-
-### Added:
-- NotPrefabObjectOnlyAttribute
 
 ## 0.12.11 [05.04.2024]
 
@@ -53,12 +68,12 @@
 
 ## 0.12.7 [10.12.2023]
 
+### Added:
+- 'Revert Prefab Name' option for prefabs in the GameObject/Prefabs context menu
+
 ### Changed:
 - Possibility to interact with ProgressBarDrawer (added IsInteractable property to the ProgressBarAttribute)
 - MinMaxAttribute now supports Vector2Int
-
-### Added:
-- 'Revert Prefab Name' option for prefabs in the GameObject/Prefabs context menu
 
 ## 0.12.6 [19.10.2023]
 
@@ -68,11 +83,11 @@
 
 ## 0.12.5 [11.09.2023]
 
-### Changed:
-- Make ToolboxEditorHandler public
-
 ### Added:
 - Add public OnCacheRefreshed event to the SceneSerializationUtility
+
+### Changed:
+- Make ToolboxEditorHandler public
 
 ## 0.12.4 [31.07.2023]
 
@@ -85,15 +100,15 @@
 
 ## 0.12.3 [17.06.2023]
 
+### Added:
+- SceneView extension: better way to select raycasted objects in the Scene view
+- LabelWidthAttribute
+
 ### Changed:
 - Fix updating SerializedScene index after deleting Scene
 - Fix SerializedScene index calculation
 - Fix NRE when deleted Scene was still included in Build Settings
 - Fix compilation errors in Unity 2018.x
-
-### Added:
-- SceneView extension: better way to select raycasted objects in the Scene view
-- LabelWidthAttribute
 
 ## 0.12.1 [12.04.2023]
 

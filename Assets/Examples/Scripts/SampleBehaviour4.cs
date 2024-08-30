@@ -3,7 +3,7 @@
 using UnityEngine;
 
 [ExecuteAlways]
-[AddComponentMenu("Editor Toolbox/Cheat Sheet 4 (Decorator)")]
+[AddComponentMenu("Editor Toolbox/Cheat Sheet 4 (Toolbox Decorators)")]
 public class SampleBehaviour4 : MonoBehaviour
 {
     [Label("Help", skinStyle: SkinStyle.Box)]

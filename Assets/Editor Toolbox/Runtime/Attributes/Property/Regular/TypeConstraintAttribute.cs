@@ -17,7 +17,6 @@ namespace UnityEngine
             AssemblyType = assemblyType;
         }
 
-
         /// <summary>
         /// Associated type which will define what type we are looking for.
         /// </summary>

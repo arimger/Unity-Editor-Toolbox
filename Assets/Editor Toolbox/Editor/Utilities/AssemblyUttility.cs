@@ -6,7 +6,7 @@ using UnityEditor;
 namespace Toolbox.Editor
 {
     [InitializeOnLoad]
-    public static class AssemblyUtilities
+    public static class AssemblyUttility
     {
         private static readonly HashSet<string> projectAssemblyNames = new HashSet<string>();
         private static readonly HashSet<string> internalAssemblyNames = new HashSet<string>()
@@ -26,7 +26,7 @@ namespace Toolbox.Editor
 
         private static bool isCached;
 
-        static AssemblyUtilities()
+        static AssemblyUttility()
         {
             isCached = false;
         }

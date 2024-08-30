@@ -10,13 +10,11 @@ namespace Toolbox.Editor.Drawers
         private readonly float minValue;
         private readonly float maxValue;
 
-
         public MaterialMinMaxSliderDrawer(float minValue, float maxValue)
         {
             this.minValue = minValue;
             this.maxValue = maxValue;
         }
-
 
         protected override float GetPropertyHeightSafe(MaterialProperty prop, string label, MaterialEditor editor)
         {

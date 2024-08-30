@@ -3,16 +3,25 @@ using System.Collections.Generic;
 
 using Object = UnityEngine.Object;
 
-namespace Toolbox.Editor.Internal
+namespace Toolbox.Editor.Internal.Types
 {
-    public class TypeConstraintReference : TypeConstraintContext
+    /// <summary>
+    /// Dedicated <see cref="TypeConstraintContext"/> for SerializeReference-based types.
+    /// </summary>
+    public class TypeConstraintSerializeReference : TypeConstraintContext
     {
-        public TypeConstraintReference(Type targetType) : base(targetType)
+        public TypeConstraintSerializeReference(Type targetType) : base(targetType)
         { }
-
 
         public override bool IsSatisfied(Type type)
         {
+            //NOTE: generic types are not supported below Unity 2023 while using the Serialize References
+#if !UNITY_2023_2_OR_NEWER
+            if (type.IsGenericType)
+            {
+                return false;
+            }
+#endif
             return base.IsSatisfied(type) &&
                 !type.IsInterface &&
                 !type.IsAbstract &&
@@ -25,7 +34,7 @@ namespace Toolbox.Editor.Internal
 
         public override bool Equals(object other)
         {
-            return other is TypeConstraintReference constraint &&
+            return other is TypeConstraintSerializeReference constraint &&
                    base.Equals(other) &&
                    EqualityComparer<Type>.Default.Equals(targetType, constraint.targetType);
         }

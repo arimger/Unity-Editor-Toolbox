@@ -38,6 +38,10 @@ Unity 2018.x or newer
 	- Enable/disable Toolbox drawers or/and assign custom drawers
 	- Enable/disable Toolbox Scene View and assign hotkeys
 	
+---
+> [!IMPORTANT]  
+> This package is fully IMGUI-based, which means it may conflict with pure UI Toolkit features in your project. Additionally, Toolbox overwrites the 'base' custom Editor for all `UnityEngine.Objects`, it's a common solution but means that you can't combine other Inspector extensions/plugins.
+
 ## Table Of Contents
 
 - [Attributes & Drawers](#drawers)
@@ -56,8 +60,8 @@ Unity 2018.x or newer
 	- [Hierarchy](#hierarchy)
 	- [Project](#project)
 	- [Toolbar](#toolbar)
-	- [Utilities](#utilities)
 	- [SceneView](#sceneview)
+	- [Utilities](#utilities)
 
 ## Settings
 
@@ -75,6 +79,10 @@ If you want to keep your custom settings between UET versions, create your own s
 ```
 Create/Editor Toolbox/Settings
 ```
+
+---
+> [!IMPORTANT]  
+> If you are getting warnings related to the current settings state, it most likely means that some features are not present in your Unity version. I suggest creating your own settings file and adjusting potential issues. Generally, it's always better to use a custom settings file rather than the default one. I'm planning to replace the ScriptableObject-based solution in the future, so it won't be a problem anymore.
 
 ## Attributes & Drawers <a name="drawers"></a>
 
@@ -124,6 +132,9 @@ Supported types: UnityEngine.**Object**.
 ```csharp
 [AssetPreview]
 public GameObject var1;
+```
+
+```csharp
 [AssetPreview(useLabel: false)]
 public Component var2;
 ```
@@ -239,22 +250,6 @@ public string password;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/password.png)
 
-#### ChildObjectOnlyAttribute
-
-Supported types: **GameObject, Component**.
-
-#### SceneObjectOnlyAttribute
-
-Supported types: **GameObject, Component**.
-
-#### PrefabObjectOnlyAttribute
-
-Supported types: **GameObject, Component**.
-
-#### NotPrefabObjectOnlyAttribute
-
-Supported types: **GameObject, Component**.
-
 #### LeftToggleAttribute
 
 Supported types: **bool**.
@@ -278,8 +273,26 @@ Supported types: **int**.
 
 ```csharp
 [Layer]
-public int var1;
+public int layer;
 ```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/layer.png)
+
+#### ChildObjectOnlyAttribute
+
+Supported types: **GameObject, Component**.
+
+#### SceneObjectOnlyAttribute
+
+Supported types: **GameObject, Component**.
+
+#### PrefabObjectOnlyAttribute
+
+Supported types: **GameObject, Component**.
+
+#### NotPrefabObjectOnlyAttribute
+
+Supported types: **GameObject, Component**.
 
 ---
 
@@ -302,19 +315,17 @@ Each **ToolboxDecoratorAttribute** has two basic properties **Order** (indicates
 ```csharp
 [BeginGroup("Group1", Style = GroupStyle.Round)]
 public int var1;
-public int var2;
-public int var3;
 [EndGroup]
-public int var4;
+public int var2;
 ```
 ```csharp
 //NOTE: you can use [SpaceArea] to adjust positions between layout elements
 [BeginHorizontal(LabelWidth = 50.0f)]
 public int var1;
-public int var2;
 [EndHorizontal]
-public int var3;
-
+public int var2;
+```
+```csharp
 [BeginHorizontalGroup(Label = "Horizontal Group", ControlFieldWidth = true, ElementsInLayout = 2)]
 public GameObject gameObject;
 [SpaceArea]
@@ -325,13 +336,12 @@ public int[] ints;
 ```csharp
 [BeginIndent]
 public int var1;
-public int var2;
-public int var3;
 [EndIndent]
-public int var4;
-
+public int var2;
+```
+```csharp
 [IndentArea(4)]
-public int var5;
+public int var1;
 ```
 ```csharp
 [SpaceArea(spaceBefore = 10.0f, spaceAfter = 5.0f, Order = 1)]
@@ -370,6 +380,8 @@ private bool ValidationMethod()
 ```csharp
 [Help("Help information", UnityMessageType.Warning, Order = -1)]
 public int var1;
+```
+```csharp
 [DynamicHelp(nameof(Message), UnityMessageType.Error)]
 public int var2;
 
@@ -403,7 +415,8 @@ You are able to pass values from fields, properties, and methods.
 public string StringValue => "Sho";
 [ShowIf(nameof(StringValue), "show")]
 public int var1;
-
+```
+```csharp
 public GameObject objectValue;
 [HideIf(nameof(objectValue), false)]
 public int var2;
@@ -413,7 +426,8 @@ public int var2;
 public KeyCode enumValue = KeyCode.A;
 [EnableIf(nameof(enumValue), KeyCode.A)]
 public int var1;
-
+```
+```csharp
 [DisableIf(nameof(GetFloatValue), 2.0f, Comparison = UnityComparisonMethod.GreaterEqual)]
 public int var2;
 
@@ -422,22 +436,24 @@ public float GetFloatValue()
 	return 1.6f;
 }
 ```
-
 ```csharp
 [DisableInPlayMode]
 public int var1;
 ```
-
+```csharp
+[DisableInEditMode]
+public int var1;
+```
 ```csharp
 public int var1;
-
 [ShowDisabledIf(nameof(var1), 3, Comparison = UnityComparisonMethod.LessEqual)]
 public int var2;
-
-[HideDisabledIf(nameof(var1), 3, Comparison = UnityComparisonMethod.GreaterEqual)]
-public int var3;
 ```
-
+```csharp
+public int var1;
+[HideDisabledIf(nameof(var1), 3, Comparison = UnityComparisonMethod.GreaterEqual)]
+public int var2;
+```
 ```csharp
 public bool boolValue = true;
 [ShowWarningIf(nameof(boolValue), false, "Message", DisableField = true)]
@@ -534,10 +550,15 @@ public GameObject[] largeArray = new GameObject[19];
 
 ##### Other ToolboxProperty attributes
 
+**IgnoreParent** allows you to hide the parent's label, foldout arrow and remove the standard indentation for nested fields.
+
 ```csharp
+public Quaternion quaternion;
 [IgnoreParent]
 public Quaternion q;
 ```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/ignoreparent.png)
 
 ```csharp
 [DynamicMinMaxSlider(nameof(minValue), nameof(MaxValue))]
@@ -649,22 +670,22 @@ To prevent issues after renaming types use `UnityEngine.Scripting.APIUpdating.Mo
 
 ```csharp
 [SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.ByFlatName)]
-public Interface1 var1;
+public ISampleInterface var1;
 [SerializeReference, ReferencePicker(ForceUninitializedInstance = true)]
-public Interface1 var1;
+public ISampleInterface var1;
 [SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2)]
 public ClassWithInterfaceBase var2;
 
-public interface Interface1 { }
+public interface ISampleInterface { }
 
 [Serializable]
-public struct Struct : Interface1
+public struct Struct : ISampleInterface
 {
 	public bool var1;
 	public bool var2;
 }
 
-public abstract class ClassWithInterfaceBase : Interface1 { }
+public abstract class ClassWithInterfaceBase : ISampleInterface { }
 
 [Serializable]
 public class ClassWithInterface1 : ClassWithInterfaceBase
@@ -687,6 +708,47 @@ public class ClassWithInterface3 : ClassWithInterfaceBase
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/referencepicker.png)
+
+##### SerializeReference generics support
+
+Unity 2023.x introduced support for serializing generic references.
+In this case you can serialize generic types or use generics as a base class for your references.
+**ReferencePicker** will automatically create all available generic types if the generic definition satisfies the constraints.
+
+```csharp
+#if UNITY_2023_2_OR_NEWER
+[SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.None)]
+public IGenericInterface<string> genericString;
+[SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.None)]
+public IGenericInterface<int> genericInt;
+[SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.None)]
+public IGenericInterface<bool> genericBool;
+
+public interface IGenericInterface<TValue>
+{
+	TValue Value { get; }
+}
+
+public class GenericInterfaceImplementation<TValue> : IGenericInterface<TValue>
+{
+	[SerializeField]
+	private TValue value;
+
+	public TValue Value => value;
+}
+#endif
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializereferencegenerics.png)
+
+##### SerializeReference context menu operations
+
+You can use few custom context menu operations for the **[SerializeReference]** fields:
+- **Copy Serialize Reference**: creates a deep copy of the linked reference
+- **Paste Serialize Reference**: allows to paste preserved copy to a field
+- **Duplicate Serialize Reference**: allows to duplicate the linked reference (works only on collection elements)
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializereferenceoperations.png)
 
 #### Custom Editors <a name="toolboxeditors"></a>
 
@@ -721,9 +783,9 @@ public class SampleEditor : ToolboxEditor
 }
 ```
 
-##### Custom Editor Implementation
-- **Toolbox.Editor.ToolboxEditor** - default class, override it if you want to implement a custom Editor for your components and ScriptableObjects
-- **Toolbox.Editor.ToolboxScriptedImporterEditor** - override it if you want to implement a custom Editor for your custom importers
+##### Custom Editor Implementations
+- **Toolbox.Editor.ToolboxEditor**: default class, override it if you want to implement a custom Editor for your components and ScriptableObjects
+- **Toolbox.Editor.ToolboxScriptedImporterEditor**: override it if you want to implement a custom Editor for your custom importers
 
 ### Material Drawers <a name="materialdrawers"></a>
 
@@ -761,11 +823,11 @@ Allows to serialize Types and pick them through a dedicated picker.
 
 ```csharp
 [TypeConstraint(typeof(Collider), AllowAbstract = false, AllowObsolete = false, TypeSettings = TypeSettings.Class, TypeGrouping = TypeGrouping.None)]
-public SerializedType var1;
+public SerializedType serializedType;
 
 public void Usage()
 {
-	var type = var1.Type;
+	System.Type type = serializedType.Type;
 }
 ```
 
@@ -776,11 +838,11 @@ public void Usage()
 Allows to serialize SceneAssets and use them in Runtime.
 
 ```csharp
-public SerializedScene scene;
+public SerializedScene serializedScene;
 
 public void Usage()
 {
-	UnityEngine.SceneManagement.SceneManager.LoadScene(scene.BuildIndex);
+	UnityEngine.SceneManagement.SceneManager.LoadScene(serializedScene.BuildIndex);
 }
 ```
 
@@ -788,7 +850,7 @@ public void Usage()
 
 ```csharp
 [SceneDetails]
-public SerializedScene scene;
+public SerializedScene serializedScene;
 ```
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenedetails.png)
 
@@ -826,9 +888,31 @@ public void Usage()
 
 Allows to serialize DateTime.
 
+```csharp
+public SerializedDateTime serializedDateTime;
+
+public void Usage()
+{
+	System.DateTime dateTime = serializedDateTime;
+}
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializeddate.png)
+
 #### SerializedDirectory
 
 Allows to serialize folders in form of assets and retrieve direct paths in runtime.
+
+```csharp
+public SerializedDirectory serializeDirectory;
+
+public void Usage()
+{
+	string path = serializeDirectory.DirectoryPath;
+}
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializeddirectory.png)
 
 ## Editor Extensions
 
@@ -910,11 +994,30 @@ public static class MyEditorUtility
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/toolbar.png)
 
+### SceneView <a name="sceneview"></a>
+
+Select a specific object that is under the cursor (default key: tab).
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/sceneview.png)
+
 ### Utilities <a name="utilities"></a>
+
+In this section you will find various extensions that don't fit into a specific category.
+
+#### Context Menu operations
 
 Copy and paste all components from/to particular GameObject.
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/utils.png)
+
+#### Wizards
+
+If you want to create custom wizards and still utilize Toolbox-related features then feel free to use the **ToolboxWizard** class.
+Works in similar way to Unity's ScriptableWizard.
+
+> Editor Toolbox/Editor/Wizards/ToolboxWizard.cs
+
+##### ScriptableObject Creation Wizard
 
 Create multiple ScriptableObjects at once.
 Wizard will allow only ScritpableObjects marked with **[Toolbox.Attributes.CreateInWizard]** or **[UnityEngine.CreateAssetMenu]** attributes.
@@ -924,9 +1027,3 @@ Assets/Create/Editor Toolbox/ScriptableObject Creation Wizard
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/createso.png)
-
-### SceneView <a name="sceneview"></a>
-
-Select a specific object that is under the cursor (default key: tab).
-
-![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/sceneview.png)
