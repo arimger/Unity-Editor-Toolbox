@@ -16,7 +16,7 @@ namespace UnityEngine
         [SerializeField, Disable]
         private string path;
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
         internal static bool IsAssetValid(DefaultAsset asset, out string path)
         {
             path = asset != null ? AssetDatabase.GetAssetPath(asset) : null;
@@ -34,7 +34,7 @@ namespace UnityEngine
 
             return false;
         }
-#endif
+//#endif
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         { }
 
