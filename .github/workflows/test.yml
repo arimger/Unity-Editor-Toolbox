@@ -9,7 +9,7 @@ env:
 
 jobs:
   testAllModes:
-    name: Test in ${{ matrix.testMode }}
+    name: Test in '${{ matrix.testMode }}' 📝
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -19,42 +19,23 @@ jobs:
           - editmode
           - standalone
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: Restore LFS cache
-        uses: actions/cache@v3
-        id: lfs-cache
+      - uses: actions/checkout@v4
         with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
-
-      - name: Git LFS Pull
-        run: |
-          git lfs pull
-          git add .
-          git reset --hard
-
-      - name: Restore Library cache
-        uses: actions/cache@v2
+          lfs: true
+      - uses: actions/cache@v3
         with:
           path: Library
           key: Library-test-project
           restore-keys: |
             Library-test-project-
             Library-
-
       - uses: game-ci/unity-test-runner@v4
-        id: testRunner
+        id: tests
         with:
           testMode: ${{ matrix.testMode }}
           artifactsPath: ${{ matrix.testMode }}-artifacts
           checkName: ${{ matrix.testMode }} Test Results
-
-     - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Test results for ${{ matrix.testMode }}
