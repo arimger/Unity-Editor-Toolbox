@@ -43,7 +43,10 @@ jobs:
       - uses: game-ci/unity-test-runner@v2
         id: testRunner
         with:
-          testMode: all
+          testMode:
+            - playmode
+            - editmode
+            - standalone
 
       - uses: actions/upload-artifact@v2
         with:
