@@ -9,13 +9,11 @@ env:
 
 jobs:
   testRunner:
-    name: Test ${{ matrix.testMode }} 📝
+    name: Test 📝
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        projectPath:
-          - test-project
         testMode:
           - playmode
           - editmode
