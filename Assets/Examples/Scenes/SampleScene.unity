@@ -675,17 +675,11 @@ MonoBehaviour:
   - b
   - c
   ints: 01000000080000000c00000010000000
-  var21: {fileID: 977748988}
-  var22: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
-  var23: {fileID: 2800000, guid: 45980f2b5045fab4a95e80d4cd1d91a8, type: 3}
-  var24: {fileID: 8300000, guid: e83fc6426e5f2e0448cc3e51102509aa, type: 3}
-  var25: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  var27:
-    i: 2
-    strings:
-    - MainCamera
-    - Untagged
-    - Respawn
+  component: {fileID: 2037155953}
+  material: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
+  texture: {fileID: 2800000, guid: d7cf546aa64aceb488a523b6662319b6, type: 3}
+  audioClip: {fileID: 8300000, guid: e83fc6426e5f2e0448cc3e51102509aa, type: 3}
+  mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   largeArray:
   - {fileID: 0}
   - {fileID: 0}
@@ -706,11 +700,18 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  q: {x: 0, y: 0, z: 0, w: 0}
-  a1: -1
-  b1: 5.5
-  var40: 1.33
-  var41: {x: 0, y: 1.9792935}
+  quaternion: {x: 0, y: 0, z: 0, w: 0}
+  q2: {x: 0, y: 0, z: 0, w: 0}
+  min: -1
+  max: 5.5
+  dynamicRange: 1.5
+  dynamicMinMax: {x: 0, y: 3}
+  nestedObject:
+    i: 1
+    strings:
+    - EditorOnly
+    - Player
+    - Untagged
 --- !u!4 &661896459
 Transform:
   m_ObjectHideFlags: 2

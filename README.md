@@ -550,10 +550,15 @@ public GameObject[] largeArray = new GameObject[19];
 
 ##### Other ToolboxProperty attributes
 
+**IgnoreParent** allows you to hide the parent's label, foldout arrow and remove the standard indentation for nested fields.
+
 ```csharp
+public Quaternion quaternion;
 [IgnoreParent]
 public Quaternion q;
 ```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/ignoreparent.png)
 
 ```csharp
 [DynamicMinMaxSlider(nameof(minValue), nameof(MaxValue))]
