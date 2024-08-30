@@ -6,46 +6,39 @@ on:
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+  UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
 
 jobs:
-  testRunner:
-    name: Test all modes 📝
+  testAllModes:
+    name: Test in '${{ matrix.testMode }}' 📝
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testMode:
+          - playmode
+          - editmode
+          - standalone
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: Restore LFS cache
-        uses: actions/cache@v2
-        id: lfs-cache
+      - uses: actions/checkout@v4
         with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
-
-      - name: Git LFS Pull
-        run: |
-          git lfs pull
-          git add .
-          git reset --hard
-
-      - name: Restore Library cache
-        uses: actions/cache@v2
+          lfs: true
+      - uses: actions/cache@v3
         with:
           path: Library
           key: Library-test-project
           restore-keys: |
             Library-test-project-
             Library-
-
-      - uses: game-ci/unity-test-runner@v2
-        id: testRunner
+      - uses: game-ci/unity-test-runner@v4
+        id: tests
         with:
-          testMode: all
-
-      - uses: actions/upload-artifact@v2
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: ${{ matrix.testMode }}-artifacts
+          checkName: ${{ matrix.testMode }} Test Results
+      - uses: actions/upload-artifact@v3
+        if: always()
         with:
-          name: Test results (all modes)
-          path: ${{ steps.testRunner.outputs.artifactsPath }}
+          name: Test results for ${{ matrix.testMode }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
