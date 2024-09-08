@@ -9,7 +9,9 @@ namespace Toolbox.Editor
     /// <summary>
     /// Base Editor class for all Toolbox-related features.
     /// </summary>
+#if !TOOLBOX_IGNORE_CUSTOM_EDITOR
     [CustomEditor(typeof(Object), true, isFallback = true)]
+#endif
     [CanEditMultipleObjects]
     public class ToolboxEditor : Editor, IToolboxEditor
     {
