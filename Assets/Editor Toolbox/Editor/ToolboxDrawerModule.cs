@@ -246,7 +246,10 @@ namespace Toolbox.Editor
             //create all type-only-related drawers
             PrepareTargetTypeDrawers(settings);
 
-            HandleDefaultLists(settings.ForceDefaultLists);
+            var useDefaultLists = settings.ForceDefaultLists;
+            HandleDefaultLists(useDefaultLists);
+            var ignoreCustomEditor = !settings.UseToolboxDrawers;
+            HandleIgnoreEditor(ignoreCustomEditor);
             //log errors into console only once
             validationEnabled = false;
         }
@@ -298,6 +301,18 @@ namespace Toolbox.Editor
             else
             {
                 ScriptingUtility.RemoveDefine(ToolboxDefines.defaultListsDefine);
+            }
+        }
+
+        internal static void HandleIgnoreEditor(bool value)
+        {
+            if (value)
+            {
+                ScriptingUtility.AppendDefine(ToolboxDefines.ignoreEditorDefine);
+            }
+            else
+            {
+                ScriptingUtility.RemoveDefine(ToolboxDefines.ignoreEditorDefine);
             }
         }
 
