@@ -117,7 +117,6 @@ namespace Toolbox.Editor
             ProcessToolboxData();
         }
 
-
         private void ProcessBuiltInData()
         {
             var attributes = fieldInfo.GetCustomAttributes<PropertyAttribute>();

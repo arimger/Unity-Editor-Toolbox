@@ -9,8 +9,13 @@ using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
-    public static partial class PropertyUtility
+    public static class PropertyUtility
     {
+        internal static class Defaults
+        {
+            internal static readonly string scriptPropertyName = "m_Script";
+        }
+
         //NOTE: last non-reflection implementation was ok but support for [SerializeReference] makes it a bit slow
         // unfortunately UnityEditor.ScriptAttributeUtility.GetFieldInfoFromProperty is internal so we have to retrive it using reflection
         private static readonly MethodInfo getGetFieldInfoFromPropertyMethod =
@@ -440,14 +445,6 @@ namespace Toolbox.Editor
             }
         }
 
-        internal static class Defaults
-        {
-            internal static readonly string scriptPropertyName = "m_Script";
-        }
-    }
-
-    public static partial class PropertyUtility
-    {
         public static SerializedProperty GetSibling(this SerializedProperty property, string propertyPath)
         {
             var propertyParent = property.GetParent();
