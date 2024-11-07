@@ -17,7 +17,6 @@ namespace Toolbox.Editor.Drawers
 
         private static readonly PropertyDataStorage<Vector2, ScrollableItemsAttribute> storage;
 
-
         private void DrawSettingsBody(SerializedProperty property, ScrollableItemsAttribute attribute, out int size, out Vector2 indexRange)
         {
             EditorGUILayout.PropertyField(property.GetSize());
@@ -53,7 +52,6 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-
         protected override void OnGuiSafe(SerializedProperty property, GUIContent label, ScrollableItemsAttribute attribute)
         {
             using (var propertyScope = new PropertyScope(property, label))
@@ -69,7 +67,6 @@ namespace Toolbox.Editor.Drawers
                 EditorGUI.indentLevel--;
             }
         }
-
 
         private static class Style
         {

@@ -88,7 +88,7 @@ public class SampleBehaviour6 : MonoBehaviour
         public int var33;
     }
 
-#endregion
+    #endregion
 
     #region Generic Types
 
