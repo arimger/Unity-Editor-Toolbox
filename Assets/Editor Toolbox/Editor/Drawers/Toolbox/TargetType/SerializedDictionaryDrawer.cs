@@ -52,13 +52,19 @@ namespace Toolbox.Editor.Drawers
                     var content = list.GetElementContent(element, index);
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        var kOption = GUILayout.Width(Style.kGroupWidth);
-                        DrawDictionaryProperty(kProperty, Style.kLabel, Style.kLabelWidth, kOption);
+                        if (kProperty != null)
+                        {
+                            var kOption = GUILayout.Width(Style.kGroupWidth);
+                            DrawDictionaryProperty(kProperty, Style.kLabel, Style.kLabelWidth, kOption);
+                        }
 
-                        var vLabel = vProperty.hasVisibleChildren
-                            ? Style.vLabel
-                            : GUIContent.none;
-                        DrawDictionaryProperty(vProperty, vLabel, Style.vLabelWidth);
+                        if (vProperty != null)
+                        {
+                            var vLabel = vProperty.hasVisibleChildren
+                                ? Style.vLabel
+                                : GUIContent.none;
+                            DrawDictionaryProperty(vProperty, vLabel, Style.vLabelWidth);
+                        }
                     }
                 };
                 return list;
