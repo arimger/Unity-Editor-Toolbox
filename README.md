@@ -145,6 +145,11 @@ public Component var2;
 
 Supported types: **all**.
 
+```csharp
+[Suffix("cm")]
+public string var1;
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/suffix.png)
 
 
@@ -179,6 +184,11 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExampl
 
 Supported types: UnityEngine.**Object**.
 
+```csharp
+[NotNull]
+public GameObject var1;
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull2.png)
 
@@ -187,12 +197,22 @@ Supported types: UnityEngine.**Object**.
 
 Supported types: **string**.
 
+```csharp
+[Directory]
+public string var1;
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory2.png)
 
 #### SceneNameAttribute
 
 Supported types: **string**.
+
+```csharp
+[SceneName]
+public string var1;
+```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename2.png)
@@ -253,6 +273,11 @@ public string password;
 #### LeftToggleAttribute
 
 Supported types: **bool**.
+
+```csharp
+[LeftToggle]
+public bool var1;
+```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/lefttoggle.png)
 
