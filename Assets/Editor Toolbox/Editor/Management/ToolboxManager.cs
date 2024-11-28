@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.IO;
-
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Management
 {
+    using Toolbox.Editor.Drawers;
     using Editor = UnityEditor.Editor;
 
     internal static class ToolboxManager
@@ -27,7 +27,7 @@ namespace Toolbox.Editor
         private static void ManageInspectorCore(IToolboxInspectorSettings settings)
         {
             //setup all available drawers using the internal module
-            ToolboxDrawerModule.UpdateDrawers(settings);
+            ToolboxDrawersManager.UpdateDrawers(settings);
         }
 
         private static void ManageProjectCore(IToolboxProjectSettings settings)

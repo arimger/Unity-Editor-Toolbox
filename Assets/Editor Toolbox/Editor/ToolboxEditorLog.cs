@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Text;
-
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
@@ -12,7 +10,6 @@ namespace Toolbox.Editor
     {
         private const string tag = "Editor Toolbox";
         private const string format = "[{0}] {1}";
-
 
         private static string GetPropertySceneLocation(SerializedProperty property)
         {
@@ -27,7 +24,6 @@ namespace Toolbox.Editor
             stringBuilder.Append(string.Format("Member ({0}) not found.", memberName));
             return stringBuilder.ToString();
         }
-
 
         internal static void AttributeUsageWarning(Attribute attribute, string message)
         {

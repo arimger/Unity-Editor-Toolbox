@@ -2209,6 +2209,8 @@ MonoBehaviour:
   var56: 0
   veryVeryVeryVeryVeryLongName: 0
   var57: 0
+  nestedObject:
+    var0: -12
 --- !u!4 &1438743619
 Transform:
   m_ObjectHideFlags: 2

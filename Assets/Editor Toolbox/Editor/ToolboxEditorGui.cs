@@ -1,11 +1,11 @@
 ﻿using System;
-
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
+    using Toolbox.Editor.Drawers;
     using Toolbox.Editor.Internal;
 
     /// <summary>
@@ -434,7 +434,7 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawToolboxProperty(SerializedProperty property)
         {
-            ToolboxDrawerModule.GetPropertyHandler(property)?.OnGuiLayout(property);
+            ToolboxDrawersManager.GetPropertyHandler(property)?.OnGuiLayout(property);
         }
 
         /// <summary>
@@ -443,7 +443,7 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawToolboxProperty(SerializedProperty property, GUIContent label)
         {
-            ToolboxDrawerModule.GetPropertyHandler(property)?.OnGuiLayout(property, label);
+            ToolboxDrawersManager.GetPropertyHandler(property)?.OnGuiLayout(property, label);
         }
 
         /// <summary>

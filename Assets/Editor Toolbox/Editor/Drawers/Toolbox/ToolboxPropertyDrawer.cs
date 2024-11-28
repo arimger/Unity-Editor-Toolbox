@@ -10,18 +10,17 @@ namespace Toolbox.Editor.Drawers
             ToolboxEditorGui.DrawDefaultProperty(property, label);
         }
 
-
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return true;
         }
 
-        public override sealed void OnGui(SerializedProperty property, GUIContent label)
+        public sealed override void OnGui(SerializedProperty property, GUIContent label)
         {
             OnGui(property, label, PropertyUtility.GetAttribute<T>(property));
         }
 
-        public override sealed void OnGui(SerializedProperty property, GUIContent label, ToolboxAttribute attribute)
+        public sealed override void OnGui(SerializedProperty property, GUIContent label, ToolboxAttribute attribute)
         {
             OnGui(property, label, attribute as T);
         }
@@ -39,10 +38,9 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            var warningContent = new GUIContent(string.Format("{0} has invalid property drawer", property.displayName));
-            //create additional warning log to the Console window
             ToolboxEditorLog.WrongAttributeUsageWarning(attribute, property);
             //create additional warning label based on the property name
+            var warningContent = new GUIContent(string.Format("{0} has invalid property drawer", property.displayName));
             ToolboxEditorGui.DrawEmptyProperty(property, warningContent);
         }
     }
