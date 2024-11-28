@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-
 using UnityEditor;
 using UnityEngine;
 
@@ -20,10 +19,8 @@ namespace Toolbox.Editor
             EditorApplication.projectWindowItemOnGUI += OnItemCallback;
         }
 
-
-        private readonly static Dictionary<string, FolderData> pathBasedFoldersData = new Dictionary<string, FolderData>();
-        private readonly static Dictionary<string, FolderData> nameBasedFoldersData = new Dictionary<string, FolderData>();
-
+        private static readonly Dictionary<string, FolderData> pathBasedFoldersData = new Dictionary<string, FolderData>();
+        private readonly static Dictionary<string, FolderData> nameBasedFoldersData = new();
 
         /// <summary>
         /// Draws icons and additional tooltips for matched assets.
@@ -49,7 +46,6 @@ namespace Toolbox.Editor
                 ToolboxEditorGui.DrawTooltip(rect, data.Tooltip);
             }
         }
-
 
         /// <summary>
         /// Tries to retrive <see cref="FolderData"/> associated to given path.
@@ -77,7 +73,6 @@ namespace Toolbox.Editor
             rect = isSmallIcon ? GetSmallIconRect(labelRect) : GetLargeIconRect(labelRect, true);
             return true;
         }
-
 
         /// <summary>
         /// Creates a custom folder using given data.
@@ -119,7 +114,6 @@ namespace Toolbox.Editor
             pathBasedFoldersData.Clear();
             nameBasedFoldersData.Clear();
         }
-
 
         internal static Rect GetLargeIconRect(Rect folderIconRect)
         {
@@ -189,7 +183,6 @@ namespace Toolbox.Editor
 
         internal static void RepaintProjectOverlay() => EditorApplication.RepaintProjectWindow();
 
-
         /// <summary>
         /// Determines if <see cref="ToolboxEditorProject"/> can create an additional overlay on the Project Window.
         /// </summary>
@@ -212,7 +205,6 @@ namespace Toolbox.Editor
         /// Padding ratio for the small icons.
         /// </summary>
         internal static Vector2 SmallIconPaddingRatio { get; set; } = new Vector2(0, 0);
-
 
         internal static class Defaults
         {

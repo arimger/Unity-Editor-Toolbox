@@ -289,7 +289,7 @@ namespace Toolbox.Editor
         public void SetAllPossibleDecoratorDrawers()
         {
             decoratorDrawerHandlers.Clear();
-            var types = ToolboxDrawerModule.GetAllPossibleDecoratorDrawers();
+            var types = ToolboxDrawersManager.GetAllPossibleDecoratorDrawers();
             for (var i = 0; i < types.Count; i++)
             {
                 decoratorDrawerHandlers.Add(new SerializedType(types[i]));
@@ -299,7 +299,7 @@ namespace Toolbox.Editor
         public void SetAllPossibleConditionDrawers()
         {
             conditionDrawerHandlers.Clear();
-            var types = ToolboxDrawerModule.GetAllPossibleConditionDrawers();
+            var types = ToolboxDrawersManager.GetAllPossibleConditionDrawers();
             for (var i = 0; i < types.Count; i++)
             {
                 conditionDrawerHandlers.Add(new SerializedType(types[i]));
@@ -309,7 +309,7 @@ namespace Toolbox.Editor
         public void SetAllPossibleSelfPropertyDrawers()
         {
             selfPropertyDrawerHandlers.Clear();
-            var types = ToolboxDrawerModule.GetAllPossibleSelfPropertyDrawers();
+            var types = ToolboxDrawersManager.GetAllPossibleSelfPropertyDrawers();
             for (var i = 0; i < types.Count; i++)
             {
                 selfPropertyDrawerHandlers.Add(new SerializedType(types[i]));
@@ -319,7 +319,7 @@ namespace Toolbox.Editor
         public void SetAllPossibleListPropertyDrawers()
         {
             listPropertyDrawerHandlers.Clear();
-            var types = ToolboxDrawerModule.GetAllPossibleListPropertyDrawers();
+            var types = ToolboxDrawersManager.GetAllPossibleListPropertyDrawers();
             for (var i = 0; i < types.Count; i++)
             {
                 listPropertyDrawerHandlers.Add(new SerializedType(types[i]));
@@ -329,7 +329,7 @@ namespace Toolbox.Editor
         public void SetAllPossibleTargetTypeDrawers()
         {
             targetTypeDrawerHandlers.Clear();
-            var types = ToolboxDrawerModule.GetAllPossibleTargetTypeDrawers();
+            var types = ToolboxDrawersManager.GetAllPossibleTargetTypeDrawers();
             for (var i = 0; i < types.Count; i++)
             {
                 targetTypeDrawerHandlers.Add(new SerializedType(types[i]));

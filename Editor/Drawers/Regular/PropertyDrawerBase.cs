@@ -26,11 +26,10 @@ namespace Toolbox.Editor.Drawers
             EditorGUI.PropertyField(position, property, label);
         }
 
-
         /// <summary>
         /// Native call to return the expected height.
         /// </summary>
-        public override sealed float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        public sealed override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return IsPropertyValid(property)
                 ? GetPropertyHeightSafe(property, label)
@@ -40,7 +39,7 @@ namespace Toolbox.Editor.Drawers
         /// <summary>
         /// Native call to draw the provided property.
         /// </summary>
-        public override sealed void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        public sealed override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (IsPropertyValid(property))
             {
@@ -48,13 +47,11 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            var warningContent = new GUIContent(property.displayName + " has invalid property drawer");
-            //create additional warning log to the console window
             ToolboxEditorLog.WrongAttributeUsageWarning(attribute, property);
             //create additional warning label based on the property name
+            var warningContent = new GUIContent(property.displayName + " has invalid property drawer");
             ToolboxEditorGui.DrawEmptyProperty(position, property, warningContent);
         }
-
 
         /// <summary>
         /// Checks if provided property can be properly handled by this drawer.

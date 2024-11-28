@@ -278,21 +278,52 @@ public int layer;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/layer.png)
 
+#### AnimationCurveSettingsAttribute
+
+Supported types: **AnimationCurve**.
+
+```csharp
+[AnimationCurveSettings(-2, -2, 2, 2, HexColor = "#FFD666")]
+public AnimationCurve animationCurve
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/animationcurvesettings.png)
+
 #### ChildObjectOnlyAttribute
 
 Supported types: **GameObject, Component**.
+
+```csharp
+[ChildObjectOnlyAttribute]
+public GameObject var1
+```
 
 #### SceneObjectOnlyAttribute
 
 Supported types: **GameObject, Component**.
 
+```csharp
+[SceneObjectOnlyAttribute]
+public GameObject var1
+```
+
 #### PrefabObjectOnlyAttribute
 
 Supported types: **GameObject, Component**.
 
+```csharp
+[PrefabObjectOnlyAttribute]
+public GameObject var1
+```
+
 #### NotPrefabObjectOnlyAttribute
 
 Supported types: **GameObject, Component**.
+
+```csharp
+[NotPrefabObjectOnlyAttribute]
+public GameObject var1
+```
 
 ---
 

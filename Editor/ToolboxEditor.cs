@@ -3,6 +3,7 @@ using UnityEditor;
 
 namespace Toolbox.Editor
 {
+    using Toolbox.Editor.Drawers;
     using Editor = UnityEditor.Editor;
     using Object = UnityEngine.Object;
 

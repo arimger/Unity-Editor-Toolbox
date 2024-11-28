@@ -1,5 +1,4 @@
 ﻿using System;
-
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
@@ -15,7 +14,6 @@ namespace Toolbox.Editor.Drawers
         [Obsolete("This method is renamed. Override 'OnGuiCloseSafe' instead.")]
         protected virtual void OnGuiEndSafe(T attribute)
         { }
-
 
         public sealed override void OnGuiBegin(ToolboxAttribute attribute)
         {

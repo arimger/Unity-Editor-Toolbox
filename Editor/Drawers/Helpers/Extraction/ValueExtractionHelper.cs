@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using UnityEditor;
 
 namespace Toolbox.Editor.Drawers
@@ -68,14 +67,8 @@ namespace Toolbox.Editor.Drawers
 
         public static bool TryGetValue(string source, SerializedProperty causer, out object value, out bool hasMixedValues, Func<object, object, bool> nextValuesComparer)
         {
-            var targetObjects = causer.serializedObject.targetObjects;
-            var parentObjects = new object[targetObjects.Length];
-            for (var i = 0; i < targetObjects.Length; i++)
-            {
-                var targetObject = targetObjects[i];
-                parentObjects[i] = causer.GetDeclaringObject(targetObject);
-            }
-
+            //NOTE: consider using NonAlloc implementation
+            var parentObjects = causer.GetDeclaringObjects();
             return TryGetValue(source, parentObjects, out value, out hasMixedValues, nextValuesComparer);
         }
     }
