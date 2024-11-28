@@ -211,7 +211,7 @@ Supported types: **string**.
 
 ```csharp
 [SceneName]
-public string var1;
+public string sceneName;
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename1.png)\
