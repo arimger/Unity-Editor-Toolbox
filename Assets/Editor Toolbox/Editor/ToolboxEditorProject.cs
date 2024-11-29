@@ -20,7 +20,7 @@ namespace Toolbox.Editor
         }
 
         private static readonly Dictionary<string, FolderData> pathBasedFoldersData = new Dictionary<string, FolderData>();
-        private readonly static Dictionary<string, FolderData> nameBasedFoldersData = new();
+        private readonly static Dictionary<string, FolderData> nameBasedFoldersData = new Dictionary<string, FolderData>();
 
         /// <summary>
         /// Draws icons and additional tooltips for matched assets.
