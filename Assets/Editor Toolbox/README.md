@@ -604,12 +604,28 @@ public GameObject[] largeArray = new GameObject[19];
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scrollableitems.png)
 
-##### Other ToolboxProperty attributes
+##### IgnoreParentAttribute
+
+**IgnoreParent** allows you to hide the parent's label, foldout arrow and remove the standard indentation for nested fields.
 
 ```csharp
 [IgnoreParent]
 public Quaternion q;
 ```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/ignoreparent.png)
+
+##### DynamicRangeAttribute
+
+```csharp
+[DynamicRange(nameof(minValue), nameof(MaxValue))]
+public float var1;
+
+public float minValue;
+public float MaxValue => 15.0f;
+```
+
+##### DynamicMinMaxSliderAttribute
 
 ```csharp
 [DynamicMinMaxSlider(nameof(minValue), nameof(MaxValue))]
@@ -952,7 +968,7 @@ public void Usage()
 
 #### SerializedDirectory
 
-Allows to serialize folders in form of assets and retrieve direct paths in runtime.
+Allows to serialize folders in form of assets and retrieve direct paths in Runtime.
 
 ```csharp
 public SerializedDirectory serializeDirectory;

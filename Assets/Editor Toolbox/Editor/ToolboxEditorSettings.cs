@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -62,9 +61,9 @@ namespace Toolbox.Editor
     [CreateAssetMenu(fileName = "Editor Toolbox Settings", menuName = "Editor Toolbox/Settings")]
     internal class ToolboxEditorSettings : ScriptableObject, IToolboxGeneralSettings, IToolboxHierarchySettings, IToolboxProjectSettings, IToolboxInspectorSettings, IToolboxSceneViewSettings
     {
-        [SerializeField]
+        [SerializeField, Tooltip("Set to false if you don't want to use Toolbox Hierarchy and related features.")]
         private bool useToolboxHierarchy = true;
-        [SerializeField]
+        [SerializeField, Tooltip("Set to true if you want to display horizontal lines in the Hierarchy Window.")]
         private bool drawHorizontalLines = true;
         [SerializeField]
         private bool showSelectionsCount;
@@ -73,7 +72,7 @@ namespace Toolbox.Editor
         [FormerlySerializedAs("rowDataItems")]
         private List<HierarchyItemDataType> rowDataTypes = Defaults.rowDataTypes;
 
-        [SerializeField]
+        [SerializeField, Tooltip("Set to false if you don't want to use Toolbox Folders and related features.")]
         private bool useToolboxFolders = true;
 
         [SerializeField, Clamp(0.0f, float.MaxValue)]
@@ -95,7 +94,7 @@ namespace Toolbox.Editor
         [SerializeField]
         private KeyCode selectorKey = KeyCode.Tab;
 
-        [SerializeField, Tooltip("Set to false if you don't want to use Toolbox attributes and related features.")]
+        [SerializeField, Tooltip("Set to false if you don't want to use Toolbox Attributes and related features.")]
         private bool useToolboxDrawers = true;
         [SerializeField, Tooltip("By default, Inspectors will use the built-in version of the list instead of the Toolbox-based one. " +
             "Keep in mind that built-in properties don't support Toolbox attributes. \n\n Changing this property will recompile the code.")]
@@ -471,7 +470,7 @@ namespace Toolbox.Editor
             internal const float smallFolderIconXPaddingDefault = 0.15f;
             internal const float smallFolderIconYPaddingDefault = 0.15f;
 
-            internal readonly static List<HierarchyItemDataType> rowDataTypes = new List<HierarchyItemDataType>()
+            internal static readonly List<HierarchyItemDataType> rowDataTypes = new List<HierarchyItemDataType>()
             {
                 HierarchyItemDataType.Icon,
                 HierarchyItemDataType.Toggle,

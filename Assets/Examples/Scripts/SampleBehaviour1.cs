@@ -101,18 +101,18 @@ public class SampleBehaviour1 : MonoBehaviour
     [Layer]
     public int layer;
 
-    [BeginGroup(Order = -2)]
-
-    [Help("NotNullAttribute, ClampAttribute, SceneObjectOnlyAttribute, ChildObjectOnlyAttribute, PrefabObjectOnlyAttribute " +
-        "are part of group that will be re-implemented in future as ToolboxValidationAttributes. " +
-        "Unfortunately, for now, you can't use them together with any other PropertyDrawer.", UnityMessageType.Warning, Order = -1)]
-
     [Label("Animation Curve Settings", skinStyle: SkinStyle.Box)]
 
     [AnimationCurveSettings]
     public AnimationCurve animationCurve1;
     [AnimationCurveSettings(-1.0f, -1.0f, 2.0f, 2.0f, HexColor = "#360E45")]
     public AnimationCurve animationCurve2;
+
+    [BeginGroup(Order = -2)]
+
+    [Help("NotNullAttribute, ClampAttribute, SceneObjectOnlyAttribute, ChildObjectOnlyAttribute, PrefabObjectOnlyAttribute " +
+        "are part of group that will be re-implemented in future as ToolboxValidationAttributes. " +
+        "Unfortunately, for now, you can't use them together with any other PropertyDrawer.", UnityMessageType.Warning, Order = -1)]
 
     [Label("Validation", skinStyle: SkinStyle.Box)]
 
