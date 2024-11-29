@@ -1,3 +1,14 @@
+## 0.13.2 [29.11.2024]
+
+### Added:
+- AnimationCurveSettingsAttribute
+
+### Changed:
+- Possibility to use [EditorButton] and [DynamicHelp] in nested types
+- For now SerializeReference properties without children will always be folded
+- Fix exception while building labels for generic types without arguments
+- Fix drawing SerializedDictionary if value or key types cannot be serialized
+
 ## 0.13.1 [30.08.2024]
 
 ### Changed:
