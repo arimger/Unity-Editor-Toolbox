@@ -76,19 +76,21 @@ namespace Toolbox.Editor.Internal.Types
                 stringBuilder.Append(':');
             }
 
-            if (type.IsGenericType)
+            var typeName = type.Name;
+            //NOTE: there are rare cases where "generic" types have no arguments, let's ignore them
+            if (type.IsGenericType && typeName.Contains("`"))
             {
-                var name = type.Name;
-                name = name.Substring(0, name.IndexOf("`"));
+                var genericCharIndex = typeName.IndexOf("`");
+                typeName = typeName.Substring(0, genericCharIndex);
 
-                stringBuilder.Append(name);
+                stringBuilder.Append(typeName);
                 stringBuilder.Append('<');
                 var arguments = type.GetGenericArguments();
                 for (var i = 0; i < arguments.Length; i++)
                 {
-                    var argumentType = arguments[i];      
+                    var argumentType = arguments[i];
                     var argumentName = string.IsNullOrEmpty(argumentType.FullName)
-                        ? argumentType.Name 
+                        ? argumentType.Name
                         : GetTypeName(argumentType, false);
 
                     stringBuilder.Append(argumentName);
@@ -102,7 +104,7 @@ namespace Toolbox.Editor.Internal.Types
             }
             else
             {
-                stringBuilder.Append(type.Name);
+                stringBuilder.Append(typeName);
             }
 
             return stringBuilder.ToString();

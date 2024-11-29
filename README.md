@@ -145,6 +145,11 @@ public Component var2;
 
 Supported types: **all**.
 
+```csharp
+[Suffix("cm")]
+public string var1;
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/suffix.png)
 
 
@@ -179,6 +184,11 @@ public FlagExample enumFlag = FlagExample.Flag1 | FlagExample.Flag2 | FlagExampl
 
 Supported types: UnityEngine.**Object**.
 
+```csharp
+[NotNull]
+public GameObject var1;
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/notnull2.png)
 
@@ -187,12 +197,22 @@ Supported types: UnityEngine.**Object**.
 
 Supported types: **string**.
 
+```csharp
+[Directory]
+public string var1;
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/directory2.png)
 
 #### SceneNameAttribute
 
 Supported types: **string**.
+
+```csharp
+[SceneName]
+public string sceneName;
+```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename1.png)\
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scenename2.png)
@@ -254,6 +274,11 @@ public string password;
 
 Supported types: **bool**.
 
+```csharp
+[LeftToggle]
+public bool var1;
+```
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/lefttoggle.png)
 
 #### FormattedNumberAttribute
@@ -278,21 +303,52 @@ public int layer;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/layer.png)
 
+#### AnimationCurveSettingsAttribute
+
+Supported types: **AnimationCurve**.
+
+```csharp
+[AnimationCurveSettings(-2, -2, 2, 2, HexColor = "#FFD666")]
+public AnimationCurve animationCurve
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/animationcurvesettings.png)
+
 #### ChildObjectOnlyAttribute
 
 Supported types: **GameObject, Component**.
+
+```csharp
+[ChildObjectOnlyAttribute]
+public GameObject var1
+```
 
 #### SceneObjectOnlyAttribute
 
 Supported types: **GameObject, Component**.
 
+```csharp
+[SceneObjectOnlyAttribute]
+public GameObject var1
+```
+
 #### PrefabObjectOnlyAttribute
 
 Supported types: **GameObject, Component**.
 
+```csharp
+[PrefabObjectOnlyAttribute]
+public GameObject var1
+```
+
 #### NotPrefabObjectOnlyAttribute
 
 Supported types: **GameObject, Component**.
+
+```csharp
+[NotPrefabObjectOnlyAttribute]
+public GameObject var1
+```
 
 ---
 
@@ -548,17 +604,28 @@ public GameObject[] largeArray = new GameObject[19];
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/scrollableitems.png)
 
-##### Other ToolboxProperty attributes
+##### IgnoreParentAttribute
 
 **IgnoreParent** allows you to hide the parent's label, foldout arrow and remove the standard indentation for nested fields.
 
 ```csharp
-public Quaternion quaternion;
 [IgnoreParent]
 public Quaternion q;
 ```
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/ignoreparent.png)
+
+##### DynamicRangeAttribute
+
+```csharp
+[DynamicRange(nameof(minValue), nameof(MaxValue))]
+public float var1;
+
+public float minValue;
+public float MaxValue => 15.0f;
+```
+
+##### DynamicMinMaxSliderAttribute
 
 ```csharp
 [DynamicMinMaxSlider(nameof(minValue), nameof(MaxValue))]
@@ -901,7 +968,7 @@ public void Usage()
 
 #### SerializedDirectory
 
-Allows to serialize folders in form of assets and retrieve direct paths in runtime.
+Allows to serialize folders in form of assets and retrieve direct paths in Runtime.
 
 ```csharp
 public SerializedDirectory serializeDirectory;

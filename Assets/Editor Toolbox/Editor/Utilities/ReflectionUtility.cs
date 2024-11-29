@@ -26,12 +26,12 @@ namespace Toolbox.Editor
             return GetObjectMethod(methodName, serializedObject.targetObjects);
         }
 
-        internal static MethodInfo GetObjectMethod(string methodName, params Object[] targetObjects)
+        internal static MethodInfo GetObjectMethod(string methodName, params object[] targetObjects)
         {
             return GetObjectMethod(methodName, allBindings, targetObjects);
         }
 
-        internal static MethodInfo GetObjectMethod(string methodName, BindingFlags bindingFlags, params Object[] targetObjects)
+        internal static MethodInfo GetObjectMethod(string methodName, BindingFlags bindingFlags, params object[] targetObjects)
         {
             if (targetObjects == null || targetObjects.Length == 0)
             {

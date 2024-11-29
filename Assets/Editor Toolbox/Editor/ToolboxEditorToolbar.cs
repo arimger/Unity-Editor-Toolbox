@@ -46,6 +46,9 @@ namespace Toolbox.Editor
         private static readonly FieldInfo onGuiHandler = containterType.GetField("m_OnGUIHandler",
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
+        private static readonly MethodInfo repaintMethod = toolbarType.GetMethod("RepaintToolbar",
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+
         private static Object toolbar;
 
         private static IEnumerator Initialize()
@@ -106,7 +109,7 @@ namespace Toolbox.Editor
 
         private static void OnGui()
         {
-            if (!IsToolbarAllowed || OnToolbarGui == null)
+            if (!IsToolbarAllowed || !IsToolbarValid)
             {
                 return;
             }
@@ -142,9 +145,18 @@ namespace Toolbox.Editor
 #endif
         }
 
+        public static void Repaint()
+        {
+            if (toolbar == null)
+            {
+                return;
+            }
+
+            repaintMethod?.Invoke(toolbar, null);
+        }
 
         public static bool IsToolbarAllowed { get; set; } = true;
-
+        public static bool IsToolbarValid => toolbar != null && OnToolbarGui != null;
         public static float FromToolsOffset { get; set; } = 400.0f;
         public static float FromStripOffset { get; set; } = 150.0f;
 

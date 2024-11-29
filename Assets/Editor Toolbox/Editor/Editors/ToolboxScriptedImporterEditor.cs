@@ -7,6 +7,7 @@ using UnityEditor.Experimental.AssetImporters;
 
 namespace Toolbox.Editor.Editors
 {
+    using Toolbox.Editor.Drawers;
     using Editor = UnityEditor.Editor;
 
     public class ToolboxScriptedImporterEditor : ScriptedImporterEditor, IToolboxEditor

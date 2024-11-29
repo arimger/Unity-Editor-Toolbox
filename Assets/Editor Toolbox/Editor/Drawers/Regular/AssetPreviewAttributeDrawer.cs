@@ -99,15 +99,12 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.ObjectReference;
         }
 
-
         private AssetPreviewAttribute Attribute => attribute as AssetPreviewAttribute;
-
 
         private static class Style
         {

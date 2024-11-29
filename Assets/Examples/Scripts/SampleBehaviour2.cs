@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [ExecuteAlways]
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 2 (Toolbox Property)")]
@@ -21,7 +22,7 @@ public class SampleBehaviour2 : MonoBehaviour
 
     public int GetValue()
     {
-        return ints.Length * Random.Range(1, 5);
+        return ints.Length * UnityEngine.Random.Range(1, 5);
     }
 
     [Label("InLine Editor", skinStyle: SkinStyle.Box)]
@@ -63,10 +64,10 @@ public class SampleBehaviour2 : MonoBehaviour
 
     [Label("Nested Objects", skinStyle: SkinStyle.Box)]
 
-    [Help("You can use Toolbox Properties inside serializable types without limitations.")]
+    [Help("You can use Toolbox Attributes inside serializable types without limitations.")]
     public SampleNestedClass nestedObject;
 
-    [System.Serializable]
+    [Serializable]
     public class SampleNestedClass
     {
         [Tooltip("Set to 1")]

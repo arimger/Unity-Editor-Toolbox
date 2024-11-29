@@ -26,7 +26,6 @@ namespace Toolbox.Editor
             ToolboxEditorHandler.OnEditorReload += ResetCache;
         }
 
-
         /// <summary>
         /// Determines whether we are currently within any Editor's layout scope.
         /// </summary>
@@ -39,7 +38,6 @@ namespace Toolbox.Editor
         private static int nestingLevel;
         private static int vLayoutClips;
         private static int hLayoutClips;
-
 
         private static void OnBeginEditor(Editor editor)
         {
@@ -98,7 +96,6 @@ namespace Toolbox.Editor
 
             return true;
         }
-
 
         internal static Rect BeginVertical()
         {

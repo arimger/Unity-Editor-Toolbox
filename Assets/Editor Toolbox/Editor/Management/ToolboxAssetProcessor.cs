@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using AssetProcessor = UnityEditor.AssetModificationProcessor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Management
 {
     public class ToolboxAssetProcessor : AssetProcessor
     {

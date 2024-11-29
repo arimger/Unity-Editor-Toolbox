@@ -8,7 +8,7 @@ namespace Toolbox.Editor.Drawers
         protected override void OnGuiBeginSafe(DynamicHelpAttribute attribute)
         {
             var sourceHandle = attribute.SourceHandle;
-            var targetObjects = ToolboxEditorHandler.CurrentTargetObjects;
+            var targetObjects = GetDeclaringObjects();
             if (ValueExtractionHelper.TryGetValue(sourceHandle, targetObjects, out var value, out var hasMixedValues))
             {
                 var messageText = hasMixedValues ? "-" : value?.ToString();

@@ -9,8 +9,13 @@ using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
 {
-    public static partial class PropertyUtility
+    public static class PropertyUtility
     {
+        internal static class Defaults
+        {
+            internal static readonly string scriptPropertyName = "m_Script";
+        }
+
         //NOTE: last non-reflection implementation was ok but support for [SerializeReference] makes it a bit slow
         // unfortunately UnityEditor.ScriptAttributeUtility.GetFieldInfoFromProperty is internal so we have to retrive it using reflection
         private static readonly MethodInfo getGetFieldInfoFromPropertyMethod =
@@ -110,6 +115,27 @@ namespace Toolbox.Editor
             }
 
             return validReference;
+        }
+
+        public static object[] GetDeclaringObjects(this SerializedProperty property)
+        {
+            var targetObjects = property.serializedObject.targetObjects;
+            var parentObjects = new object[targetObjects.Length];
+            GetDeclaringObjectsNonAlloc(property, parentObjects);
+            return parentObjects;
+        }
+
+        public static int GetDeclaringObjectsNonAlloc(this SerializedProperty property, object[] result)
+        {
+            var targetObjects = property.serializedObject.targetObjects;
+            var targetObjectsCount = targetObjects.Length;
+            for (var i = 0; i < targetObjectsCount; i++)
+            {
+                var targetObject = targetObjects[i];
+                result[i] = property.GetDeclaringObject(targetObject);
+            }
+
+            return targetObjectsCount;
         }
 
         public static object GetTreePathReference(string treeField, object treeParent)
@@ -440,14 +466,6 @@ namespace Toolbox.Editor
             }
         }
 
-        internal static class Defaults
-        {
-            internal static readonly string scriptPropertyName = "m_Script";
-        }
-    }
-
-    public static partial class PropertyUtility
-    {
         public static SerializedProperty GetSibling(this SerializedProperty property, string propertyPath)
         {
             var propertyParent = property.GetParent();

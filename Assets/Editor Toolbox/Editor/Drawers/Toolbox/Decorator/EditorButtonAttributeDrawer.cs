@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Reflection;
-
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -9,7 +8,7 @@ namespace Toolbox.Editor.Drawers
 {
     public class EditorButtonAttributeDrawer : ToolboxDecoratorDrawer<EditorButtonAttribute>
     {
-        private MethodInfo GetMethod(EditorButtonAttribute attribute, Object[] targetObjects, string methodName)
+        private MethodInfo GetMethod(EditorButtonAttribute attribute, object[] targetObjects, string methodName)
         {
             var methodInfo = ReflectionUtility.GetObjectMethod(methodName, targetObjects);
             if (methodInfo == null)
@@ -50,7 +49,7 @@ namespace Toolbox.Editor.Drawers
             return true;
         }
 
-        private bool IsClickable(EditorButtonAttribute attribute, Object[] targetObjects)
+        private bool IsClickable(EditorButtonAttribute attribute, object[] targetObjects)
         {
             if (!IsClickable(attribute.ActivityType))
             {
@@ -93,7 +92,7 @@ namespace Toolbox.Editor.Drawers
             return true;
         }
 
-        private void CallMethods(EditorButtonAttribute attribute, Object[] targetObjects)
+        private void CallMethods(EditorButtonAttribute attribute, object[] targetObjects)
         {
             var methodInfo = GetMethod(attribute, targetObjects, attribute.MethodName);
             if (methodInfo == null)
@@ -120,17 +119,16 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-
         protected override void OnGuiCloseSafe(EditorButtonAttribute attribute)
         {
-            var targetObjects = ToolboxEditorHandler.CurrentTargetObjects;
-            if (targetObjects == null || targetObjects.Length == 0)
+            var declaringObjects = GetDeclaringObjects();
+            if (declaringObjects == null || declaringObjects.Length == 0)
             {
                 //NOTE: something went really wrong, internal bug or OnGuiBeginSafe was called out of the Toolbox scope
                 return;
             }
 
-            var disable = !IsClickable(attribute, targetObjects);
+            var disable = !IsClickable(attribute, declaringObjects);
             using (new EditorGUI.DisabledScope(disable))
             {
                 var label = string.IsNullOrEmpty(attribute.ExtraLabel)
@@ -141,11 +139,10 @@ namespace Toolbox.Editor.Drawers
 
                 if (GUILayout.Button(content, Style.buttonStyle))
                 {
-                    CallMethods(attribute, targetObjects);
+                    CallMethods(attribute, declaringObjects);
                 }
             }
         }
-
 
         private static class Style
         {

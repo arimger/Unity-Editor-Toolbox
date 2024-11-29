@@ -71,7 +71,10 @@ namespace Toolbox.Editor.Internal
             Close();
         }
 
-        public bool IsVisible => property.isExpanded;
+        /// <summary>
+        /// Indicates whether property is expanded and has any children to draw.
+        /// </summary>
+        public bool IsVisible => property.isExpanded && property.hasVisibleChildren;
         public Rect LabelRect { get; private set; }
         public Rect InputRect { get; private set; }
     }

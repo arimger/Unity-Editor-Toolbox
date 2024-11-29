@@ -1,11 +1,29 @@
-﻿using System.Collections;
-
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 [ExecuteAlways]
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 4 (Toolbox Decorators)")]
 public class SampleBehaviour4 : MonoBehaviour
 {
+    [Serializable]
+    private class SampleNestedClass
+    {
+        [DynamicHelp(nameof(GetHelpMessage), UnityMessageType.Info)]
+        [EditorButton(nameof(TestNestedMethod))]
+        public int var0;
+        
+        private void TestNestedMethod()
+        {
+            Debug.Log(nameof(TestNestedMethod) + " is called");
+        }
+
+        private string GetHelpMessage()
+        {
+            return $"Var0 == {var0}";
+        }
+    }
+
     [Label("Help", skinStyle: SkinStyle.Box)]
 
     [Disable]
@@ -130,4 +148,11 @@ public class SampleBehaviour4 : MonoBehaviour
 
     [Title("Standard Title")]
     public int var57;
+
+    [Label("Nested Objects", skinStyle: SkinStyle.Box)]
+
+    [Help("You can use Toolbox Attributes inside serializable types without limitations.")]
+    [SerializeField]
+    private SampleNestedClass nestedObject;
+
 }

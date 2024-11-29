@@ -1,5 +1,4 @@
 ﻿using System;
-
 using UnityEngine;
 using UnityEngine.Scripting.APIUpdating;
 
@@ -88,7 +87,7 @@ public class SampleBehaviour6 : MonoBehaviour
         public int var33;
     }
 
-#endregion
+    #endregion
 
     #region Generic Types
 
