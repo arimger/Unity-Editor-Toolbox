@@ -101,6 +101,13 @@ public class SampleBehaviour1 : MonoBehaviour
     [Layer]
     public int layer;
 
+    [Label("Animation Curve Settings", skinStyle: SkinStyle.Box)]
+
+    [AnimationCurveSettings]
+    public AnimationCurve animationCurve1;
+    [AnimationCurveSettings(-1.0f, -1.0f, 2.0f, 2.0f, HexColor = "#360E45")]
+    public AnimationCurve animationCurve2;
+
     [BeginGroup(Order = -2)]
 
     [Help("NotNullAttribute, ClampAttribute, SceneObjectOnlyAttribute, ChildObjectOnlyAttribute, PrefabObjectOnlyAttribute " +

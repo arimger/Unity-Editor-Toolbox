@@ -1,35 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-
 using UnityEditor;
 using UnityEngine;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     using Toolbox.Attributes.Property;
-    using Toolbox.Editor.Drawers;
 
     /// <summary>
     /// Helper class used in <see cref="SerializedProperty"/> display process.
     /// </summary>
-    internal class ToolboxPropertyHandler
+    internal class ToolboxPropertyHandler : ISerializedPropertyContext
     {
-        /// <summary>
-        /// Target property which contains all useful data about the associated field. 
-        /// </summary>
-        private readonly SerializedProperty property;
-
-        /// <summary>
-        /// Info associated to the <see cref="property"/>.
-        /// </summary>
-        private readonly FieldInfo fieldInfo;
-
-        /// <summary>
-        /// Type associated to the <see cref="property"/>.
-        /// </summary>
-        private readonly Type type;
-
         /// <summary>
         /// Determines whenever property is an array/list.
         /// </summary>
@@ -95,7 +78,7 @@ namespace Toolbox.Editor
         /// </summary>
         internal ToolboxPropertyHandler(SerializedProperty property)
         {
-            this.property = property;
+            this.Property = property;
 
             //here starts preparation of all needed data for this handler
             //first of all we have to retrieve the native data like FieldInfo, custom native drawer, etc.
@@ -103,30 +86,30 @@ namespace Toolbox.Editor
 
             label = new GUIContent(property.displayName);
             //get FieldInfo associated to this property, it is needed to cache custom attributes
-            if ((fieldInfo = property.GetFieldInfo(out type)) == null)
+            if ((FieldInfo = property.GetFieldInfo(out var type)) == null)
             {
                 return;
             }
 
+            Type = type;
             //initialize basic information about property
             isArray = property.isArray && property.propertyType == SerializedPropertyType.Generic;
-            isChild = property.name != fieldInfo.Name;
+            isChild = property.name != FieldInfo.Name;
 
             //try to fetch additional data about drawers
             ProcessBuiltInData();
             ProcessToolboxData();
         }
 
-
         private void ProcessBuiltInData()
         {
-            var attributes = fieldInfo.GetCustomAttributes<PropertyAttribute>();
+            var attributes = FieldInfo.GetCustomAttributes<PropertyAttribute>();
             foreach (var attribute in attributes)
             {
                 HandleNewAttribute(attribute);
             }
 
-            CheckIfPropertyHasPropertyDrawer(type);
+            CheckIfPropertyHasPropertyDrawer(Type);
         }
 
         /// <summary>
@@ -135,7 +118,7 @@ namespace Toolbox.Editor
         private void ProcessToolboxData()
         {
             //get all possible attributes and handle each directly by type
-            var attributes = fieldInfo.GetCustomAttributes<ToolboxAttribute>();
+            var attributes = FieldInfo.GetCustomAttributes<ToolboxAttribute>();
             foreach (var attribute in attributes)
             {
                 HandleNewAttribute(attribute);
@@ -143,7 +126,7 @@ namespace Toolbox.Editor
 
             //check if property has a custom attribute or target type drawer
             hasToolboxPropertyAssignableDrawer = propertyAttribute != null;
-            hasToolboxPropertyTargetTypeDrawer = ToolboxDrawerModule.HasTargetTypeDrawer(type);
+            hasToolboxPropertyTargetTypeDrawer = ToolboxDrawersManager.HasTargetTypeDrawer(Type);
             //check if property has any of it and cache value
             hasToolboxPropertyDrawer = hasToolboxPropertyAssignableDrawer ||
                                        hasToolboxPropertyTargetTypeDrawer;
@@ -167,7 +150,7 @@ namespace Toolbox.Editor
                 return;
             }
 
-            hasBuiltInPropertyDrawer = ToolboxDrawerModule.HasNativeTypeDrawer(type);
+            hasBuiltInPropertyDrawer = ToolboxDrawersManager.HasNativeTypeDrawer(type);
         }
 
         private void HandleNewAttribute(PropertyAttribute attribute)
@@ -294,14 +277,14 @@ namespace Toolbox.Editor
                 {
                     //draw target property using the associated attribute
                     var propertyDrawer = isArray
-                        ? ToolboxDrawerModule.GetListPropertyDrawer(propertyAttribute.GetType())
-                        : ToolboxDrawerModule.GetSelfPropertyDrawer(propertyAttribute.GetType());
+                        ? ToolboxDrawersManager.GetListPropertyDrawer(propertyAttribute.GetType())
+                        : ToolboxDrawersManager.GetSelfPropertyDrawer(propertyAttribute.GetType());
                     propertyDrawer?.OnGui(property, label, propertyAttribute);
                 }
                 else
                 {
                     //draw target property using the associated type drawer
-                    ToolboxDrawerModule.GetTargetTypeDrawer(type)?.OnGui(property, label);
+                    ToolboxDrawersManager.GetTargetTypeDrawer(Type)?.OnGui(property, label);
                 }
 
                 return;
@@ -338,7 +321,7 @@ namespace Toolbox.Editor
 
         private void HandleDecorator(ToolboxDecoratorAttribute attribute, bool onBegin, PropertyCondition conditionState = PropertyCondition.Valid)
         {
-            var drawer = ToolboxDrawerModule.GetDecoratorDrawer(attribute);
+            var drawer = ToolboxDrawersManager.GetDecoratorDrawer(attribute);
             if (drawer == null)
             {
                 return;
@@ -357,11 +340,11 @@ namespace Toolbox.Editor
                 {
                     if (onBegin)
                     {
-                        drawer.OnGuiBegin(attribute);
+                        drawer.OnGuiBegin(attribute, this);
                     }
                     else
                     {
-                        drawer.OnGuiClose(attribute);
+                        drawer.OnGuiClose(attribute, this);
                     }
                 }
             }
@@ -374,7 +357,7 @@ namespace Toolbox.Editor
                 return PropertyCondition.Valid;
             }
 
-            return ToolboxDrawerModule.GetConditionDrawer(conditionAttribute)?.OnGuiValidate(property, conditionAttribute) ?? PropertyCondition.Valid;
+            return ToolboxDrawersManager.GetConditionDrawer(conditionAttribute)?.OnGuiValidate(property, conditionAttribute) ?? PropertyCondition.Valid;
         }
 
         //TODO: replace this method with validation attributes
@@ -409,7 +392,7 @@ namespace Toolbox.Editor
         /// </summary>
         public void OnGuiLayout(GUIContent label)
         {
-            OnGuiLayout(property, label);
+            OnGuiLayout(Property, label);
         }
 
         /// <summary>
@@ -463,7 +446,7 @@ namespace Toolbox.Editor
         /// </summary>
         public void OnGuiDefault(GUIContent label)
         {
-            OnGuiDefault(property, label);
+            OnGuiDefault(Property, label);
         }
 
         /// <summary>
@@ -497,5 +480,20 @@ namespace Toolbox.Editor
                 ToolboxEditorGui.DrawDefaultProperty(property, label);
             }
         }
+
+        /// <summary>
+        /// Target property which contains all useful data about the associated field. 
+        /// </summary>
+        public SerializedProperty Property { get; }
+
+        /// <summary>
+        /// Info associated to the <see cref="Property"/>.
+        /// </summary>
+        public FieldInfo FieldInfo { get; }
+
+        /// <summary>
+        /// Type associated to the <see cref="Property"/>.
+        /// </summary>
+        public Type Type { get; }
     }
 }

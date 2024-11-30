@@ -2,20 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
 using UnityEditor;
 using UnityEngine;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
-    using Toolbox.Editor.Drawers;
-
     //TODO:
     //1. dedicated class to initialize and hold drawer-related data
     //2. dedicated class used for settings initialization
     //3. separate logic for resettings active drawers
+    //4. validations drawers
 
-    internal static class ToolboxDrawerModule
+    internal static class ToolboxDrawersManager
     {
         [InitializeOnLoadMethod]
         internal static void InitializeModule()
@@ -199,7 +197,6 @@ namespace Toolbox.Editor
             }
         }
 
-
         /// <summary>
         /// Clears all currently cached <see cref="ToolboxPropertyHandler"/>s.
         /// </summary>
@@ -231,7 +228,7 @@ namespace Toolbox.Editor
         /// </summary>
         internal static void UpdateDrawers(IToolboxInspectorSettings settings)
         {
-            ToolboxDrawerModule.settings = settings;
+            ToolboxDrawersManager.settings = settings;
 
             if (settings == null)
             {
@@ -246,11 +243,13 @@ namespace Toolbox.Editor
             //create all type-only-related drawers
             PrepareTargetTypeDrawers(settings);
 
-            HandleDefaultLists(settings.ForceDefaultLists);
+            var useDefaultLists = settings.ForceDefaultLists;
+            HandleDefaultLists(useDefaultLists);
+            var ignoreCustomEditor = !settings.UseToolboxDrawers;
+            HandleIgnoreEditor(ignoreCustomEditor);
             //log errors into console only once
             validationEnabled = false;
         }
-
 
         /// <summary>
         /// Determines if property has any associated drawer (built-in or custom one).
@@ -298,6 +297,18 @@ namespace Toolbox.Editor
             else
             {
                 ScriptingUtility.RemoveDefine(ToolboxDefines.defaultListsDefine);
+            }
+        }
+
+        internal static void HandleIgnoreEditor(bool value)
+        {
+            if (value)
+            {
+                ScriptingUtility.AppendDefine(ToolboxDefines.ignoreEditorDefine);
+            }
+            else
+            {
+                ScriptingUtility.RemoveDefine(ToolboxDefines.ignoreEditorDefine);
             }
         }
 

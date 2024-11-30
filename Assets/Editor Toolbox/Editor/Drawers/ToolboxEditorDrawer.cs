@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace Toolbox.Editor
+namespace Toolbox.Editor.Drawers
 {
     /// <summary>
     /// Default drawer responsible for drawing <see cref="UnityEditor.Editor"/>s.
@@ -39,7 +39,7 @@ namespace Toolbox.Editor
         /// <inheritdoc />
         public void DrawEditor(SerializedObject serializedObject)
         {
-            if (ToolboxDrawerModule.ToolboxDrawersAllowed)
+            if (ToolboxDrawersManager.ToolboxDrawersAllowed)
             {
                 DrawToolboxEditor(serializedObject);
             }

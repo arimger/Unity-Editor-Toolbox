@@ -44,7 +44,6 @@ namespace Toolbox.Editor
         private string[] drawerHandlersShortNames;
         private string[] drawerHandlersInfoLabels;
 
-
         private void OnEnable()
         {
             currentTarget = target as ToolboxEditorSettings;
@@ -417,7 +416,6 @@ namespace Toolbox.Editor
         {
             ToolboxEditorLog.LogInfo("Function not implemented.");
         }
-
 
         public override void DrawCustomInspector()
         {

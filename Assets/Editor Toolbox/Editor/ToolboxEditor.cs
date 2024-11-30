@@ -3,13 +3,16 @@ using UnityEditor;
 
 namespace Toolbox.Editor
 {
+    using Toolbox.Editor.Drawers;
     using Editor = UnityEditor.Editor;
     using Object = UnityEngine.Object;
 
     /// <summary>
     /// Base Editor class for all Toolbox-related features.
     /// </summary>
+#if !TOOLBOX_IGNORE_CUSTOM_EDITOR
     [CustomEditor(typeof(Object), true, isFallback = true)]
+#endif
     [CanEditMultipleObjects]
     public class ToolboxEditor : Editor, IToolboxEditor
     {
