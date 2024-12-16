@@ -52,7 +52,7 @@ namespace Toolbox.Editor
         /// </summary>
         internal static void SetIsEditorExpanded(Editor editor, bool value)
         {
-            InternalEditorUtility.SetIsInspectorExpanded(editor.target, true);
+            InternalEditorUtility.SetIsInspectorExpanded(editor.target, value);
             //NOTE: in older versions Editor's foldouts are based on the m_IsVisible field and the Awake() method
 #if !UNITY_2019_1_OR_NEWER
             const string isVisibleFieldName = "m_IsVisible";
@@ -60,7 +60,7 @@ namespace Toolbox.Editor
                 BindingFlags.Instance | BindingFlags.NonPublic);
             if (isVisible != null)
             {
-                isVisible.SetValue(editor, true);
+                isVisible.SetValue(editor, value);
             }
 #endif
         }
