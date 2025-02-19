@@ -46,7 +46,6 @@ namespace Toolbox.Editor.Drawers
 
         private static readonly PropertyDataStorage<Editor, InLineEditorAttribute> storage;
 
-
         private Editor GetTargetsEditor(SerializedProperty property, InLineEditorAttribute attribute)
         {
             var editor = storage.ReturnItem(property, attribute);
@@ -108,7 +107,6 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-
         /// <summary>
         /// Handles the property drawing process and tries to create a inlined version of the <see cref="Editor"/>.
         /// </summary>
@@ -151,14 +149,16 @@ namespace Toolbox.Editor.Drawers
                     DrawEditor(editor, attribute);
                 }
             }
+            else
+            {
+                storage.ClearItem(property);
+            }
         }
-
 
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.ObjectReference;
         }
-
 
         private static class Style
         {

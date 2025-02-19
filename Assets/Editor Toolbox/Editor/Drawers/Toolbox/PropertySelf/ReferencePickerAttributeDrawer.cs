@@ -41,9 +41,38 @@ namespace Toolbox.Editor.Drawers
             return fieldType;
         }
 
+        private static Type GetCurrentManagedReferenceType(SerializedProperty property, out bool hasMixedValues)
+        {
+            var fullTypeName = property.managedReferenceFullTypename;
+            hasMixedValues = false;
+            TypeUtility.TryGetTypeFromManagedReferenceFullTypeName(fullTypeName, out var targetType);
+
+            var currentSerializedObject = property.serializedObject;
+            if (currentSerializedObject.isEditingMultipleObjects)
+            {
+                var targets = currentSerializedObject.targetObjects;
+                foreach (var target in targets)
+                {
+                    using (var tempSerializedObject = new SerializedObject(target))
+                    {
+                        var tempProperty = tempSerializedObject.FindProperty(property.propertyPath);
+                        if (tempProperty.managedReferenceFullTypename != fullTypeName)
+                        {
+                            hasMixedValues = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return targetType;
+        }
+
         private void CreateTypeProperty(SerializedProperty property, Type parentType, ReferencePickerAttribute attribute, Rect position)
         {
-            TypeUtility.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFullTypename, out var currentType);
+            var currentType = GetCurrentManagedReferenceType(property, out var hasMixedValues);
+            var hadMixedValues = EditorGUI.showMixedValue;
+            EditorGUI.showMixedValue = hasMixedValues;
             typeField.OnGui(position, attribute.AddTextSearchField, (type) =>
             {
                 try
@@ -70,6 +99,7 @@ namespace Toolbox.Editor.Drawers
                     ToolboxEditorLog.LogWarning("Invalid attempt to update disposed property.");
                 }
             }, currentType, parentType);
+            EditorGUI.showMixedValue = false;
         }
 
         private void UpdateTypeProperty(SerializedProperty property, Type targetType, ReferencePickerAttribute attribute)
