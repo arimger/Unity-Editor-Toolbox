@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-
-namespace Toolbox.Editor.Drawers
+﻿namespace Toolbox.Editor.Drawers
 {
     public class MethodValueExtractor : IValueExtractor
     {
@@ -14,7 +11,7 @@ namespace Toolbox.Editor.Drawers
             }
 
             var type = declaringObject.GetType();
-            var info = type.GetMethod(source, ReflectionUtility.allBindings, null, CallingConventions.Any, new Type[0], null);
+            var info = ReflectionUtility.GetMethod(type, source);
             if (info == null)
             {
                 return false;
