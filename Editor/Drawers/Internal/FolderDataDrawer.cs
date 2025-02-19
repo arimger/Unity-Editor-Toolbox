@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    using Toolbox.Editor.Folders;
+    using Toolbox.Folders;
 
     [CustomPropertyDrawer(typeof(FolderData))]
     internal class FolderDataDrawer : PropertyDrawer

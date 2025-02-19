@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor
 {
-    using Toolbox.Editor.Folders;
+    using Toolbox.Folders;
 
     /// <summary>
     /// Static GUI representation for the Project Overlay.
