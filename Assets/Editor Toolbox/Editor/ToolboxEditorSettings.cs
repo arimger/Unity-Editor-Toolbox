@@ -6,8 +6,8 @@ using UnityEngine.Serialization;
 namespace Toolbox.Editor
 {
     using Toolbox.Editor.Drawers;
-    using Toolbox.Editor.Folders;
     using Toolbox.Editor.Hierarchy;
+    using Toolbox.Folders;
 
     internal interface IToolboxGeneralSettings
     { }

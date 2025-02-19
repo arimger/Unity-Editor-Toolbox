@@ -3,20 +3,8 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Toolbox.Editor.Folders
+namespace Toolbox.Folders
 {
-    public enum FolderDataType
-    {
-        Path,
-        Name
-    }
-
-    public enum FolderIconType
-    {
-        Custom,
-        Editor
-    }
-
     [Serializable]
     public struct FolderData
     {
