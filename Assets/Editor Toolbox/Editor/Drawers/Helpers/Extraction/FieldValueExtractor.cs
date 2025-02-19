@@ -11,7 +11,7 @@
             }
 
             var type = declaringObject.GetType();
-            var info = type.GetField(source, ReflectionUtility.allBindings);
+            var info = ReflectionUtility.GetField(type, source);
             if (info == null)
             {
                 return false;
