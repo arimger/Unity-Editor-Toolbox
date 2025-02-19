@@ -971,11 +971,11 @@ public void Usage()
 Allows to serialize folders in form of assets and retrieve direct paths in Runtime.
 
 ```csharp
-public SerializedDirectory serializeDirectory;
+public SerializedDirectory serializedDirectory;
 
 public void Usage()
 {
-	string path = serializeDirectory.DirectoryPath;
+	string path = serializedDirectory.DirectoryPath;
 }
 ```
 
