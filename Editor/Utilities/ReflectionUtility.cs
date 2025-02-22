@@ -20,8 +20,9 @@ namespace Toolbox.Editor
 
         internal static FieldInfo GetField(Type targetType, string fieldName, BindingFlags bindingFlags)
         {
+            bindingFlags |= BindingFlags.DeclaredOnly;
             var field = targetType.GetField(fieldName, bindingFlags);
-            if (field == null && bindingFlags.HasFlag(BindingFlags.NonPublic))
+            if (field == null)
             {
                 //NOTE: if a method is not found and we searching for a private method we should look into parent classes
                 Type baseType = targetType.BaseType;
@@ -103,8 +104,9 @@ namespace Toolbox.Editor
 
         internal static PropertyInfo GetProperty(Type targetType, string propertyName, BindingFlags bindingFlags)
         {
+            bindingFlags |= BindingFlags.DeclaredOnly;
             var property = targetType.GetProperty(propertyName, bindingFlags);
-            if (property == null && bindingFlags.HasFlag(BindingFlags.NonPublic))
+            if (property == null)
             {
                 //NOTE: if a method is not found and we searching for a private method we should look into parent classes
                 Type baseType = targetType.BaseType;

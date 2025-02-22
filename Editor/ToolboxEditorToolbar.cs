@@ -53,7 +53,7 @@ namespace Toolbox.Editor
 
         private static IEnumerator Initialize()
         {
-            while (ToolboxEditorToolbar.toolbar == null)
+            while (toolbar == null)
             {
                 var toolbars = Resources.FindObjectsOfTypeAll(toolbarType);
                 if (toolbars == null || toolbars.Length == 0)
@@ -63,15 +63,15 @@ namespace Toolbox.Editor
                 }
                 else
                 {
-                    ToolboxEditorToolbar.toolbar = toolbars[0];
+                    toolbar = toolbars[0];
                 }
             }
 
 #if UNITY_2021_1_OR_NEWER
-            var rootField = ToolboxEditorToolbar.toolbar.GetType().GetField("m_Root", BindingFlags.NonPublic | BindingFlags.Instance);
-            var root = rootField.GetValue(ToolboxEditorToolbar.toolbar) as VisualElement;
-            var toolbar = root.Q("ToolbarZoneLeftAlign");
+            var rootField = toolbar.GetType().GetField("m_Root", BindingFlags.NonPublic | BindingFlags.Instance);
+            var root = rootField.GetValue(toolbar) as VisualElement;
 
+            var toolbarLeftZone = root.Q("ToolbarZoneLeftAlign");
             var element = new VisualElement()
             {
                 style =
@@ -83,10 +83,25 @@ namespace Toolbox.Editor
 
             var container = new IMGUIContainer();
             container.style.flexGrow = 1;
-            container.onGUIHandler += OnGui;
-
+            container.onGUIHandler += OnGuiLeft;
             element.Add(container);
-            toolbar.Add(element);
+            toolbarLeftZone.Add(element);
+
+            var toolbarRightZone = root.Q("ToolbarZoneRightAlign");
+            var rightElement = new VisualElement()
+            {
+                style =
+                {
+                    flexGrow = 1,
+                    flexDirection = FlexDirection.Row,
+                }
+            };
+
+            var rightContainer = new IMGUIContainer();
+            rightContainer.style.flexGrow = 1;
+            rightContainer.onGUIHandler += OnGuiRight;
+            rightElement.Add(rightContainer);
+            toolbarRightZone.Add(rightElement);
 #else
 #if UNITY_2020_1_OR_NEWER
             var backend = guiBackend.GetValue(toolbar);
@@ -101,15 +116,15 @@ namespace Toolbox.Editor
             var container = elements[0] as IMGUIContainer;
 #endif
             var handler = onGuiHandler.GetValue(container) as Action;
-            handler -= OnGui;
-            handler += OnGui;
+            handler -= OnGuiLeft;
+            handler += OnGuiLeft;
             onGuiHandler.SetValue(container, handler);
 #endif
         }
 
-        private static void OnGui()
+        private static void OnGuiLeft()
         {
-            if (!IsToolbarAllowed || !IsToolbarValid)
+            if (!IsToolbarAllowed || !IsLeftToolbarValid)
             {
                 return;
             }
@@ -117,7 +132,7 @@ namespace Toolbox.Editor
 #if UNITY_2021_1_OR_NEWER
             using (new GUILayout.HorizontalScope())
             {
-                OnToolbarGui.Invoke();
+                OnToolbarGuiLeft();
             }
 #else
             var screenWidth = EditorGUIUtility.currentViewWidth;
@@ -139,10 +154,23 @@ namespace Toolbox.Editor
             {
                 using (new GUILayout.HorizontalScope())
                 {
-                    OnToolbarGui?.Invoke();
+                    OnToolbarGuiLeft();
                 }
             }
 #endif
+        }
+
+        private static void OnGuiRight()
+        {
+            if (!IsToolbarAllowed || !IsRightToolbarValid)
+            {
+                return;
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                OnToolbarGuiRight();
+            }
         }
 
         public static void Repaint()
@@ -156,11 +184,17 @@ namespace Toolbox.Editor
         }
 
         public static bool IsToolbarAllowed { get; set; } = true;
-        public static bool IsToolbarValid => toolbar != null && OnToolbarGui != null;
+        public static bool IsLeftToolbarValid => toolbar != null && OnToolbarGuiLeft != null;
+        public static bool IsRightToolbarValid => toolbar != null && OnToolbarGuiRight != null;
         public static float FromToolsOffset { get; set; } = 400.0f;
         public static float FromStripOffset { get; set; } = 150.0f;
 
+#pragma warning disable 0067
+        [Obsolete("Use OnToolbarGuiLeft instead")]
         public static event Action OnToolbarGui;
+#pragma warning restore 0067
+        public static event Action OnToolbarGuiLeft;
+        public static event Action OnToolbarGuiRight;
 
         private static class Style
         {
