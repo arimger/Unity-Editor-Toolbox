@@ -10,7 +10,7 @@ public static class SampleToolbar
     /// <summary>
     /// This field will be used to exclude toolbar buttons for all scenes except this one.
     /// </summary>
-    private readonly static string mySampleSceneName = "SampleScene";
+    private static readonly string mySampleSceneName = "SampleScene";
 
     static SampleToolbar()
     {
@@ -43,19 +43,18 @@ public static class SampleToolbar
     /// <param name="mode"></param>
     private static void SceneOpenedCallback(Scene scene, OpenSceneMode mode)
     {
-        ToolboxEditorToolbar.OnToolbarGui -= OnToolbarGui;
+        ToolboxEditorToolbar.OnToolbarGuiLeft -= OnToolbarGuiLeft;
+        ToolboxEditorToolbar.OnToolbarGuiRight -= OnToolbarGuiRight;
         if (scene.name != mySampleSceneName)
         {
             return;
         }
 
-        ToolboxEditorToolbar.OnToolbarGui += OnToolbarGui;
+        ToolboxEditorToolbar.OnToolbarGuiLeft += OnToolbarGuiLeft;
+        ToolboxEditorToolbar.OnToolbarGuiRight += OnToolbarGuiRight;
     }
 
-    /// <summary>
-    /// Layout-based GUI call.
-    /// </summary>
-    private static void OnToolbarGui()
+    private static void OnToolbarGuiLeft()
     {
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("1", Style.commandLeftStyle))
@@ -74,6 +73,29 @@ public static class SampleToolbar
         }
 
         if (GUILayout.Button("4", Style.commandRightStyle))
+        {
+            Debug.Log("4");
+        }
+    }
+
+    private static void OnToolbarGuiRight()
+    {
+        if (GUILayout.Button("1"))
+        {
+            Debug.Log("1");
+        }
+
+        if (GUILayout.Button("2"))
+        {
+            Debug.Log("2");
+        }
+
+        if (GUILayout.Button("3"))
+        {
+            Debug.Log("3");
+        }
+
+        if (GUILayout.Button("4"))
         {
             Debug.Log("4");
         }

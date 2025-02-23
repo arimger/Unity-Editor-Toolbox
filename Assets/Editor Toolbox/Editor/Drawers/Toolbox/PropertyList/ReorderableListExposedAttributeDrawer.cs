@@ -56,7 +56,7 @@ namespace Toolbox.Editor.Drawers
                 return null;
             }
 
-            var methodInfo = ReflectionUtility.GetObjectMethod(methodName, target);
+            var methodInfo = ReflectionUtility.GetMethod(methodName, target);
             if (methodInfo == null)
             {
                 ToolboxEditorLog.AttributeUsageWarning(typeof(ReorderableListExposedAttribute), string.Format("{0} method not found.", methodName));

@@ -1,3 +1,15 @@
+## 0.14.0 [23.02.2025]
+
+### Added:
+- OnToolbarGuiRight callback (ability to draw GUI elements on the right side of the toolbar container); OnToolbarGui replaced with the OnToolbarGuiLeft callback
+
+### Changed:
+- Fix fetching private members from base classes in various cases (e.g. [EditorButton] or conditionals)
+- Move FolderData to the Runtime assembly to fix issues caused by the Visual Scripting package
+- Fix minor rendering issues caused by the ReoerdableList's footer position
+- Fix clearing cached Editor instances in the [InLineEditor] (fix for the AudioClip still playing)
+- Improve displaying [SerializeReference]-based properties in the multi-editing mode
+
 ## 0.13.2 [29.11.2024]
 
 ### Added:

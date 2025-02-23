@@ -13,6 +13,34 @@ namespace Toolbox.Editor
         public const BindingFlags allBindings = BindingFlags.Instance |
             BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
 
+        internal static FieldInfo GetField(Type targetType, string fieldName)
+        {
+            return GetField(targetType, fieldName, allBindings);
+        }
+
+        internal static FieldInfo GetField(Type targetType, string fieldName, BindingFlags bindingFlags)
+        {
+            bindingFlags |= BindingFlags.DeclaredOnly;
+            var field = targetType.GetField(fieldName, bindingFlags);
+            if (field == null)
+            {
+                //NOTE: if a method is not found and we searching for a private method we should look into parent classes
+                Type baseType = targetType.BaseType;
+                while (baseType != null)
+                {
+                    field = baseType.GetField(fieldName, bindingFlags);
+                    if (field != null)
+                    {
+                        break;
+                    }
+
+                    baseType = baseType.BaseType;
+                }
+            }
+
+            return field;
+        }
+
         /// <summary>
         /// Returns <see cref="MethodInfo"/> of the searched method within the Editor <see cref="Assembly"/>.
         /// </summary>
@@ -21,17 +49,17 @@ namespace Toolbox.Editor
             return editorAssembly.GetType(classType).GetMethod(methodName, falgs);
         }
 
-        internal static MethodInfo GetObjectMethod(string methodName, SerializedObject serializedObject)
+        internal static MethodInfo GetMethod(string methodName, SerializedObject serializedObject)
         {
-            return GetObjectMethod(methodName, serializedObject.targetObjects);
+            return GetMethod(methodName, serializedObject.targetObjects);
         }
 
-        internal static MethodInfo GetObjectMethod(string methodName, params object[] targetObjects)
+        internal static MethodInfo GetMethod(string methodName, params object[] targetObjects)
         {
-            return GetObjectMethod(methodName, allBindings, targetObjects);
+            return GetMethod(methodName, allBindings, targetObjects);
         }
 
-        internal static MethodInfo GetObjectMethod(string methodName, BindingFlags bindingFlags, params object[] targetObjects)
+        internal static MethodInfo GetMethod(string methodName, BindingFlags bindingFlags, params object[] targetObjects)
         {
             if (targetObjects == null || targetObjects.Length == 0)
             {
@@ -39,14 +67,24 @@ namespace Toolbox.Editor
             }
 
             var targetType = targetObjects[0].GetType();
-            var methodInfo = GetObjectMethod(targetType, methodName, bindingFlags);
+            return GetMethod(targetType, methodName, bindingFlags);
+        }
+
+        internal static MethodInfo GetMethod(Type targetType, string methodName)
+        {
+            return GetMethod(targetType, methodName, allBindings);
+        }
+
+        internal static MethodInfo GetMethod(Type targetType, string methodName, BindingFlags bindingFlags)
+        {
+            var methodInfo = targetType.GetMethod(methodName, bindingFlags, null, CallingConventions.Any, new Type[0], null);
             if (methodInfo == null && bindingFlags.HasFlag(BindingFlags.NonPublic))
             {
                 //NOTE: if a method is not found and we searching for a private method we should look into parent classes
                 var baseType = targetType.BaseType;
                 while (baseType != null)
                 {
-                    methodInfo = GetObjectMethod(baseType, methodName, bindingFlags);
+                    methodInfo = baseType.GetMethod(methodName, bindingFlags, null, CallingConventions.Any, new Type[0], null);
                     if (methodInfo != null)
                     {
                         break;
@@ -59,9 +97,32 @@ namespace Toolbox.Editor
             return methodInfo;
         }
 
-        internal static MethodInfo GetObjectMethod(Type targetType, string methodName, BindingFlags bindingFlags)
+        internal static PropertyInfo GetProperty(Type targetType, string propertyName)
         {
-            return targetType.GetMethod(methodName, bindingFlags, null, CallingConventions.Any, new Type[0], null);
+            return GetProperty(targetType, propertyName, allBindings);
+        }
+
+        internal static PropertyInfo GetProperty(Type targetType, string propertyName, BindingFlags bindingFlags)
+        {
+            bindingFlags |= BindingFlags.DeclaredOnly;
+            var property = targetType.GetProperty(propertyName, bindingFlags);
+            if (property == null)
+            {
+                //NOTE: if a method is not found and we searching for a private method we should look into parent classes
+                Type baseType = targetType.BaseType;
+                while (baseType != null)
+                {
+                    property = baseType.GetProperty(propertyName, bindingFlags);
+                    if (property != null)
+                    {
+                        break;
+                    }
+
+                    baseType = baseType.BaseType;
+                }
+            }
+
+            return property;
         }
 
         /// <summary>
@@ -70,7 +131,7 @@ namespace Toolbox.Editor
         internal static bool TryInvokeMethod(string methodName, SerializedObject serializedObject)
         {
             var targetObjects = serializedObject.targetObjects;
-            var method = GetObjectMethod(methodName, targetObjects);
+            var method = GetMethod(methodName, targetObjects);
             if (method == null)
             {
                 return false;

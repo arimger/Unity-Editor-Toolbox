@@ -334,6 +334,8 @@ namespace Toolbox.Editor.Internal
                 return false;
             }
 
+            footerRect.yMax += Style.footerXOffset;
+            footerRect.yMin += Style.footerYOffset;
             //draw the background on repaint event
             if (Event.current.type == EventType.Repaint)
             {
@@ -870,6 +872,8 @@ namespace Toolbox.Editor.Internal
 #else
             internal static readonly float lineHeight = 16.0f;
 #endif
+            internal static readonly float footerXOffset = 0.0f;
+            internal static readonly float footerYOffset = -1.0f;
             internal static readonly float footerWidth = 60.0f;
             internal static readonly float footerButtonWidth = 25.0f;
             internal static readonly float footerButtonHeight = 13.0f;

@@ -738,11 +738,12 @@ To prevent issues after renaming types use `UnityEngine.Scripting.APIUpdating.Mo
 ```csharp
 [SerializeReference, ReferencePicker(TypeGrouping = TypeGrouping.ByFlatName)]
 public ISampleInterface var1;
-[SerializeReference, ReferencePicker(ForceUninitializedInstance = true)]
-public ISampleInterface var1;
 [SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2)]
 public ClassWithInterfaceBase var2;
-
+[SerializeReference, ReferencePicker(ForceUninitializedInstance = true)]
+public ISampleInterface var3;
+```
+```csharp
 public interface ISampleInterface { }
 
 [Serializable]
@@ -971,11 +972,11 @@ public void Usage()
 Allows to serialize folders in form of assets and retrieve direct paths in Runtime.
 
 ```csharp
-public SerializedDirectory serializeDirectory;
+public SerializedDirectory serializedDirectory;
 
 public void Usage()
 {
-	string path = serializeDirectory.DirectoryPath;
+	string path = serializedDirectory.DirectoryPath;
 }
 ```
 
@@ -1029,10 +1030,11 @@ public static class MyEditorUtility
 {
 	static MyEditorUtility()
 	{
-		ToolboxEditorToolbar.OnToolbarGui += OnToolbarGui;
+		ToolboxEditorToolbar.OnToolbarGuiLeft += OnToolbarGuiLeft;
+		ToolboxEditorToolbar.OnToolbarGuiRight += OnToolbarGuiRight;
 	}
 	
-	private static void OnToolbarGui()
+	private static void OnToolbarGuiLeft()
 	{
 		GUILayout.FlexibleSpace();
 		if (GUILayout.Button("1", Style.commandLeftStyle))
@@ -1054,6 +1056,14 @@ public static class MyEditorUtility
 		if (GUILayout.Button("5", Style.commandRightStyle))
 		{
 			Debug.Log("5");
+		}
+	}
+
+	private static void OnToolbarGuiRight()
+	{
+		if (GUILayout.Button("1"))
+		{
+			Debug.Log("1");
 		}
 	}
 }

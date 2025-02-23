@@ -10,7 +10,7 @@ namespace Toolbox.Editor.Drawers
     {
         private MethodInfo GetMethod(EditorButtonAttribute attribute, object[] targetObjects, string methodName)
         {
-            var methodInfo = ReflectionUtility.GetObjectMethod(methodName, targetObjects);
+            var methodInfo = ReflectionUtility.GetMethod(methodName, targetObjects);
             if (methodInfo == null)
             {
                 ToolboxEditorLog.AttributeUsageWarning(attribute, string.Format("{0} method not found.", methodName));
