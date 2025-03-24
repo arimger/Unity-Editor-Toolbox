@@ -33,18 +33,42 @@ namespace UnityEngine
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         { }
 
-
-        private void UpdateProperties()
+        public void UpdateProperties()
         {
+            UpdateProperties(out _);
+        }
+
+        public void UpdateProperties(out bool anythingChanged)
+        {
+            anythingChanged = false;
 #if UNITY_EDITOR
             if (SceneSerializationUtility.TryGetSceneData(sceneReference, out var sceneData))
             {
-                SceneName = sceneData.SceneName;
-                ScenePath = sceneData.ScenePath;
-                BuildIndex = sceneData.BuildIndex;
+                if (SceneName != sceneData.SceneName)
+                {
+                    SceneName = sceneData.SceneName;
+                    anythingChanged = true;
+                }
+
+                if (ScenePath != sceneData.ScenePath)
+                {
+                    ScenePath = sceneData.ScenePath;
+                    anythingChanged = true;
+                }
+
+                if (BuildIndex != sceneData.BuildIndex)
+                {
+                    BuildIndex = sceneData.BuildIndex;
+                    anythingChanged = true;
+                }
             }
             else
             {
+                if (!string.IsNullOrEmpty(sceneName))
+                {
+                    anythingChanged = true;
+                }
+
                 SceneName = string.Empty;
                 ScenePath = string.Empty;
                 BuildIndex = -1;

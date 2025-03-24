@@ -528,12 +528,7 @@ namespace Toolbox.Editor
                 enterChildren = false;
                 var childProperty = targetProperty.Copy();
                 //handle current property using Toolbox features
-                EditorGUI.BeginChangeCheck();
                 drawElementAction(childProperty);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    break;
-                }
             }
         }
 

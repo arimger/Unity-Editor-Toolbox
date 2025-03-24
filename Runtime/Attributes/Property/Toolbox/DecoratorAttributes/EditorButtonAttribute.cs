@@ -27,7 +27,15 @@ namespace UnityEngine
         public string ValidateMethodName { get; set; }
         public string ExtraLabel { get; private set; }
         public string Tooltip { get; set; }
-        public ButtonActivityType ActivityType { get; private set; }
+        public ButtonActivityType ActivityType { get; set; }
+        public ButtonPositionType PositionType { get; set; } = ButtonPositionType.Default;
+    }
+
+    public enum ButtonPositionType
+    {
+        Default,
+        Below,
+        Above
     }
 
     [Flags]
