@@ -8,6 +8,31 @@ namespace Toolbox.Editor.Drawers
 {
     public class EditorButtonAttributeDrawer : ToolboxDecoratorDrawer<EditorButtonAttribute>
     {
+        private void DrawButton(EditorButtonAttribute attribute)
+        {
+            var declaringObjects = GetDeclaringObjects();
+            if (declaringObjects == null || declaringObjects.Length == 0)
+            {
+                //NOTE: something went really wrong, internal bug or OnGuiBeginSafe was called out of the Toolbox scope
+                return;
+            }
+
+            var disable = !IsClickable(attribute, declaringObjects);
+            using (new EditorGUI.DisabledScope(disable))
+            {
+                var label = string.IsNullOrEmpty(attribute.ExtraLabel)
+                            ? ObjectNames.NicifyVariableName(attribute.MethodName)
+                            : attribute.ExtraLabel;
+                var tooltip = attribute.Tooltip;
+                var content = new GUIContent(label, tooltip);
+
+                if (GUILayout.Button(content, Style.buttonStyle))
+                {
+                    CallMethods(attribute, declaringObjects);
+                }
+            }
+        }
+
         private MethodInfo GetMethod(EditorButtonAttribute attribute, object[] targetObjects, string methodName)
         {
             var methodInfo = ReflectionUtility.GetMethod(methodName, targetObjects);
@@ -119,29 +144,25 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-        protected override void OnGuiCloseSafe(EditorButtonAttribute attribute)
+        protected override void OnGuiBeginSafe(EditorButtonAttribute attribute)
         {
-            var declaringObjects = GetDeclaringObjects();
-            if (declaringObjects == null || declaringObjects.Length == 0)
+            if (attribute.PositionType != ButtonPositionType.Above)
             {
-                //NOTE: something went really wrong, internal bug or OnGuiBeginSafe was called out of the Toolbox scope
                 return;
             }
 
-            var disable = !IsClickable(attribute, declaringObjects);
-            using (new EditorGUI.DisabledScope(disable))
-            {
-                var label = string.IsNullOrEmpty(attribute.ExtraLabel)
-                            ? ObjectNames.NicifyVariableName(attribute.MethodName)
-                            : attribute.ExtraLabel;
-                var tooltip = attribute.Tooltip;
-                var content = new GUIContent(label, tooltip);
+            DrawButton(attribute);
+        }
 
-                if (GUILayout.Button(content, Style.buttonStyle))
-                {
-                    CallMethods(attribute, declaringObjects);
-                }
+        protected override void OnGuiCloseSafe(EditorButtonAttribute attribute)
+        {
+            if (attribute.PositionType != ButtonPositionType.Default &&
+                attribute.PositionType != ButtonPositionType.Below)
+            {
+                return;
             }
+
+            DrawButton(attribute);
         }
 
         private static class Style
