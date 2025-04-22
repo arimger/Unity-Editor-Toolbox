@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using Toolbox.Editor.Internal;
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
@@ -28,29 +29,39 @@ namespace Toolbox.Editor.Drawers
             EditorWindow.GetWindow(typeof(BuildPlayerWindow));
         }
 
-
-        protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
-        {
-            var lineHeight = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-            return HasSceneDetails(property)
-                ? base.GetPropertyHeightSafe(property, label) + lineHeight * 2
-                : base.GetPropertyHeightSafe(property, label);
-        }
-
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
+            var hasDetails = HasSceneDetails(property);
             EditorGUI.BeginProperty(position, label, property);
             position.height = EditorGUIUtility.singleLineHeight;
-            position = EditorGUI.PrefixLabel(position, label);
+            if (hasDetails)
+            {
+                position.xMax -= Style.foldoutWidth;
+            }
+
             var sceneProperty = property.FindPropertyRelative("sceneReference");
-            EditorGUI.ObjectField(position, sceneProperty, GUIContent.none);
+            EditorGUI.ObjectField(position, sceneProperty, label);
             EditorGUI.EndProperty();
 
-            if (!HasSceneDetails(property))
+            if (hasDetails)
+            {
+                var prevXMin = position.xMin;
+                position.xMin = position.xMax;
+                position.xMax += Style.foldoutWidth;
+                using (new DisabledScope(true))
+                {
+                    property.isExpanded = GUI.Toggle(position, property.isExpanded, Style.foldoutContent, Style.foldoutStyle);
+                }
+
+                position.xMin = prevXMin;
+            }
+
+            if (!hasDetails || !property.isExpanded)
             {
                 return;
             }
 
+            EditorGUI.indentLevel++;
             var sceneData = SceneData.GetSceneDataFromIndex(property);
             var spacing = EditorGUIUtility.standardVerticalSpacing;
             position.y += EditorGUIUtility.singleLineHeight + spacing;
@@ -64,19 +75,20 @@ namespace Toolbox.Editor.Drawers
                 EditorGUI.LabelField(position, Style.notInBuildContent);
                 position.y += EditorGUIUtility.singleLineHeight + spacing;
                 EditorGUI.EndDisabledGroup();
-                if (GUI.Button(position, Style.showDetailsContent))
+                var buttonRect = EditorGUI.IndentedRect(position);
+                if (GUI.Button(buttonRect, Style.showDetailsContent))
                 {
                     OpenBuildSettings();
                 }
             }
-        }
 
+            EditorGUI.indentLevel--;
+        }
 
         public override bool IsPropertyValid(SerializedProperty property)
         {
             return property.type == nameof(SerializedScene);
         }
-
 
         private struct SceneData
         {
@@ -134,10 +146,28 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
+            internal const float foldoutWidth = 50.0f;
+
+            internal static readonly GUIContent foldoutContent = new GUIContent("Details", "Show/Hide Scene Details");
             internal static readonly GUIContent buildIndexContent = new GUIContent("Build Index");
             internal static readonly GUIContent isEnabledContent = new GUIContent("Is Enabled");
             internal static readonly GUIContent notInBuildContent = new GUIContent("Not in Build");
             internal static readonly GUIContent showDetailsContent = new GUIContent("Open Build Settings");
+
+            internal static readonly GUIStyle foldoutStyle;
+
+            static Style()
+            {
+                foldoutStyle = new GUIStyle(EditorStyles.miniButton)
+                {
+#if UNITY_2019_3_OR_NEWER
+                    fontSize = 10,
+#else
+                    fontSize = 9,
+#endif
+                    alignment = TextAnchor.MiddleCenter
+                };
+            }
         }
     }
 }

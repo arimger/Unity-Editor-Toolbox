@@ -1,3 +1,10 @@
+## 0.14.1 [22.04.2025]
+
+### Changed:
+- Ability to define [EditorButton] position (below or above the target property)
+- Improvements to the SerializedScene class & linked drawer
+- Fix rare issue with nested layouts
+
 ## 0.14.0 [23.02.2025]
 
 ### Added:

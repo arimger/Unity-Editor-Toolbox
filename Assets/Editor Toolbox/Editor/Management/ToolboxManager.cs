@@ -213,7 +213,12 @@ namespace Toolbox.Editor.Management
 
                     if (GUILayout.Button("Create a new settings file"))
                     {
-                        var settingsInstance = ScriptableObject.CreateInstance(settingsType);
+                        var settingsInstance = ScriptableObject.CreateInstance<ToolboxEditorSettings>();
+                        if (settingsInstance == null)
+                        {
+                            ToolboxEditorLog.LogError($"Something went wrong. Cannot create a new Settings file.");
+                            return;
+                        }
 
                         var locationPath = EditorUtility.OpenFolderPanel("New Settings file location", "Assets", "");
                         //validate returned path and create relative one if possible

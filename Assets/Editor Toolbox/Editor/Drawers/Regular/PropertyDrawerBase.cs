@@ -48,8 +48,7 @@ namespace Toolbox.Editor.Drawers
             }
 
             ToolboxEditorLog.WrongAttributeUsageWarning(attribute, property);
-            //create additional warning label based on the property name
-            var warningContent = new GUIContent(property.displayName + " has invalid property drawer");
+            var warningContent = new GUIContent($"{property.displayName} has invalid property drawer");
             ToolboxEditorGui.DrawEmptyProperty(position, property, warningContent);
         }
 
