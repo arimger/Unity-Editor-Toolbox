@@ -417,7 +417,7 @@ public int var1;
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/horizontal.png)
 
 ```csharp
-[EditorButton(nameof(MyMethod), "<b>My</b> Custom Label", activityType: ButtonActivityType.OnPlayMode, ValidateMethodName = nameof(ValidationMethod))]
+[EditorButton(nameof(MyMethod), "<b>My</b> Custom Label", activityType: ButtonActivityType.OnPlayMode, ValidateMethodName = nameof(ValidationMethod), PositionType = ButtonPositionType.Above)]
 public int var1;
 
 private void MyMethod()
