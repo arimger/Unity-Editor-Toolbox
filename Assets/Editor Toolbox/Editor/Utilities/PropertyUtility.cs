@@ -421,7 +421,7 @@ namespace Toolbox.Editor
                     label.text = property.colorValue.ToString();
                     break;
                 case SerializedPropertyType.ObjectReference:
-                    label.text = property.objectReferenceValue ? property.objectReferenceValue.name : "null";
+                    label.text = property.objectReferenceValue ? property.objectReferenceValue.ToString() : "null";
                     break;
                 case SerializedPropertyType.LayerMask:
                     switch (property.intValue)
