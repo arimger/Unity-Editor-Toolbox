@@ -18,7 +18,6 @@ namespace Toolbox.Editor.Drawers
             CurrencyDecimalSeparator = "."
         };
 
-
         private void ApplyControlName(string propertyKey)
         {
             GUI.SetNextControlName(propertyKey);
@@ -42,7 +41,6 @@ namespace Toolbox.Editor.Drawers
             return string.Format("{0}{1}", attribute.Format, isInt ? 0 : attribute.DecimalsToShow);
         }
 
-
         protected override void OnGUISafe(Rect position, SerializedProperty property, GUIContent label)
         {
             var key = property.GetPropertyHashKey();
@@ -62,6 +60,11 @@ namespace Toolbox.Editor.Drawers
 #endif
             }
 
+            if (property.hasMultipleDifferentValues)
+            {
+                return;
+            }
+
             var targetAttribute = attribute as FormattedNumberAttribute;
             var single = GetSingle(property);
             var format = GetFormat(property, targetAttribute);
@@ -78,7 +81,6 @@ namespace Toolbox.Editor.Drawers
                 ToolboxEditorLog.AttributeUsageWarning(attribute, property, string.Format("{0} format is not supported.", format));
             }
         }
-
 
         public override bool IsPropertyValid(SerializedProperty property)
         {
