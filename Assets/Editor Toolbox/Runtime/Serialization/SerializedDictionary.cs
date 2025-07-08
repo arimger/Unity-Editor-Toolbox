@@ -10,7 +10,7 @@ namespace UnityEngine
     /// Highly suggested to cast it to a <see cref="Dictionary{TKey, TValue}"/> when used in runtime.
     /// </summary>
     [Serializable]
-    public sealed class SerializedDictionary<TK, TV> : IDictionary<TK, TV>, ISerializationCallbackReceiver
+    public sealed class SerializedDictionary<TK, TV> : IDictionary<TK, TV>, IReadOnlyDictionary<TK, TV>, ISerializationCallbackReceiver
     {
         [Serializable]
         private struct KeyValuePair
@@ -223,6 +223,10 @@ namespace UnityEngine
         }
 
         public bool IsReadOnly => false;
+
+        IEnumerable<TK> IReadOnlyDictionary<TK, TV>.Keys => Keys;
+
+        IEnumerable<TV> IReadOnlyDictionary<TK, TV>.Values => Values;
 
         public static implicit operator Dictionary<TK, TV>(SerializedDictionary<TK, TV> serializedDictionary)
         {
