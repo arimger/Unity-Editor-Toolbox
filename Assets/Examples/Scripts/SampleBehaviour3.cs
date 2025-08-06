@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Toolbox.Editor.Drawers;
+using UnityEditor;
+using UnityEngine;
 
 [ExecuteAlways]
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 3 (Toolbox Conditions)")]

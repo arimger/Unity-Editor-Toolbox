@@ -457,7 +457,10 @@ namespace Toolbox.Editor.Internal
 
         public void AppendElement()
         {
-            Index = (List.arraySize += 1) - 1;
+            var newSize = Size.intValue + 1;
+            Size.intValue = newSize;
+            Index = newSize - 1;
+
             if (overrideNewElementCallback == null)
             {
                 return;
@@ -522,6 +525,7 @@ namespace Toolbox.Editor.Internal
             //set button area rect
             rect = new Rect(rect.xMax - Style.footerWidth, rect.y, Style.footerWidth, rect.height);
 
+            var actionPerformed = false;
             //set rect properties from style
             var buttonWidth = Style.footerButtonWidth;
             var buttonHeight = Style.footerButtonHeight;
@@ -531,7 +535,7 @@ namespace Toolbox.Editor.Internal
             //set proper rect for each button
             var appendButtonRect = new Rect(rect.xMin + margin, rect.y - padding, buttonWidth, buttonHeight);
 
-            EditorGUI.BeginDisabledGroup(List.hasMultipleDifferentValues);
+            EditorGUI.BeginDisabledGroup(Size.hasMultipleDifferentValues);
             EditorGUI.BeginDisabledGroup(onCanAppendCallback != null && !onCanAppendCallback(this));
             if (GUI.Button(appendButtonRect, onAppendDropdownCallback != null
                 ? Style.iconToolbarDropContent
@@ -551,9 +555,10 @@ namespace Toolbox.Editor.Internal
                 }
 
                 onChangedCallback?.Invoke(this);
+                actionPerformed = true;
             }
-            EditorGUI.EndDisabledGroup();
 
+            EditorGUI.EndDisabledGroup();
             var removeButtonRect = new Rect(rect.xMax - buttonWidth - margin, rect.y - padding, buttonWidth, buttonHeight);
 
             EditorGUI.BeginDisabledGroup((onCanRemoveCallback != null && !onCanRemoveCallback(this) || Index < 0 || Index >= Count));
@@ -569,9 +574,17 @@ namespace Toolbox.Editor.Internal
                 }
 
                 onChangedCallback?.Invoke(this);
+                actionPerformed = true;
             }
+
             EditorGUI.EndDisabledGroup();
             EditorGUI.EndDisabledGroup();
+
+            if (actionPerformed)
+            {
+                SerializedObject.ApplyModifiedProperties();
+                GUIUtility.ExitGUI();
+            }
         }
 
         /// <summary>
