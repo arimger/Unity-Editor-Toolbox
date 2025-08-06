@@ -12,6 +12,14 @@ namespace Toolbox.Editor.Internal
     /// </summary>
     public class ToolboxEditorList : ReorderableListBase
     {
+        /// <summary>
+        /// Style used for the vertical layout built around all list controls.
+        /// </summary>
+        private static readonly GUIStyle listGroupStyle = new GUIStyle()
+        {
+            margin = new RectOffset()
+        };
+
         private int lastCoveredIndex = -1;
 
         private Rect[] elementsRects;
@@ -207,6 +215,13 @@ namespace Toolbox.Editor.Internal
             EditorGUI.DrawRect(rect, Style.selectionColor);
         }
 
+        private GUIStyle RequestBodyStyle()
+        {
+            var indent = EditorGuiUtility.IndentSize;
+            listGroupStyle.margin.left = (int)indent;
+            return listGroupStyle;
+        }
+
         protected override void DoListMiddle()
         {
             using (var middleGroup = new EditorGUILayout.VerticalScope())
@@ -357,9 +372,10 @@ namespace Toolbox.Editor.Internal
         /// <inheritdoc/>
         public override void DoList(GUIContent label)
         {
+            var style = RequestBodyStyle();
             //pack eveything in one, vertical scope
             //it will keep sections always in order
-            using (new EditorGUILayout.VerticalScope())
+            using (new EditorGUILayout.VerticalScope(style))
             {
                 base.DoList(label);
             }
