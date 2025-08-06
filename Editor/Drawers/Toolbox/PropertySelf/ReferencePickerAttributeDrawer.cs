@@ -56,6 +56,11 @@ namespace Toolbox.Editor.Drawers
                     using (var tempSerializedObject = new SerializedObject(target))
                     {
                         var tempProperty = tempSerializedObject.FindProperty(property.propertyPath);
+                        if (tempProperty == null)
+                        {
+                            break;
+                        }
+
                         if (tempProperty.managedReferenceFullTypename != fullTypeName)
                         {
                             hasMixedValues = true;
