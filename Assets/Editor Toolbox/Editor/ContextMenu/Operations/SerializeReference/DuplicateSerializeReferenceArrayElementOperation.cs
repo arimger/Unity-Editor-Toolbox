@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_2021_3_OR_NEWER
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.ContextMenu.Operations
@@ -7,12 +8,8 @@ namespace Toolbox.Editor.ContextMenu.Operations
     {
         public bool IsVisible(SerializedProperty property)
         {
-#if UNITY_2021_3_OR_NEWER
             return property != null && property.propertyType == SerializedPropertyType.ManagedReference &&
                 PropertyUtility.IsSerializableArrayElement(property);
-#else
-            return false;
-#endif
         }
 
         public bool IsEnabled(SerializedProperty property)
@@ -22,7 +19,6 @@ namespace Toolbox.Editor.ContextMenu.Operations
 
         public void Perform(SerializedProperty property)
         {
-#if UNITY_2021_3_OR_NEWER
             var sourceProperty = property.Copy();
             sourceProperty.serializedObject.Update();
             var sourceValue = sourceProperty.managedReferenceValue;
@@ -40,9 +36,9 @@ namespace Toolbox.Editor.ContextMenu.Operations
             }
 
             sourceProperty.serializedObject.ApplyModifiedProperties();
-#endif
         }
 
         public GUIContent Label => new GUIContent("Duplicate Serialize Reference Array Element");
     }
 }
+#endif
