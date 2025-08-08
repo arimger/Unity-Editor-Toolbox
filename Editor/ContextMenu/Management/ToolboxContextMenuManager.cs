@@ -15,9 +15,11 @@ namespace Toolbox.Editor.ContextMenu.Management
         {
             registeredOperations = new List<IContextMenuOperation>()
             {
+#if UNITY_2021_3_OR_NEWER
                 new CopySerializeReferenceOperation(),
                 new PasteSerializeReferenceOperation(),
                 new DuplicateSerializeReferenceArrayElementOperation()
+#endif
             };
 
             EditorApplication.contextualPropertyMenu -= OnContextMenuOpening;

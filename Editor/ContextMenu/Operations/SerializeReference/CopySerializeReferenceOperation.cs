@@ -1,4 +1,7 @@
-﻿using UnityEditor;
+﻿#if UNITY_2021_3_OR_NEWER
+using System.Collections.Generic;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.ContextMenu.Operations
@@ -10,39 +13,66 @@ namespace Toolbox.Editor.ContextMenu.Operations
         [InitializeOnLoadMethod]
         private static void Initialize()
         {
+            Reset();
+        }
+
+        private CopySerializeReferenceEntry CreateEntry(SerializedProperty property)
+        {
+            if (property == null)
+            {
+                return new CopySerializeReferenceEntry(null, null);
+            }
+
+            var value = property.managedReferenceValue;
+            if (value == null)
+            {
+                return new CopySerializeReferenceEntry(null, null);
+            }
+
+            var referenceType = value.GetType();
+            var data = JsonUtility.ToJson(value);
+            return new CopySerializeReferenceEntry(referenceType, data);
+        }
+
+        internal static void Reset()
+        {
             Cache = null;
         }
 
         public bool IsVisible(SerializedProperty property)
         {
-#if UNITY_2021_3_OR_NEWER
-            return property != null && property.propertyType == SerializedPropertyType.ManagedReference;
-#else
-            return false;
-#endif
+            return PropertyUtility.IsSerializeReferenceProperty(property);
         }
 
         public bool IsEnabled(SerializedProperty property)
         {
-            return true;
+            return property.isArray ? property.arraySize > 0 : true;
         }
 
         public void Perform(SerializedProperty property)
         {
-#if UNITY_2021_3_OR_NEWER
-            var value = property.managedReferenceValue;
-            if (value != null)
+            var entries = new List<CopySerializeReferenceEntry>();
+            if (property.propertyType == SerializedPropertyType.ManagedReference)
             {
-                var referenceType = value.GetType();
-                var data = JsonUtility.ToJson(value);
-                Cache = new CopySerializeReferenceCache(referenceType, data);
-                return;
+                var entry = CreateEntry(property);
+                entries.Add(entry);
+            }
+            else if (property.isArray)
+            {
+                var propertiesCount = property.arraySize;
+                for (var i = 0; i < propertiesCount; i++)
+                {
+                    var childProperty = property.GetArrayElementAtIndex(i);
+                    var entry = CreateEntry(childProperty);
+                    entries.Add(entry);
+                }
             }
 
-            Cache = new CopySerializeReferenceCache(null, null);
-#endif
+            PropertyUtility.TryGetSerializeReferenceType(property, out var referenceType);
+            Cache = new CopySerializeReferenceCache(referenceType, entries);
         }
 
-        public GUIContent Label => new GUIContent("Copy Serialize Reference");
+        public GUIContent Label => new GUIContent("Copy Serialized References");
     }
 }
+#endif

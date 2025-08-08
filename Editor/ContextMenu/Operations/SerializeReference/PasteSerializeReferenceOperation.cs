@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if UNITY_2021_3_OR_NEWER
+using System;
+using System.Collections.Generic;
 
 using UnityEditor;
 using UnityEngine;
@@ -7,34 +9,67 @@ namespace Toolbox.Editor.ContextMenu.Operations
 {
     internal class PasteSerializeReferenceOperation : IContextMenuOperation
     {
-        private bool IsAssignmentValid(SerializedProperty property, object newValue)
+        private bool IsAssignmentValid(SerializedProperty targetProperty, IReadOnlyList<CopySerializeReferenceEntry> entires)
         {
-#if UNITY_2021_3_OR_NEWER
-            if (newValue == null)
+            if (!PropertyUtility.TryGetSerializeReferenceType(targetProperty, out var targetType))
+            {
+                return false;
+            }
+
+            for (var i = 0; i < entires.Count; i++)
+            {
+                var entry = entires[i];
+                if (!IsAssignmentValid(targetType, entry))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsAssignmentValid(Type targetType, CopySerializeReferenceEntry entry)
+        {
+            var entryType = entry.ReferenceType;
+            if (entryType == null)
             {
                 return true;
             }
 
-            if (!TypeUtility.TryGetTypeFromManagedReferenceFullTypeName(property.managedReferenceFieldTypename, out var referenceType))
+            return TypeUtility.IsTypeAssignableFrom(targetType, entry.ReferenceType);
+        }
+
+        private bool IsOperationSupported(SerializedProperty targetProperty, CopySerializeReferenceCache cache)
+        {
+            if (cache == null)
+            {
+                return false;
+            }
+
+            var entries = cache.Entries;
+            if (entries == null || entries.Count == 0)
+            {
+                return false;
+            }
+
+            if (cache.IsArrayCopy && targetProperty.isArray)
             {
                 return true;
             }
 
-            var newValueType = newValue.GetType();
-            if (TypeUtility.IsTypeAssignableFrom(referenceType, newValueType))
+            if (!cache.IsArrayCopy && !targetProperty.isArray)
             {
                 return true;
             }
-#endif
+
             return false;
         }
 
-        private object GetCachedManagedReferenceValue()
+        private object GetManagedReferenceValue(CopySerializeReferenceEntry entry)
         {
-            var cachedData = CopySerializeReferenceOperation.Cache;
-            if (cachedData.ReferenceType != null)
+            if (entry.ReferenceType != null)
             {
-                var newValue = JsonUtility.FromJson(cachedData.Data, cachedData.ReferenceType);
+                var newValue = JsonUtility.FromJson(entry.ReferenceData, entry.ReferenceType);
                 return newValue;
             }
             else
@@ -43,42 +78,60 @@ namespace Toolbox.Editor.ContextMenu.Operations
             }
         }
 
+        private void PasteEntry(SerializedProperty targetProperty, CopySerializeReferenceEntry entry)
+        {
+            var newValue = GetManagedReferenceValue(entry);
+            targetProperty.managedReferenceValue = newValue;
+        }
+
         public bool IsVisible(SerializedProperty property)
         {
-#if UNITY_2021_3_OR_NEWER
-            return property != null && property.propertyType == SerializedPropertyType.ManagedReference;
-#else
-            return false;
-#endif
+            return PropertyUtility.IsSerializeReferenceProperty(property);
         }
 
         public bool IsEnabled(SerializedProperty property)
         {
-            return CopySerializeReferenceOperation.Cache != null;
+            return IsOperationSupported(property, CopySerializeReferenceOperation.Cache);
         }
 
         public void Perform(SerializedProperty property)
         {
-#if UNITY_2019_3_OR_NEWER
+            var cache = CopySerializeReferenceOperation.Cache;
+            var entries = cache.Entries;
+            if (!IsAssignmentValid(property, entries))
+            {
+                ToolboxEditorLog.LogWarning("Cannot perform paste operation, types are mismatched.");
+                return;
+            }
+
             var targetProperty = property.Copy();
             try
             {
-                var newValue = GetCachedManagedReferenceValue();
-                if (!IsAssignmentValid(targetProperty, newValue))
+                targetProperty.serializedObject.Update();
+                if (targetProperty.isArray)
                 {
-                    ToolboxEditorLog.LogWarning("Cannot perform paste operation, types are mismatched.");
-                    return;
+                    var arraySize = entries.Count;
+                    targetProperty.arraySize = arraySize;
+                    for (var i = 0; i < arraySize; i++)
+                    {
+                        var entry = entries[i];
+                        var childProperty = targetProperty.GetArrayElementAtIndex(i);
+                        PasteEntry(childProperty, entry);
+                    }
+                }
+                else
+                {
+                    var entry = entries[0];
+                    PasteEntry(targetProperty, entry);
                 }
 
-                targetProperty.serializedObject.Update();
-                targetProperty.managedReferenceValue = newValue;
                 targetProperty.serializedObject.ApplyModifiedProperties();
             }
             catch (Exception)
             { }
-#endif
         }
 
-        public GUIContent Label => new GUIContent("Paste Serialize Reference");
+        public GUIContent Label => new GUIContent("Paste Serialized References");
     }
 }
+#endif
