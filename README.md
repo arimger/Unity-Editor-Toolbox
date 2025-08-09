@@ -60,7 +60,7 @@ Unity 2018.x or newer
 	- [SerializedScene](#serializedscene)
 	- [SerializedDictionary](#serializeddictionary)
 	- [SerializedDateTime](#serializeddatetime)
-	- [SerializedDirectory](#serializeddictionary)
+	- [SerializedDirectory](#serializeddirectory)
 - [Editor Extensions](#editor-extensions)
 	- [Hierarchy](#hierarchy)
 	- [Project](#project)
