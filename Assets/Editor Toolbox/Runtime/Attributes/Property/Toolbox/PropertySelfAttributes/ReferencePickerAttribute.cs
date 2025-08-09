@@ -42,6 +42,11 @@ namespace UnityEngine
         /// Indicates if created popup menu should have an additional search field.
         /// </summary>
         public bool AddTextSearchField { get; set; } = true;
+
+        /// <summary>
+        /// Indicates if confirmation box should appear after picking a new reference. 
+        /// </summary>
+        public bool AddConfirmationBox { get; set; }
     }
 }
 #endif

@@ -12,7 +12,7 @@ public class SampleBehaviour6 : MonoBehaviour
     public ISampleInterface var1;
     [SerializeReference, ReferencePicker(ForceUninitializedInstance = true)]
     public ClassWithInterfaceBase var2;
-    [SerializeReference, ReferencePicker]
+    [SerializeReference, ReferencePicker(AddConfirmationBox = true)]
     public ClassWithInterfaceBase var3;
     [SerializeReference, ReferencePicker(ParentType = typeof(ClassWithInterface2), AddTextSearchField = false)]
     public ClassWithInterfaceBase var4;

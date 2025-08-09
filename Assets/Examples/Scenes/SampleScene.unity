@@ -318,97 +318,6 @@ Transform:
   m_Father: {fileID: 1414023087}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &280163221
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 280163223}
-  - component: {fileID: 280163222}
-  m_Layer: 0
-  m_Name: ToolboxPropertyDrawers [Sample] (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &280163222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 280163221}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd6beebd3a14d014baec37e933957a0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  list:
-  - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
-  - {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
-  - {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
-  - {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
-  strings:
-  - a
-  - b
-  - c
-  ints: 0200000006000000030000000c00000005000000
-  component: {fileID: 2037155953}
-  material: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
-  texture: {fileID: 2800000, guid: d7cf546aa64aceb488a523b6662319b6, type: 3}
-  audioClip: {fileID: 8300000, guid: e83fc6426e5f2e0448cc3e51102509aa, type: 3}
-  mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  largeArray:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  quaternion: {x: 0, y: 0, z: 0, w: 0}
-  q2: {x: 0, y: 0, z: 0, w: 0}
-  min: -1
-  max: 5.5
-  dynamicRange: 1.5
-  dynamicMinMax: {x: 0, y: 3}
-  nestedObject:
-    i: 1
-    strings:
-    - EditorOnly
-    - Player
-    - Untagged
---- !u!4 &280163223
-Transform:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 280163221}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 28
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &315584341
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,108 +634,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!1 &594223389
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 594223391}
-  - component: {fileID: 594223390}
-  m_Layer: 0
-  m_Name: SerializeReference [Sample] (4)
-  m_TagString: Untagged
-  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &594223390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 594223389}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0323e91bfeae1c488545bee770d3fa7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  var1:
-    rid: 7033609514626056197
-  var2:
-    rid: 7033609514626056196
-  var3:
-    rid: 7033609514626056198
-  var4:
-    rid: 7033609514626056199
-  vars:
-  - rid: 2222411121801560064
-  - rid: 2222411121801560065
-  - rid: 2222411121801560066
-  - rid: 2222411121801560067
-  references:
-    version: 2
-    RefIds:
-    - rid: 2222411121801560064
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-    - rid: 2222411121801560065
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-    - rid: 2222411121801560066
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-        var33: 0
-    - rid: 2222411121801560067
-      type: {class: SampleBehaviour6/SampleStruct, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        var2: 0
-    - rid: 7033609514626056196
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 1
-        mat: {fileID: 0}
-        var33: 11
-    - rid: 7033609514626056197
-      type: {class: SampleBehaviour6/SampleStruct, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 1
-        var2: 1
-    - rid: 7033609514626056198
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-    - rid: 7033609514626056199
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 2100000, guid: 26a618e7877b8c94f967effc172108f2, type: 2}
---- !u!4 &594223391
-Transform:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 594223389}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 26
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &661896457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1244,9 +1051,9 @@ MonoBehaviour:
   var1:
     rid: 7033609514626056197
   var2:
-    rid: 7033609514626056196
+    rid: 2222411192291557380
   var3:
-    rid: 7033609514626056198
+    rid: 2222411192291557381
   var4:
     rid: 7033609514626056199
   vars:
@@ -1255,6 +1062,20 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 2222411192291557380
+      type: {class: SampleBehaviour6/ClassWithInterface1, ns: , asm: Assembly-CSharp}
+      data:
+        go: {fileID: 580334316}
+        var1:
+          rid: -2
+    - rid: 2222411192291557381
+      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
+      data:
+        var1: 1
+        mat: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
+        var33: 0
     - rid: 7033609514626056193
       type: {class: SampleBehaviour6/ClassWithInterface1, ns: , asm: Assembly-CSharp}
       data:
@@ -1266,22 +1087,11 @@ MonoBehaviour:
       data:
         var1: 0
         var2: 0
-    - rid: 7033609514626056196
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 1
-        mat: {fileID: 0}
-        var33: 11
     - rid: 7033609514626056197
       type: {class: SampleBehaviour6/SampleStruct, ns: , asm: Assembly-CSharp}
       data:
         var1: 1
         var2: 1
-    - rid: 7033609514626056198
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
     - rid: 7033609514626056199
       type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
       data:
@@ -1337,97 +1147,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 666544667}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &773117200
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 773117202}
-  - component: {fileID: 773117201}
-  m_Layer: 0
-  m_Name: ToolboxPropertyDrawers [Sample] (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &773117201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 773117200}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd6beebd3a14d014baec37e933957a0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  list:
-  - {fileID: 5059060190599569098, guid: e4263a04cf09ace4b8568f054ea426ee, type: 3}
-  - {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
-  - {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
-  - {fileID: 5059060190599569098, guid: 5573ca52cac7c2d4cb2536e37e9be1f1, type: 3}
-  strings:
-  - a
-  - b
-  - c
-  ints: 0200000006000000030000000c00000005000000
-  component: {fileID: 2037155953}
-  material: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
-  texture: {fileID: 2800000, guid: d7cf546aa64aceb488a523b6662319b6, type: 3}
-  audioClip: {fileID: 8300000, guid: e83fc6426e5f2e0448cc3e51102509aa, type: 3}
-  mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  largeArray:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  quaternion: {x: 0, y: 0, z: 0, w: 0}
-  q2: {x: 0, y: 0, z: 0, w: 0}
-  min: -1
-  max: 5.5
-  dynamicRange: 1.5
-  dynamicMinMax: {x: 0, y: 3}
-  nestedObject:
-    i: 1
-    strings:
-    - EditorOnly
-    - Player
-    - Untagged
---- !u!4 &773117202
-Transform:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 773117200}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &890935882
 GameObject:
@@ -2698,108 +2417,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1584091011}
   m_CullTransparentMesh: 1
---- !u!1 &1646572068
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1646572070}
-  - component: {fileID: 1646572069}
-  m_Layer: 0
-  m_Name: SerializeReference [Sample] (3)
-  m_TagString: Untagged
-  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1646572069
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1646572068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0323e91bfeae1c488545bee770d3fa7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  var1:
-    rid: 7033609514626056197
-  var2:
-    rid: 7033609514626056196
-  var3:
-    rid: 7033609514626056198
-  var4:
-    rid: 7033609514626056199
-  vars:
-  - rid: 2222411121801560069
-  - rid: 2222411121801560070
-  - rid: 2222411121801560071
-  - rid: 2222411121801560072
-  references:
-    version: 2
-    RefIds:
-    - rid: 2222411121801560069
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-    - rid: 2222411121801560070
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-    - rid: 2222411121801560071
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-        var33: 0
-    - rid: 2222411121801560072
-      type: {class: SampleBehaviour6/SampleStruct, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        var2: 0
-    - rid: 7033609514626056196
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 1
-        mat: {fileID: 0}
-        var33: 11
-    - rid: 7033609514626056197
-      type: {class: SampleBehaviour6/SampleStruct, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 1
-        var2: 1
-    - rid: 7033609514626056198
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-    - rid: 7033609514626056199
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 2100000, guid: 26a618e7877b8c94f967effc172108f2, type: 2}
---- !u!4 &1646572070
-Transform:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1646572068}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 25
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1661307763
 GameObject:
   m_ObjectHideFlags: 0
@@ -2889,96 +2506,6 @@ MonoBehaviour:
   var40: 2
   var41: 0
   var42: 0
---- !u!1 &1695402926
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1695402928}
-  - component: {fileID: 1695402927}
-  m_Layer: 0
-  m_Name: SerializeReference [Sample] (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1695402927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1695402926}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0323e91bfeae1c488545bee770d3fa7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  var1:
-    rid: 2222411169542701056
-  var2:
-    rid: 7033609514626056196
-  var3:
-    rid: 7033609514626056198
-  var4:
-    rid: 7033609514626056199
-  vars:
-  - rid: -2
-  - rid: -2
-  - rid: -2
-  - rid: 2222411169542701061
-  - rid: -2
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 2222411169542701056
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 1
-        mat: {fileID: 0}
-        var33: 11
-    - rid: 2222411169542701061
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-    - rid: 7033609514626056196
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 1
-        mat: {fileID: 0}
-        var33: 11
-    - rid: 7033609514626056198
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-    - rid: 7033609514626056199
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 2100000, guid: 26a618e7877b8c94f967effc172108f2, type: 2}
---- !u!4 &1695402928
-Transform:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1695402926}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 24
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1707505305
 GameObject:
   m_ObjectHideFlags: 0
@@ -3057,108 +2584,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1707505305}
   m_CullTransparentMesh: 1
---- !u!1 &1840852554
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1840852556}
-  - component: {fileID: 1840852555}
-  m_Layer: 0
-  m_Name: SerializeReference [Sample] (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 2800000, guid: b105bf1fb7fe62e4baba0ffd7b433e7b, type: 3}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1840852555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1840852554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0323e91bfeae1c488545bee770d3fa7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  var1:
-    rid: 7033609514626056197
-  var2:
-    rid: 7033609514626056196
-  var3:
-    rid: 7033609514626056198
-  var4:
-    rid: 7033609514626056199
-  vars:
-  - rid: 2222411169542701063
-  - rid: 2222411169542701064
-  - rid: 2222411169542701065
-  - rid: 2222411169542701066
-  references:
-    version: 2
-    RefIds:
-    - rid: 2222411169542701063
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-    - rid: 2222411169542701064
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-    - rid: 2222411169542701065
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-        var33: 0
-    - rid: 2222411169542701066
-      type: {class: SampleBehaviour6/SampleStruct, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        var2: 0
-    - rid: 7033609514626056196
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 1
-        mat: {fileID: 0}
-        var33: 11
-    - rid: 7033609514626056197
-      type: {class: SampleBehaviour6/SampleStruct, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 1
-        var2: 1
-    - rid: 7033609514626056198
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
-    - rid: 7033609514626056199
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 2100000, guid: 26a618e7877b8c94f967effc172108f2, type: 2}
---- !u!4 &1840852556
-Transform:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1840852554}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 23
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1972418676
 GameObject:
   m_ObjectHideFlags: 0
