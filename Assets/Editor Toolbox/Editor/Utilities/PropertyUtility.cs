@@ -644,6 +644,7 @@ namespace Toolbox.Editor
 
         internal static bool IsSerializeReferenceProperty(SerializedProperty property)
         {
+#if UNITY_2019_3_OR_NEWER
             if (property == null)
             {
                 return false;
@@ -663,6 +664,8 @@ namespace Toolbox.Editor
                 return elementType.Contains(managedReferenceType);
             }
 
+            return false;
+#endif
             return false;
         }
 
