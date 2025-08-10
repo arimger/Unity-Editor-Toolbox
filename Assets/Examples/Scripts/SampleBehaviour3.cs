@@ -1,5 +1,4 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 [ExecuteAlways]
 [AddComponentMenu("Editor Toolbox/Cheat Sheet 3 (Toolbox Conditions)")]
