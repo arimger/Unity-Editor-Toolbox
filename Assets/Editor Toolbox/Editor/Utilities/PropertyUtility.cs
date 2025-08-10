@@ -665,8 +665,9 @@ namespace Toolbox.Editor
             }
 
             return false;
-#endif
+#else
             return false;
+#endif
         }
 
         internal static bool TryGetSerializeReferenceType(SerializedProperty property, out Type referenceType)
