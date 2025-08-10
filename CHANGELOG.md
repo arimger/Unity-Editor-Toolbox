@@ -6,7 +6,7 @@
 ### Changed:
 - Fix [FormattedNumber] behaviour while multi-editing different values
 - [LabelByChild] now displays ToString() value for UnityEngine.Object references
-- Fix ReorderableLists indention level for nested objects
+- Fix ReorderableLists indentation level for nested objects
 - Fix various smaller issues related to [SerializeReference]-based properties while being in the multi-editing mode
 - Rename 'Copy Serialize Reference' to 'Copy Serialized References', from now this operation also works on arrays and lists
 - Rename 'Paste Serialize Reference' to 'Paste Serialized References', from now this operation also works on arrays and lists
