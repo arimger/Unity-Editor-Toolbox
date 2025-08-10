@@ -825,9 +825,9 @@ public class GenericInterfaceImplementation<TValue> : IGenericInterface<TValue>
 ##### SerializeReference context menu operations
 
 You can use few custom context menu operations for the **[SerializeReference]** fields:
-- **Copy Serialize Reference**: creates a deep copy of the linked reference
-- **Paste Serialize Reference**: allows to paste preserved copy to a field
-- **Duplicate Serialize Reference**: allows to duplicate the linked reference (works only on collection elements)
+- **Copy Serialized References**: creates a deep copy of the linked reference
+- **Paste Serialized References**: allows to paste preserved copy to a field
+- **Duplicate Serialize Reference Array Element**: allows to duplicate the linked reference (works only on collection elements)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializereferenceoperations.png)
 
