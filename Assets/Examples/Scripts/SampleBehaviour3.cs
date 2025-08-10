@@ -1,5 +1,4 @@
-﻿using Toolbox.Editor.Drawers;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 [ExecuteAlways]
