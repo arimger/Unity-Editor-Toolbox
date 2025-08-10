@@ -56,6 +56,11 @@ Unity 2018.x or newer
 		- [Toolbox Custom Editors](#toolboxeditors)
 	- [Material Drawers](#materialdrawers)
 - [Serialized Types](#serialized-types)
+	- [SerializedType](#serializedtype)
+	- [SerializedScene](#serializedscene)
+	- [SerializedDictionary](#serializeddictionary)
+	- [SerializedDateTime](#serializeddatetime)
+	- [SerializedDirectory](#serializeddirectory)
 - [Editor Extensions](#editor-extensions)
 	- [Hierarchy](#hierarchy)
 	- [Project](#project)
@@ -777,6 +782,14 @@ public class ClassWithInterface3 : ClassWithInterfaceBase
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/referencepicker.png)
 
+##### ReferencePicker properties
+
+- **ParentType**: Indicates what *System.Type* should be used as 'base' to create a collection of all available inherited types.
+- **ForceUninitializedInstance** (false): If *true* - a new reference instance will be created without the standard construction flow and object will be uninitialized (constructor won't be called).
+- **TypeGrouping** (TypeGrouping.None): Indicates how the available types are displayed.
+- **AddTextSearchField** (true): If *true* - the popup picker will be extended with a text search field. It may be useful for larger type collections.
+- **AddConfimartionBox** (false): If *true* - creates an additional confirmation box to make sure that the new assignment is intended.
+
 ##### SerializeReference generics support
 
 Unity 2023.x introduced support for serializing generic references.
@@ -812,9 +825,9 @@ public class GenericInterfaceImplementation<TValue> : IGenericInterface<TValue>
 ##### SerializeReference context menu operations
 
 You can use few custom context menu operations for the **[SerializeReference]** fields:
-- **Copy Serialize Reference**: creates a deep copy of the linked reference
-- **Paste Serialize Reference**: allows to paste preserved copy to a field
-- **Duplicate Serialize Reference**: allows to duplicate the linked reference (works only on collection elements)
+- **Copy Serialized References**: creates a deep copy of the linked reference
+- **Paste Serialized References**: allows to paste preserved copy to a field
+- **Duplicate Serialize Reference Array Element**: allows to duplicate the linked reference (works only on collection elements)
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializereferenceoperations.png)
 
@@ -885,7 +898,7 @@ _HideIfExample ("Range", Range(0, 1)) = 0.75
 
 ## Serialized Types
 
-#### SerializedType
+#### SerializedType <a name="serializedtype"></a>
 
 Allows to serialize Types and pick them through a dedicated picker.
 
@@ -901,7 +914,7 @@ public void Usage()
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializedtype.png)
 
-#### SerializedScene
+#### SerializedScene <a name="serializedscene"></a>
 
 Allows to serialize SceneAssets and use them in Runtime.
 
@@ -926,7 +939,7 @@ Keep in mind that SerializedScene stores Scene's index, name and path. These pro
 Unfortunately, you need to handle associated objects reserialization by yourself, otherwise e.g. updated indexes won't be saved. I prepared for you a static event `SceneSerializationUtility.OnCacheRefreshed` that can be used to validate SerializedScenes in your project. 
 You can link SerializedScene in a ScriptableObject and trigger reserialization (`EditorUtility.SetDirty()`) if needed, it's really convinient approach.
 
-#### SerializedDictionary<TK, TV>
+#### SerializedDictionary<TK, TV> <a name="serializeddictionary"></a>
 
 Allows to serialize and use Dictionaries. The presented class implements the IDictionary interface, so it can be easily used like the standard version.
 
@@ -952,7 +965,7 @@ public void Usage()
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/dictionary2.png)
 
-#### SerializedDateTime
+#### SerializedDateTime <a name="serializeddatetime"></a>
 
 Allows to serialize DateTime.
 
@@ -967,7 +980,7 @@ public void Usage()
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/serializeddate.png)
 
-#### SerializedDirectory
+#### SerializedDirectory <a name="serializeddirectory"></a>
 
 Allows to serialize folders in form of assets and retrieve direct paths in Runtime.
 

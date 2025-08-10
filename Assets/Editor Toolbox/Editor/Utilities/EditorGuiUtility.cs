@@ -12,7 +12,7 @@ namespace Toolbox.Editor
     /// </summary>
     internal static class EditorGuiUtility
     {
-        private const float indentPerLevel = 15.0f;
+        internal const float indentPerLevel = 15.0f;
 
         private static readonly Dictionary<string, Texture2D> loadedTextures = new Dictionary<string, Texture2D>();
 

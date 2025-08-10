@@ -1051,9 +1051,9 @@ MonoBehaviour:
   var1:
     rid: 7033609514626056197
   var2:
-    rid: 7033609514626056196
+    rid: 2222411192291557380
   var3:
-    rid: 7033609514626056198
+    rid: 2222411192291557381
   var4:
     rid: 7033609514626056199
   vars:
@@ -1062,6 +1062,20 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 2222411192291557380
+      type: {class: SampleBehaviour6/ClassWithInterface1, ns: , asm: Assembly-CSharp}
+      data:
+        go: {fileID: 580334316}
+        var1:
+          rid: -2
+    - rid: 2222411192291557381
+      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
+      data:
+        var1: 1
+        mat: {fileID: 2100000, guid: 7404c70251f9d0045a4aabaa49d83963, type: 2}
+        var33: 0
     - rid: 7033609514626056193
       type: {class: SampleBehaviour6/ClassWithInterface1, ns: , asm: Assembly-CSharp}
       data:
@@ -1073,22 +1087,11 @@ MonoBehaviour:
       data:
         var1: 0
         var2: 0
-    - rid: 7033609514626056196
-      type: {class: SampleBehaviour6/ClassWithInterface4, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 1
-        mat: {fileID: 0}
-        var33: 11
     - rid: 7033609514626056197
       type: {class: SampleBehaviour6/SampleStruct, ns: , asm: Assembly-CSharp}
       data:
         var1: 1
         var2: 1
-    - rid: 7033609514626056198
-      type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
-      data:
-        var1: 0
-        mat: {fileID: 0}
     - rid: 7033609514626056199
       type: {class: SampleBehaviour6/ClassWithInterface2, ns: , asm: Assembly-CSharp}
       data:

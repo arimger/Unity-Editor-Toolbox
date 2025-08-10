@@ -1,3 +1,16 @@
+## 0.14.2 [10.08.2025]
+
+### Added:
+- `AddConfirmationBox` property to the [ReferencePicker]; allows to display an intermediate confirmation window before assigning a new reference
+
+### Changed:
+- Fix [FormattedNumber] behaviour while multi-editing different values
+- [LabelByChild] now displays ToString() value for UnityEngine.Object references
+- Fix ReorderableLists indentation level for nested objects
+- Fix various smaller issues related to [SerializeReference]-based properties while being in the multi-editing mode
+- Rename 'Copy Serialize Reference' to 'Copy Serialized References', from now this operation also works on arrays and lists
+- Rename 'Paste Serialize Reference' to 'Paste Serialized References', from now this operation also works on arrays and lists
+
 ## 0.14.1 [22.04.2025]
 
 ### Changed:

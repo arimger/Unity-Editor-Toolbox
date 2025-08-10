@@ -278,9 +278,7 @@ namespace Toolbox.Editor
             //handle situation when property is an array element
             if (IsSerializableArrayElement(property, fieldInfo))
             {
-                return fieldType.IsGenericType
-                    ? fieldType.GetGenericArguments()[0]
-                    : fieldType.GetElementType();
+                return GetElementTypeFromArrayType(fieldType);
             }
             //return fieldInfo type based on property's target object
             else
@@ -304,6 +302,13 @@ namespace Toolbox.Editor
             }
 
             return scriptInstance.GetClass();
+        }
+
+        public static Type GetElementTypeFromArrayType(Type arrayType)
+        {
+            return arrayType.IsGenericType
+                    ? arrayType.GetGenericArguments()[0]
+                    : arrayType.GetElementType();
         }
 
         public static FieldInfo GetFieldInfo(this SerializedProperty property)
@@ -349,7 +354,7 @@ namespace Toolbox.Editor
                 {
                     if (IsSerializableArrayType(type))
                     {
-                        type = type.IsGenericType ? type.GetGenericArguments()[0] : type.GetElementType();
+                        type = GetElementTypeFromArrayType(type);
                     }
 
                     continue;
@@ -421,7 +426,7 @@ namespace Toolbox.Editor
                     label.text = property.colorValue.ToString();
                     break;
                 case SerializedPropertyType.ObjectReference:
-                    label.text = property.objectReferenceValue ? property.objectReferenceValue.name : "null";
+                    label.text = property.objectReferenceValue ? property.objectReferenceValue.ToString() : "null";
                     break;
                 case SerializedPropertyType.LayerMask:
                     switch (property.intValue)
@@ -635,6 +640,55 @@ namespace Toolbox.Editor
 
             index = -1;
             return false;
+        }
+
+        internal static bool IsSerializeReferenceProperty(SerializedProperty property)
+        {
+#if UNITY_2019_3_OR_NEWER
+            if (property == null)
+            {
+                return false;
+            }
+
+            if (property.propertyType == SerializedPropertyType.ManagedReference)
+            {
+                return true;
+            }
+
+            //NOTE: seems to bit slighlty better option than checking children (we need to support empty arrays)
+            // checking FieldInfo + Attribute will be much more expensive
+            const string managedReferenceType = "managedReference";
+            if (property.isArray)
+            {
+                var elementType = property.arrayElementType;
+                return elementType.Contains(managedReferenceType);
+            }
+
+            return false;
+#else
+            return false;
+#endif
+        }
+
+        internal static bool TryGetSerializeReferenceType(SerializedProperty property, out Type referenceType)
+        {
+            var fieldInfo = GetFieldInfo(property, out var propertyType);
+            if (fieldInfo == null)
+            {
+                referenceType = null;
+                return false;
+            }
+
+            if (property.isArray)
+            {
+                referenceType = GetElementTypeFromArrayType(propertyType);
+            }
+            else
+            {
+                referenceType = fieldInfo.FieldType;
+            }
+
+            return true;
         }
 
         internal static bool IsDefaultScriptProperty(SerializedProperty property)

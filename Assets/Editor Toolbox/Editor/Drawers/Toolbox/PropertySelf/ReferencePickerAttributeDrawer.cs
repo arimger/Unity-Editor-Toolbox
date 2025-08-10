@@ -56,6 +56,11 @@ namespace Toolbox.Editor.Drawers
                     using (var tempSerializedObject = new SerializedObject(target))
                     {
                         var tempProperty = tempSerializedObject.FindProperty(property.propertyPath);
+                        if (tempProperty == null)
+                        {
+                            break;
+                        }
+
                         if (tempProperty.managedReferenceFullTypename != fullTypeName)
                         {
                             hasMixedValues = true;
@@ -70,26 +75,41 @@ namespace Toolbox.Editor.Drawers
 
         private void CreateTypeProperty(SerializedProperty property, Type parentType, ReferencePickerAttribute attribute, Rect position)
         {
+            var searchFieldRequired = attribute.AddTextSearchField;
+            var confirmationRequired = attribute.AddConfirmationBox;
+
             var currentType = GetCurrentManagedReferenceType(property, out var hasMixedValues);
             var hadMixedValues = EditorGUI.showMixedValue;
             EditorGUI.showMixedValue = hasMixedValues;
-            typeField.OnGui(position, attribute.AddTextSearchField, (type) =>
+            typeField.OnGui(position, searchFieldRequired, (type) =>
             {
                 try
                 {
-                    if (!property.serializedObject.isEditingMultipleObjects)
+                    var isOperationAllowed = true;
+                    if (confirmationRequired)
                     {
-                        UpdateTypeProperty(property, type, attribute);
+                        isOperationAllowed = EditorUtility.DisplayDialog("Confirm Assignment",
+                            "Are you sure you want to assign a new reference? This action will replace the current one.",
+                            "Assign",
+                            "Cancel");
                     }
-                    else
+
+                    if (isOperationAllowed)
                     {
-                        var targets = property.serializedObject.targetObjects;
-                        foreach (var target in targets)
+                        if (!property.serializedObject.isEditingMultipleObjects)
                         {
-                            using (var so = new SerializedObject(target))
+                            UpdateTypeProperty(property, type, attribute);
+                        }
+                        else
+                        {
+                            var targets = property.serializedObject.targetObjects;
+                            foreach (var target in targets)
                             {
-                                var sp = so.FindProperty(property.propertyPath);
-                                UpdateTypeProperty(sp, type, attribute);
+                                using (var so = new SerializedObject(target))
+                                {
+                                    var sp = so.FindProperty(property.propertyPath);
+                                    UpdateTypeProperty(sp, type, attribute);
+                                }
                             }
                         }
                     }
