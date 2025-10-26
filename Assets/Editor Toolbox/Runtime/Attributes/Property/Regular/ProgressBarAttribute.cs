@@ -26,6 +26,13 @@ namespace UnityEngine
 
         public float MaxValue { get; private set; }
 
+        /// <summary>
+        /// Indicates value change step if <see cref="ProgressBarAttribute"/> is interactable.
+        /// </summary>
+        public float ValueStep { get; set; } = 0.001f;
+
+        public bool IsInteractable { get; set; }
+
         public Color Color
         {
             get => ColorUtility.TryParseHtmlString(HexColor, out var color)
@@ -34,7 +41,5 @@ namespace UnityEngine
         }
 
         public string HexColor { get; set; }
-
-        public bool IsInteractable { get; set; }
     }
 }
