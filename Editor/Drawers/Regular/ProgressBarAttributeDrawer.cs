@@ -43,12 +43,18 @@ namespace Toolbox.Editor.Drawers
         {
             var minValue = Attribute.MinValue;
             var maxValue = Attribute.MaxValue;
+            var valueStep = Attribute.ValueStep;
 
             var range = progressBarRect.xMax - progressBarRect.xMin;
             xPosition = Mathf.Clamp(xPosition - progressBarRect.xMin, 0, range);
 
             var fill = Mathf.Clamp01(xPosition / range);
             var newValue = (maxValue - minValue) * fill + minValue;
+            if (!Mathf.Approximately(valueStep, 0.0f))
+            {
+                newValue = Mathf.Round(newValue / valueStep) * valueStep;
+                newValue = Mathf.Clamp(newValue, minValue, maxValue);
+            }
 
             switch (property.propertyType)
             {
