@@ -36,7 +36,7 @@ namespace Toolbox.Editor.ContextMenu.Operations
                 return true;
             }
 
-            return TypeUtility.IsTypeAssignableFrom(targetType, entry.ReferenceType);
+            return TypeUtility.IsTypeAssignableFrom(targetType, entryType);
         }
 
         private bool IsOperationSupported(SerializedProperty targetProperty, CopySerializeReferenceCache cache)

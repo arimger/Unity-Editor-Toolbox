@@ -672,20 +672,21 @@ namespace Toolbox.Editor
 
         internal static bool TryGetSerializeReferenceType(SerializedProperty property, out Type referenceType)
         {
-            var fieldInfo = GetFieldInfo(property, out var propertyType);
+            var fieldInfo = GetFieldInfo(property, propertyType: out _);
             if (fieldInfo == null)
             {
                 referenceType = null;
                 return false;
             }
 
-            if (property.isArray)
+            var fieldType = fieldInfo.FieldType;
+            if (property.isArray || IsSerializableArrayElement(property))
             {
-                referenceType = GetElementTypeFromArrayType(propertyType);
+                referenceType = GetElementTypeFromArrayType(fieldType);
             }
             else
             {
-                referenceType = fieldInfo.FieldType;
+                referenceType = fieldType;
             }
 
             return true;
