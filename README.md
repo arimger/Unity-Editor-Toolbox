@@ -1029,6 +1029,9 @@ Properties that can be edited include:
 
 ### Toolbar <a name="toolbar"></a>
 
+> [!IMPORTANT]  
+> Unity 6.3 provides a new [official API](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Toolbars.MainToolbarElement.html) for extending the main toolbar. Toolbox implementation still relies on the Reflection and overriding predefined VisualElements setup, therefore consider using the new API.
+
 > Editor Toolbox/Editor/ToolboxEditorToolbar.cs
 
 Check **Examples** for more details.
