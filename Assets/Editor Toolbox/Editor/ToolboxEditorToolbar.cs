@@ -15,7 +15,10 @@ using UnityEngine.UIElements;
 using UnityEngine.Experimental.UIElements;
 #endif
 
-//NOTE: since everything in this class is reflection-based it is a little bit "hacky"
+//NOTE: since everything in this class is reflection-based it is a little bit "hacky"; supporting each version makes it very hard to maintain - 
+// consider implementing different 'drawers' for each Toolbar iteration
+
+//NOTE: unfortunately latest (6.3) official API is very limited and can't be used to port this implementation 
 
 namespace Toolbox.Editor
 {
@@ -78,36 +81,27 @@ namespace Toolbox.Editor
             var states = builder.Build();
 
             var toolbarLeftZone = states.AtIndex(0);
-            var leftElement = new VisualElement();
-            leftElement.name = "Editor Toolbox Left Area";
-            leftElement.StretchToParentSize();
-            leftElement.style.left = 10;
-            leftElement.style.right = 10;
-            leftElement.style.flexGrow = 1;
-            leftElement.style.flexDirection = FlexDirection.Row;
-
-            var leftContainer = new IMGUIContainer();
-            leftContainer.style.flexGrow = 1;
-            leftContainer.onGUIHandler = OnGuiLeft;
-            leftElement.Add(leftContainer);
-            toolbarLeftZone.Add(leftElement);
-
+            AddIMGUIContainer(toolbarLeftZone, OnGuiLeft, "Editor Toolbox Left Area");
+ 
             var toolbarRightZone = states.AtIndex(1);
-            var rightElement = new VisualElement();
-            rightElement.name = "Editor Toolbox Right Area";
-            rightElement.StretchToParentSize();
-            rightElement.style.left = 10;
-            rightElement.style.right = 10;
-            rightElement.style.flexGrow = 1;
-            rightElement.style.flexDirection = FlexDirection.Row;
+            AddIMGUIContainer(toolbarRightZone, OnGuiRight, "Editor Toolbox Right Area");
 
-            var rightContainer = new IMGUIContainer();
-            rightContainer.style.flexGrow = 1;
-            rightContainer.onGUIHandler = OnGuiRight;
+            void AddIMGUIContainer(VisualElement parentElement, Action guiCallback, string name)
+            {
+                var element = new VisualElement();
+                element.name = name;
+                element.StretchToParentSize();
+                element.style.left = 10;
+                element.style.right = 10;
+                element.style.flexGrow = 1;
+                element.style.flexDirection = FlexDirection.Row;
 
-            rightElement.Add(rightContainer);
-            toolbarRightZone.Add(rightElement);
-
+                var guiContainer = new IMGUIContainer();
+                guiContainer.style.flexGrow = 1;
+                guiContainer.onGUIHandler = guiCallback;
+                element.Add(guiContainer);
+                parentElement.Add(element);
+            }
 #else
 #if UNITY_2021_1_OR_NEWER
             var rootField = toolbar.GetType().GetField("m_Root", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -151,7 +145,6 @@ namespace Toolbox.Editor
 #else
             var elements = visualTree.GetValue(toolbar, null) as VisualElement;
 #endif
-
 #if UNITY_2019_1_OR_NEWER
             var container = elements[0];
 #else
