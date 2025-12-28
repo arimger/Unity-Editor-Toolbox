@@ -46,8 +46,12 @@ namespace Toolbox.Editor
             }
 
             //use Unity's internal method to determinate the proper GameObject instance
+#if UNITY_6000_3_OR_NEWER
+            var gameObject = EditorUtility.EntityIdToObject(instanceId) as GameObject;
+#else
             var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
-            if (gameObject)
+#endif
+            if (gameObject != null)
             {
                 var type = GetLabelType(gameObject, out var label);
                 //draw label using one of the possible forms
