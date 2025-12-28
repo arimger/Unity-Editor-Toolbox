@@ -96,6 +96,7 @@ public class SampleBehaviour6 : MonoBehaviour
         TValue Value { get; }
     }
 
+    [Serializable]
     public class IntInterfaceImplementationInt : IGenericInterface<int>
     {
         [SerializeField]
@@ -104,6 +105,7 @@ public class SampleBehaviour6 : MonoBehaviour
         public int Value => value;
     }
 
+    [Serializable]
     public class StringInterfaceImplementation : IGenericInterface<string>
     {
         [SerializeField]
@@ -112,6 +114,7 @@ public class SampleBehaviour6 : MonoBehaviour
         public string Value => value;
     }
 
+    [Serializable]
     public class GenericInterfaceImplementation<TValue> : IGenericInterface<TValue>
     {
         [SerializeField]
@@ -122,6 +125,7 @@ public class SampleBehaviour6 : MonoBehaviour
         public TValue Value => value;
     }
 
+    [Serializable]
     public class WrongConstraintGenericInterfaceImplementation<TValue> : IGenericInterface<TValue> where TValue : struct
     {
         [SerializeField]

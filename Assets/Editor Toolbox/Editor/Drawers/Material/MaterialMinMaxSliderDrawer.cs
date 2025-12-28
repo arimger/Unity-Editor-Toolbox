@@ -44,7 +44,11 @@ namespace Toolbox.Editor.Drawers
 
         protected override bool IsPropertyValid(MaterialProperty prop)
         {
+#if UNITY_6000_3_OR_NEWER
+            return prop.propertyType == UnityEngine.Rendering.ShaderPropertyType.Vector;
+#else
             return prop.type == MaterialProperty.PropType.Vector;
+#endif
         }
     }
 }
