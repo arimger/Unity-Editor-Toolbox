@@ -1091,6 +1091,8 @@ public static class MyEditorUtility
 
 Select a specific object that is under the cursor (default key: tab).
 
+Requires at least Unity 2019.1.x to work.
+
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/sceneview.png)
 
 ### Utilities <a name="utilities"></a>
