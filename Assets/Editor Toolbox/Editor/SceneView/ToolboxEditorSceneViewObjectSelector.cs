@@ -7,17 +7,20 @@ namespace Toolbox.Editor.SceneView
     public class ToolboxEditorSceneViewObjectSelector : EditorWindow
     {
         private static readonly Color selectionColor = new Color(0.50f, 0.70f, 1.00f);
+        private static readonly Color highlightWireColor = Color.yellow;
+        private const float outlineFillOpacity = 1f;
 
         private const float sizeXPadding = 2f;
         private const float sizeYPadding = 2f;
         private const float buttonYSpacing = 0.0f;
         private const float buttonYSize = 20f;
         private const float sizeXOffset = -30f;
+        private const float indentWidth = 12f;
 
-        private List<GameObject> gameObjects;
-        private List<string> gameObjectPaths;
+        private List<DisplayEntry> displayEntries;
 
         private GameObject highlightedObject;
+        private readonly List<Renderer> highlightedRenderers = new List<Renderer>();
         private Vector2 size;
         private Vector2 buttonSize;
 
@@ -32,10 +35,21 @@ namespace Toolbox.Editor.SceneView
             var window = CreateInstance<ToolboxEditorSceneViewObjectSelector>();
             window.wantsMouseMove = true;
             window.wantsMouseEnterLeaveWindow = true;
-            window.gameObjects = gameObjects;
-            window.InitializeGameObjectPaths();
+            window.displayEntries = window.BuildDisplayEntries(gameObjects);
             window.CalculateSize();
             window.ShowAsDropDown(rect, window.size);
+        }
+
+        private void OnEnable()
+        {
+            UnityEditor.SceneView.duringSceneGui += OnSceneViewDuringSceneGui;
+        }
+
+        private void OnDisable()
+        {
+            UnityEditor.SceneView.duringSceneGui -= OnSceneViewDuringSceneGui;
+            highlightedRenderers.Clear();
+            highlightedObject = null;
         }
 
         private void OnGUI()
@@ -67,18 +81,24 @@ namespace Toolbox.Editor.SceneView
         private void OnGuiMouseMove()
         {
             var rect = new Rect(sizeXPadding, sizeYPadding, buttonSize.x, buttonSize.y);
-            for (var i = 0; i < gameObjects.Count; i++)
+            for (var i = 0; i < displayEntries.Count; i++)
             {
-                var gameObject = gameObjects[i];
+                var entry = displayEntries[i];
+                var gameObject = entry.GameObject;
                 if (gameObject == null)
                 {
                     //Can happen when something removes the gameobject during the window display.
                     continue;
                 }
 
+                var indentOffset = entry.Depth * indentWidth;
+                var drawRect = new Rect(rect);
+                drawRect.x += indentOffset;
+                drawRect.width -= indentOffset;
+
                 var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
-                GUI.Button(rect, content, Style.buttonStyle);
-                if (rect.Contains(Event.current.mousePosition))
+                GUI.Button(drawRect, content, Style.buttonStyle);
+                if (drawRect.Contains(Event.current.mousePosition))
                 {
                     HighlightedObject = gameObject;
                 }
@@ -90,14 +110,20 @@ namespace Toolbox.Editor.SceneView
         private void OnGuiNormal()
         {
             var rect = new Rect(sizeXPadding, sizeYPadding, buttonSize.x, buttonSize.y);
-            for (var i = 0; i < gameObjects.Count; i++)
+            for (var i = 0; i < displayEntries.Count; i++)
             {
-                var gameObject = gameObjects[i];
+                var entry = displayEntries[i];
+                var gameObject = entry.GameObject;
                 if (gameObject == null)
                 {
                     //Can happen when something removes the gameobject during the window display.
                     continue;
                 }
+
+                var indentOffset = entry.Depth * indentWidth;
+                var drawRect = new Rect(rect);
+                drawRect.x += indentOffset;
+                drawRect.width -= indentOffset;
 
                 var content = EditorGUIUtility.ObjectContent(gameObject, typeof(GameObject));
                 var objectSelected = Selection.Contains(gameObject);
@@ -106,7 +132,7 @@ namespace Toolbox.Editor.SceneView
                     GUI.backgroundColor = selectionColor;
                 }
 
-                if (GUI.Button(rect, content, Style.buttonStyle))
+                if (GUI.Button(drawRect, content, Style.buttonStyle))
                 {
                     GameObjectButtonPress(i);
                 }
@@ -120,47 +146,107 @@ namespace Toolbox.Editor.SceneView
         {
             size = Vector2.zero;
 
-            foreach (var go in gameObjects)
+            var maxIndent = 0f;
+            foreach (var entry in displayEntries)
             {
-                var content = EditorGUIUtility.ObjectContent(go, typeof(GameObject));
+                var content = EditorGUIUtility.ObjectContent(entry.GameObject, typeof(GameObject));
                 var currentSize = Style.buttonStyle.CalcSize(content);
                 if (currentSize.x > size.x)
                 {
                     size.x = currentSize.x;
                 }
+
+                var currentIndent = entry.Depth * indentWidth;
+                if (currentIndent > maxIndent)
+                {
+                    maxIndent = currentIndent;
+                }
             }
 
+            size.x += maxIndent;
             //This is needed because CalcSize calculates content drawing with icon at full size.
             size.x += sizeXOffset;
 
             buttonSize.x = size.x;
             buttonSize.y = buttonYSize;
 
-            size.y = gameObjects.Count * buttonYSize + sizeYPadding * 2.0f + buttonYSpacing * gameObjects.Count - 1;
+            size.y = displayEntries.Count * buttonYSize + sizeYPadding * 2.0f + buttonYSpacing * displayEntries.Count - 1;
             size.x += sizeXPadding * 2.0f;
 
             return size;
         }
 
-        private void InitializeGameObjectPaths()
+        private List<DisplayEntry> BuildDisplayEntries(List<GameObject> objectsUnderCursor)
         {
-            gameObjectPaths = new List<string>();
-            var pathStack = new Stack<string>();
+            var entries = new List<DisplayEntry>();
 
-            for (var i = 0; i < gameObjects.Count; i++)
+            if (objectsUnderCursor == null || objectsUnderCursor.Count == 0)
             {
-                pathStack.Clear();
-                var transform = gameObjects[i].transform;
-                pathStack.Push(transform.gameObject.name);
+                return entries;
+            }
 
-                while (transform.parent != null)
+            var underCursorSet = new HashSet<Transform>();
+            foreach (var gameObject in objectsUnderCursor)
+            {
+                if (gameObject == null)
                 {
-                    transform = transform.parent;
-                    pathStack.Push(transform.gameObject.name);
+                    continue;
                 }
 
-                var path = string.Join("/", pathStack.ToArray());
-                gameObjectPaths.Add(path);
+                underCursorSet.Add(gameObject.transform);
+            }
+
+            var relevantTransforms = new HashSet<Transform>();
+            foreach (var transform in underCursorSet)
+            {
+                var current = transform;
+                while (current != null && relevantTransforms.Add(current))
+                {
+                    current = current.parent;
+                }
+            }
+
+            var orderedRoots = new List<Transform>();
+            foreach (var gameObject in objectsUnderCursor)
+            {
+                if (gameObject == null)
+                {
+                    continue;
+                }
+
+                var top = gameObject.transform;
+                while (top.parent != null && relevantTransforms.Contains(top.parent))
+                {
+                    top = top.parent;
+                }
+
+                if (!orderedRoots.Contains(top))
+                {
+                    orderedRoots.Add(top);
+                }
+            }
+
+            foreach (var root in orderedRoots)
+            {
+                AppendHierarchy(root, 0, relevantTransforms, entries);
+            }
+
+            return entries;
+        }
+
+        private void AppendHierarchy(Transform current, int depth, HashSet<Transform> relevantTransforms, List<DisplayEntry> entries)
+        {
+            entries.Add(new DisplayEntry(current.gameObject, depth));
+
+            for (var i = 0; i < current.childCount; i++)
+            {
+                var child = current.GetChild(i);
+                if (!relevantTransforms.Contains(child))
+                {
+                    continue;
+                }
+
+                AppendHierarchy(child, depth + 1, relevantTransforms, entries);
             }
         }
 
@@ -218,7 +304,7 @@ namespace Toolbox.Editor.SceneView
 
         private void SelectObject(int id, bool control, bool shift)
         {
-            var gameObject = gameObjects[id];
+            var gameObject = displayEntries[id].GameObject;
 
             if (shift)
             {
@@ -252,7 +338,7 @@ namespace Toolbox.Editor.SceneView
 
             for (var i = minId; i <= maxId; i++)
             {
-                newSelection[index] = gameObjects[i];
+                newSelection[index] = displayEntries[i].GameObject;
                 index++;
             }
 
@@ -307,7 +393,61 @@ namespace Toolbox.Editor.SceneView
                 {
                     EditorGUIUtility.PingObject(highlightedObject);
                 }
+
+                UpdateHighlightedRenderers();
             }
+        }
+
+        private void UpdateHighlightedRenderers()
+        {
+            highlightedRenderers.Clear();
+
+            if (highlightedObject == null)
+            {
+                return;
+            }
+
+            highlightedRenderers.AddRange(highlightedObject.GetComponentsInChildren<Renderer>(true));
+        }
+
+        private void OnSceneViewDuringSceneGui(UnityEditor.SceneView sceneView)
+        {
+            if (highlightedRenderers.Count == 0 ||
+                Event.current.type != EventType.Repaint)
+            {
+                return;
+            }
+
+            // Unity 6.1+ provides Handles.DrawOutline which also highlights children in one call.
+#if UNITY_6000_1_OR_NEWER
+            Handles.DrawOutline(highlightedRenderers.ToArray(), highlightWireColor, highlightWireColor, outlineFillOpacity);
+#else
+            using (new Handles.DrawingScope(highlightWireColor))
+            {
+                foreach (var renderer in highlightedRenderers)
+                {
+                    if (renderer == null)
+                    {
+                        continue;
+                    }
+
+                    var bounds = renderer.bounds;
+                    Handles.DrawWireCube(bounds.center, bounds.size);
+                }
+            }
+#endif
+        }
+
+        private readonly struct DisplayEntry
+        {
+            internal DisplayEntry(GameObject gameObject, int depth)
+            {
+                GameObject = gameObject;
+                Depth = depth;
+            }
+
+            internal GameObject GameObject { get; }
+            internal int Depth { get; }
         }
 
         private static class Style
