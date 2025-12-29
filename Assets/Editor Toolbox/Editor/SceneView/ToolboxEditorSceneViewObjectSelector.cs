@@ -8,7 +8,6 @@ namespace Toolbox.Editor.SceneView
     {
         private static readonly Color selectionColor = new Color(0.50f, 0.70f, 1.00f);
         private static readonly Color highlightWireColor = Color.yellow;
-        private const float outlineFillOpacity = 1f;
 
         private const float sizeXPadding = 2f;
         private const float sizeYPadding = 2f;
@@ -17,10 +16,10 @@ namespace Toolbox.Editor.SceneView
         private const float sizeXOffset = -30f;
         private const float indentWidth = 12f;
 
-        private List<DisplayEntry> displayEntries;
-
-        private GameObject highlightedObject;
         private readonly List<Renderer> highlightedRenderers = new List<Renderer>();
+
+        private List<DisplayEntry> displayEntries;
+        private GameObject highlightedObject;
         private Vector2 size;
         private Vector2 buttonSize;
 
@@ -42,12 +41,12 @@ namespace Toolbox.Editor.SceneView
 
         private void OnEnable()
         {
-            UnityEditor.SceneView.duringSceneGui += OnSceneViewDuringSceneGui;
+            UnityEditor.SceneView.duringSceneGui += OnSceneViewGui;
         }
 
         private void OnDisable()
         {
-            UnityEditor.SceneView.duringSceneGui -= OnSceneViewDuringSceneGui;
+            UnityEditor.SceneView.duringSceneGui -= OnSceneViewGui;
             highlightedRenderers.Clear();
             highlightedObject = null;
         }
@@ -325,7 +324,10 @@ namespace Toolbox.Editor.SceneView
             }
             else
             {
-                Selection.objects = new Object[] { gameObject };
+                Selection.objects = new Object[]
+                {
+                    gameObject
+                };
             }
         }
 
@@ -377,27 +379,6 @@ namespace Toolbox.Editor.SceneView
             Selection.objects = newSelection;
         }
 
-        private GameObject HighlightedObject
-        {
-            set
-            {
-                if (highlightedObject == value)
-                {
-                    return;
-                }
-
-                highlightedObject = value;
-                UnityEditor.SceneView.RepaintAll();
-
-                if (highlightedObject != null)
-                {
-                    EditorGUIUtility.PingObject(highlightedObject);
-                }
-
-                UpdateHighlightedRenderers();
-            }
-        }
-
         private void UpdateHighlightedRenderers()
         {
             highlightedRenderers.Clear();
@@ -410,7 +391,7 @@ namespace Toolbox.Editor.SceneView
             highlightedRenderers.AddRange(highlightedObject.GetComponentsInChildren<Renderer>(true));
         }
 
-        private void OnSceneViewDuringSceneGui(UnityEditor.SceneView sceneView)
+        private void OnSceneViewGui(UnityEditor.SceneView sceneView)
         {
             if (highlightedRenderers.Count == 0 ||
                 Event.current.type != EventType.Repaint)
@@ -436,6 +417,27 @@ namespace Toolbox.Editor.SceneView
                 }
             }
 #endif
+        }
+
+        private GameObject HighlightedObject
+        {
+            set
+            {
+                if (highlightedObject == value)
+                {
+                    return;
+                }
+
+                highlightedObject = value;
+                UnityEditor.SceneView.RepaintAll();
+
+                if (highlightedObject != null)
+                {
+                    EditorGUIUtility.PingObject(highlightedObject);
+                }
+
+                UpdateHighlightedRenderers();
+            }
         }
 
         private readonly struct DisplayEntry
