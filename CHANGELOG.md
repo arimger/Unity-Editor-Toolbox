@@ -8,6 +8,8 @@
 - Material Drawers support for Unity 6.3+
 - Serialized Scene support for Unity 6.3+
 - Fix issues with copy/past operations for the [SerializeReference]-based arrays
+- Ability to display parent objects in the SceneView tool
+- Ability to display managed reference values while using LabelByChild attribute
 
 ### Added:
 - `AddConfirmationBox` property to the [ReferencePicker]; allows to display an intermediate confirmation window before assigning a new reference
