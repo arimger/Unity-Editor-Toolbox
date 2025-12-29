@@ -406,7 +406,7 @@ namespace Toolbox.Editor.SceneView
 
             // Unity 6.1+ provides Handles.DrawOutline which also highlights children in one call.
 #if UNITY_6000_1_OR_NEWER
-            Handles.DrawOutline(highlightedRenderers.ToArray(), highlightWireColor, highlightWireColor, outlineFillOpacity);
+            Handles.DrawOutline(highlightedRenderers.ToArray(), highlightWireColor, highlightWireColor, 0.5f);
 #else
             using (new Handles.DrawingScope(highlightWireColor))
             {
