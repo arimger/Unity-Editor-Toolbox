@@ -428,9 +428,11 @@ namespace Toolbox.Editor
                 case SerializedPropertyType.ObjectReference:
                     label.text = property.objectReferenceValue ? property.objectReferenceValue.ToString() : "null";
                     break;
+#if UNITY_2019_3_OR_NEWER
                 case SerializedPropertyType.ManagedReference:
                     label.text = property.managedReferenceValue?.ToString() ?? "null";
                     break;
+#endif
                 case SerializedPropertyType.LayerMask:
                     switch (property.intValue)
                     {

@@ -41,12 +41,16 @@ namespace Toolbox.Editor.SceneView
 
         private void OnEnable()
         {
+#if UNITY_2019_1_OR_NEWER
             UnityEditor.SceneView.duringSceneGui += OnSceneViewGui;
+#endif
         }
 
         private void OnDisable()
         {
+#if UNITY_2019_1_OR_NEWER
             UnityEditor.SceneView.duringSceneGui -= OnSceneViewGui;
+#endif
             highlightedRenderers.Clear();
             highlightedObject = null;
         }
@@ -391,6 +395,7 @@ namespace Toolbox.Editor.SceneView
             highlightedRenderers.AddRange(highlightedObject.GetComponentsInChildren<Renderer>(true));
         }
 
+#if UNITY_2019_1_OR_NEWER
         private void OnSceneViewGui(UnityEditor.SceneView sceneView)
         {
             if (highlightedRenderers.Count == 0 ||
@@ -418,6 +423,7 @@ namespace Toolbox.Editor.SceneView
             }
 #endif
         }
+#endif
 
         private GameObject HighlightedObject
         {
