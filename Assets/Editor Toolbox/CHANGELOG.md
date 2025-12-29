@@ -1,3 +1,25 @@
+## 0.14.3 [29.12.2025]
+
+### Added:
+- Ability to specify 'ValueStep' in the ProgressBar attribute
+
+### Changed:
+- Toolbar support for Unity 6.3+
+- Material Drawers support for Unity 6.3+
+- Serialized Scene support for Unity 6.3+
+- Fix issues with copy/past operations for the [SerializeReference]-based arrays
+
+### Added:
+- `AddConfirmationBox` property to the [ReferencePicker]; allows to display an intermediate confirmation window before assigning a new reference
+
+### Changed:
+- Fix [FormattedNumber] behaviour while multi-editing different values
+- [LabelByChild] now displays ToString() value for UnityEngine.Object references
+- Fix ReorderableLists indentation level for nested objects
+- Fix various smaller issues related to [SerializeReference]-based properties while being in the multi-editing mode
+- Rename 'Copy Serialize Reference' to 'Copy Serialized References', from now this operation also works on arrays and lists
+- Rename 'Paste Serialize Reference' to 'Paste Serialized References', from now this operation also works on arrays and lists
+
 ## 0.14.2 [10.08.2025]
 
 ### Added:
