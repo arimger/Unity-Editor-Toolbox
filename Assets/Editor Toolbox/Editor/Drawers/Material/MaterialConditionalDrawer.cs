@@ -12,6 +12,17 @@ namespace Toolbox.Editor.Drawers
             this.togglePropertyName = togglePropertyName;
         }
 
+        private bool IsValidToggleType(MaterialProperty toggleProp)
+        {
+#if UNITY_6000_3_OR_NEWER
+            return toggleProp.propertyType == UnityEngine.Rendering.ShaderPropertyType.Float ||
+                toggleProp.propertyType == UnityEngine.Rendering.ShaderPropertyType.Range;
+#else
+            return toggleProp.type == MaterialProperty.PropType.Float || 
+                toggleProp.type == MaterialProperty.PropType.Range;
+#endif
+        }
+
         protected override float GetPropertyHeightSafe(MaterialProperty prop, string label, MaterialEditor editor)
         {
             if (!HasToggle(prop))
@@ -48,7 +59,7 @@ namespace Toolbox.Editor.Drawers
         {
             var targets = prop.targets;
             var toggle = MaterialEditor.GetMaterialProperty(targets, togglePropertyName);
-            return toggle != null && toggle.type == MaterialProperty.PropType.Float || toggle.type == MaterialProperty.PropType.Range;
+            return toggle != null && IsValidToggleType(toggle);
         }
 
         protected virtual bool? GetValue(MaterialProperty prop)

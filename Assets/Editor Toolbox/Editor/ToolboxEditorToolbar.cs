@@ -5,16 +5,20 @@ using System.Collections;
 using System.Reflection;
 
 using UnityEditor;
-using UnityEngine;
 using Object = UnityEngine.Object;
 using Unity.EditorCoroutines.Editor;
+using UnityEngine;
+
 #if UNITY_2019_1_OR_NEWER
 using UnityEngine.UIElements;
 #else
 using UnityEngine.Experimental.UIElements;
 #endif
 
-//NOTE: since everything in this class is reflection-based it is a little bit "hacky"
+//NOTE: since everything in this class is reflection-based it is a little bit "hacky"; supporting each version makes it very hard to maintain - 
+// consider implementing different 'drawers' for each Toolbar iteration
+
+//NOTE: unfortunately latest (6.3) official API is very limited and can't be used to port this implementation 
 
 namespace Toolbox.Editor
 {
@@ -30,7 +34,11 @@ namespace Toolbox.Editor
         }
 
         private static readonly Type containterType = typeof(IMGUIContainer);
+#if UNITY_6000_3_OR_NEWER
+        private static readonly Type toolbarType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.MainToolbarWindow");
+#else
         private static readonly Type toolbarType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.Toolbar");
+#endif
         private static readonly Type guiViewType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.GUIView");
 #if UNITY_2020_1_OR_NEWER
         private static readonly Type backendType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.IWindowBackend");
@@ -55,24 +63,57 @@ namespace Toolbox.Editor
         {
             while (toolbar == null)
             {
-                var toolbars = Resources.FindObjectsOfTypeAll(toolbarType);
-                if (toolbars == null || toolbars.Length == 0)
+                if (!TryGetToolbarInstance(out toolbar))
                 {
                     yield return null;
                     continue;
                 }
-                else
-                {
-                    toolbar = toolbars[0];
-                }
             }
 
+#if UNITY_6000_3_OR_NEWER
+            VisualElement root = null;
+            if (toolbar is EditorWindow editorWindow)
+            {
+                root = editorWindow.rootVisualElement;
+            }
+
+            var builder = root.Query<VisualElement>(name: "DockArea");
+            var states = builder.Build();
+
+            var toolbarLeftZone = states.AtIndex(0);
+            AddIMGUIContainer(toolbarLeftZone, OnGuiLeft, "Editor Toolbox Left Area");
+ 
+            var toolbarRightZone = states.AtIndex(1);
+            AddIMGUIContainer(toolbarRightZone, OnGuiRight, "Editor Toolbox Right Area");
+
+            static void AddIMGUIContainer(VisualElement parentElement, Action guiCallback, string name)
+            {
+                if (parentElement == null)
+                {
+                    return;
+                }
+
+                var element = new VisualElement();
+                element.name = name;
+                element.StretchToParentSize();
+                element.style.left = 10;
+                element.style.right = 10;
+                element.style.flexGrow = 1;
+                element.style.flexDirection = FlexDirection.Row;
+
+                var guiContainer = new IMGUIContainer();
+                guiContainer.style.flexGrow = 1;
+                guiContainer.onGUIHandler = guiCallback;
+                element.Add(guiContainer);
+                parentElement.Add(element);
+            }
+#else
 #if UNITY_2021_1_OR_NEWER
             var rootField = toolbar.GetType().GetField("m_Root", BindingFlags.NonPublic | BindingFlags.Instance);
             var root = rootField.GetValue(toolbar) as VisualElement;
 
             var toolbarLeftZone = root.Q("ToolbarZoneLeftAlign");
-            var element = new VisualElement()
+            var leftElement = new VisualElement()
             {
                 style =
                 {
@@ -81,11 +122,11 @@ namespace Toolbox.Editor
                 }
             };
 
-            var container = new IMGUIContainer();
-            container.style.flexGrow = 1;
-            container.onGUIHandler += OnGuiLeft;
-            element.Add(container);
-            toolbarLeftZone.Add(element);
+            var leftContainer = new IMGUIContainer();
+            leftContainer.style.flexGrow = 1;
+            leftContainer.onGUIHandler = OnGuiLeft;
+            leftElement.Add(leftContainer);
+            toolbarLeftZone.Add(leftElement);
 
             var toolbarRightZone = root.Q("ToolbarZoneRightAlign");
             var rightElement = new VisualElement()
@@ -99,7 +140,7 @@ namespace Toolbox.Editor
 
             var rightContainer = new IMGUIContainer();
             rightContainer.style.flexGrow = 1;
-            rightContainer.onGUIHandler += OnGuiRight;
+            rightContainer.onGUIHandler = OnGuiRight;
             rightElement.Add(rightContainer);
             toolbarRightZone.Add(rightElement);
 #else
@@ -109,7 +150,6 @@ namespace Toolbox.Editor
 #else
             var elements = visualTree.GetValue(toolbar, null) as VisualElement;
 #endif
-
 #if UNITY_2019_1_OR_NEWER
             var container = elements[0];
 #else
@@ -119,6 +159,27 @@ namespace Toolbox.Editor
             handler -= OnGuiLeft;
             handler += OnGuiLeft;
             onGuiHandler.SetValue(container, handler);
+#endif
+#endif
+        }
+
+        private static bool TryGetToolbarInstance(out Object toolbarInstance)
+        {
+#if UNITY_6000_3_OR_NEWER
+            toolbarInstance = EditorWindow.GetWindow(toolbarType);
+            return toolbarInstance != null;
+#else
+            var toolbars = Resources.FindObjectsOfTypeAll(toolbarType);
+            if (toolbars == null || toolbars.Length == 0)
+            {
+                toolbarInstance = null;
+                return false;
+            }
+            else
+            {
+                toolbarInstance = toolbars[0];
+                return true;
+            }
 #endif
         }
 
@@ -130,9 +191,15 @@ namespace Toolbox.Editor
             }
 
 #if UNITY_2021_1_OR_NEWER
-            using (new GUILayout.HorizontalScope())
+            using (new EditorGUILayout.VerticalScope())
             {
-                OnToolbarGuiLeft();
+                GUILayout.FlexibleSpace();
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    OnToolbarGuiLeft();
+                }
+
+                GUILayout.FlexibleSpace();
             }
 #else
             var screenWidth = EditorGUIUtility.currentViewWidth;
@@ -167,9 +234,15 @@ namespace Toolbox.Editor
                 return;
             }
 
-            using (new EditorGUILayout.HorizontalScope())
+            using (new EditorGUILayout.VerticalScope())
             {
-                OnToolbarGuiRight();
+                GUILayout.FlexibleSpace();
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    OnToolbarGuiRight();
+                }
+
+                GUILayout.FlexibleSpace();
             }
         }
 
@@ -180,7 +253,12 @@ namespace Toolbox.Editor
                 return;
             }
 
+#if UNITY_6000_3_OR_NEWER
+            var toolbarWindow = EditorWindow.GetWindow(toolbarType);
+            toolbarWindow.Repaint();
+#else
             repaintMethod?.Invoke(toolbar, null);
+#endif
         }
 
         public static bool IsToolbarAllowed { get; set; } = true;

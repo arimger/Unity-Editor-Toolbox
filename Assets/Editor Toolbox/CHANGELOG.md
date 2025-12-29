@@ -1,3 +1,16 @@
+## 0.14.3 [29.12.2025]
+
+### Added:
+- Ability to specify 'ValueStep' in the ProgressBar attribute
+
+### Changed:
+- Toolbar support for Unity 6.3+
+- Material Drawers support for Unity 6.3+
+- Serialized Scene support for Unity 6.3+
+- Fix issues with copy/past operations for the [SerializeReference]-based arrays
+- Ability to display parent objects in the SceneView tool
+- Ability to display managed reference values while using LabelByChild attribute
+
 ## 0.14.2 [10.08.2025]
 
 ### Added:

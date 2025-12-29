@@ -1287,7 +1287,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTag: Untagged
-  progressBar1: 9.159664
+  progressBar1: 30
   progressBar2: 25.4
   minMaxVector: {x: 10, y: 73.893524}
   minMaxVectorInt: {x: 2, y: 7}

@@ -51,6 +51,7 @@ namespace Toolbox.Editor.ContextMenu.Operations
 
         public void Perform(SerializedProperty property)
         {
+            var isArrayCopy = false;
             var entries = new List<CopySerializeReferenceEntry>();
             if (property.propertyType == SerializedPropertyType.ManagedReference)
             {
@@ -59,6 +60,7 @@ namespace Toolbox.Editor.ContextMenu.Operations
             }
             else if (property.isArray)
             {
+                isArrayCopy = true;
                 var propertiesCount = property.arraySize;
                 for (var i = 0; i < propertiesCount; i++)
                 {
@@ -69,7 +71,7 @@ namespace Toolbox.Editor.ContextMenu.Operations
             }
 
             PropertyUtility.TryGetSerializeReferenceType(property, out var referenceType);
-            Cache = new CopySerializeReferenceCache(referenceType, entries);
+            Cache = new CopySerializeReferenceCache(referenceType, entries, isArrayCopy);
         }
 
         public GUIContent Label => new GUIContent("Copy Serialized References");

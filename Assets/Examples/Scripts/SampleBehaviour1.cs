@@ -11,7 +11,7 @@ public class SampleBehaviour1 : MonoBehaviour
 
     [Label("Progress Bar", skinStyle: SkinStyle.Box)]
 
-    [ProgressBar(minValue: -10.0f, maxValue: 50.0f, HexColor = "#234DEA", IsInteractable = true)]
+    [ProgressBar(minValue: -10.0f, maxValue: 50.0f, HexColor = "#234DEA", IsInteractable = true, ValueStep = 2.5f)]
     public float progressBar1 = 25.4f;
     [ProgressBar(minValue: -10.0f, maxValue: 50.0f, HexColor = "#32A852", IsInteractable = false)]
     public float progressBar2 = 25.4f;

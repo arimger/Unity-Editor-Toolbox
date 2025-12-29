@@ -27,6 +27,30 @@ namespace Toolbox.Serialization
             isInitialized = true;
         }
 
+        private static bool TryCreateSceneData(SceneAsset sceneAsset, out SceneData sceneData)
+        {
+            var path = AssetDatabase.GetAssetPath(sceneAsset);
+            if (string.IsNullOrEmpty(path))
+            {
+                sceneData = null;
+                return false;
+            }
+
+            sceneData = new SceneData()
+            {
+                BuildIndex = SceneUtility.GetBuildIndexByScenePath(path),
+                SceneName = sceneAsset.name,
+                ScenePath = path,
+            };
+
+            return true;
+        }
+
+        private static bool CanRefreshCache()
+        {
+            return !EditorApplication.isUpdating;
+        }
+
         internal static void ConfirmCache()
         {
             //NOTE: refresh data only if the cache is empty,
@@ -39,6 +63,11 @@ namespace Toolbox.Serialization
 
         internal static void RefreshCache()
         {
+            if (!CanRefreshCache())
+            {
+                return;
+            }
+
             cachedScenes.Clear();
             foreach (var scene in EditorBuildSettings.scenes)
             {
@@ -59,12 +88,10 @@ namespace Toolbox.Serialization
                     continue;
                 }
 
-                cachedScenes.Add(sceneAsset, new SceneData()
+                if (TryCreateSceneData(sceneAsset, out var sceneData))
                 {
-                    BuildIndex = SceneUtility.GetBuildIndexByScenePath(path),
-                    SceneName = sceneAsset.name,
-                    ScenePath = path
-                });
+                    cachedScenes.Add(sceneAsset, sceneData);
+                }
             }
 
             OnCacheRefreshed?.Invoke();
@@ -72,14 +99,30 @@ namespace Toolbox.Serialization
 
         internal static bool TryGetSceneData(SceneAsset sceneAsset, out SceneData data)
         {
-            ConfirmCache();
-            if (!sceneAsset || !cachedScenes.TryGetValue(sceneAsset, out data))
+            if (sceneAsset == null)
             {
                 data = null;
                 return false;
             }
 
-            return true;
+            if (CanRefreshCache())
+            {
+                ConfirmCache();
+                if (cachedScenes.TryGetValue(sceneAsset, out data))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (TryCreateSceneData(sceneAsset, out data))
+                {
+                    return true;
+                }
+            }
+
+            data = null;
+            return false;
         }
 #endif
         /// <summary>

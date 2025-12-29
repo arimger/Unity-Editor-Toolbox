@@ -9,10 +9,11 @@ namespace Toolbox.Editor.ContextMenu.Operations
     /// </summary>
     internal class CopySerializeReferenceCache
     {
-        public CopySerializeReferenceCache(Type referenceType, IReadOnlyList<CopySerializeReferenceEntry> entires)
+        public CopySerializeReferenceCache(Type referenceType, IReadOnlyList<CopySerializeReferenceEntry> entires, bool isArrayCopy)
         {
             ReferenceType = referenceType;
             Entries = entires;
+            IsArrayCopy = isArrayCopy;
         }
 
         /// <summary>
@@ -20,6 +21,6 @@ namespace Toolbox.Editor.ContextMenu.Operations
         /// </summary>
         public Type ReferenceType { get; }
         public IReadOnlyList<CopySerializeReferenceEntry> Entries { get; }
-        public bool IsArrayCopy => Entries != null && Entries.Count > 1;
+        public bool IsArrayCopy { get; }
     }
 }
