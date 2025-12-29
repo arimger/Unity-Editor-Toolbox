@@ -86,8 +86,13 @@ namespace Toolbox.Editor
             var toolbarRightZone = states.AtIndex(1);
             AddIMGUIContainer(toolbarRightZone, OnGuiRight, "Editor Toolbox Right Area");
 
-            void AddIMGUIContainer(VisualElement parentElement, Action guiCallback, string name)
+            static void AddIMGUIContainer(VisualElement parentElement, Action guiCallback, string name)
             {
+                if (parentElement == null)
+                {
+                    return;
+                }
+
                 var element = new VisualElement();
                 element.name = name;
                 element.StretchToParentSize();
