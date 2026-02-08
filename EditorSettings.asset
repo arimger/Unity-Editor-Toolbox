@@ -55,6 +55,8 @@ MonoBehaviour:
   - typeReference: Toolbox.Editor.Drawers.BeginHorizontalAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.BeginHorizontalGroupAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.BeginIndentAttributeDrawer, Toolbox.Editor
+  - typeReference: Toolbox.Editor.Drawers.BeginTabGroupAttributeDrawer, Toolbox.Editor
+  - typeReference: Toolbox.Editor.Drawers.EndTabGroupAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.BeginVerticalAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.DynamicHelpAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.EditorButtonAttributeDrawer, Toolbox.Editor
@@ -84,6 +86,7 @@ MonoBehaviour:
   - typeReference: Toolbox.Editor.Drawers.ShowDisabledIfAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.ShowIfAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.ShowWarningIfAttributeDrawer, Toolbox.Editor
+  - typeReference: Toolbox.Editor.Drawers.TabAttributeDrawer, Toolbox.Editor
   selfPropertyDrawerHandlers:
   - typeReference: Toolbox.Editor.Drawers.DynamicMinMaxSliderAttributeDrawer, Toolbox.Editor
   - typeReference: Toolbox.Editor.Drawers.DynamicRangeAttributeDrawer, Toolbox.Editor
