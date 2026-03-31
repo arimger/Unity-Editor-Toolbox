@@ -26,7 +26,7 @@ namespace Toolbox.Editor
 
         static ToolboxEditorHierarchy()
         {
-#if UNITY_6000_5_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
             EditorApplication.hierarchyWindowItemByEntityIdOnGUI -= OnItemCallback;
             EditorApplication.hierarchyWindowItemByEntityIdOnGUI += OnItemCallback;
 #else
@@ -43,7 +43,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Tries to display item label in the Hierarchy Window.
         /// </summary>
-#if UNITY_6000_5_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
         private static void OnItemCallback(EntityId instanceId, Rect rect)
 #else
         private static void OnItemCallback(int instanceId, Rect rect)
