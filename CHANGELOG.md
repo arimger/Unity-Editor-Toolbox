@@ -1,3 +1,8 @@
+## 0.14.4 [11.04.2026]
+
+### Changed:
+- Package support for Unity 6.4+
+
 ## 0.14.3 [29.12.2025]
 
 ### Added:
