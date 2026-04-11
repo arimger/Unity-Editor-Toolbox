@@ -2262,6 +2262,24 @@ MonoBehaviour:
   var57: 0
   nestedObject:
     var0: -12
+  CharacterName: Name
+  Level: 0
+  Health: 100
+  Mana: 0
+  Stamina: 0
+  MoveSpeed: 4
+  Acceleration: 10
+  JumpForce: 9
+  attackForce: {x: 0, y: 0}
+  attackDamage: 0
+  testVar1: test string
+  testVar2: 0
+  testVar3: 0
+  testVar4: {x: 0, y: 0}
+  testVar5: {x: 0, y: 0, z: 0}
+  testVar6: {fileID: 0}
+  testVar7: 0
+  testVar8: asdads
 --- !u!4 &1438743619
 Transform:
   m_ObjectHideFlags: 2
