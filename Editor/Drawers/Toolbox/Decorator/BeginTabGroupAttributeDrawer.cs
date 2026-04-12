@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
@@ -142,8 +142,16 @@ namespace Toolbox.Editor.Drawers
             if (currentIndex == -1)
                 currentIndex = 0;
 
+            //TODO: GroupId + Optional Label
             DrawGroupHeader(attribute.GroupId);
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
+            //TODO: temp, make it static if needed
+            var style = new GUIStyle(EditorStyles.helpBox);
+            style.margin = new RectOffset(0, 0, 0, 0);
+            style.contentOffset = Vector2.zero;
+            style.border = new RectOffset(0, 0, 0, 0);
+            style.padding = new RectOffset(1, 1, 1, 1);
+            EditorGUILayout.BeginVertical(style);
 
             int newIndex = DrawResponsiveTabs(currentIndex, tabs, attribute.Visual);
 
@@ -151,6 +159,7 @@ namespace Toolbox.Editor.Drawers
             {
                 TabState.Set(attribute.GroupId, tabs[newIndex]);
 
+                //TODO: is it needed?
                 GUI.FocusControl(null);
                 EditorGUIUtility.keyboardControl = 0;
                 EditorWindow.focusedWindow?.Repaint();
@@ -185,11 +194,7 @@ namespace Toolbox.Editor.Drawers
             GUILayout.Space(TopSpacing);
         }
 
-        private static int DrawResponsiveTabs(
-            int currentIndex,
-            List<string> tabs,
-            TabGroupVisual visual
-        )
+        private static int DrawResponsiveTabs(int currentIndex, List<string> tabs, TabGroupVisual visual)
         {
             float viewWidth = EditorGUIUtility.currentViewWidth - ViewWidthPadding;
 
@@ -198,16 +203,13 @@ namespace Toolbox.Editor.Drawers
 
             RotateRowsToShowActiveTabLast(rows, currentIndex);
 
-            int newIndex = DrawTabRows(rows, currentIndex, tabs, tabWidths, visual);
+            int newIndex = DrawTabRows(rows, currentIndex, tabs, visual);
 
             return newIndex;
         }
 
-        private static List<float> CalculateTabWidths(
-            List<string> tabs,
-            GUIStyle style,
-            float viewWidth
-        )
+        //TODO: remove it
+        private static List<float> CalculateTabWidths(List<string> tabs, GUIStyle style, float viewWidth)
         {
             var tabWidths = new List<float>(tabs.Count);
 
@@ -297,41 +299,27 @@ namespace Toolbox.Editor.Drawers
             return 0;
         }
 
-        private static int DrawTabRows(
-            List<List<int>> rows,
-            int currentIndex,
-            List<string> tabs,
-            List<float> tabWidths,
-            TabGroupVisual visual
-        )
+        private static int DrawTabRows(List<List<int>> rows, int currentIndex, List<string> tabs, TabGroupVisual visual)
         {
             int newIndex = currentIndex;
-
-            EditorGUILayout.BeginVertical();
-
-            for (int r = 0; r < rows.Count; r++)
+            using (new EditorGUILayout.VerticalScope())
             {
-                var row = rows[r];
+                for (int r = 0; r < rows.Count; r++)
+                {
+                    var row = rows[r];
+                    GUILayout.BeginHorizontal();
+                    newIndex = DrawTabButton(row, currentIndex, newIndex, tabs, visual);
+                    GUILayout.EndHorizontal();
+                }
 
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-
-                newIndex = DrawTabRow(row, currentIndex, newIndex, tabs, tabWidths, visual);
-
-                GUILayout.FlexibleSpace();
-                EditorGUILayout.EndHorizontal();
-
-                if (r < rows.Count - 1)
-                    GUILayout.Space(RowSpacing);
+                GUILayout.Space(RowSpacing);
             }
-
-            GUILayout.Space(RowSpacing);
-            EditorGUILayout.EndVertical();
 
             return newIndex;
         }
 
-        private static int DrawTabRow(
+        //TODO: old
+        private static int DrawTabRowOld(
             List<int> row,
             int currentIndex,
             int newIndex,
@@ -382,30 +370,72 @@ namespace Toolbox.Editor.Drawers
             return newIndex;
         }
 
-        private static GUIStyle GetStyleForVisual(
-            TabGroupVisual visual,
-            int index,
-            int count,
-            bool isActive
-        )
+        private static int DrawTabButton(List<int> row, int currentIndex, int newIndex, List<string> tabs, TabGroupVisual visual)
+        {
+            for (int i = 0; i < row.Count; i++)
+            {
+                int tabIndex = row[i];
+                bool isActive = tabIndex == currentIndex;
+                var content = new GUIContent(tabs[tabIndex]);
+
+                GUIStyle style = GetStyleForVisual(visual, i, row.Count, isActive);
+
+                Color prevBg = GUI.backgroundColor;
+
+                switch (visual)
+                {
+                    case TabGroupVisual.Flat:
+                        GUI.backgroundColor = isActive ? ActiveBgColor : GUI.backgroundColor;
+                        break;
+
+                    case TabGroupVisual.Segmented:
+
+                        GUI.backgroundColor = isActive
+                            ? ActiveBgColor
+                            : GUI.backgroundColor * InactiveBgMultiplier;
+                        break;
+
+                    default:
+                        GUI.backgroundColor = isActive
+                            ? ActiveBgColor
+                            : GUI.backgroundColor * InactiveBgMultiplier;
+                        style = isActive ? ActiveTabStyle : BaseTabStyle;
+                        break;
+                }
+
+                bool pressed = GUILayout.Toggle(isActive, content, style);
+                GUI.backgroundColor = prevBg;
+
+                if (pressed && !isActive)
+                    newIndex = tabIndex;
+            }
+
+            return newIndex;
+        }
+
+        private static GUIStyle GetStyleForVisual(TabGroupVisual visual, int index, int count, bool isActive)
         {
             switch (visual)
             {
                 case TabGroupVisual.Flat:
                     return isActive ? FlatActiveStyle : FlatStyle;
-
                 case TabGroupVisual.Segmented:
                     if (count == 1)
+                    {
                         return isActive ? SegmentActive : SegmentMid;
+                    }
 
                     if (index == 0)
+                    {
                         return SegmentLeft;
+                    }
 
                     if (index == count - 1)
+                    {
                         return SegmentRight;
+                    }
 
                     return isActive ? SegmentActive : SegmentMid;
-
                 default:
                     return isActive ? ActiveTabStyle : BaseTabStyle;
             }
