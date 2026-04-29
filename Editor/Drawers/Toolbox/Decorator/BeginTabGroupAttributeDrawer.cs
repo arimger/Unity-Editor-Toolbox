@@ -506,18 +506,38 @@ namespace Toolbox.Editor.Drawers
 
         private struct ContextKey : IEquatable<ContextKey>
         {
-            public int InstanceId;
             public string GroupId;
+#if UNITY_6000_4_OR_NEWER
+            public EntityId InstanceId;
+#else
+            public int InstanceId;
+#endif
 
-            public bool Equals(ContextKey other) =>
+#if UNITY_6000_4_OR_NEWER
+            public readonly bool Equals(ContextKey other)
+            {
+                return InstanceId == other.InstanceId && GroupId == other.GroupId;
+            }
+
+            public override readonly int GetHashCode()
+            {
+                return HashCode.Combine(GroupId, InstanceId);
+            }
+#else
+            public readonly bool Equals(ContextKey other) =>
                 InstanceId == other.InstanceId && GroupId == other.GroupId;
 
-            public override int GetHashCode() =>
+            public override readonly int GetHashCode() =>
                 (InstanceId * 397) ^ (GroupId != null ? GroupId.GetHashCode() : 0);
+#endif
         }
 
         private static readonly Dictionary<ContextKey, Type> ContextCache = new();
+#if UNITY_6000_4_OR_NEWER
+        private static EntityId _lastSelectionId = EntityId.None;
+#else
         private static int _lastSelectionId = -1;
+#endif
 
         static TabDiscovery()
         {
@@ -527,7 +547,11 @@ namespace Toolbox.Editor.Drawers
         private static void ClearContextCache()
         {
             ContextCache.Clear();
+#if UNITY_6000_4_OR_NEWER
+            _lastSelectionId = EntityId.None;
+#else
             _lastSelectionId = -1;
+#endif
         }
 
         public static Type GetContextType(string groupId)
@@ -536,7 +560,11 @@ namespace Toolbox.Editor.Drawers
             if (target == null)
                 return null;
 
+#if UNITY_6000_4_OR_NEWER
+            EntityId instanceId = target.GetEntityId();
+#else
             int instanceId = target.GetInstanceID();
+#endif
 
             if (_lastSelectionId != instanceId)
             {
