@@ -461,18 +461,23 @@ namespace Toolbox.Editor.Internal
             Size.intValue = newSize;
             Index = newSize - 1;
 
-            if (overrideNewElementCallback == null)
+            List.serializedObject.ApplyModifiedProperties();
+            var property = List.GetArrayElementAtIndex(Index);
+            var fieldInfo = property.GetFieldInfo();
+            if (fieldInfo == null)
             {
                 return;
             }
 
-            //make sure serialized data is up-to-date
-            List.serializedObject.ApplyModifiedProperties();
-            var property = List.GetArrayElementAtIndex(Index);
-            var newValue = overrideNewElementCallback(Index);
-            //update property directly by the reflection
-            var fieldInfo = property.GetFieldInfo();
-            property.SetProperValue(fieldInfo, newValue, false);
+            if (overrideNewElementCallback != null)
+            {
+                var newValue = overrideNewElementCallback(Index);
+                property.SetProperValue(fieldInfo, newValue, false);
+            }
+            else
+            {
+                property.SetProperValue(fieldInfo, null, false);
+            }
         }
 
         public void RemoveElement()

@@ -47,6 +47,7 @@ public class SampleBehaviour6 : MonoBehaviour
         }
     }
 
+    [Serializable]
     public abstract class ClassWithInterfaceBase : ISampleInterface
     { }
 
