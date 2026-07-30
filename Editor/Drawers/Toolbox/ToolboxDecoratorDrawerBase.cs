@@ -16,6 +16,19 @@ namespace Toolbox.Editor.Drawers
             return property.GetDeclaringObjects();
         }
 
+        protected bool TryGetDeclaringType(out Type declaringType)
+        {
+            var declaringObjects = GetDeclaringObjects();
+            if (declaringObjects == null || declaringObjects.Length == 0)
+            {
+                declaringType = null;
+                return false;
+            }
+
+            declaringType = declaringObjects[0].GetType();
+            return true;
+        }
+
         internal virtual void OnGuiBegin(ToolboxAttribute attribute, ISerializedPropertyContext propertyContext)
         {
             PropertyContext = propertyContext;

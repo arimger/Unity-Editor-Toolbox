@@ -2,33 +2,17 @@
 
 namespace UnityEngine
 {
-    //TODO: move to a separate namespace
-    public enum TabGroupVisual
-    {
-        Default,
-        /// <summary>
-        /// Modern flat buttons.
-        /// </summary>
-        Flat,
-        /// <summary>
-        /// Connected segmented control.
-        /// </summary>
-        Segmented
-    }
-
     //TODO: move to a separate scripts
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class BeginTabGroupAttribute : ToolboxDecoratorAttribute
     {
-        public BeginTabGroupAttribute(string groupId = "Default", TabGroupVisual visual = TabGroupVisual.Default)
+        public BeginTabGroupAttribute(string groupId = "Default")
         {
             GroupId = groupId;
-            Visual = visual;
         }
 
+        //TODO: different label and group id
         public string GroupId { get; }
-
-        public TabGroupVisual Visual { get; }
     }
 
     [AttributeUsage(AttributeTargets.Field)]

@@ -6,8 +6,7 @@ using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
-    public sealed class BeginTabGroupAttributeDrawer
-        : ToolboxDecoratorDrawer<BeginTabGroupAttribute>
+    public sealed class BeginTabGroupAttributeDrawer : ToolboxDecoratorDrawer<BeginTabGroupAttribute>
     {
         #region CONSTANTS
         private const float ViewWidthPadding = 32f;
@@ -17,11 +16,17 @@ namespace Toolbox.Editor.Drawers
         private const float RowSpacing = 4f;
         private const float TopSpacing = 2f;
 
+        //TODO: just make as separate color
         private static readonly Color InactiveBgMultiplier = new(0.6f, 0.6f, 0.6f, 0.6f);
-        private static readonly Color ActiveBgColor = new(0.8f, 0.8f, 0.8f, 1f);
+
+        //TODO: move to utility
+        private static Color ActiveBgColor => EditorGUIUtility.isProSkin
+            ? new Color(0.22f, 0.22f, 0.22f)
+            : new Color(0.81f, 0.81f, 0.81f);
 
         #endregion
 
+        //TODO: create Style class
         #region STYLE
 
         private static GUIStyle _baseTabStyle;
@@ -46,6 +51,9 @@ namespace Toolbox.Editor.Drawers
             get
             {
                 _activeTabStyle ??= new GUIStyle(BaseTabStyle) { fontStyle = FontStyle.Bold };
+                _activeTabStyle.normal.background = new Texture2D(1, 1);
+                _activeTabStyle.normal.background.SetPixel(0, 0, Color.white);
+                _activeTabStyle.normal.background.Apply();
                 return _activeTabStyle;
             }
         }
@@ -63,76 +71,20 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-        private static GUIStyle _flatStyle;
-        private static GUIStyle _flatActiveStyle;
-        private static GUIStyle _segmentLeft;
-        private static GUIStyle _segmentMid;
-        private static GUIStyle _segmentRight;
-        private static GUIStyle _segmentActive;
-
-        private static GUIStyle FlatStyle
-        {
-            get
-            {
-                if (_flatStyle == null)
-                {
-                    _flatStyle = new GUIStyle(EditorStyles.label)
-                    {
-                        alignment = TextAnchor.MiddleCenter,
-                        fixedHeight = TabHeight,
-                        padding = new RectOffset(10, 10, 4, 4),
-                        margin = new RectOffset(2, 2, 0, 0),
-                    };
-                }
-                return _flatStyle;
-            }
-        }
-
-        private static GUIStyle FlatActiveStyle
-        {
-            get
-            {
-                if (_flatActiveStyle == null)
-                {
-                    _flatActiveStyle = new GUIStyle(FlatStyle) { fontStyle = FontStyle.Bold };
-                }
-                return _flatActiveStyle;
-            }
-        }
-
-        private static GUIStyle SegmentLeft =>
-            _segmentLeft ??= new GUIStyle(EditorStyles.miniButtonLeft) { fixedHeight = TabHeight };
-        private static GUIStyle SegmentMid =>
-            _segmentMid ??= new GUIStyle(EditorStyles.miniButtonMid) { fixedHeight = TabHeight };
-        private static GUIStyle SegmentRight =>
-            _segmentRight ??= new GUIStyle(EditorStyles.miniButtonRight)
-            {
-                fixedHeight = TabHeight,
-            };
-
-        private static GUIStyle SegmentActive
-        {
-            get
-            {
-                _segmentActive ??= new GUIStyle(EditorStyles.miniButtonMid)
-                {
-                    fontStyle = FontStyle.Bold,
-                };
-                return _segmentActive;
-            }
-        }
-
         #endregion
 
         protected override void OnGuiBeginSafe(BeginTabGroupAttribute attribute)
         {
-            var targetType = TabDiscovery.GetContextType(attribute.GroupId);
-            if (targetType == null)
+            if (!TryGetDeclaringType(out var targetType))
+            {
                 return;
+            }
 
             var tabs = TabDiscovery.GetTabsForGroup(targetType, attribute.GroupId);
             if (tabs == null || tabs.Count == 0)
+            {
                 return;
+            }
 
             InitializeDefaultTab(attribute.GroupId, tabs);
 
@@ -145,15 +97,17 @@ namespace Toolbox.Editor.Drawers
             //TODO: GroupId + Optional Label
             DrawGroupHeader(attribute.GroupId);
 
-            //TODO: temp, make it static if needed
+            //TODO: temp, make it static
             var style = new GUIStyle(EditorStyles.helpBox);
             style.margin = new RectOffset(0, 0, 0, 0);
             style.contentOffset = Vector2.zero;
             style.border = new RectOffset(0, 0, 0, 0);
             style.padding = new RectOffset(1, 1, 1, 1);
+
+            //TODO: use layout utility
             EditorGUILayout.BeginVertical(style);
 
-            int newIndex = DrawResponsiveTabs(currentIndex, tabs, attribute.Visual);
+            int newIndex = DrawResponsiveTabs(currentIndex, tabs);
 
             if (newIndex != currentIndex)
             {
@@ -194,7 +148,7 @@ namespace Toolbox.Editor.Drawers
             GUILayout.Space(TopSpacing);
         }
 
-        private static int DrawResponsiveTabs(int currentIndex, List<string> tabs, TabGroupVisual visual)
+        private static int DrawResponsiveTabs(int currentIndex, List<string> tabs)
         {
             float viewWidth = EditorGUIUtility.currentViewWidth - ViewWidthPadding;
 
@@ -203,7 +157,7 @@ namespace Toolbox.Editor.Drawers
 
             RotateRowsToShowActiveTabLast(rows, currentIndex);
 
-            int newIndex = DrawTabRows(rows, currentIndex, tabs, visual);
+            int newIndex = DrawTabRows(rows, currentIndex, tabs);
 
             return newIndex;
         }
@@ -299,7 +253,7 @@ namespace Toolbox.Editor.Drawers
             return 0;
         }
 
-        private static int DrawTabRows(List<List<int>> rows, int currentIndex, List<string> tabs, TabGroupVisual visual)
+        private static int DrawTabRows(List<List<int>> rows, int currentIndex, List<string> tabs)
         {
             int newIndex = currentIndex;
             using (new EditorGUILayout.VerticalScope())
@@ -308,7 +262,7 @@ namespace Toolbox.Editor.Drawers
                 {
                     var row = rows[r];
                     GUILayout.BeginHorizontal();
-                    newIndex = DrawTabButton(row, currentIndex, newIndex, tabs, visual);
+                    newIndex = DrawTabButton(row, currentIndex, newIndex, tabs);
                     GUILayout.EndHorizontal();
                 }
 
@@ -318,59 +272,7 @@ namespace Toolbox.Editor.Drawers
             return newIndex;
         }
 
-        //TODO: old
-        private static int DrawTabRowOld(
-            List<int> row,
-            int currentIndex,
-            int newIndex,
-            List<string> tabs,
-            List<float> tabWidths,
-            TabGroupVisual visual
-        )
-        {
-            for (int i = 0; i < row.Count; i++)
-            {
-                int tabIndex = row[i];
-                bool isActive = tabIndex == currentIndex;
-                var content = new GUIContent(tabs[tabIndex]);
-                float width = tabWidths[tabIndex];
-
-                GUIStyle style = GetStyleForVisual(visual, i, row.Count, isActive);
-
-                Color prevBg = GUI.backgroundColor;
-
-                switch (visual)
-                {
-                    case TabGroupVisual.Flat:
-                        GUI.backgroundColor = isActive ? ActiveBgColor : GUI.backgroundColor;
-                        break;
-
-                    case TabGroupVisual.Segmented:
-
-                        GUI.backgroundColor = isActive
-                            ? ActiveBgColor
-                            : GUI.backgroundColor * InactiveBgMultiplier;
-                        break;
-
-                    default:
-                        GUI.backgroundColor = isActive
-                            ? ActiveBgColor
-                            : GUI.backgroundColor * InactiveBgMultiplier;
-                        style = isActive ? ActiveTabStyle : BaseTabStyle;
-                        break;
-                }
-
-                bool pressed = GUILayout.Toggle(isActive, content, style, GUILayout.Width(width));
-                GUI.backgroundColor = prevBg;
-
-                if (pressed && !isActive)
-                    newIndex = tabIndex;
-            }
-
-            return newIndex;
-        }
-
-        private static int DrawTabButton(List<int> row, int currentIndex, int newIndex, List<string> tabs, TabGroupVisual visual)
+        private static int DrawTabButton(List<int> row, int currentIndex, int newIndex, List<string> tabs)
         {
             for (int i = 0; i < row.Count; i++)
             {
@@ -378,82 +280,44 @@ namespace Toolbox.Editor.Drawers
                 bool isActive = tabIndex == currentIndex;
                 var content = new GUIContent(tabs[tabIndex]);
 
-                GUIStyle style = GetStyleForVisual(visual, i, row.Count, isActive);
+                GUIStyle style = GetStyleForVisual(i, row.Count, isActive);
 
                 Color prevBg = GUI.backgroundColor;
 
-                switch (visual)
-                {
-                    case TabGroupVisual.Flat:
-                        GUI.backgroundColor = isActive ? ActiveBgColor : GUI.backgroundColor;
-                        break;
-
-                    case TabGroupVisual.Segmented:
-
-                        GUI.backgroundColor = isActive
-                            ? ActiveBgColor
-                            : GUI.backgroundColor * InactiveBgMultiplier;
-                        break;
-
-                    default:
-                        GUI.backgroundColor = isActive
-                            ? ActiveBgColor
-                            : GUI.backgroundColor * InactiveBgMultiplier;
-                        style = isActive ? ActiveTabStyle : BaseTabStyle;
-                        break;
-                }
-
+                GUI.backgroundColor = isActive
+                    ? ActiveBgColor
+                    : GUI.backgroundColor * InactiveBgMultiplier;
+                style = isActive ? ActiveTabStyle : BaseTabStyle;
                 bool pressed = GUILayout.Toggle(isActive, content, style);
                 GUI.backgroundColor = prevBg;
 
                 if (pressed && !isActive)
+                {
                     newIndex = tabIndex;
+                }
             }
 
             return newIndex;
         }
 
-        private static GUIStyle GetStyleForVisual(TabGroupVisual visual, int index, int count, bool isActive)
+        private static GUIStyle GetStyleForVisual(int index, int count, bool isActive)
         {
-            switch (visual)
-            {
-                case TabGroupVisual.Flat:
-                    return isActive ? FlatActiveStyle : FlatStyle;
-                case TabGroupVisual.Segmented:
-                    if (count == 1)
-                    {
-                        return isActive ? SegmentActive : SegmentMid;
-                    }
-
-                    if (index == 0)
-                    {
-                        return SegmentLeft;
-                    }
-
-                    if (index == count - 1)
-                    {
-                        return SegmentRight;
-                    }
-
-                    return isActive ? SegmentActive : SegmentMid;
-                default:
-                    return isActive ? ActiveTabStyle : BaseTabStyle;
-            }
+            return isActive ? ActiveTabStyle : BaseTabStyle;
         }
     }
 
     public sealed class TabAttributeDrawer : ToolboxConditionDrawer<TabAttribute>
     {
-        protected override PropertyCondition OnGuiValidateSafe(
-            SerializedProperty property,
-            TabAttribute attribute
-        )
+        protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, TabAttribute attribute)
         {
+            //TODO: better way to get the unique ID
             var targetType = property.serializedObject.targetObject.GetType();
             var groupId = TabDiscovery.GetGroupForField(targetType, property.name);
 
             if (string.IsNullOrEmpty(groupId))
+            {
                 return PropertyCondition.Valid;
+            }
 
             return TabState.IsActive(groupId, attribute.Tab)
                 ? PropertyCondition.Valid
@@ -465,6 +329,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiCloseSafe(EndTabGroupAttribute attribute)
         {
+            //TODO: use layout utility
             EditorGUILayout.EndVertical();
         }
     }
@@ -503,106 +368,6 @@ namespace Toolbox.Editor.Drawers
         }
 
         private static readonly Dictionary<Type, GroupData> TypeCache = new();
-
-        private struct ContextKey : IEquatable<ContextKey>
-        {
-            public string GroupId;
-#if UNITY_6000_4_OR_NEWER
-            public EntityId InstanceId;
-#else
-            public int InstanceId;
-#endif
-
-#if UNITY_6000_4_OR_NEWER
-            public readonly bool Equals(ContextKey other)
-            {
-                return InstanceId == other.InstanceId && GroupId == other.GroupId;
-            }
-
-            public override readonly int GetHashCode()
-            {
-                return HashCode.Combine(GroupId, InstanceId);
-            }
-#else
-            public readonly bool Equals(ContextKey other) =>
-                InstanceId == other.InstanceId && GroupId == other.GroupId;
-
-            public override readonly int GetHashCode() =>
-                (InstanceId * 397) ^ (GroupId != null ? GroupId.GetHashCode() : 0);
-#endif
-        }
-
-        private static readonly Dictionary<ContextKey, Type> ContextCache = new();
-#if UNITY_6000_4_OR_NEWER
-        private static EntityId _lastSelectionId = EntityId.None;
-#else
-        private static int _lastSelectionId = -1;
-#endif
-
-        static TabDiscovery()
-        {
-            Selection.selectionChanged += ClearContextCache;
-        }
-
-        private static void ClearContextCache()
-        {
-            ContextCache.Clear();
-#if UNITY_6000_4_OR_NEWER
-            _lastSelectionId = EntityId.None;
-#else
-            _lastSelectionId = -1;
-#endif
-        }
-
-        public static Type GetContextType(string groupId)
-        {
-            var target = Selection.activeObject;
-            if (target == null)
-                return null;
-
-#if UNITY_6000_4_OR_NEWER
-            EntityId instanceId = target.GetEntityId();
-#else
-            int instanceId = target.GetInstanceID();
-#endif
-
-            if (_lastSelectionId != instanceId)
-            {
-                ContextCache.Clear();
-                _lastSelectionId = instanceId;
-            }
-
-            var key = new ContextKey { InstanceId = instanceId, GroupId = groupId };
-
-            if (ContextCache.TryGetValue(key, out var cached))
-                return cached;
-
-            Type result = ResolveContextType(target, groupId);
-            ContextCache[key] = result;
-            return result;
-        }
-
-        private static Type ResolveContextType(UnityEngine.Object target, string groupId)
-        {
-            if (target is not GameObject go)
-                return target.GetType();
-
-            var components = go.GetComponents<MonoBehaviour>();
-            for (int i = 0; i < components.Length; i++)
-            {
-                var comp = components[i];
-                if (comp == null)
-                    continue;
-
-                var type = comp.GetType();
-                EnsureCached(type);
-
-                if (TypeCache[type].GroupToTabs.ContainsKey(groupId))
-                    return type;
-            }
-
-            return null;
-        }
 
         public static List<string> GetTabsForGroup(Type type, string groupId)
         {
@@ -667,7 +432,6 @@ namespace Toolbox.Editor.Drawers
         public static void ClearCache()
         {
             TypeCache.Clear();
-            ContextCache.Clear();
         }
 
         [InitializeOnLoadMethod]
