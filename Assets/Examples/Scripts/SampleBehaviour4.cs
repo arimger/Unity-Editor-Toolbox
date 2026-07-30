@@ -202,30 +202,4 @@ public class SampleBehaviour4 : MonoBehaviour
     [Tab("Attack")]
     [EndTabGroup]
     public int attackDamage;
-
-    [BeginTabGroup("Test Tab Group", TabGroupVisual.Segmented)]
-    [Tab("Tab 1")]
-    public string testVar1;
-
-    [Tab("Tab 1")]
-    public float testVar2;
-
-    [Tab("Tab 1")]
-    public int testVar3;
-
-    [Tab("Tab 2")]
-    public Vector2 testVar4;
-
-    [Tab("Tab 2")]
-    public Vector3 testVar5;
-
-    [Tab("Tab 2")]
-    public GameObject testVar6;
-
-    [Tab("Tab 3")]
-    public int testVar7;
-
-    [Tab("Tab 3")]
-    [EndTabGroup]
-    public string testVar8;
 }
