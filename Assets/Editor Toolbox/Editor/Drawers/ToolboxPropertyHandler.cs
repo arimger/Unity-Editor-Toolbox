@@ -270,7 +270,7 @@ namespace Toolbox.Editor.Drawers
             ProcessLabel(property, label);
 
             //get toolbox drawer for the property or draw it in the default way
-            if (hasToolboxPropertyDrawer && (!hasBuiltInPropertyDrawer || isArray))
+            if (hasToolboxPropertyDrawer)
             {
                 //NOTE: attribute-related drawers have priority over type
                 if (hasToolboxPropertyAssignableDrawer)
