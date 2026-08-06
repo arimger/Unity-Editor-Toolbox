@@ -15,6 +15,7 @@ namespace UnityEngine
         public string GroupId { get; }
     }
 
+    //TODO: move to a separate scripts
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class TabAttribute : ToolboxConditionAttribute
     {
@@ -26,6 +27,7 @@ namespace UnityEngine
         public string Tab { get; }
     }
 
+    //TODO: move to a separate scripts
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class EndTabGroupAttribute : ToolboxDecoratorAttribute
     { }

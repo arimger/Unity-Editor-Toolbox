@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -13,15 +14,15 @@ namespace Toolbox.Editor.Drawers
         private const float TabSpacing = 8f;
         private const float MinTabWidth = 40f;
         private const float TabHeight = 22f;
-        private const float RowSpacing = 4f;
-        private const float TopSpacing = 2f;
+        private const float RowSpacing = 2.0f;
+        private const float ToggleSpacing = 2.5f;
 
         //TODO: just make as separate color
         private static readonly Color InactiveBgMultiplier = new(0.6f, 0.6f, 0.6f, 0.6f);
 
         //TODO: move to utility
         private static Color ActiveBgColor => EditorGUIUtility.isProSkin
-            ? new Color(0.22f, 0.22f, 0.22f)
+            ? new Color(0.25f, 0.25f, 0.25f)
             : new Color(0.81f, 0.81f, 0.81f);
 
         #endregion
@@ -80,22 +81,20 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            var tabs = TabDiscovery.GetTabsForGroup(targetType, attribute.GroupId);
+            var groupId = attribute.GroupId;
+            var tabs = TabDiscovery.GetTabsForGroup(targetType, groupId);
             if (tabs == null || tabs.Count == 0)
             {
                 return;
             }
 
-            InitializeDefaultTab(attribute.GroupId, tabs);
+            InitializeDefaultTab(groupId, tabs);
 
-            var currentTab = GetActiveTab(attribute.GroupId, tabs);
-            int currentIndex = tabs.IndexOf(currentTab);
-
-            if (currentIndex == -1)
-                currentIndex = 0;
-
-            //TODO: GroupId + Optional Label
-            DrawGroupHeader(attribute.GroupId);
+            var currentTabIndex = GetActiveTab(groupId, tabs);
+            if (currentTabIndex == -1)
+            {
+                currentTabIndex = 0;
+            }
 
             //TODO: temp, make it static
             var style = new GUIStyle(EditorStyles.helpBox);
@@ -104,205 +103,274 @@ namespace Toolbox.Editor.Drawers
             style.border = new RectOffset(0, 0, 0, 0);
             style.padding = new RectOffset(1, 1, 1, 1);
 
-            //TODO: use layout utility
-            EditorGUILayout.BeginVertical(style);
+            ToolboxLayoutHandler.BeginVertical(style);
 
-            int newIndex = DrawResponsiveTabs(currentIndex, tabs);
-
-            if (newIndex != currentIndex)
+            var newIndex = DrawResponsiveTabs(currentTabIndex, tabs);
+            if (newIndex != currentTabIndex)
             {
-                TabState.Set(attribute.GroupId, tabs[newIndex]);
-
-                //TODO: is it needed?
-                GUI.FocusControl(null);
-                EditorGUIUtility.keyboardControl = 0;
-                EditorWindow.focusedWindow?.Repaint();
-                GUIUtility.ExitGUI();
+                TabState.Set(groupId, tabs[newIndex]);
             }
         }
 
-        private static void InitializeDefaultTab(string groupId, List<string> tabs)
+        private static void InitializeDefaultTab(string groupId, IReadOnlyList<string> tabs)
         {
-            if (!TabState.Has(groupId))
+            if (TabState.Has(groupId))
+            {
+                return;
+            }
+
+            if (tabs.Count > 0)
             {
                 TabState.Set(groupId, tabs[0]);
             }
         }
 
-        private static string GetActiveTab(string groupId, List<string> tabs)
+        private static int GetActiveTab(string groupId, IReadOnlyList<string> tabs)
         {
-            if (TabState.TryGet(groupId, out var activeTab) && tabs.Contains(activeTab))
-                return activeTab;
+            if (TabState.TryGet(groupId, out var activeTab))
+            {
+                for (var i = 0; i < tabs.Count; i++)
+                {
+                    var tab = tabs[i];
+                    if (tab == activeTab)
+                    {
+                        return i;
+                    }
+                }
+            }
 
-            return tabs[0];
+            return 0;
         }
 
-        private static void DrawGroupHeader(string groupId)
+        private class TabContext
         {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            GUILayout.Label(groupId, HeaderStyle);
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.EndHorizontal();
+            public readonly int index;
+            public readonly GUIContent content;
+            public readonly float estimatedWidth;
 
-            GUILayout.Space(TopSpacing);
+            public TabContext(int index, GUIContent content, float estimatedWidth)
+            {
+                this.index = index;
+                this.content = content;
+                this.estimatedWidth = estimatedWidth;
+            }
         }
 
-        private static int DrawResponsiveTabs(int currentIndex, List<string> tabs)
+        private class RowContext : IDisposable
         {
-            float viewWidth = EditorGUIUtility.currentViewWidth - ViewWidthPadding;
+            public readonly List<TabContext> tabs;
 
-            var tabWidths = CalculateTabWidths(tabs, ActiveTabStyle, viewWidth);
-            var rows = DistributeTabsIntoRows(tabs, tabWidths, viewWidth);
+            public RowContext()
+            {
+                tabs = new List<TabContext>();
+            }
 
+            public RowContext(List<TabContext> tabs)
+            {
+                this.tabs = tabs;
+            }
+
+            public void Append(TabContext tab)
+            {
+                tabs.Add(tab);
+            }
+
+            public bool Contains(int index)
+            {
+                for (var i = 0; i < tabs.Count; i++)
+                {
+                    var tab = tabs[i];
+                    if (tab.index == index)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            public void Dispose()
+            {
+                tabs.Clear();
+            }
+
+            public int Count => tabs.Count;
+        }
+
+        private static int DrawResponsiveTabs(int currentIndex, IReadOnlyList<string> labels)
+        {
+            var viewWidth = EditorGUIUtility.currentViewWidth - ViewWidthPadding;
+
+            var tabs = ListPool<TabContext>.Get();
+            var rows = ListPool<RowContext>.Get();
+
+            FetchTabs(labels, viewWidth, ref tabs);
+            FetchRows(tabs, viewWidth, ref rows);
             RotateRowsToShowActiveTabLast(rows, currentIndex);
+            int newIndex = DrawTabRows(rows, currentIndex);
 
-            int newIndex = DrawTabRows(rows, currentIndex, tabs);
+            //TODO: style
+            GUILayout.Space(4.0f);
 
+            for (var i = 0; i < rows.Count; i++)
+            {
+                var row = rows[i];
+                row.Dispose();
+                GenericPool<RowContext>.Release(row);
+            }
+
+            ListPool<TabContext>.Release(tabs);
+            ListPool<RowContext>.Release(rows);
             return newIndex;
         }
 
-        //TODO: remove it
-        private static List<float> CalculateTabWidths(List<string> tabs, GUIStyle style, float viewWidth)
+        private static void FetchTabs(IReadOnlyList<string> labels, float viewWidth, ref List<TabContext> tabs)
         {
-            var tabWidths = new List<float>(tabs.Count);
-
-            foreach (var tab in tabs)
+            for (var i = 0; i < labels.Count; i++)
             {
-                var content = new GUIContent(tab);
-                float width = style.CalcSize(content).x + TabSpacing;
+                var label = labels[i];
+
+                //TODO: optimize it
+                var content = new GUIContent(label);
+                var size = ActiveTabStyle.CalcSize(content);
+                var width = size.x + TabSpacing;
 
                 width = Mathf.Max(width, MinTabWidth);
                 width = Mathf.Min(width, Mathf.Max(MinTabWidth, viewWidth - TabSpacing));
 
-                tabWidths.Add(width);
+                var tab = new TabContext(i, content, width);
+                tabs.Add(tab);
             }
-
-            return tabWidths;
         }
 
-        private static List<List<int>> DistributeTabsIntoRows(
-            List<string> tabs,
-            List<float> tabWidths,
-            float viewWidth
-        )
+        private static void FetchRows(List<TabContext> tabs, float viewWidth, ref List<RowContext> rows)
         {
-            var rows = new List<List<int>>();
-            var currentRow = new List<int>();
-            float rowAccumulator = 0f;
+            var currentRow = GetNewRow();
+            var currentRowWdith = 0.0f;
 
-            for (int i = 0; i < tabs.Count; i++)
+            for (var i = 0; i < tabs.Count; i++)
             {
-                float width = tabWidths[i];
+                var tab = tabs[i];
+                var tabWidth = tab.estimatedWidth;
 
                 if (currentRow.Count == 0)
                 {
-                    currentRow.Add(i);
-                    rowAccumulator = width;
+                    currentRow.Append(tab);
+                    currentRowWdith = tabWidth;
                     continue;
                 }
 
-                if (rowAccumulator + width > viewWidth)
+                if (currentRowWdith + tabWidth > viewWidth)
                 {
                     rows.Add(currentRow);
-                    currentRow = new List<int> { i };
-                    rowAccumulator = width;
+                    currentRow = GetNewRow();
+                    currentRow.Append(tab);
+                    currentRowWdith = tabWidth;
+                    continue;
                 }
-                else
-                {
-                    currentRow.Add(i);
-                    rowAccumulator += width;
-                }
+
+                currentRow.Append(tab);
+                currentRowWdith += tabWidth;
             }
 
             if (currentRow.Count > 0)
+            {
                 rows.Add(currentRow);
-
-            return rows;
+            }
         }
 
-        private static void RotateRowsToShowActiveTabLast(List<List<int>> rows, int currentIndex)
+        private static RowContext GetNewRow()
+        {
+            var row = GenericPool<RowContext>.Get();
+            return row;
+        }
+
+        private static void RotateRowsToShowActiveTabLast(List<RowContext> rows, int currentIndex)
         {
             if (rows.Count <= 1)
+            {
                 return;
+            }
 
-            int activeRowIndex = FindRowContainingTab(rows, currentIndex);
-
+            var activeRowIndex = FindRowContainingTab(rows, currentIndex, out var activeRow);
             if (activeRowIndex == rows.Count - 1)
+            {
                 return;
+            }
 
-            var rotated = new List<List<int>>();
-
-            for (int r = activeRowIndex + 1; r < rows.Count; r++)
-                rotated.Add(rows[r]);
-
-            for (int r = 0; r <= activeRowIndex; r++)
-                rotated.Add(rows[r]);
-
-            rows.Clear();
-            rows.AddRange(rotated);
+            rows.RemoveAt(activeRowIndex);
+            rows.Add(activeRow);
         }
 
-        private static int FindRowContainingTab(List<List<int>> rows, int tabIndex)
+        private static int FindRowContainingTab(List<RowContext> rows, int tabIndex, out RowContext activeRow)
         {
-            for (int r = 0; r < rows.Count; r++)
+            for (var i = 0; i < rows.Count; i++)
             {
-                if (rows[r].Contains(tabIndex))
-                    return r;
+                var row = rows[i];
+                if (row.Contains(tabIndex))
+                {
+                    activeRow = row;
+                    return i;
+                }
             }
+
+            activeRow = default;
             return 0;
         }
 
-        private static int DrawTabRows(List<List<int>> rows, int currentIndex, List<string> tabs)
+        private static int DrawTabRows(List<RowContext> rows, int currentIndex)
         {
-            int newIndex = currentIndex;
+            var newIndex = currentIndex;
             using (new EditorGUILayout.VerticalScope())
             {
-                for (int r = 0; r < rows.Count; r++)
+                for (var i = 0; i < rows.Count; i++)
                 {
-                    var row = rows[r];
+                    var row = rows[i];
                     GUILayout.BeginHorizontal();
-                    newIndex = DrawTabButton(row, currentIndex, newIndex, tabs);
+                    newIndex = DrawRowButtons(row, currentIndex, newIndex);
                     GUILayout.EndHorizontal();
-                }
 
-                GUILayout.Space(RowSpacing);
+                    if (i < rows.Count - 1)
+                    {
+                        GUILayout.Space(RowSpacing);
+                    }
+                }
             }
 
             return newIndex;
         }
 
-        private static int DrawTabButton(List<int> row, int currentIndex, int newIndex, List<string> tabs)
+        private static int DrawRowButtons(RowContext row, int currentIndex, int newIndex)
         {
-            for (int i = 0; i < row.Count; i++)
+            var tabs = row.tabs;
+            for (var i = 0; i < tabs.Count; i++)
             {
-                int tabIndex = row[i];
-                bool isActive = tabIndex == currentIndex;
-                var content = new GUIContent(tabs[tabIndex]);
+                var tab = tabs[i];
+                var tabIndex = tab.index;
+                var tabLabel = tab.content;
+                var isActive = tabIndex == currentIndex;
 
-                GUIStyle style = GetStyleForVisual(i, row.Count, isActive);
-
-                Color prevBg = GUI.backgroundColor;
+                var prevBg = GUI.backgroundColor;
 
                 GUI.backgroundColor = isActive
                     ? ActiveBgColor
                     : GUI.backgroundColor * InactiveBgMultiplier;
-                style = isActive ? ActiveTabStyle : BaseTabStyle;
-                bool pressed = GUILayout.Toggle(isActive, content, style);
+                var style = isActive ? ActiveTabStyle : BaseTabStyle;
+                bool pressed = GUILayout.Toggle(isActive, tabLabel, style);
                 GUI.backgroundColor = prevBg;
 
                 if (pressed && !isActive)
                 {
                     newIndex = tabIndex;
                 }
+
+                if (i < row.Count - 1)
+                {
+                    GUILayout.Space(ToggleSpacing);
+                }
             }
 
             return newIndex;
-        }
-
-        private static GUIStyle GetStyleForVisual(int index, int count, bool isActive)
-        {
-            return isActive ? ActiveTabStyle : BaseTabStyle;
         }
     }
 
@@ -311,7 +379,7 @@ namespace Toolbox.Editor.Drawers
         protected override PropertyCondition OnGuiValidateSafe(SerializedProperty property, TabAttribute attribute)
         {
             //TODO: better way to get the unique ID
-            var targetType = property.serializedObject.targetObject.GetType();
+            var targetType = property.GetDeclaringObject().GetType();
             var groupId = TabDiscovery.GetGroupForField(targetType, property.name);
 
             if (string.IsNullOrEmpty(groupId))
@@ -329,8 +397,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiCloseSafe(EndTabGroupAttribute attribute)
         {
-            //TODO: use layout utility
-            EditorGUILayout.EndVertical();
+            ToolboxLayoutHandler.CloseVertical();
         }
     }
 
@@ -369,7 +436,7 @@ namespace Toolbox.Editor.Drawers
 
         private static readonly Dictionary<Type, GroupData> TypeCache = new();
 
-        public static List<string> GetTabsForGroup(Type type, string groupId)
+        public static IReadOnlyList<string> GetTabsForGroup(Type type, string groupId)
         {
             EnsureCached(type);
             return TypeCache[type].GroupToTabs.TryGetValue(groupId, out var tabs) ? tabs : null;
