@@ -16,7 +16,6 @@ namespace Toolbox.Editor.Drawers
             new FlagsEnumTogglesDrawer()
         };
 
-
         /// <summary>
         /// Returns prepared <see cref="EnumTogglesDrawer"/> associated to the given property.
         /// </summary>
@@ -83,7 +82,6 @@ namespace Toolbox.Editor.Drawers
             };
         }
 
-
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             var drawer = GetDrawer(property, fieldInfo);
@@ -108,9 +106,7 @@ namespace Toolbox.Editor.Drawers
             return property.propertyType == SerializedPropertyType.Enum;
         }
 
-
         public EnumTogglesAttribute Attribute => attribute as EnumTogglesAttribute;
-
 
         /// <summary>
         /// General drawing data needed by the drawer.
@@ -133,7 +129,6 @@ namespace Toolbox.Editor.Drawers
             private readonly Dictionary<Type, EnumData> cachedEnumDatas = new Dictionary<Type, EnumData>();
 
             protected EnumData enumData;
-
 
             protected bool IsFlagsEnum(Type type)
             {
@@ -202,7 +197,6 @@ namespace Toolbox.Editor.Drawers
             protected abstract int? DrawToggle(Rect position, int? mask, int enumValue, string label);
             protected abstract int? GetMaskValue(SerializedProperty property, in EnumData data);
             protected abstract void SetMaskValue(SerializedProperty property, in EnumData data, int? maskValue);
-
 
             public virtual bool IsValid(Type enumType)
             {
@@ -328,7 +322,6 @@ namespace Toolbox.Editor.Drawers
                 }
             }
 
-
             public override bool IsValid(Type enumType)
             {
                 return !IsFlagsEnum(enumType);
@@ -337,6 +330,8 @@ namespace Toolbox.Editor.Drawers
 
         private sealed class FlagsEnumTogglesDrawer : EnumTogglesDrawer
         {
+            private const string everythingValueLabel = "Everything";
+
             protected override EnumData GetEnumData(string[] rawLabels, Array rawValues)
             {
                 var labels = new List<string>();
@@ -348,7 +343,7 @@ namespace Toolbox.Editor.Drawers
                     values = values
                 };
 
-                labels.Add("Everything");
+                labels.Add(everythingValueLabel);
                 for (var i = 0; i < rawValues.Length; i++)
                 {
                     var value = (int)rawValues.GetValue(i);
