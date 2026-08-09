@@ -67,7 +67,10 @@ namespace Toolbox.Editor.Drawers
 
         private void DrawEditor(Editor editor, InLineEditorAttribute attribute)
         {
-            using (new EditorGUILayout.VerticalScope(Style.backgroundStyle))
+            var style = Style.backgroundStyle;
+            AdjustGroupStyle(style);
+
+            using (new EditorGUILayout.VerticalScope(style))
             {
                 //draw and prewarm the inlined Editor version
                 DrawEditor(editor, attribute.DisableEditor, attribute.DrawPreview, attribute.DrawSettings, attribute.PreviewHeight);
@@ -105,6 +108,12 @@ namespace Toolbox.Editor.Drawers
                     }
                 }
             }
+        }
+
+        private void AdjustGroupStyle(GUIStyle style)
+        {
+            var indent = EditorGuiUtility.IndentSize;
+            style.margin.left = (int)indent;
         }
 
         /// <summary>
