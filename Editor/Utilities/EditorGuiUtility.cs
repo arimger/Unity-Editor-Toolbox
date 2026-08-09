@@ -103,5 +103,12 @@ namespace Toolbox.Editor
         public static float SpacingSize => EditorGUIUtility.standardVerticalSpacing;
         public static float HeightSize => EditorGUIUtility.singleLineHeight;
         public static float IndentSize => EditorGUI.indentLevel * indentPerLevel;
+
+        /// <summary>
+        /// Returns default backgroud color for the current Editor skin.
+        /// </summary>
+        public static Color BasicBackgroundColor => EditorGUIUtility.isProSkin
+            ? new Color(0.25f, 0.25f, 0.25f)
+            : new Color(0.81f, 0.81f, 0.81f);
     }
 }
