@@ -19,15 +19,8 @@ namespace Toolbox.Editor.Drawers
 
         protected override void OnGuiBeginSafe(BeginGroupAttribute attribute)
         {
-            var style = GetStyle(attribute.Style);
-
-            var rect = ToolboxLayoutHandler.BeginVertical(Style.groupStyle);
-            rect = EditorGUI.IndentedRect(rect);
-
-            if (Event.current.type == EventType.Repaint)
-            {
-                style.Draw(rect, false, false, false, false);
-            }
+            var backgroundStyle = GetStyle(attribute.Style);
+            ToolboxLayoutHandler.BeginVertical(Style.groupStyle, backgroundStyle);
 
             if (attribute.HasLabel)
             {
@@ -45,6 +38,8 @@ namespace Toolbox.Editor.Drawers
             {
                 groupStyle = new GUIStyle()
                 {
+                    margin = new RectOffset(3, 3, 2, 2),
+                    border = new RectOffset(2, 2, 2, 2),
                     padding = new RectOffset(13, 12, 5, 5)
                 };
                 roundGroupBackgroundStyle = new GUIStyle("helpBox")

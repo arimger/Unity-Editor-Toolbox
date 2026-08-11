@@ -8,17 +8,19 @@ namespace Toolbox.Editor.Drawers
 {
     public sealed class BeginTabGroupAttributeDrawer : ToolboxDecoratorDrawer<BeginTabGroupAttribute>
     {
+        private static readonly GUIContent sharedContent = new GUIContent();
+
         private class TabContext
         {
             public readonly int index;
-            public readonly GUIContent content;
-            public readonly float estimatedWidth;
+            public readonly string label;
+            public readonly float width;
 
-            public TabContext(int index, GUIContent content, float estimatedWidth)
+            public TabContext(int index, string label, float width)
             {
                 this.index = index;
-                this.content = content;
-                this.estimatedWidth = estimatedWidth;
+                this.label = label;
+                this.width = width;
             }
         }
 
@@ -77,20 +79,8 @@ namespace Toolbox.Editor.Drawers
                 return;
             }
 
-            var currentTabIndex = GetActiveTab(targetType, groupId, tabs);
-            if (currentTabIndex == -1)
-            {
-                currentTabIndex = 0;
-            }
-
-            //TODO: create single method
-            var rect = ToolboxLayoutHandler.BeginVertical(Style.allGroupStyle);
-            rect = EditorGUI.IndentedRect(rect);
-            if (Event.current.type == EventType.Repaint)
-            {
-                Style.backgroundStyle.Draw(rect, false, false, false, false);
-            }
-
+            var currentTabIndex = GetActiveTab(targetType, groupId);
+            ToolboxLayoutHandler.BeginVertical(Style.allGroupStyle, Style.backgroundStyle);
             var newIndex = DrawResponsiveTabs(currentTabIndex, tabs);
             if (newIndex != currentTabIndex)
             {
@@ -99,18 +89,16 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-        private static int GetActiveTab(Type declaringType, string groupId, IReadOnlyList<string> tabs)
+        private static int GetActiveTab(Type declaringType, string groupId)
         {
-            if (TabsCacheManager.TryGetActiveTabName(declaringType, groupId, out var activeTab))
+            if (TabsCacheManager.TryGetActiveTabName(declaringType, groupId, out _, out var activeIndex))
             {
-                for (var i = 0; i < tabs.Count; i++)
+                if (activeIndex < 0)
                 {
-                    var tab = tabs[i];
-                    if (tab == activeTab)
-                    {
-                        return i;
-                    }
+                    activeIndex = 0;
                 }
+
+                return activeIndex;
             }
 
             return 0;
@@ -123,7 +111,7 @@ namespace Toolbox.Editor.Drawers
             var tabs = ListPool<TabContext>.Get();
             var rows = ListPool<RowContext>.Get();
 
-            FetchTabs(labels, viewWidth, ref tabs);
+            FetchTabs(labels, ref tabs);
             FetchRows(tabs, viewWidth, ref rows);
             RotateRowsToShowActiveTabLast(rows, currentIndex);
             var newIndex = DrawTabRows(rows, currentIndex);
@@ -143,22 +131,20 @@ namespace Toolbox.Editor.Drawers
             return newIndex;
         }
 
-        private static void FetchTabs(IReadOnlyList<string> labels, float viewWidth, ref List<TabContext> tabs)
+        private static void FetchTabs(IReadOnlyList<string> labels, ref List<TabContext> tabs)
         {
             for (var i = 0; i < labels.Count; i++)
             {
                 var label = labels[i];
 
-                //TODO: optimize it
+                sharedContent.text = label;
 
-                var content = new GUIContent(label);
-                var size = Style.activeTabStyle.CalcSize(content);
-                var width = size.x + Style.tabSpacing;
+                var size = Style.activeTabStyle.CalcSize(sharedContent);
+                //NOTE: it's not final width, only an estimation that will be used to indicate how many rows we need
+                var estimatedWdith = size.x + Style.tabSpacing;
+                estimatedWdith = Mathf.Max(estimatedWdith, Style.minTabWidth);
 
-                width = Mathf.Max(width, Style.defaultTabWidth);
-                width = Mathf.Min(width, Mathf.Max(Style.defaultTabWidth, viewWidth - Style.tabSpacing));
-
-                var tab = new TabContext(i, content, width);
+                var tab = new TabContext(i, label, estimatedWdith);
                 tabs.Add(tab);
             }
         }
@@ -171,7 +157,7 @@ namespace Toolbox.Editor.Drawers
             for (var i = 0; i < tabs.Count; i++)
             {
                 var tab = tabs[i];
-                var tabWidth = tab.estimatedWidth;
+                var tabWidth = tab.width;
 
                 if (currentRow.Count == 0)
                 {
@@ -241,11 +227,13 @@ namespace Toolbox.Editor.Drawers
         private static int DrawTabRows(List<RowContext> rows, int currentIndex)
         {
             var style = Style.rowGroupStyle;
-            style.margin.left = (int)EditorGuiUtility.IndentSize;
+            EditorGuiUtility.AdjustMarginToIndent(style);
 
             var newIndex = currentIndex;
             using (new EditorGUILayout.VerticalScope(style))
             {
+                EditorGUILayout.Space(Style.rowsUpperPadding);
+
                 for (var i = 0; i < rows.Count; i++)
                 {
                     var row = rows[i];
@@ -270,7 +258,7 @@ namespace Toolbox.Editor.Drawers
             {
                 var tab = tabs[i];
                 var tabIndex = tab.index;
-                var tabLabel = tab.content;
+                var tabLabel = tab.label;
                 var isActive = tabIndex == currentIndex;
 
                 var previousBackground = GUI.backgroundColor;
@@ -302,10 +290,11 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal const float tabSpacing = 2.5f;
-            internal const float rowSpacing = 2.0f;
-            internal const float defaultTabWidth = 40.0f;
-            internal const float defaultTabHeight = 20.0f;
+            internal const float tabSpacing = 4.0f;
+            internal const float rowSpacing = 0.5f;
+            internal const float rowsUpperPadding = -2.0f;
+            internal const float minTabWidth = 40.0f;
+            internal const float minTabHeight = 20.0f;
             internal const float viewPadding = 32.0f;
             internal const float spaceAfterTabs = 4.0f;
 
@@ -324,9 +313,9 @@ namespace Toolbox.Editor.Drawers
                 activeTabBackgroundColor = EditorGuiUtility.BasicBackgroundColor;
                 defaultTabBackgroundColor = EditorGuiUtility.BasicBackgroundColor * defaultBackgroundMultiplier;
 
-                defaultTabStyle = new GUIStyle(EditorStyles.toolbarButton)
+                defaultTabStyle = new GUIStyle(EditorStyles.miniButtonMid)
                 {
-                    fixedHeight = defaultTabHeight,
+                    fixedHeight = minTabHeight,
                     padding = new RectOffset(10, 10, 4, 4),
                 };
 
