@@ -49,8 +49,26 @@ namespace Toolbox.Editor.Drawers
                 }
             }
 
+            public string GetActiveTab(out int index)
+            {
+                if (!string.IsNullOrEmpty(activeTab))
+                {
+                    for (var i = 0; i < tabs.Count; i++)
+                    {
+                        var tab = tabs[i];
+                        if (tab == activeTab)
+                        {
+                            index = i;
+                            return tab;
+                        }
+                    }
+                }
+
+                index = -1;
+                return null;
+            }
+
             public string Id => id;
-            public string ActiveTab => activeTab;
             public IReadOnlyList<string> Tabs => tabs;
         }
 
@@ -231,11 +249,12 @@ namespace Toolbox.Editor.Drawers
             return true;
         }
 
-        public static bool TryGetActiveTabName(Type declaringType, string groupId, out string targetTab)
+        public static bool TryGetActiveTabName(Type declaringType, string groupId, out string targetTab, out int activeIndex)
         {
             if (declaringType == null)
             {
                 targetTab = null;
+                activeIndex = -1;
                 return false;
             }
 
@@ -243,10 +262,11 @@ namespace Toolbox.Editor.Drawers
             if (!typeData.TryGetGroupForGroup(groupId, out var group))
             {
                 targetTab = null;
+                activeIndex = -1;
                 return false;
             }
 
-            targetTab = group.ActiveTab;
+            targetTab = group.GetActiveTab(out activeIndex);
             return true;
         }
 

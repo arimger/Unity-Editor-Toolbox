@@ -217,9 +217,9 @@ namespace Toolbox.Editor.Internal
 
         private GUIStyle RequestBodyStyle()
         {
-            var indent = EditorGuiUtility.IndentSize;
-            listGroupStyle.margin.left = (int)indent;
-            return listGroupStyle;
+            var targetStyle = listGroupStyle;
+            EditorGuiUtility.AdjustMarginToIndent(targetStyle);
+            return targetStyle;
         }
 
         protected override void DoListMiddle()

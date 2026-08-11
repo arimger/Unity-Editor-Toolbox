@@ -67,11 +67,15 @@ namespace Toolbox.Editor.Drawers
 
         private void DrawEditor(Editor editor, InLineEditorAttribute attribute)
         {
-            var style = Style.backgroundStyle;
-            AdjustGroupStyle(style);
-
-            using (new EditorGUILayout.VerticalScope(style))
+            using (var scope = new EditorGUILayout.VerticalScope(Style.groupStyle))
             {
+                var rect = scope.rect;
+                if (Event.current.type == EventType.Repaint)
+                {
+                    rect = EditorGUI.IndentedRect(rect);
+                    Style.backgroundStyle.Draw(rect, false, false, false, false);
+                }
+
                 //draw and prewarm the inlined Editor version
                 DrawEditor(editor, attribute.DisableEditor, attribute.DrawPreview, attribute.DrawSettings, attribute.PreviewHeight);
             }
@@ -108,12 +112,6 @@ namespace Toolbox.Editor.Drawers
                     }
                 }
             }
-        }
-
-        private void AdjustGroupStyle(GUIStyle style)
-        {
-            var indent = EditorGuiUtility.IndentSize;
-            style.margin.left = (int)indent;
         }
 
         /// <summary>
@@ -171,10 +169,11 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal static readonly GUIStyle backgroundStyle;
+            internal static readonly GUIStyle groupStyle;
             internal static readonly GUIStyle foldoutStyle;
             internal static readonly GUIStyle previewStyle;
             internal static readonly GUIStyle settingsStyle;
+            internal static readonly GUIStyle backgroundStyle;
 
             internal static readonly GUIContent foldoutContent = new GUIContent("Edit", "Show/Hide Editor");
 
@@ -185,9 +184,11 @@ namespace Toolbox.Editor.Drawers
 
             static Style()
             {
-                backgroundStyle = new GUIStyle(EditorStyles.helpBox)
+                groupStyle = new GUIStyle()
                 {
-                    padding = new RectOffset(13, 13, 8, 8)
+                    margin = new RectOffset(3, 3, 2, 2),
+                    border = new RectOffset(2, 2, 2, 2),
+                    padding = new RectOffset(13, 13, 8, 8),
                 };
                 foldoutStyle = new GUIStyle(EditorStyles.miniButton)
                 {
@@ -209,6 +210,11 @@ namespace Toolbox.Editor.Drawers
 #else
                     padding = new RectOffset(5, 0, 0, 0)
 #endif
+                };
+
+                backgroundStyle = new GUIStyle(EditorStyles.helpBox)
+                {
+                    padding = new RectOffset(13, 13, 8, 8)
                 };
             }
         }

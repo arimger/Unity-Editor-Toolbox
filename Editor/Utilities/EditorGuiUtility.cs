@@ -16,6 +16,11 @@ namespace Toolbox.Editor
 
         private static readonly Dictionary<string, Texture2D> loadedTextures = new Dictionary<string, Texture2D>();
 
+        internal static void AdjustMarginToIndent(GUIStyle style)
+        {
+            style.margin.left = (int)IndentSize;
+        }
+
         public static Texture2D CreateColorTexture()
         {
             return CreateColorTexture(Color.clear);

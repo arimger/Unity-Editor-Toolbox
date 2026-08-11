@@ -104,6 +104,11 @@ namespace Toolbox.Editor
 
         internal static Rect BeginVertical(GUIStyle style, params GUILayoutOption[] options)
         {
+            return BeginVertical(style, null, options);
+        }
+
+        internal static Rect BeginVertical(GUIStyle style, GUIStyle backgroundStyle, params GUILayoutOption[] options)
+        {
             if (!isEditorLayout)
             {
                 ToolboxEditorLog.LogWarning("Begin vertical layout group action can be executed only within the Toolbox Editor.");
@@ -111,7 +116,17 @@ namespace Toolbox.Editor
             }
 
             vLayoutClips++;
-            return EditorGUILayout.BeginVertical(style, options);
+            var rect = EditorGUILayout.BeginVertical(style, options);
+            if (backgroundStyle != null)
+            {
+                if (Event.current.type == EventType.Repaint)
+                {
+                    var backgroundRect = EditorGUI.IndentedRect(rect);
+                    backgroundStyle.Draw(backgroundRect, false, false, false, false);
+                }
+            }
+
+            return rect;
         }
 
         internal static void CloseVertical()
@@ -147,6 +162,34 @@ namespace Toolbox.Editor
 
             hLayoutClips++;
             return EditorGUILayout.BeginHorizontal(style, options);
+        }
+
+        internal static Rect BeginHorizontal(GUIStyle style, GUIStyle backgroundStyle, params GUILayoutOption[] options)
+        {
+            if (!isEditorLayout)
+            {
+                ToolboxEditorLog.LogWarning("Begin horizontal layout group action can be executed only within the Toolbox Editor.");
+                return Rect.zero;
+            }
+
+            if (hLayoutClips > 0)
+            {
+                ToolboxEditorLog.LogWarning("Nested horizontal layout groups are not supported.");
+                return Rect.zero;
+            }
+
+            hLayoutClips++;
+            var rect = EditorGUILayout.BeginHorizontal(style, options);
+            if (backgroundStyle != null)
+            {
+                if (Event.current.type == EventType.Repaint)
+                {
+                    var backgroundRect = EditorGUI.IndentedRect(rect);
+                    backgroundStyle.Draw(backgroundRect, false, false, false, false);
+                }
+            }
+
+            return rect;
         }
 
         internal static void CloseHorizontal()
