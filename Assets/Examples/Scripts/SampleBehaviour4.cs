@@ -171,30 +171,31 @@ public class SampleBehaviour4 : MonoBehaviour
     [SerializeField]
     private SampleNestedClass nestedObject;
 
+    [Label("Tabs Group", skinStyle: SkinStyle.Box)]
     [BeginTabGroup("Tab Example")]
     [Tab("General")]
-    public string CharacterName;
+    public string characterName;
 
     [Tab("General")]
-    public int Level;
+    public int level;
 
     [Tab("Stats")]
-    public int Health;
+    public int health;
 
     [Tab("Stats")]
-    public int Mana;
+    public int mana;
 
     [Tab("Stats")]
-    public int Stamina;
+    public int stamina;
 
     [Tab("Movement")]
-    public float MoveSpeed;
+    public float moveSpeed;
 
     [Tab("Movement")]
-    public float Acceleration;
+    public float acceleration;
 
     [Tab("Movement")]
-    public float JumpForce;
+    public float jumpForce;
 
     [Tab("Attack")]
     public Vector2 attackForce;
