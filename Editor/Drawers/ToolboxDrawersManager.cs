@@ -437,12 +437,18 @@ namespace Toolbox.Editor.Drawers
                 var propertyKey = property.GetPropertyHashKey();
                 if (propertyHandlers.TryGetValue(propertyKey, out var propertyHandler))
                 {
-                    return propertyHandler;
+                    if (propertyHandler.IsValid(property))
+                    {
+                        return propertyHandler;
+                    }
+                    else
+                    {
+                        //NOTE: we need to clear all handlers because some of them may be invalidated by the property change (e.g. type change)
+                        propertyHandlers.Clear();
+                    }
                 }
-                else
-                {
-                    return propertyHandlers[propertyKey] = new ToolboxPropertyHandler(property);
-                }
+
+                return propertyHandlers[propertyKey] = new ToolboxPropertyHandler(property);
             }
             else
             {

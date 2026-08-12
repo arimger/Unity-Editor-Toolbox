@@ -18,7 +18,7 @@ namespace Toolbox.Editor
 
         internal static void AdjustMarginToIndent(GUIStyle style)
         {
-            style.margin.left = (int)IndentSize;
+            style.margin.left = Mathf.RoundToInt(IndentSize);
         }
 
         public static Texture2D CreateColorTexture()

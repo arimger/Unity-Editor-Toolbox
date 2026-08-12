@@ -13,6 +13,9 @@ namespace Toolbox.Editor.Drawers
     /// </summary>
     internal class ToolboxPropertyHandler : ISerializedPropertyContext
     {
+        private readonly string serializedPath;
+        private readonly string serializedType;
+
         /// <summary>
         /// Determines whenever property is an array/list.
         /// </summary>
@@ -78,7 +81,10 @@ namespace Toolbox.Editor.Drawers
         /// </summary>
         internal ToolboxPropertyHandler(SerializedProperty property)
         {
-            this.Property = property;
+            Property = property;
+
+            serializedPath = property.propertyPath;
+            serializedType = property.type;
 
             //here starts preparation of all needed data for this handler
             //first of all we have to retrieve the native data like FieldInfo, custom native drawer, etc.
@@ -478,6 +484,20 @@ namespace Toolbox.Editor.Drawers
             else
             {
                 ToolboxEditorGui.DrawDefaultProperty(property, label);
+            }
+        }
+
+        public bool IsValid(SerializedProperty currentSerializedProperty)
+        {
+            try
+            {
+                return serializedType == currentSerializedProperty.type && serializedPath == currentSerializedProperty.propertyPath;
+            }
+            //NOTE: most likekly our cached property was disposed,
+            //it may happend if SerializedProperty is in fact a managed reference and that reference was changed
+            catch (ObjectDisposedException)
+            {
+                return false;
             }
         }
 

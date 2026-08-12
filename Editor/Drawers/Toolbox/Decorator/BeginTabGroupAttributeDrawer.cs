@@ -8,8 +8,6 @@ namespace Toolbox.Editor.Drawers
 {
     public sealed class BeginTabGroupAttributeDrawer : ToolboxDecoratorDrawer<BeginTabGroupAttribute>
     {
-        private static readonly GUIContent sharedContent = new GUIContent();
-
         private class TabContext
         {
             public readonly int index;
@@ -65,6 +63,8 @@ namespace Toolbox.Editor.Drawers
             public int Count => tabs.Count;
         }
 
+        private static readonly GUIContent sharedContent = new GUIContent();
+
         protected override void OnGuiBeginSafe(BeginTabGroupAttribute attribute)
         {
             if (!TryGetDeclaringType(out var targetType))
@@ -81,6 +81,7 @@ namespace Toolbox.Editor.Drawers
 
             var currentTabIndex = GetActiveTab(targetType, groupId);
             ToolboxLayoutHandler.BeginVertical(Style.allGroupStyle, Style.backgroundStyle);
+
             var newIndex = DrawResponsiveTabs(currentTabIndex, tabs);
             if (newIndex != currentTabIndex)
             {
@@ -230,7 +231,7 @@ namespace Toolbox.Editor.Drawers
             EditorGuiUtility.AdjustMarginToIndent(style);
 
             var newIndex = currentIndex;
-            using (new EditorGUILayout.VerticalScope(style))
+            using (var scope = new EditorGUILayout.VerticalScope(style))
             {
                 EditorGUILayout.Space(Style.rowsUpperPadding);
 
@@ -290,9 +291,9 @@ namespace Toolbox.Editor.Drawers
 
         private static class Style
         {
-            internal const float tabSpacing = 4.0f;
-            internal const float rowSpacing = 0.5f;
-            internal const float rowsUpperPadding = -2.0f;
+            internal const float tabSpacing = 0.5f;
+            internal const float rowSpacing = 0.0f;
+            internal const float rowsUpperPadding = 0f;
             internal const float minTabWidth = 40.0f;
             internal const float minTabHeight = 20.0f;
             internal const float viewPadding = 32.0f;
@@ -319,6 +320,15 @@ namespace Toolbox.Editor.Drawers
                     padding = new RectOffset(10, 10, 4, 4),
                 };
 
+                defaultTabStyle = new GUIStyle(EditorStyles.miniButtonMid)
+                {
+                    fixedHeight = minTabHeight,
+                    margin = new RectOffset(0, 0, 0, 0),
+                    border = new RectOffset(0, 0, 0, 0),
+                    padding = new RectOffset(0, 0, 0, 0),
+                    overflow = new RectOffset(0, 0, 0, 0)
+                };
+
                 activeTabStyle = new GUIStyle(defaultTabStyle)
                 {
                     fontStyle = FontStyle.Bold
@@ -341,6 +351,7 @@ namespace Toolbox.Editor.Drawers
 
                 rowGroupStyle = new GUIStyle()
                 {
+                    //NOTE: margin currently overriden by the indent size when drawing
                     margin = new RectOffset(0, 0, 0, 0),
                     border = new RectOffset(0, 0, 0, 0),
                     padding = new RectOffset(1, 0, 0, 0)
