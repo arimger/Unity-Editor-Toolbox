@@ -1,3 +1,14 @@
+## 0.14.5 [12.08.2026]
+
+### Added:
+- Ability to display properties inside Tab-based groups ([BeginTabGroup], [Tab], [EndTabGroup])
+
+### Changed:
+- Fix issues with drawing nested properties after changing parent's type using [ReferencePicker]
+- Fix crash caused by [SerializeReference]-based list elements
+- Fix various cases where layout groups were not adjusted to the indentation level
+- Toolbox drawers now have priority over built-in native drawers
+
 ## 0.14.4 [11.04.2026]
 
 ### Changed:

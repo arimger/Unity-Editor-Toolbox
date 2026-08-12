@@ -260,6 +260,25 @@ namespace Toolbox.Editor.Internal
             }
         }
 
+        protected bool TryGetNewValueOverride(SerializedProperty property, int index, out object newValue)
+        {
+            if (overrideNewElementCallback != null)
+            {
+                newValue = overrideNewElementCallback(index);
+                return true;
+            }
+
+            if (property.propertyType == SerializedPropertyType.ManagedReference || 
+                property.propertyType == SerializedPropertyType.Generic)
+            {
+                newValue = null;
+                return true;
+            }
+
+            newValue = default;
+            return false;
+        }
+
         protected abstract void DoListMiddle();
 
         protected abstract void DoListMiddle(Rect middleRect);
@@ -457,21 +476,23 @@ namespace Toolbox.Editor.Internal
 
         public void AppendElement()
         {
-            var newSize = Size.intValue + 1;
-            Size.intValue = newSize;
+            var newSize = List.arraySize + 1;
+            List.arraySize = newSize;
             Index = newSize - 1;
 
-            if (overrideNewElementCallback == null)
+            List.serializedObject.ApplyModifiedProperties();
+            var property = List.GetArrayElementAtIndex(Index);
+            if (!TryGetNewValueOverride(property, Index, out var newValue))
             {
                 return;
             }
 
-            //make sure serialized data is up-to-date
-            List.serializedObject.ApplyModifiedProperties();
-            var property = List.GetArrayElementAtIndex(Index);
-            var newValue = overrideNewElementCallback(Index);
-            //update property directly by the reflection
             var fieldInfo = property.GetFieldInfo();
+            if (fieldInfo == null)
+            {
+                return;
+            }
+
             property.SetProperValue(fieldInfo, newValue, false);
         }
 
@@ -655,7 +676,7 @@ namespace Toolbox.Editor.Internal
                 sizeValue = Mathf.Max(EditorGUI.DelayedIntField(rect, sizeValue, Style.sizePropertyStyle), 0);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    property.intValue = sizeValue;
+                    List.arraySize = sizeValue;
                 }
 
                 EditorGUI.EndProperty();

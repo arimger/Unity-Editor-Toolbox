@@ -465,6 +465,22 @@ public int veryVeryVeryVeryVeryLongName;
 
 ![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/labelwidth.png)
 
+```csharp
+[BeginTabGroup(groupId: "main_group")]
+[Tab(tab: "General")]
+public string characterName;
+[Tab(tab: "Movement")]
+public float moveSpeed;
+[Tab(tab: "Movement")]
+public float jumpForce;
+[Tab(tab: "Attack")]
+public Vector2 attackForce;
+[Tab(tab: "Attack")]
+[EndTabGroup]
+public int attackDamage;
+```
+
+![inspector](https://github.com/arimger/Unity-Editor-Toolbox/blob/develop/Docs/tabs.png)
 
 #### Toolbox Condition Attributes <a name="toolboxcondition"></a>
 
