@@ -125,9 +125,9 @@ namespace Toolbox.Editor.Drawers
         private void UpdateTypeProperty(SerializedProperty property, Type targetType, ReferencePickerAttribute attribute)
         {
             var forceUninitializedInstance = attribute.ForceUninitializedInstance;
-            var obj = ReflectionUtility.CreateInstance(targetType, forceUninitializedInstance);
+            var newInstance = ReflectionUtility.CreateInstance(targetType, forceUninitializedInstance);
             property.serializedObject.Update();
-            property.managedReferenceValue = obj;
+            property.managedReferenceValue = newInstance;
             property.serializedObject.ApplyModifiedProperties();
 
             //NOTE: fix for invalid cached properties, e.g. changing parent's managed reference can change available children

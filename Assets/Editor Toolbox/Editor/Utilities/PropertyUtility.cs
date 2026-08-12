@@ -129,6 +129,12 @@ namespace Toolbox.Editor
         {
             var targetObjects = property.serializedObject.targetObjects;
             var targetObjectsCount = targetObjects.Length;
+            if (targetObjectsCount > result.Length)
+            {
+                ToolboxEditorLog.LogError($"{nameof(GetDeclaringObjectsNonAlloc)}: Provided result array is too small to hold all target objects.");
+                return 0;
+            }
+
             for (var i = 0; i < targetObjectsCount; i++)
             {
                 var targetObject = targetObjects[i];
