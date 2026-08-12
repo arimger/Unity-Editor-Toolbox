@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+#if UNITY_2021_1_OR_NEWER
 using UnityEngine.Pool;
+#endif
 
 namespace Toolbox.Editor.Drawers
 {
@@ -109,8 +111,13 @@ namespace Toolbox.Editor.Drawers
         {
             var viewWidth = EditorGUIUtility.currentViewWidth - EditorGuiUtility.IndentSize - Style.viewPadding;
 
+#if UNITY_2021_1_OR_NEWER
             var tabs = ListPool<TabContext>.Get();
             var rows = ListPool<RowContext>.Get();
+#else
+            var tabs = new List<TabContext>();
+            var rows = new List<RowContext>();
+#endif
 
             FetchTabs(labels, ref tabs);
             FetchRows(tabs, viewWidth, ref rows);
@@ -119,6 +126,7 @@ namespace Toolbox.Editor.Drawers
 
             GUILayout.Space(Style.spaceAfterTabs);
 
+#if UNITY_2021_1_OR_NEWER
             for (var i = 0; i < rows.Count; i++)
             {
                 var row = rows[i];
@@ -128,7 +136,7 @@ namespace Toolbox.Editor.Drawers
 
             ListPool<TabContext>.Release(tabs);
             ListPool<RowContext>.Release(rows);
-
+#endif
             return newIndex;
         }
 
@@ -188,7 +196,11 @@ namespace Toolbox.Editor.Drawers
 
         private static RowContext GetNewRow()
         {
+#if UNITY_2021_1_OR_NEWER
             var row = GenericPool<RowContext>.Get();
+#else
+            var row = new RowContext();
+#endif
             return row;
         }
 
@@ -299,7 +311,7 @@ namespace Toolbox.Editor.Drawers
             internal const float viewPadding = 32.0f;
             internal const float spaceAfterTabs = 4.0f;
 
-            internal static readonly Color defaultBackgroundMultiplier = new(0.9f, 0.9f, 0.9f, 0.5f);
+            internal static readonly Color defaultBackgroundMultiplier = new Color(0.9f, 0.9f, 0.9f, 0.5f);
             internal static readonly Color activeTabBackgroundColor;
             internal static readonly Color defaultTabBackgroundColor;
 

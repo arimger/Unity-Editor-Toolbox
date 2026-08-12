@@ -119,7 +119,7 @@ namespace Toolbox.Editor.Drawers
             }
         }
 
-        private static readonly Dictionary<Type, TypeData> typeCache = new();
+        private static readonly Dictionary<Type, TypeData> typeCache = new Dictionary<Type, TypeData>();
 
         [InitializeOnLoadMethod]
         private static void Initialize()
