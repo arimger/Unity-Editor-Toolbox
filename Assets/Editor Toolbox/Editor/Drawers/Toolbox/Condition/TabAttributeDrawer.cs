@@ -14,6 +14,7 @@ namespace Toolbox.Editor.Drawers
                     : PropertyCondition.NonValid;
             }
 
+            ToolboxEditorLog.AttributeUsageWarning(attribute, property, $"Tab '{attribute.Tab}' is not inside Tabs Group.");
             return PropertyCondition.Valid;
         }
     }
