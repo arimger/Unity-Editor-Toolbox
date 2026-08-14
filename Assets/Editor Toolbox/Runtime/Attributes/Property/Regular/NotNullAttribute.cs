@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
 namespace UnityEngine
@@ -12,14 +12,16 @@ namespace UnityEngine
     [Conditional("UNITY_EDITOR")]
     public class NotNullAttribute : PropertyAttribute
     {
-        public NotNullAttribute() : this("Variable has to be assigned.")
+        public NotNullAttribute(UnityMessageType type = UnityMessageType.Error) : this("Variable has to be assigned.", type)
         { }
 
-        public NotNullAttribute(string label)
+        public NotNullAttribute(string label, UnityMessageType type = UnityMessageType.Error)
         {
             Label = label;
+            Type = type;
         }
 
         public string Label { get; private set; }
+        public UnityMessageType Type { get; private set; }
     }
 }
