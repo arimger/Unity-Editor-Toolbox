@@ -1,4 +1,4 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
@@ -8,6 +8,19 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(NotNullAttribute))]
     public class NotNullAttributeDrawer : PropertyDrawerBase
     {
+        private static Color GetBackgroundColor(MessageType type)
+        {
+            switch (type)
+            {
+                case MessageType.Info:
+                    return Style.infoBackgroundColor;
+                case MessageType.Warning:
+                    return Style.warningBackgroundColor;
+                default:
+                    return Style.errorBackgroundColor;
+            }
+        }
+
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)
         {
             return property.objectReferenceValue
@@ -26,28 +39,18 @@ namespace Toolbox.Editor.Drawers
             }
             else
             {
+                var messageType = (MessageType)Attribute.MessageType;
+
                 //create respective HelpBox information
                 var helpBoxRect = new Rect(position.x,
                                            position.y,
                                            position.width, Style.boxHeight);
-                EditorGUI.HelpBox(helpBoxRect, Attribute.Label, (MessageType)Attribute.Type);
+                EditorGUI.HelpBox(helpBoxRect, Attribute.Label, messageType);
                 position.y += Style.boxHeight + Style.spacing * 2;
 
                 //change temporary GUI background color 
-                Color bgColor;
-                switch (Attribute.Type)
-                {
-                    case UnityMessageType.Error:
-                        bgColor = Style.errorBackgroundColor;
-                        break;
-                    case UnityMessageType.Warning:
-                        bgColor = Style.warningBackgroundColor;
-                        break;
-                    default:
-                        bgColor = Style.infoBackgroundColor;
-                        break;
-                }
-                using (new GuiBackground(bgColor))
+                var backgroundColor = GetBackgroundColor(messageType);
+                using (new GuiBackground(backgroundColor))
                 {
                     EditorGUI.PropertyField(position, property, label, property.isExpanded);
                 }
@@ -71,8 +74,8 @@ namespace Toolbox.Editor.Drawers
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
 
             internal static readonly Color infoBackgroundColor = Color.white;
-            internal static readonly Color warningBackgroundColor = Color.yellow;
             internal static readonly Color errorBackgroundColor = Color.red;
+            internal static readonly Color warningBackgroundColor = Color.yellow;
         }
     }
 }
