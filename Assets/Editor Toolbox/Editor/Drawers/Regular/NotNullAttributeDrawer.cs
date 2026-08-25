@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
@@ -30,11 +30,24 @@ namespace Toolbox.Editor.Drawers
                 var helpBoxRect = new Rect(position.x,
                                            position.y,
                                            position.width, Style.boxHeight);
-                EditorGUI.HelpBox(helpBoxRect, Attribute.Label, MessageType.Error);
+                EditorGUI.HelpBox(helpBoxRect, Attribute.Label, (MessageType)Attribute.Type);
                 position.y += Style.boxHeight + Style.spacing * 2;
 
                 //change temporary GUI background color 
-                using (new GuiBackground(Style.errorBackgroundColor))
+                Color bgColor;
+                switch (Attribute.Type)
+                {
+                    case UnityMessageType.Error:
+                        bgColor = Style.errorBackgroundColor;
+                        break;
+                    case UnityMessageType.Warning:
+                        bgColor = Style.warningBackgroundColor;
+                        break;
+                    default:
+                        bgColor = Style.infoBackgroundColor;
+                        break;
+                }
+                using (new GuiBackground(bgColor))
                 {
                     EditorGUI.PropertyField(position, property, label, property.isExpanded);
                 }
@@ -57,6 +70,8 @@ namespace Toolbox.Editor.Drawers
 #endif
             internal static readonly float spacing = EditorGUIUtility.standardVerticalSpacing;
 
+            internal static readonly Color infoBackgroundColor = Color.white;
+            internal static readonly Color warningBackgroundColor = Color.yellow;
             internal static readonly Color errorBackgroundColor = Color.red;
         }
     }
