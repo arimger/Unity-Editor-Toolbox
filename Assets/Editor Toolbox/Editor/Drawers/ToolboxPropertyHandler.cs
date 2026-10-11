@@ -13,6 +13,13 @@ namespace Toolbox.Editor.Drawers
     /// </summary>
     internal class ToolboxPropertyHandler : ISerializedPropertyContext
     {
+
+        /// <summary>
+        /// Gets the cached comparison delegate used to sort properties by their <see cref="global::OrderAttribute"/> or natural index.
+        /// </summary>
+        public static Comparison<(ToolboxPropertyHandler Handler, int Order)> Comparison => _comparison ??= Compare;
+        private static Comparison<(ToolboxPropertyHandler Handler, int Order)> _comparison;
+
         private readonly string serializedPath;
         private readonly string serializedType;
 
@@ -29,6 +36,11 @@ namespace Toolbox.Editor.Drawers
         /// Property label content based on the display name and optional tooltip.
         /// </summary>
         private readonly GUIContent label;
+
+        /// <summary>
+        /// Cached <see cref="OrderAttribute"/> responsible for custom property sorting.
+        /// </summary>
+        private OrderAttribute orderAttribute;
 
         /// <summary>
         /// First cached <see cref="ToolboxPropertyAttribute"/>.
@@ -101,6 +113,9 @@ namespace Toolbox.Editor.Drawers
             //initialize basic information about property
             isArray = property.isArray && property.propertyType == SerializedPropertyType.Generic;
             isChild = property.name != FieldInfo.Name;
+
+            //cache flag indicating if the target type is marked with SortableAttribute
+            IsSortable = Type.IsDefined(typeof(SortableAttribute), true);
 
             //try to fetch additional data about drawers
             ProcessBuiltInData();
@@ -193,6 +208,9 @@ namespace Toolbox.Editor.Drawers
         {
             switch (attribute)
             {
+                case OrderAttribute a:
+                    orderAttribute = a;
+                    break;
                 case ToolboxListPropertyAttribute a:
                     TryAssignListPropertyAttribute(a);
                     break;
@@ -502,6 +520,20 @@ namespace Toolbox.Editor.Drawers
         }
 
         /// <summary>
+        /// Compares two property entries and returns a value indicating whether one is less than, equal to, or greater than the other.
+        /// </summary>
+        /// <param name="x">The first property entry to compare.</param>
+        /// <param name="y">The second property entry to compare.</param>
+        /// <returns>A signed integer that indicates the relative values of <paramref name="x"/> and <paramref name="y"/>.</returns>
+        public static int Compare((ToolboxPropertyHandler Handler, int Order) x, (ToolboxPropertyHandler Handler, int Order) y)
+        {
+            int xOrder = x.Handler?.orderAttribute?.Order ?? x.Order;
+            int yOrder = y.Handler?.orderAttribute?.Order ?? y.Order;
+
+            return xOrder.CompareTo(yOrder);
+        }
+
+        /// <summary>
         /// Target property which contains all useful data about the associated field. 
         /// </summary>
         public SerializedProperty Property { get; }
@@ -515,5 +547,10 @@ namespace Toolbox.Editor.Drawers
         /// Type associated to the <see cref="Property"/>.
         /// </summary>
         public Type Type { get; }
+
+        /// <summary>
+        /// Cached flag indicating if the target type is marked with <see cref="SortableAttribute"/>.
+        /// </summary>
+        public bool IsSortable { get; }
     }
 }

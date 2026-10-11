@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
 namespace Toolbox.Editor
@@ -463,7 +465,7 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawDefaultProperty(SerializedProperty property, GUIContent label)
         {
-            DrawDefaultProperty(property, label, DrawNativeProperty, DrawToolboxProperty);
+            DrawDefaultProperty(property, label, DrawNativeProperty, null);
         }
 
         /// <summary>
@@ -505,31 +507,69 @@ namespace Toolbox.Editor
         /// </summary>
         public static void DrawPropertyChildren(SerializedProperty property)
         {
-            DrawPropertyChildren(property, DrawToolboxProperty);
+            DrawPropertyChildren(property, null);
         }
 
         /// <summary>
         /// Draws property's children but only one level deep.
+        /// Supports custom sorting based on the <see cref="SortableAttribute"/> and <see cref="OrderAttribute"/>.
         /// </summary>
-        public static void DrawPropertyChildren(SerializedProperty property, Action<SerializedProperty> drawElementAction)
+        public static void DrawPropertyChildren(SerializedProperty property, Action<SerializedProperty> drawElementAction = null)
         {
+            var handler = ToolboxDrawersManager.GetPropertyHandler(property);
+            bool isSortable = handler != null && handler.IsSortable;
+
             var enterChildren = true;
-            //cache all needed property references
+
+            // Cache all needed property references
             var targetProperty = property.Copy();
             var endingProperty = property.GetEndProperty();
-            //iterate over all children (but only 1 level depth)
-            while (targetProperty.NextVisible(enterChildren))
+
+            List<(ToolboxPropertyHandler Handler, int Order)> propsList = null;
+
+            // Iterate over all children (but only 1 level depth)
+            while (targetProperty.NextVisible(enterChildren)) 
             {
-                if (SerializedProperty.EqualContents(targetProperty, endingProperty))
+                if (SerializedProperty.EqualContents(targetProperty, endingProperty)) 
                 {
                     break;
                 }
 
                 enterChildren = false;
                 var childProperty = targetProperty.Copy();
-                //handle current property using Toolbox features
-                drawElementAction(childProperty);
+
+                if (!isSortable) 
+                {
+                    // Draw immediately if sorting is not required
+                    if (drawElementAction != null)
+                        drawElementAction(childProperty);
+                    else
+                        DrawToolboxProperty(childProperty);
+                }
+                else 
+                {
+                    // Fetch list from pool if needed and store handler with 1-based index 
+                    // so [Order(0)] has absolute priority over default properties
+                    propsList ??= ListPool<(ToolboxPropertyHandler Handler, int Order)>.Get();
+                    propsList.Add((ToolboxDrawersManager.GetPropertyHandler(childProperty), propsList.Count + 1));
+                }
             }
+
+            if (!isSortable || propsList == null) return;
+
+            // Sort collected properties using zero-allocation cached delegate
+            propsList.Sort(ToolboxPropertyHandler.Comparison);
+
+            // Draw sorted properties
+            foreach (var prop in propsList) 
+            {
+                if (drawElementAction != null)
+                    drawElementAction(prop.Handler.Property);
+                else
+                    prop.Handler.OnGuiLayout(prop.Handler.Property);
+            }
+
+            ListPool<(ToolboxPropertyHandler Handler, int Order)>.Release(propsList);
         }
 
         /// <summary>
